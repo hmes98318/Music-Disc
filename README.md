@@ -1,6 +1,6 @@
 # discord-music-bot
 A simple music bot  
-there are still many bug need to fix
+there are still many bug need to fix  
 node.js version 16  
 
 ```
