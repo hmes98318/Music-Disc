@@ -1,7 +1,6 @@
 const Discord = require('discord.js');
 const ytdl = require('ytdl-core');
 const ytsr = require('ytsr');
-const { YTSearcher } = require('ytsearcher');
 const auth = require('./auth.json');
 
 
@@ -158,7 +157,14 @@ bot.on("message", async (message) => {
         message.channel.send(Embed_play('Now Playing', music.title, music.url)).then(msg => { msg.delete({ timeout: 300000 }) })
 
         const dispatcher = serverQueue.connection
-            .play(ytdl(music.url))
+            //.play(ytdl(music.url), { filter: 'audioonly' })
+            .play(
+                ytdl(music.url, {
+                    filter: 'audioonly',
+                    //bitrate: 192000,  // 192kbps 
+                    quality: 'lowestaudio',
+                    highWaterMark: 1024 * 1024 * 50
+                }))
             .on("finish", () => {
                 if (serverQueue.loop) {
                     play(guild, serverQueue.music[0]);
@@ -182,11 +188,12 @@ bot.on("message", async (message) => {
     }
 
     function Skip(message, serverQueue) {
-        console.log('skip')
         if (!message.member.voice.channel)
             return message.channel.send('join channel,first');
         if (!serverQueue)
             return message.channel.send('nothing can skip');
+        if (!serverQueue.connection || !serverQueue.connection.dispatcher || !serverQueue.connection.dispatcher.end)
+            return message.channel.send(`TypeError: Cannot read property 'dispatcher' of null`);
 
         serverQueue.connection.dispatcher.end();
         return message.react('👍')
