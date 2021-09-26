@@ -1,6 +1,8 @@
 const Discord = require('discord.js');
 const ytdl = require('ytdl-core');
 const ytsr = require('ytsr');
+const ytpl = require('ytpl');
+const { YTSearcher } = require('ytsearcher');
 const auth = require('./auth.json');
 
 
@@ -80,17 +82,77 @@ bot.on("message", async (message) => {
         }
     }
     async function Execute(message, serverQueue) {
-        let channelVoice = message.member.voice.channel
+        serverQueue = queue.get(message.guild.id);
+        let channelVoice = message.member.voice.channel;
         let musicURL;
+
+        const constructor = {
+            channel_txt: message.channel,
+            channel_voice: channelVoice,
+            connection: null,
+            music: [],
+            volume: 10,
+            playing: true,
+            loop: false
+        };
+
+
 
         if (!channelVoice) {
             return message.channel.send('join channel')
         }
         else { // -------------- use ytsr --------------
-            if (message.content.indexOf(`http`) > -1 != true) {
+            let type = message.content.replace(`${prefix}p`, '').trim();
+
+            if (message.content.indexOf(`http`) > -1 != true) { // youtube search
+                console.log('yt search');
+                if (!message.content.replace(`${prefix}p`, '').trim())
+                    return message.channel.send('error')
+                if(String(await search(message.content.replace(`${prefix}p`, '').trim())).match(/(?:https?:\/\/)?(?:youtu\.be\/|(?:www\.|m\.)?youtube\.com\/(?:watch|v|embed)(?:\.php)?(?:\?.*v=|\/))([a-zA-Z0-9\_-]+)/))
                 musicURL = String(await search(message.content.replace(`${prefix}p`, '').trim()))
+                else
+                return message.channel.send('Not found, try againg');
             }
-            else if (message.content.indexOf(`youtu.be`) > -1 == true || message.content.indexOf(`youtube.com`) > -1 == true && message.content.indexOf(`playlist?list`) > -1 != true) {
+
+            else if (type.match(/^https?:\/\/(www.youtube.com|youtube.com)\/playlist(.*)$/)
+                /*type.match(/^(http(s)?:\/\/)?((w){3}.)?youtu(be|.be)?(\.com)?\/.+/) && message.content.indexOf(`playlist?list`) > -1 === true*/) {
+                console.log('yt list');
+
+                let playListUrl = message.content.replace(`${prefix}p`, '').trim();
+
+                console.log(playListUrl);
+                playListUrl = playListUrl.split('playlist?list=');
+                console.log(`list = ${playListUrl[playListUrl.length - 1]}`);
+
+                let playlist = await ytpl(playListUrl[playListUrl.length - 1]);
+
+                message.channel.send(Embed_list('Play List', playlist.title, playlist.url, message.author.username, message.author.avatarURL(), playlist.url))
+
+
+                for (var i = 0; i < playlist.items.length; ++i) {
+                    console.log(`--[${i}]-----------`);
+                    console.log(`${playlist.items[i].title}\n${playlist.items[i].shortUrl}`);
+
+                    let music = {
+                        title: playlist.items[i].title,
+                        url: playlist.items[i].shortUrl
+                    }; console.log(music);
+
+                    queue.set(message.guild.id, constructor);
+                    constructor.music.push(music);
+                }
+                console.log('-----List Done------');
+
+                let connection = await channelVoice.join();
+                constructor.connection = connection;
+
+                play(message.guild, constructor.music[0])
+                return;
+            }
+
+            else if (type.match(/(?:https?:\/\/)?(?:youtu\.be\/|(?:www\.|m\.)?youtube\.com\/(?:watch|v|embed)(?:\.php)?(?:\?.*v=|\/))([a-zA-Z0-9\_-]+)/)
+                /*type.match(/^(http(s)?:\/\/)?((w){3}.)?youtu(be|.be)?(\.com)?\/.+/) && message.content.indexOf(`playlist?list`) > -1 !== true*/) {
+                console.log('yt link');
                 musicURL = message.content.replace(`${prefix}p`, '').trim();
                 console.log(musicURL)
             }
@@ -108,7 +170,7 @@ bot.on("message", async (message) => {
 
 
             if (!serverQueue) {
-                const constructor = {
+                /*const constructor = {
                     channel_txt: message.channel,
                     channel_voice: channelVoice,
                     connection: null,
@@ -116,10 +178,9 @@ bot.on("message", async (message) => {
                     volume: 10,
                     playing: true,
                     loop: false
-                };
+                };*/
 
                 queue.set(message.guild.id, constructor);
-
                 constructor.music.push(music);
 
                 try {
@@ -156,9 +217,6 @@ bot.on("message", async (message) => {
             queue.delete(guild.id);
             return;
         }
-        message.react('👍')
-        message.channel.send(Embed_play('Now Playing', music.title, music.url)).then(msg => { msg.delete({ timeout: 300000 }) })
-
         const dispatcher = serverQueue.connection
             //.play(ytdl(music.url), { filter: 'audioonly' })
             .play(
@@ -166,8 +224,12 @@ bot.on("message", async (message) => {
                     filter: 'audioonly',
                     //bitrate: 192000,  // 192kbps 
                     quality: 'lowestaudio',
-                    highWaterMark: 1024 * 1024 * 50
+                    highWaterMark: 1024 * 1024 * 200
                 }))
+            .on("start", () => {
+                message.react('👍')
+                message.channel.send(Embed_play('Now Playing', music.title, music.url)).then(msg => { msg.delete({ timeout: 300000 }) })
+            })
             .on("finish", () => {
                 if (serverQueue.loop) {
                     play(guild, serverQueue.music[0]);
@@ -252,24 +314,33 @@ bot.on("message", async (message) => {
     function Queue(message, serverQueue) {
         if (!message.member.voice.channel)
             return message.channel.send('join channel,first');
-        if (!serverQueue.connection)
+        if (!serverQueue)
             return message.channel.send('nothing can queue');
 
         let nowPlaying = serverQueue.music[0];
         let queueMsg = `Now Playing : ${nowPlaying.title}`
 
         if (serverQueue.music[1]) {
-            queueMsg += `\n---------------\n`;
+            if(serverQueue.music.length >= 15){
+                queueMsg += `\n---------------\n`;
+            for (var i = 1; i <= 10; i++) {
+
+                queueMsg += `${i}. ${serverQueue.music[i].title}\n`
+                console.log(`${i}. ${serverQueue.music[i].title}\n`)
+            }queueMsg += `and ${serverQueue.music.length} more songs...`
+            }
+            else{
+                queueMsg += `\n---------------\n`;
             for (var i = 1; i < serverQueue.music.length; i++) {
 
                 queueMsg += `${i}. ${serverQueue.music[i].title}\n`
                 console.log(`${i}. ${serverQueue.music[i].title}\n`)
             }
+            }
         }
         message.react('👍')
         return message.channel.send(Embed_queue('Queue', queueMsg))
     }
-
 })
 
 
@@ -296,4 +367,13 @@ function Embed_help() {
         .addField('Help', '```+p空格網址  => 播放音樂\n+pause     => 暫停音樂\n+resume    => 恢復播放\n+skip      => 跳過音樂\n+loop      => 循環音樂\n+queue     => 查看列隊\n+leave     => 離開頻道```', true)
         .setTimestamp()
     return Embed_help
+}
+
+function Embed_list(status, list_title, list_url, user, header, url) {
+    const Embed_list = new Discord.MessageEmbed()
+        .setColor('#FFFFFF')
+        .setAuthor(user, header, url)
+        .addField(status, `[${list_title}](${list_url})`, true)
+        .setTimestamp()
+    return Embed_list
 }
