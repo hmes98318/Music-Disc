@@ -17,6 +17,16 @@ const options = {
     hl: 'TW',
     limit: 1,
 }
+/*
+let constructor = {
+    channel_txt: null,
+    channel_voice: null,
+    connection: null,
+    music: [],
+    volume: 10,
+    playing: true,
+    loop: false
+};*/
 
 
 
@@ -31,10 +41,13 @@ bot.login(auth.token);
 
 bot.on("message", async (message) => {
 
-    let guildID = message.guild.id;
     let serverQueue = queue.get(message.guild.id);
+    let channelVoice = message.member.voice.channel
+    
+    //let channelVoice = message.member.voice.channel
+    //constructor.channel_txt = message.channel
+    //constructor.channel_voice = channelVoice
 
-    let argsUrl = message.content.split(' ');
 
     if (message.content[0] === prefix) {
         console.log(`--- ${message.author.username} : ${message.content}`)
@@ -82,21 +95,12 @@ bot.on("message", async (message) => {
         }
     }
     async function Execute(message, serverQueue) {
-        serverQueue = queue.get(message.guild.id);
-        let channelVoice = message.member.voice.channel;
+
+        let musicInfo;
         let musicURL;
+        let music = [];
 
-        const constructor = {
-            channel_txt: message.channel,
-            channel_voice: channelVoice,
-            connection: null,
-            music: [],
-            volume: 10,
-            playing: true,
-            loop: false
-        };
-
-
+        //queue.set(message.guild.id, constructor);
 
         if (!channelVoice) {
             return message.channel.send('join channel')
@@ -108,10 +112,20 @@ bot.on("message", async (message) => {
                 console.log('yt search');
                 if (!message.content.replace(`${prefix}p`, '').trim())
                     return message.channel.send('error')
-                if(String(await search(message.content.replace(`${prefix}p`, '').trim())).match(/(?:https?:\/\/)?(?:youtu\.be\/|(?:www\.|m\.)?youtube\.com\/(?:watch|v|embed)(?:\.php)?(?:\?.*v=|\/))([a-zA-Z0-9\_-]+)/))
-                musicURL = String(await search(message.content.replace(`${prefix}p`, '').trim()))
+                if (String(await search(message.content.replace(`${prefix}p`, '').trim())).match(/(?:https?:\/\/)?(?:youtu\.be\/|(?:www\.|m\.)?youtube\.com\/(?:watch|v|embed)(?:\.php)?(?:\?.*v=|\/))([a-zA-Z0-9\_-]+)/)) {
+                    musicURL = String(await search(message.content.replace(`${prefix}p`, '').trim()))
+
+                    musicInfo = await ytdl.getInfo(musicURL);
+
+                    music = {
+                        title: musicInfo.videoDetails.title,
+                        url: musicInfo.videoDetails.video_url
+                    }; console.log(music);
+
+                    //constructor.music.push(music);
+                }
                 else
-                return message.channel.send('Not found, try againg');
+                    return message.channel.send('Not found, try againg');
             }
 
             else if (type.match(/^https?:\/\/(www.youtube.com|youtube.com)\/playlist(.*)$/)
@@ -129,25 +143,20 @@ bot.on("message", async (message) => {
                 message.channel.send(Embed_list('Play List', playlist.title, playlist.url, message.author.username, message.author.avatarURL(), playlist.url))
 
 
+
                 for (var i = 0; i < playlist.items.length; ++i) {
                     console.log(`--[${i}]-----------`);
                     console.log(`${playlist.items[i].title}\n${playlist.items[i].shortUrl}`);
 
-                    let music = {
+                    music = {
                         title: playlist.items[i].title,
                         url: playlist.items[i].shortUrl
                     }; console.log(music);
 
-                    queue.set(message.guild.id, constructor);
+                    //queue.set(message.guild.id, constructor);
                     constructor.music.push(music);
                 }
                 console.log('-----List Done------');
-
-                let connection = await channelVoice.join();
-                constructor.connection = connection;
-
-                play(message.guild, constructor.music[0])
-                return;
             }
 
             else if (type.match(/(?:https?:\/\/)?(?:youtu\.be\/|(?:www\.|m\.)?youtube\.com\/(?:watch|v|embed)(?:\.php)?(?:\?.*v=|\/))([a-zA-Z0-9\_-]+)/)
@@ -155,22 +164,25 @@ bot.on("message", async (message) => {
                 console.log('yt link');
                 musicURL = message.content.replace(`${prefix}p`, '').trim();
                 console.log(musicURL)
+
+                musicInfo = await ytdl.getInfo(musicURL);
+
+                music = {
+                    title: musicInfo.videoDetails.title,
+                    url: musicInfo.videoDetails.video_url
+                }; console.log(music);
+                //constructor.music.push(music);
             }
             else {
                 return message.channel.send('type error')
             }
 
 
-            let musicInfo = await ytdl.getInfo(musicURL);
-
-            let music = {
-                title: musicInfo.videoDetails.title,
-                url: musicInfo.videoDetails.video_url
-            }; console.log(music);
 
 
-            if (!serverQueue) {
-                /*const constructor = {
+
+            if (!serverQueue) {/*
+                const constructor = {
                     channel_txt: message.channel,
                     channel_voice: channelVoice,
                     connection: null,
@@ -180,8 +192,22 @@ bot.on("message", async (message) => {
                     loop: false
                 };*/
 
+                //queue.set(message.guild.id, constructor);
+                const constructor = {
+                    channel_txt: message.channel,
+                    channel_voice: channelVoice,
+                    connection: null,
+                    music: [],
+                    volume: 10,
+                    playing: true,
+                    loop: false
+                };
                 queue.set(message.guild.id, constructor);
                 constructor.music.push(music);
+
+                console.log('////////////////////////////////////')
+                console.log(constructor.music)
+                console.log('////////////////////////////////////')
 
                 try {
                     let connection = await channelVoice.join();
@@ -194,6 +220,9 @@ bot.on("message", async (message) => {
                     return message.channel.send('error')
                 }
             } else {
+                console.log('++++++++++++++++++++++++++++++++++++')
+                console.log(constructor.music)
+                console.log('++++++++++++++++++++++++++++++++++++')
                 serverQueue.music.push(music);
                 message.react('👍')
                 return message.channel.send(Embed_play('Queue', music.title, music.url)).then(msg => { msg.delete({ timeout: 300000 }) })
@@ -217,6 +246,8 @@ bot.on("message", async (message) => {
             queue.delete(guild.id);
             return;
         }
+
+
         const dispatcher = serverQueue.connection
             //.play(ytdl(music.url), { filter: 'audioonly' })
             .play(
@@ -224,7 +255,7 @@ bot.on("message", async (message) => {
                     filter: 'audioonly',
                     //bitrate: 192000,  // 192kbps 
                     quality: 'lowestaudio',
-                    highWaterMark: 1024 * 1024 * 200
+                    highWaterMark: 1024 * 1024 * 50
                 }))
             .on("start", () => {
                 message.react('👍')
@@ -265,6 +296,11 @@ bot.on("message", async (message) => {
     }
 
     function Loop(message, serverQueue) {
+        if (!message.member.voice.channel)
+            return message.channel.send('join channel,first');
+        if (!serverQueue)
+            return message.channel.send('nothing can loop');
+
         if (!serverQueue.loop) {
             serverQueue.loop = true;
             message.react('⭕')
@@ -280,6 +316,8 @@ bot.on("message", async (message) => {
     function Leave(message, serverQueue) {
         if (!message.member.voice.channel)
             return message.channel.send('join channel,first');
+        if (!serverQueue)
+            return message.channel.send('nothing can leave');
 
         serverQueue.music = [];
         serverQueue.loop = false;
@@ -290,7 +328,7 @@ bot.on("message", async (message) => {
     function Pause(message, serverQueue) {
         if (!message.member.voice.channel)
             return message.channel.send('join channel,first');
-        if (!serverQueue.connection)
+        if (!serverQueue)
             return message.channel.send('nothing can pause');
         if (!serverQueue.connection.dispatcher.pause)
             return message.channel.send('music already paused');
@@ -302,7 +340,7 @@ bot.on("message", async (message) => {
     function Resume(message, serverQueue) {
         if (!message.member.voice.channel)
             return message.channel.send('join channel,first');
-        if (!serverQueue.connection)
+        if (!serverQueue)
             return message.channel.send('nothing can resume');
         if (!serverQueue.connection.dispatcher.resume)
             return message.channel.send('music already resume');
@@ -321,26 +359,17 @@ bot.on("message", async (message) => {
         let queueMsg = `Now Playing : ${nowPlaying.title}`
 
         if (serverQueue.music[1]) {
-            if(serverQueue.music.length >= 15){
-                queueMsg += `\n---------------\n`;
-            for (var i = 1; i <= 10; i++) {
-
-                queueMsg += `${i}. ${serverQueue.music[i].title}\n`
-                console.log(`${i}. ${serverQueue.music[i].title}\n`)
-            }queueMsg += `and ${serverQueue.music.length} more songs...`
-            }
-            else{
-                queueMsg += `\n---------------\n`;
+            queueMsg += `\n---------------\n`;
             for (var i = 1; i < serverQueue.music.length; i++) {
 
                 queueMsg += `${i}. ${serverQueue.music[i].title}\n`
                 console.log(`${i}. ${serverQueue.music[i].title}\n`)
             }
-            }
         }
         message.react('👍')
         return message.channel.send(Embed_queue('Queue', queueMsg))
     }
+
 })
 
 
