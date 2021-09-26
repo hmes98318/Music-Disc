@@ -34,51 +34,51 @@ bot.on("message", async (message) => {
 
     let argsUrl = message.content.split(' ');
 
-    let args = message.content.slice(1).trim().split(/ +/g)
-    let command = args.shift().toLowerCase();
+    if (message.content[0] === prefix) {
+        console.log(`--- ${message.author.username} : ${message.content}`)
+        let args = message.content.slice(1).trim().split(/ +/g);
+        let command = args.shift().toLowerCase();
 
 
-    switch (command) {
+        switch (command) {
 
+            case 'join':
+                Join(message, serverQueue);
+                break;
 
-        case 'join':
-            Join(message, serverQueue);
-            break;
+            case 'p':
+                Execute(message, serverQueue);
+                break;
 
-        case 'p':
-            Execute(message, serverQueue);
-            break;
+            case 'skip':
+                Skip(message, serverQueue);
+                break;
 
-        case 'skip':
-            Skip(message, serverQueue);
-            break;
+            case 'loop':
+                Loop(message, serverQueue);
+                break;
 
-        case 'loop':
-            Loop(message, serverQueue);
-            break;
+            case 'leave':
+                Leave(message, serverQueue);
+                break;
 
-        case 'leave':
-            Leave(message, serverQueue);
-            break;
+            case 'pause':
+                Pause(message, serverQueue);
+                break;
 
-        case 'pause':
-            Pause(message, serverQueue);
-            break;
+            case 'resume':
+                Resume(message, serverQueue);
+                break;
 
-        case 'resume':
-            Resume(message, serverQueue);
-            break;
+            case 'queue':
+                Queue(message, serverQueue);
+                break;
 
-        case 'queue':
-            Queue(message, serverQueue);
-            break;
-
-        case 'help':
-            message.channel.send(Embed_help());
-            break;
-
+            case 'help':
+                message.channel.send(Embed_help());
+                break;
+        }
     }
-
     async function Execute(message, serverQueue) {
         let channelVoice = message.member.voice.channel
         let musicURL;
@@ -90,9 +90,12 @@ bot.on("message", async (message) => {
             if (message.content.indexOf(`http`) > -1 != true) {
                 musicURL = String(await search(message.content.replace(`${prefix}p`, '').trim()))
             }
-            else {
-                musicURL = argsUrl[1]
+            else if (message.content.indexOf(`youtu.be`) > -1 == true || message.content.indexOf(`youtube.com`) > -1 == true && message.content.indexOf(`playlist?list`) > -1 != true) {
+                musicURL = message.content.replace(`${prefix}p`, '').trim();
                 console.log(musicURL)
+            }
+            else {
+                return message.channel.send('type error')
             }
 
 
