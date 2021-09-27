@@ -2,7 +2,6 @@ const Discord = require('discord.js');
 const ytdl = require('ytdl-core');
 const ytsr = require('ytsr');
 const ytpl = require('ytpl');
-const { YTSearcher } = require('ytsearcher');
 const auth = require('./auth.json');
 
 
@@ -17,8 +16,8 @@ const options = {
     hl: 'TW',
     limit: 1,
 }
-/*
-let constructor = {
+
+const constructor = {
     channel_txt: null,
     channel_voice: null,
     connection: null,
@@ -26,7 +25,7 @@ let constructor = {
     volume: 10,
     playing: true,
     loop: false
-};*/
+};
 
 
 
@@ -43,10 +42,8 @@ bot.on("message", async (message) => {
 
     let serverQueue = queue.get(message.guild.id);
     let channelVoice = message.member.voice.channel
-    
-    //let channelVoice = message.member.voice.channel
-    //constructor.channel_txt = message.channel
-    //constructor.channel_voice = channelVoice
+    constructor.channel_txt = message.channel
+    constructor.channel_voice = channelVoice
 
 
     if (message.content[0] === prefix) {
@@ -100,7 +97,7 @@ bot.on("message", async (message) => {
         let musicURL;
         let music = [];
 
-        //queue.set(message.guild.id, constructor);
+        queue.set(message.guild.id, constructor);
 
         if (!channelVoice) {
             return message.channel.send('join channel')
@@ -112,8 +109,7 @@ bot.on("message", async (message) => {
                 console.log('yt search');
                 if (!message.content.replace(`${prefix}p`, '').trim())
                     return message.channel.send('error')
-                if (String(await search(message.content.replace(`${prefix}p`, '').trim())).match(/(?:https?:\/\/)?(?:youtu\.be\/|(?:www\.|m\.)?youtube\.com\/(?:watch|v|embed)(?:\.php)?(?:\?.*v=|\/))([a-zA-Z0-9\_-]+)/)) {
-                    musicURL = String(await search(message.content.replace(`${prefix}p`, '').trim()))
+                if (musicURL = String(await search(message.content.replace(`${prefix}p`, '').trim())).match(/(?:https?:\/\/)?(?:youtu\.be\/|(?:www\.|m\.)?youtube\.com\/(?:watch|v|embed)(?:\.php)?(?:\?.*v=|\/))([a-zA-Z0-9\_-]+)/)) {
 
                     musicInfo = await ytdl.getInfo(musicURL);
 
@@ -128,8 +124,7 @@ bot.on("message", async (message) => {
                     return message.channel.send('Not found, try againg');
             }
 
-            else if (type.match(/^https?:\/\/(www.youtube.com|youtube.com)\/playlist(.*)$/)
-                /*type.match(/^(http(s)?:\/\/)?((w){3}.)?youtu(be|.be)?(\.com)?\/.+/) && message.content.indexOf(`playlist?list`) > -1 === true*/) {
+            else if (type.match(/^https?:\/\/(www.youtube.com|youtube.com)\/playlist(.*)$/)) {
                 console.log('yt list');
 
                 let playListUrl = message.content.replace(`${prefix}p`, '').trim();
@@ -159,8 +154,7 @@ bot.on("message", async (message) => {
                 console.log('-----List Done------');
             }
 
-            else if (type.match(/(?:https?:\/\/)?(?:youtu\.be\/|(?:www\.|m\.)?youtube\.com\/(?:watch|v|embed)(?:\.php)?(?:\?.*v=|\/))([a-zA-Z0-9\_-]+)/)
-                /*type.match(/^(http(s)?:\/\/)?((w){3}.)?youtu(be|.be)?(\.com)?\/.+/) && message.content.indexOf(`playlist?list`) > -1 !== true*/) {
+            else if (type.match(/(?:https?:\/\/)?(?:youtu\.be\/|(?:www\.|m\.)?youtube\.com\/(?:watch|v|embed)(?:\.php)?(?:\?.*v=|\/))([a-zA-Z0-9\_-]+)/)) {
                 console.log('yt link');
                 musicURL = message.content.replace(`${prefix}p`, '').trim();
                 console.log(musicURL)
@@ -192,19 +186,9 @@ bot.on("message", async (message) => {
                     loop: false
                 };*/
 
-                //queue.set(message.guild.id, constructor);
-                const constructor = {
-                    channel_txt: message.channel,
-                    channel_voice: channelVoice,
-                    connection: null,
-                    music: [],
-                    volume: 10,
-                    playing: true,
-                    loop: false
-                };
                 queue.set(message.guild.id, constructor);
-                constructor.music.push(music);
 
+                constructor.music.push(music);
                 console.log('////////////////////////////////////')
                 console.log(constructor.music)
                 console.log('////////////////////////////////////')
@@ -220,10 +204,12 @@ bot.on("message", async (message) => {
                     return message.channel.send('error')
                 }
             } else {
+                serverQueue.music.push(music);
+                
                 console.log('++++++++++++++++++++++++++++++++++++')
                 console.log(constructor.music)
                 console.log('++++++++++++++++++++++++++++++++++++')
-                serverQueue.music.push(music);
+
                 message.react('👍')
                 return message.channel.send(Embed_play('Queue', music.title, music.url)).then(msg => { msg.delete({ timeout: 300000 }) })
             }
