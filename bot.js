@@ -17,15 +17,6 @@ const options = {
     limit: 1,
 }
 
-const constructor = {
-    channel_txt: null,
-    channel_voice: null,
-    connection: null,
-    music: [],
-    volume: 10,
-    playing: true,
-    loop: false
-};
 
 
 
@@ -42,8 +33,16 @@ bot.on("message", async (message) => {
 
     let serverQueue = queue.get(message.guild.id);
     let channelVoice = message.member.voice.channel
-    constructor.channel_txt = message.channel
-    constructor.channel_voice = channelVoice
+
+    const constructor = {
+        channel_txt: message.channel,
+        channel_voice: channelVoice,
+        connection: null,
+        music: [],
+        volume: 10,
+        playing: true,
+        loop: false
+    };
 
 
     if (message.content[0] === prefix) {
@@ -97,7 +96,7 @@ bot.on("message", async (message) => {
         let musicURL;
         let music = [];
 
-        queue.set(message.guild.id, constructor);
+        //queue.set(message.guild.id, constructor);
 
         if (!channelVoice) {
             return message.channel.send('join channel')
@@ -186,7 +185,7 @@ bot.on("message", async (message) => {
                     loop: false
                 };*/
 
-                queue.set(message.guild.id, constructor);
+                 queue.set(message.guild.id, constructor);
 
                 constructor.music.push(music);
                 console.log('////////////////////////////////////')
