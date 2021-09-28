@@ -136,22 +136,65 @@ bot.on("message", async (message) => {
 
                 message.channel.send(Embed_list('Play List', playlist.title, playlist.url, message.author.username, message.author.avatarURL(), playlist.url))
 
+                if (!serverQueue) {
+                    queue.set(message.guild.id, constructor);
 
+                    for (var i = 0; i < playlist.items.length; ++i) {
+                        console.log(`--[${i}]-----------`);
+                        console.log(`${playlist.items[i].title}\n${playlist.items[i].shortUrl}`);
 
-                for (var i = 0; i < playlist.items.length; ++i) {
-                    console.log(`--[${i}]-----------`);
-                    console.log(`${playlist.items[i].title}\n${playlist.items[i].shortUrl}`);
+                        music = {
+                            title: playlist.items[i].title,
+                            url: playlist.items[i].shortUrl
+                        }; console.log(music);
 
-                    music = {
-                        title: playlist.items[i].title,
-                        url: playlist.items[i].shortUrl
-                    }; console.log(music);
+                        //queue.set(message.guild.id, constructor);
+                        constructor.music.push(music);
+                    }
+                    console.log('-----List Done------');
 
-                    //queue.set(message.guild.id, constructor);
-                    constructor.music.push(music);
+                    console.log('////////////////////////////////////')
+                    console.log(constructor.music)
+                    console.log('////////////////////////////////////')
+
+                    try {
+                        let connection = await channelVoice.join();
+                        constructor.connection = connection;
+                        play(message.guild, constructor.music[0])
+                    }
+                    catch (err) {
+                        console.log(err);
+                        queue.delete(message.guild.id);
+                        return message.channel.send('error')
+                    }
+                    return
                 }
-                console.log('-----List Done------');
+                else {
+
+                    for (var i = 0; i < playlist.items.length; ++i) {
+                        console.log(`--[${i}]-----------`);
+                        console.log(`${playlist.items[i].title}\n${playlist.items[i].shortUrl}`);
+
+                        music = {
+                            title: playlist.items[i].title,
+                            url: playlist.items[i].shortUrl
+                        }; console.log(music);
+
+                        //queue.set(message.guild.id, constructor);
+                        serverQueue.music.push(music);
+                    }
+                    console.log('-----List Done------');
+
+                    console.log('++++++++++++++++++++++++++++++++++++')
+                    console.log(constructor.music)
+                    console.log('++++++++++++++++++++++++++++++++++++')
+                    return
+                }
             }
+
+
+
+
 
             else if (args[args.length - 1].match(/(?:https?:\/\/)?(?:youtu\.be\/|(?:www\.|m\.)?youtube\.com\/(?:watch|v|embed)(?:\.php)?(?:\?.*v=|\/))([a-zA-Z0-9\_-]+)/)) {
                 console.log('yt link');
@@ -246,119 +289,138 @@ bot.on("message", async (message) => {
             .on("start", () => {
                 message.react('👍')
                 if (!serverQueue.loop) {
-                    message.channel.send(Embed_play('Now Playing', music.title, music.url)).then(msg => { msg.delete({ timeout: 600000 })
-                })
+                    message.channel.send(Embed_play('Now Playing', music.title, music.url)).then(msg => {
+                        msg.delete({ timeout: 600000 })
+                    })
+                }
+
+            })
+            .on("finish", () => {
+                if (serverQueue.loop) {
+                    play(guild, serverQueue.music[0]);
+                }
+                else {
+                    serverQueue.music.shift();
+                    play(guild, serverQueue.music[0]);
+                }
+            })
     }
 
-})
-    .on("finish", () => {
-        if (serverQueue.loop) {
-            play(guild, serverQueue.music[0]);
+    function Join(message, serverQueue) {
+        if (!message.member.voice.channel)
+            return message.channel.send('join channel,first');
+        if (!message.member.voice.channel.join)
+            return message.channel.send('music already joined');
+
+        message.member.voice.channel.join()
+        return message.react('👍')
+
+    }
+
+    function Skip(message, serverQueue) {
+        if (!message.member.voice.channel)
+            return message.channel.send('join channel,first');
+        if (!serverQueue)
+            return message.channel.send('nothing can skip');
+        if (!serverQueue.connection || !serverQueue.connection.dispatcher || !serverQueue.connection.dispatcher.end)
+            return message.channel.send(`TypeError: Cannot read property 'dispatcher' of null`);
+
+        serverQueue.connection.dispatcher.end();
+        return message.react('👍')
+    }
+
+    function Loop(message, serverQueue) {
+        if (!message.member.voice.channel)
+            return message.channel.send('join channel,first');
+        if (!serverQueue)
+            return message.channel.send('nothing can loop');
+
+        if (!serverQueue.loop) {
+            serverQueue.loop = true;
+            message.react('⭕')
+            console.log('loop : ' + serverQueue.loop)
         }
         else {
-            serverQueue.music.shift();
-            play(guild, serverQueue.music[0]);
+            serverQueue.loop = false;
+            message.react('❌')
+            console.log('loop : ' + serverQueue.loop)
         }
-    })
     }
 
-function Join(message, serverQueue) {
-    if (!message.member.voice.channel)
-        return message.channel.send('join channel,first');
-    if (!message.member.voice.channel.join)
-        return message.channel.send('music already joined');
+    function Leave(message, serverQueue) {
+        if (!message.member.voice.channel)
+            return message.channel.send('join channel,first');
+        if (!serverQueue)
+            return message.channel.send('nothing can leave');
 
-    message.member.voice.channel.join()
-    return message.react('👍')
-
-}
-
-function Skip(message, serverQueue) {
-    if (!message.member.voice.channel)
-        return message.channel.send('join channel,first');
-    if (!serverQueue)
-        return message.channel.send('nothing can skip');
-    if (!serverQueue.connection || !serverQueue.connection.dispatcher || !serverQueue.connection.dispatcher.end)
-        return message.channel.send(`TypeError: Cannot read property 'dispatcher' of null`);
-
-    serverQueue.connection.dispatcher.end();
-    return message.react('👍')
-}
-
-function Loop(message, serverQueue) {
-    if (!message.member.voice.channel)
-        return message.channel.send('join channel,first');
-    if (!serverQueue)
-        return message.channel.send('nothing can loop');
-
-    if (!serverQueue.loop) {
-        serverQueue.loop = true;
-        message.react('⭕')
-        console.log('loop : ' + serverQueue.loop)
-    }
-    else {
+        serverQueue.music = [];
         serverQueue.loop = false;
-        message.react('❌')
-        console.log('loop : ' + serverQueue.loop)
+        serverQueue.connection.dispatcher.end();
+        return message.react('👍')
     }
-}
 
-function Leave(message, serverQueue) {
-    if (!message.member.voice.channel)
-        return message.channel.send('join channel,first');
-    if (!serverQueue)
-        return message.channel.send('nothing can leave');
+    function Pause(message, serverQueue) {
+        if (!message.member.voice.channel)
+            return message.channel.send('join channel,first');
+        if (!serverQueue)
+            return message.channel.send('nothing can pause');
+        if (!serverQueue.connection.dispatcher.pause)
+            return message.channel.send('music already paused');
 
-    serverQueue.music = [];
-    serverQueue.loop = false;
-    serverQueue.connection.dispatcher.end();
-    return message.react('👍')
-}
+        serverQueue.connection.dispatcher.pause();
+        return message.react('👍')
+    }
 
-function Pause(message, serverQueue) {
-    if (!message.member.voice.channel)
-        return message.channel.send('join channel,first');
-    if (!serverQueue)
-        return message.channel.send('nothing can pause');
-    if (!serverQueue.connection.dispatcher.pause)
-        return message.channel.send('music already paused');
+    function Resume(message, serverQueue) {
+        if (!message.member.voice.channel)
+            return message.channel.send('join channel,first');
+        if (!serverQueue)
+            return message.channel.send('nothing can resume');
+        if (!serverQueue.connection.dispatcher.resume)
+            return message.channel.send('music already resume');
 
-    serverQueue.connection.dispatcher.pause();
-    return message.react('👍')
-}
+        serverQueue.connection.dispatcher.resume();
+        return message.react('👍')
+    }
 
-function Resume(message, serverQueue) {
-    if (!message.member.voice.channel)
-        return message.channel.send('join channel,first');
-    if (!serverQueue)
-        return message.channel.send('nothing can resume');
-    if (!serverQueue.connection.dispatcher.resume)
-        return message.channel.send('music already resume');
+    function Queue(message, serverQueue) {
+        if (!message.member.voice.channel)
+            return message.channel.send('join channel,first');
+        if (!serverQueue)
+            return message.channel.send('nothing can queue');
 
-    serverQueue.connection.dispatcher.resume();
-    return message.react('👍')
-}
+        let nowPlaying = serverQueue.music[0];
+        let queueMsg = `Now Playing : ${nowPlaying.title}`
 
-function Queue(message, serverQueue) {
-    if (!message.member.voice.channel)
-        return message.channel.send('join channel,first');
-    if (!serverQueue)
-        return message.channel.send('nothing can queue');
+        if (serverQueue.music[1]) {
+            if (serverQueue.music.length > 10) {
+                queueMsg += `\n---------------\n`;
+                for (var i = 1; i <= 10; i++) {
 
-    let nowPlaying = serverQueue.music[0];
-    let queueMsg = `Now Playing : ${nowPlaying.title}`
+                    queueMsg += `${i}. ${serverQueue.music[i].title}\n`
+                    console.log(`${i}. ${serverQueue.music[i].title}\n`)
+                }
+            }
+            else {
+                queueMsg += `\n---------------\n`;
+                for (var i = 1; i < serverQueue.music.length; i++) {
 
-    if (serverQueue.music[1]) {
-        queueMsg += `\n---------------\n`;
-        for (var i = 1; i < serverQueue.music.length; i++) {
+                    queueMsg += `${i}. ${serverQueue.music[i].title}\n`
+                    console.log(`${i}. ${serverQueue.music[i].title}\n`)
+                }
+            }
 
-            queueMsg += `${i}. ${serverQueue.music[i].title}\n`
-            console.log(`${i}. ${serverQueue.music[i].title}\n`)
+
+            console.log('++++++++++++++++++++++++++++++++++++')
+            console.log(serverQueue.music)
+            console.log('++++++++++++++++++++++++++++++++++++')
+
+
+
         }
+        message.react('👍')
+        return message.channel.send(Embed_queue('Queue', queueMsg))
     }
-    message.react('👍')
-    return message.channel.send(Embed_queue('Queue', queueMsg))
-}
 
 })
 
