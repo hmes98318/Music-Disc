@@ -268,14 +268,24 @@ bot.on("message", async (message) => {
     function play(guild, music) {
         const serverQueue = queue.get(guild.id);
         if (!music) {
+            if (serverQueue.loop)
+                serverQueue.loop = false;
             serverQueue.channel_voice.leave();
             queue.delete(guild.id);
             return;
         }
 
+        var timeoutID = setTimeout(() => {
+            console.log('*** timeout ***');
+            message.channel.send('ytdl-core error, pleace try again');
+            if (serverQueue.loop)
+                serverQueue.loop = false;
+            serverQueue.channel_voice.leave();
+            queue.delete(guild.id);
+            return;
+        }, 5000);//防止 ytdl 卡住, loop 時較容易發生
 
         const dispatcher = serverQueue.connection
-            //.play(ytdl(music.url), { filter: 'audioonly' })
             .play(
                 ytdl(music.url, {
                     filter: 'audioonly',
@@ -285,6 +295,7 @@ bot.on("message", async (message) => {
                 }))
             .on("start", () => {
                 console.log(new Date().toLocaleString('zh-TW', { timeZone: 'Asia/Taipei' }), ' --Now Playing', music.title, music.url)
+                clearTimeout(timeoutID);
                 message.react('👍')
                 if (!serverQueue.loop) {
                     message.channel.send(Embed_play('Now Playing', music.title, music.url)).then(msg => {
@@ -293,6 +304,7 @@ bot.on("message", async (message) => {
                 }
             })
             .on("finish", () => {
+                console.log(new Date().toLocaleString('zh-TW', { timeZone: 'Asia/Taipei' }),'--finish');
                 if (!serverQueue.loop)
                     serverQueue.music.shift();
                 play(guild, serverQueue.music[0]);
