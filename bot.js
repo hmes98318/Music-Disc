@@ -32,7 +32,7 @@ bot.login(auth.token);
 bot.on("message", async (message) => {
 
     let serverQueue = queue.get(message.guild.id);
-    let channelVoice = message.member.voice.channel
+    let channelVoice = message.member.voice.channel;
     let args;
 
     const constructor = {
@@ -97,7 +97,6 @@ bot.on("message", async (message) => {
         let musicURL;
         let music = [];
 
-        //queue.set(message.guild.id, constructor);
 
         if (!channelVoice) {
             return message.channel.send('join channel')
@@ -148,7 +147,6 @@ bot.on("message", async (message) => {
                             url: playlist.items[i].shortUrl
                         }; console.log(music);
 
-                        //queue.set(message.guild.id, constructor);
                         constructor.music.push(music);
                     }
                     console.log('-----List Done------');
@@ -180,14 +178,13 @@ bot.on("message", async (message) => {
                             url: playlist.items[i].shortUrl
                         }; console.log(music);
 
-                        //queue.set(message.guild.id, constructor);
                         serverQueue.music.push(music);
                     }
                     console.log('-----List Done------');
 
-                    console.log('++++++++++++++++++++++++++++++++++++')
-                    console.log(constructor.music)
-                    console.log('++++++++++++++++++++++++++++++++++++')
+                    console.log('++++++++++++++++++++++++++++++++++++');
+                    console.log(serverQueue.music);
+                    console.log('++++++++++++++++++++++++++++++++++++');
                     return
                 }
             }
@@ -232,9 +229,9 @@ bot.on("message", async (message) => {
                 queue.set(message.guild.id, constructor);
 
                 constructor.music.push(music);
-                console.log('////////////////////////////////////')
-                console.log(constructor.music)
-                console.log('////////////////////////////////////')
+                console.log('////////////////////////////////////');
+                console.log(constructor.music);
+                console.log('////////////////////////////////////');
 
                 try {
                     let connection = await channelVoice.join();
@@ -249,9 +246,9 @@ bot.on("message", async (message) => {
             } else {
                 serverQueue.music.push(music);
 
-                console.log('++++++++++++++++++++++++++++++++++++')
-                console.log(constructor.music)
-                console.log('++++++++++++++++++++++++++++++++++++')
+                console.log('++++++++++++++++++++++++++++++++++++');
+                console.log(serverQueue.music);
+                console.log('++++++++++++++++++++++++++++++++++++');
 
                 message.react('👍')
                 return message.channel.send(Embed_play('Queue', music.title, music.url))//.then(msg => { msg.delete({ timeout: 300000 }) })
@@ -287,22 +284,18 @@ bot.on("message", async (message) => {
                     highWaterMark: 1024 * 1024 * 50
                 }))
             .on("start", () => {
+                console.log(new Date().toLocaleString('zh-TW', { timeZone: 'Asia/Taipei' }), ' --Now Playing', music.title, music.url)
                 message.react('👍')
                 if (!serverQueue.loop) {
                     message.channel.send(Embed_play('Now Playing', music.title, music.url)).then(msg => {
                         msg.delete({ timeout: 600000 })
                     })
                 }
-
             })
             .on("finish", () => {
-                if (serverQueue.loop) {
-                    play(guild, serverQueue.music[0]);
-                }
-                else {
+                if (!serverQueue.loop)
                     serverQueue.music.shift();
-                    play(guild, serverQueue.music[0]);
-                }
+                play(guild, serverQueue.music[0]);
             })
     }
 
@@ -324,6 +317,8 @@ bot.on("message", async (message) => {
             return message.channel.send('nothing can skip');
         if (!serverQueue.connection || !serverQueue.connection.dispatcher || !serverQueue.connection.dispatcher.end)
             return message.channel.send(`TypeError: Cannot read property 'dispatcher' of null`);
+        if (serverQueue.loop)
+            return message.channel.send('music is looping, need to turn off loop');
 
         serverQueue.connection.dispatcher.end();
         return message.react('👍')
