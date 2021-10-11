@@ -87,7 +87,7 @@ bot.on("message", async (message) => {
                 break;
 
             case 'help':
-                message.channel.send(Embed_help());
+                message.channel.send(Embed_help(prefix));
                 break;
         }
     }
@@ -449,10 +449,17 @@ function Embed_queue(status, queueMsg) {
     return Embed_queue
 }
 
-function Embed_help() {
+function Embed_help(prefix) {
     const Embed_help = new Discord.MessageEmbed()
         .setColor('#FFFFFF')
-        .addField('Help', '```+p空格網址  => 播放音樂\n+pause     => 暫停音樂\n+resume    => 恢復播放\n+skip      => 跳過音樂\n+loop      => 循環音樂\n+queue     => 查看列隊\n+leave     => 離開頻道```', true)
+        .addField('播放音樂', `${prefix}p 網址`, false)
+        .addField('跳過音樂', `${prefix}skip`, false)
+        .addField('循環音樂', `${prefix}loop`, false)
+        .addField('查看列隊', `${prefix}queue`, false)
+        .addField('暫停音樂', `${prefix}pause`, false)
+        .addField('恢復播放', `${prefix}resume`, false)
+        .addField('離開頻道', `${prefix}leave`, false)
+        .addField('系統狀態', `${prefix}status`, false)
         .setTimestamp()
     return Embed_help
 }
