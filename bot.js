@@ -277,11 +277,19 @@ bot.on("message", async (message) => {
 
         var timeoutID = setTimeout(() => {
             console.log('*** timeout ***');
-            message.channel.send('ytdl-core error, pleace try again');
+            if (!message.member.voice.channel)
+                return message.channel.send('join channel,first');
+
+            if (!serverQueue.loop)
+                serverQueue.music.shift();
+            play(guild, serverQueue.music[0]);
+
+            /*
             if (serverQueue.loop)
                 serverQueue.loop = false;
             serverQueue.channel_voice.leave();
             queue.delete(guild.id);
+            */
             return;
         }, 5000);//防止 ytdl 卡住, loop 時較容易發生
 
