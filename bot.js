@@ -205,7 +205,6 @@ bot.on("message", async (message) => {
                     title: musicInfo.videoDetails.title,
                     url: musicInfo.videoDetails.video_url
                 }; console.log(music);
-                //constructor.music.push(music);
             }
             else {
                 return message.channel.send('type error')
@@ -215,16 +214,7 @@ bot.on("message", async (message) => {
 
 
 
-            if (!serverQueue) {/*
-                const constructor = {
-                    channel_txt: message.channel,
-                    channel_voice: channelVoice,
-                    connection: null,
-                    music: [],
-                    volume: 10,
-                    playing: true,
-                    loop: false
-                };*/
+            if (!serverQueue) {
 
                 queue.set(message.guild.id, constructor);
 
