@@ -1,5 +1,6 @@
 const Discord = require('discord.js');
-const ytdl = require('ytdl-core');
+//const ytdl = require('ytdl-core');
+const ytdl = require('ytdl-core-discord');
 const ytsr = require('ytsr');
 const ytpl = require('ytpl');
 const auth = require('./auth.json');
@@ -274,23 +275,17 @@ bot.on("message", async (message) => {
                 serverQueue.music.shift();
             play(guild, serverQueue.music[0]);
 
-            /*
-            if (serverQueue.loop)
-                serverQueue.loop = false;
-            serverQueue.channel_voice.leave();
-            queue.delete(guild.id);
-            */
             return;
         }, 5000);//防止 ytdl 卡住, loop 時較容易發生
 
         const dispatcher = serverQueue.connection
             .play(
-                ytdl(music.url, {
+                await ytdl(music.url, {
                     filter: 'audioonly',
-                    //bitrate: 192000,  // 192kbps 
-                    quality: 'lowestaudio',
-                    highWaterMark: 1024 * 1024 * 50
-                }))
+                    bitrate: 96000,  // 96kbps 
+                    //quality: 'lowestaudio',
+                    highWaterMark: 1024 * 1024 * 50 // 50MB
+                }), { volume: false, type: 'opus', highWaterMark: 50 /*240ms*/})
             .on("start", () => {
                 console.log(new Date().toLocaleString('zh-TW', { timeZone: 'Asia/Taipei' }), ' --Now Playing', music.title, music.url)
                 clearTimeout(timeoutID);
@@ -457,7 +452,6 @@ function Embed_help(prefix) {
         .addField('暫停音樂', `${prefix}pause`, false)
         .addField('恢復播放', `${prefix}resume`, false)
         .addField('離開頻道', `${prefix}leave`, false)
-        .addField('系統狀態', `${prefix}status`, false)
         .setTimestamp()
     return Embed_help
 }
