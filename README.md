@@ -2,6 +2,16 @@
 A simple Discord music bot  
 there are still many bug need to fix  
 node.js version 16  
+# 
+git command
+```
+git clone https://github.com/hmes98318/discord-music-bot.git
+```
+
+install packages
+```
+npm install
+```
 
 ```
 "discord.js": "^12.5.1",
