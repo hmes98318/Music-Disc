@@ -3,12 +3,15 @@ const Discord = require('discord.js');
 const ytdl = require('ytdl-core-discord');
 const ytsr = require('ytsr');
 const ytpl = require('ytpl');
+const { Spotify } = require('spotify-it');
+const spotifyToYT = require("spotify-to-yt");
+const os = require('os');
 const auth = require('./auth.json');
 
 
 const bot = new Discord.Client();
 const queue = new Map()
-
+const uptime = new Date();
 
 const prefix = '+';
 
@@ -18,12 +21,18 @@ const options = {
     limit: 1,
 }
 
+const spotify = new Spotify({
+    id: auth.Client_ID,
+    secret: auth.Client_Secret,
+    defaultLimit: 30
+})
 
 
 
 bot.on('ready', (message) => {
     console.log(`Logged in as ${bot.user.tag}!`);
-    bot.user.setPresence({ activity: { name: `${prefix}help` }, status: 'online' });
+    bot.user.setPresence({ activity: { name: `music | ${prefix}help` }, status: 'online' });
+    //record uptime
 });
 bot.login(auth.token);
 
@@ -90,7 +99,16 @@ bot.on("message", async (message) => {
             case 'help':
                 message.channel.send(Embed_help(prefix));
                 break;
+
+            case 'status':
+                message.channel.send(Embed_status(Uptime(uptime), os.cpus()[0].model, Usage(), Math.round((os.totalmem() - os.freemem()) / (1000 * 1000)) + 'MB', Date.now() - message.createdTimestamp));
+                break;
+
+            case 'server':
+                Server();
+                break;
         }
+
     }
     async function Execute(message, serverQueue) {
 
@@ -134,12 +152,12 @@ bot.on("message", async (message) => {
 
                 let playlist = await ytpl(playListUrl[playListUrl.length - 1]);
 
-                message.channel.send(Embed_list('Play List', playlist.title, playlist.url, message.author.username, message.author.avatarURL(), playlist.url))
+                message.channel.send(Embed_list('Youtube Play List', playlist.title, playlist.url, message.author.username, message.author.avatarURL(), playlist.url))
 
                 if (!serverQueue) {
                     queue.set(message.guild.id, constructor);
 
-                    for (var i = 0; i < playlist.items.length; ++i) {
+                    for (var i = 0; i < playlist.items.length; i++) {
                         console.log(`--[${i}]-----------`);
                         console.log(`${playlist.items[i].title}\n${playlist.items[i].shortUrl}`);
 
@@ -166,11 +184,12 @@ bot.on("message", async (message) => {
                         queue.delete(message.guild.id);
                         return message.channel.send('error')
                     }
-                    return
+                    return;
                 }
+
                 else {
 
-                    for (var i = 0; i < playlist.items.length; ++i) {
+                    for (var i = 0; i < playlist.items.length; i++) {
                         console.log(`--[${i}]-----------`);
                         console.log(`${playlist.items[i].title}\n${playlist.items[i].shortUrl}`);
 
@@ -186,13 +205,9 @@ bot.on("message", async (message) => {
                     console.log('++++++++++++++++++++++++++++++++++++');
                     console.log(serverQueue.music);
                     console.log('++++++++++++++++++++++++++++++++++++');
-                    return
+                    return;
                 }
             }
-
-
-
-
 
             else if (args[args.length - 1].match(/(?:https?:\/\/)?(?:youtu\.be\/|(?:www\.|m\.)?youtube\.com\/(?:watch|v|embed)(?:\.php)?(?:\?.*v=|\/))([a-zA-Z0-9\_-]+)/)) {
                 console.log('yt link');
@@ -206,9 +221,76 @@ bot.on("message", async (message) => {
                     title: musicInfo.videoDetails.title,
                     url: musicInfo.videoDetails.video_url
                 }; console.log(music);
+                //constructor.music.push(music);
             }
+
+            else if (type.match(/^https?:\/\/(?:open|play)\.spotify\.com\/playlist\//) && Spotify.validate(message.content.replace(`${prefix}p`, '').trim(), 'PLAYLIST')) {
+                console.log('spotify list');
+
+                let playListUrl = message.content.replace(`${prefix}p`, '').trim();
+                let playlist = await spotify.getPlaylist(playListUrl);
+
+                message.channel.send(Embed_spotify('Spotify Play List', playlist.name, playListUrl, message.author.username, message.author.avatarURL(), playListUrl))
+
+                if (!serverQueue) {
+                    queue.set(message.guild.id, constructor);
+
+
+                    let i =0;
+                    for (const track of playlist) {
+                        console.log(`spotify url[${i++}] : ${track.url}`);
+                        let sty = await spotifyToYT.trackGet(track.url);
+
+                        music = {
+                            title: sty.info[0].title,
+                            url: sty.url
+                        }; console.log(music);
+
+                        constructor.music.push(music);
+                    }
+                    console.log('-----List Done------');
+
+                    console.log('////////////////////////////////////')
+                    console.log(constructor.music)
+                    console.log('////////////////////////////////////')
+
+                    try {
+                        let connection = await channelVoice.join();
+                        constructor.connection = connection;
+                        play(message.guild, constructor.music[0])
+                    }
+                    catch (err) {
+                        console.log(err);
+                        queue.delete(message.guild.id);
+                        return message.channel.send('error')
+                    }
+                    return;
+                }
+
+                else {
+                    let i =0;
+                    for (const track of playlist) {
+                        console.log(`spotify url[${i++}] : ${track.url}`);
+                        let sty = await spotifyToYT.trackGet(track.url);
+
+                        music = {
+                            title: sty.info[0].title,
+                            url: sty.url
+                        }; console.log(music);
+
+                        serverQueue.music.push(music);
+                    }
+                    console.log('-----List Done------');
+
+                    console.log('++++++++++++++++++++++++++++++++++++');
+                    console.log(serverQueue.music);
+                    console.log('++++++++++++++++++++++++++++++++++++');
+                    return;
+                }
+            }
+
             else {
-                return message.channel.send('type error')
+                return message.channel.send(Embed_cantFindSong(prefix));
             }
 
 
@@ -251,12 +333,12 @@ bot.on("message", async (message) => {
         //youtube搜尋
         var firstResultBatch = await ytsr(msg, options);
         var data = JSON.stringify(firstResultBatch.items[0]);
-        var { url } = JSON.parse(data)
-        console.log(url)
-        return url
+        var { url } = JSON.parse(data);
+        console.log(url);
+        return url;
     }
 
-    function play(guild, music) {
+    async function play(guild, music) {
         const serverQueue = queue.get(guild.id);
         if (!music) {
             if (serverQueue.loop)
@@ -273,8 +355,8 @@ bot.on("message", async (message) => {
 
             if (!serverQueue.loop)
                 serverQueue.music.shift();
-            play(guild, serverQueue.music[0]);
 
+            play(guild, serverQueue.music[0]);
             return;
         }, 5000);//防止 ytdl 卡住, loop 時較容易發生
 
@@ -284,8 +366,8 @@ bot.on("message", async (message) => {
                     filter: 'audioonly',
                     bitrate: 96000,  // 96kbps 
                     //quality: 'lowestaudio',
-                    highWaterMark: 1024 * 1024 * 50 // 50MB
-                }), { volume: false, type: 'opus', highWaterMark: 50 /*240ms*/})
+                    highWaterMark: 1024 * 1024 * 500 // 500MB
+                }), { volume: false, type: 'opus', highWaterMark: 64 /*307ms*/})
             .on("start", () => {
                 console.log(new Date().toLocaleString('zh-TW', { timeZone: 'Asia/Taipei' }), ' --Now Playing', music.title, music.url)
                 clearTimeout(timeoutID);
@@ -297,7 +379,7 @@ bot.on("message", async (message) => {
                 }
             })
             .on("finish", () => {
-                console.log(new Date().toLocaleString('zh-TW', { timeZone: 'Asia/Taipei' }),'--finish');
+                console.log(new Date().toLocaleString('zh-TW', { timeZone: 'Asia/Taipei' }), '--finish');
                 if (!serverQueue.loop)
                     serverQueue.music.shift();
                 play(guild, serverQueue.music[0]);
@@ -337,12 +419,12 @@ bot.on("message", async (message) => {
 
         if (!serverQueue.loop) {
             serverQueue.loop = true;
-            message.react('⭕')
+            message.react('⭕');
             console.log('loop : ' + serverQueue.loop)
         }
         else {
             serverQueue.loop = false;
-            message.react('❌')
+            message.react('❌');
             console.log('loop : ' + serverQueue.loop)
         }
     }
@@ -390,36 +472,39 @@ bot.on("message", async (message) => {
             return message.channel.send('nothing can queue');
 
         let nowPlaying = serverQueue.music[0];
-        let queueMsg = `Now Playing : ${nowPlaying.title}`
+        let queueMsg = `Now Playing : ${nowPlaying.title}`;
 
         if (serverQueue.music[1]) {
             if (serverQueue.music.length > 10) {
                 queueMsg += `\n---------------\n`;
                 for (var i = 1; i <= 10; i++) {
 
-                    queueMsg += `${i}. ${serverQueue.music[i].title}\n`
-                    console.log(`${i}. ${serverQueue.music[i].title}\n`)
-                }
+                    queueMsg += `${i}. ${serverQueue.music[i].title}\n`;
+                    console.log(`${i}. ${serverQueue.music[i].title}\n`);
+                } queueMsg += `and ${serverQueue.music.length} other songs`;
             }
             else {
                 queueMsg += `\n---------------\n`;
                 for (var i = 1; i < serverQueue.music.length; i++) {
 
-                    queueMsg += `${i}. ${serverQueue.music[i].title}\n`
-                    console.log(`${i}. ${serverQueue.music[i].title}\n`)
+                    queueMsg += `${i}. ${serverQueue.music[i].title}\n`;
+                    console.log(`${i}. ${serverQueue.music[i].title}\n`);
                 }
             }
-
-
-            console.log('++++++++++++++++++++++++++++++++++++')
-            console.log(serverQueue.music)
-            console.log('++++++++++++++++++++++++++++++++++++')
-
-
-
+            console.log('++++++++++++++++++++++++++++++++++++');
+            console.log(serverQueue.music);
+            console.log('++++++++++++++++++++++++++++++++++++');
         }
         message.react('👍')
-        return message.channel.send(Embed_queue('Queue', queueMsg))
+        return message.channel.send(Embed_queue('Queue', queueMsg));
+    }
+
+    function Server() {
+        let serverlist = ''
+        bot.guilds.cache.forEach((guild) => {
+            serverlist = serverlist.concat(" - " + guild.name + ": ID: " + guild.id + "\n")
+        })
+        return message.channel.send(Embed_server(serverlist));
     }
 
 })
@@ -431,7 +516,7 @@ function Embed_play(status, music_title, music_url) {
         .setColor('#FFFFFF')
         .addField(status, `[${music_title}](${music_url})`, true)
         .setTimestamp()
-    return Embed_play
+    return Embed_play;
 }
 
 function Embed_queue(status, queueMsg) {
@@ -439,21 +524,7 @@ function Embed_queue(status, queueMsg) {
         .setColor('#FFFFFF')
         .addField(status, queueMsg)
         .setTimestamp()
-    return Embed_queue
-}
-
-function Embed_help(prefix) {
-    const Embed_help = new Discord.MessageEmbed()
-        .setColor('#FFFFFF')
-        .addField('播放音樂', `${prefix}p 網址`, false)
-        .addField('跳過音樂', `${prefix}skip`, false)
-        .addField('循環音樂', `${prefix}loop`, false)
-        .addField('查看列隊', `${prefix}queue`, false)
-        .addField('暫停音樂', `${prefix}pause`, false)
-        .addField('恢復播放', `${prefix}resume`, false)
-        .addField('離開頻道', `${prefix}leave`, false)
-        .setTimestamp()
-    return Embed_help
+    return Embed_queue;
 }
 
 function Embed_list(status, list_title, list_url, user, header, url) {
@@ -462,5 +533,85 @@ function Embed_list(status, list_title, list_url, user, header, url) {
         .setAuthor(user, header, url)
         .addField(status, `[${list_title}](${list_url})`, true)
         .setTimestamp()
-    return Embed_list
+    return Embed_list;
+}
+
+function Embed_spotify(status, list_title, list_url, user, header, url) {
+    const Embed_spotify = new Discord.MessageEmbed()
+        .setColor('#FFFFFF')
+        .setAuthor(user, header, url)
+        .addField(status, `[${list_title}](${list_url})`, true)
+        .setTimestamp()
+    return Embed_spotify;
+}
+
+function Embed_cantFindSong(prefix) {
+    const Embed_cantFindSong = new Discord.MessageEmbed()
+        .setColor('#FFFFFF')
+        .addField('播放音樂', `${prefix}p youtube link, spotify play list, or type name to search`, false)
+        .setTimestamp()
+    return Embed_cantFindSong;
+}
+
+function Embed_help(prefix) {
+    const Embed_help = new Discord.MessageEmbed()
+        .setColor('#FFFFFF')
+        .addField('播放音樂', `${prefix}p url or name`, false)
+        .addField('跳過音樂', `${prefix}skip`, false)
+        .addField('循環音樂', `${prefix}loop`, false)
+        .addField('查看列隊', `${prefix}queue`, false)
+        .addField('暫停音樂', `${prefix}pause`, false)
+        .addField('恢復播放', `${prefix}resume`, false)
+        .addField('離開頻道', `${prefix}leave`, false)
+        .addField('系統狀態', `${prefix}status`, false)
+        .setTimestamp()
+    return Embed_help;
+}
+
+function Embed_status(uptime, cpu, cpu_usage, ram, ping) {
+    const Embed_status = new Discord.MessageEmbed()
+        .setColor('#FFFFFF')
+        .setTitle('Music Bot')
+        .addField(`📊 USAGE`, `CPU : **${cpu_usage}**\nMEM : **${ram}**\nUptime : **${uptime}**\nPING : **${ping}ms**\n━━━━━━━━━━━━━━━━━━━━━━`, false)
+        .setTimestamp()
+    return Embed_status;
+}
+
+function Embed_server(serverlist) {
+    const Embed_server = new Discord.MessageEmbed()
+        .setColor('#FFFFFF')
+        .setTitle("Servers that have Bot", '')
+        .setDescription(serverlist)
+    return Embed_server;
+}
+
+
+
+
+
+
+
+
+function Uptime(uptime) {
+
+    let Today = new Date();
+    let date1 = uptime.getTime();
+    let date2 = Today.getTime();
+    let total = (date2 - date1) / 1000;
+
+    let day = parseInt(total / (24 * 60 * 60));//計算整數天數
+    let afterDay = total - day * 24 * 60 * 60;//取得算出天數後剩餘的秒數
+    let hour = parseInt(afterDay / (60 * 60));//計算整數小時數
+    let afterHour = total - day * 24 * 60 * 60 - hour * 60 * 60;//取得算出小时数后剩余的秒数
+    let min = parseInt(afterHour / 60);//计算整数分
+    let afterMin = Math.round(total - day * 24 * 60 * 60 - hour * 60 * 60 - min * 60);//取得算出分后剩余的秒数
+    console.log(day + ' / ' + hour + ':' + min + ':' + afterMin);
+
+    return /*day + ' Days' +*/ hour + 'Hour(s) ' + min + 'Minute(s)' /*+ afterMin*/;
+}
+
+function Usage() {
+    console.log(os.loadavg())
+    let avg_load = os.loadavg();
+    return avg_load[0] + '%';
 }
