@@ -126,7 +126,7 @@ bot.on("message", async (message) => {
             if (message.content.indexOf(`http`) > -1 != true) { // youtube search
                 console.log('yt search');
                 if (!message.content.replace(`${prefix}p`, '').trim())
-                    return message.channel.send('error')
+                    return message.channel.send(Embed_cantFindSong(prefix));
 
                 if (musicURL = String(await search(message.content.replace(`${prefix}p`, '').trim())).match(/(?:https?:\/\/)?(?:youtu\.be\/|(?:www\.|m\.)?youtube\.com\/(?:watch|v|embed)(?:\.php)?(?:\?.*v=|\/))([a-zA-Z0-9\_-]+)/)) {
 
