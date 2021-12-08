@@ -52,7 +52,8 @@ bot.on("message", async (message) => {
         music: [],
         volume: 10,
         playing: true,
-        loop: false
+        loop_one: false,
+        loop_all: false
     };
 
 
@@ -236,7 +237,7 @@ bot.on("message", async (message) => {
                     queue.set(message.guild.id, constructor);
 
 
-                    let i =0;
+                    let i = 0;
                     for (const track of playlist) {
                         console.log(`spotify url[${i++}] : ${track.url}`);
                         let sty = await spotifyToYT.trackGet(track.url);
@@ -268,7 +269,7 @@ bot.on("message", async (message) => {
                 }
 
                 else {
-                    let i =0;
+                    let i = 0;
                     for (const track of playlist) {
                         console.log(`spotify url[${i++}] : ${track.url}`);
                         let sty = await spotifyToYT.trackGet(track.url);
@@ -366,8 +367,11 @@ bot.on("message", async (message) => {
                     filter: 'audioonly',
                     bitrate: 96000,  // 96kbps 
                     //quality: 'lowestaudio',
-                    highWaterMark: 1024 * 1024 * 500 // 500MB
-                }), { volume: false, type: 'opus', highWaterMark: 64 /*307ms*/})
+                    opusEncoded: true,
+                    liveBuffer: 20000,
+                    dlChunkSize: 0,
+                    highWaterMark: 1024 * 1024 * 10 // 10MB
+                }), { volume: false, type: 'opus', highWaterMark: 64 /*307ms*/ })
             .on("start", () => {
                 console.log(new Date().toLocaleString('zh-TW', { timeZone: 'Asia/Taipei' }), ' --Now Playing', music.title, music.url)
                 clearTimeout(timeoutID);
@@ -380,8 +384,19 @@ bot.on("message", async (message) => {
             })
             .on("finish", () => {
                 console.log(new Date().toLocaleString('zh-TW', { timeZone: 'Asia/Taipei' }), '--finish');
-                if (!serverQueue.loop)
+                if (!serverQueue.loop_all && !serverQueue.loop_one)
                     serverQueue.music.shift();
+
+                if (serverQueue.loop_all) {
+                    let music2 = [];
+                    let music_length = serverQueue.music.length;
+
+                    for (var i = 0; i <music_length; i++) {
+                        music2[i] = serverQueue.music[(i+1) % music_length];
+                    }
+                    serverQueue.music = music2;
+                }
+
                 play(guild, serverQueue.music[0]);
             })
     }
@@ -404,8 +419,8 @@ bot.on("message", async (message) => {
             return message.channel.send('nothing can skip');
         if (!serverQueue.connection || !serverQueue.connection.dispatcher || !serverQueue.connection.dispatcher.end)
             return message.channel.send(`TypeError: Cannot read property 'dispatcher' of null`);
-        if (serverQueue.loop)
-            return message.channel.send('music is looping, need to turn off loop');
+        //if (serverQueue.loop)
+        //    return message.channel.send('music is looping, need to turn off loop');
 
         serverQueue.connection.dispatcher.end();
         return message.react('👍')
@@ -417,15 +432,27 @@ bot.on("message", async (message) => {
         if (!serverQueue)
             return message.channel.send('nothing can loop');
 
-        if (!serverQueue.loop) {
-            serverQueue.loop = true;
+
+        if (message.content.split(" ")[1] === "all") {
+            serverQueue.loop_all = true;
+            serverQueue.loop_one = false;
             message.react('⭕');
             console.log('loop : ' + serverQueue.loop)
         }
-        else {
-            serverQueue.loop = false;
+        else if (message.content.split(" ")[1] === "one") {
+            serverQueue.loop_all = false;
+            serverQueue.loop_one = true;
+            message.react('⭕');
+            console.log('loop : ' + serverQueue.loop)
+        }
+        else if (message.content.split(" ")[1] === "off") {
+            serverQueue.loop_all = false;
+            serverQueue.loop_one = false;
             message.react('❌');
             console.log('loop : ' + serverQueue.loop)
+        }
+        else {
+            return message.channel.send('loop <all/one/off>');
         }
     }
 
@@ -436,7 +463,8 @@ bot.on("message", async (message) => {
             return message.channel.send('nothing can leave');
 
         serverQueue.music = [];
-        serverQueue.loop = false;
+        serverQueue.loop_all = false;
+        serverQueue.loop_one = false;
         serverQueue.connection.dispatcher.end();
         return message.react('👍')
     }
