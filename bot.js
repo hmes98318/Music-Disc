@@ -43,21 +43,7 @@ bot.on("message", async (message) => {
 
     let serverQueue = await queue.get(message.guild.id);
     let channelVoice = message.member.voice.channel;
-    //constructor.channel_txt = message.channel;
-    //constructor.channel_voice = channelVoice;
     let args;
-/*
-    const constructor = {
-        channel_txt: message.channel,
-        channel_voice: channelVoice,
-        connection: null,
-        music: [],
-        volume: 10,
-        playing: true,
-        loop_one: false,
-        loop_all: false
-    };
-*/
 
     if (message.content[0] === prefix) {
         console.log(`--- ${message.author.username} : ${message.content}`)
@@ -429,7 +415,7 @@ bot.on("message", async (message) => {
                     let music2 = [];
                     let music_length = serverQueue.music.length;
 
-                    for (var i = 0; i < music_length; i++) {
+                    for (var i = 0; i < music_length; i++) { // loop_all : rotate array
                         music2[i] = serverQueue.music[(i + 1) % music_length];
                     }
                     serverQueue.music = music2;
@@ -454,11 +440,7 @@ bot.on("message", async (message) => {
             return message.channel.send('join channel,first');
         if (!serverQueue)
             return message.channel.send('nothing can skip');
-        if (!serverQueue.connection || !serverQueue.connection.dispatcher || !serverQueue.connection.dispatcher.end)
-            return message.channel.send(`TypeError: Cannot read property 'dispatcher' of null`);
-        //if (serverQueue.loop)
-        //    return message.channel.send('music is looping, need to turn off loop');
-
+        
         serverQueue.connection.dispatcher.end();
         return message.react('👍')
     }
