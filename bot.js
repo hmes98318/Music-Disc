@@ -29,6 +29,8 @@ const spotify = new Spotify({
 
 
 
+
+
 bot.on('ready', (message) => {
     console.log(`Logged in as ${bot.user.tag}!`);
     bot.user.setPresence({ activity: { name: `music | ${prefix}help` }, status: 'online' });
@@ -37,14 +39,14 @@ bot.on('ready', (message) => {
 bot.login(auth.token);
 
 
-
-
 bot.on("message", async (message) => {
 
-    let serverQueue = queue.get(message.guild.id);
+    let serverQueue = await queue.get(message.guild.id);
     let channelVoice = message.member.voice.channel;
+    //constructor.channel_txt = message.channel;
+    //constructor.channel_voice = channelVoice;
     let args;
-
+/*
     const constructor = {
         channel_txt: message.channel,
         channel_voice: channelVoice,
@@ -55,7 +57,7 @@ bot.on("message", async (message) => {
         loop_one: false,
         loop_all: false
     };
-
+*/
 
     if (message.content[0] === prefix) {
         console.log(`--- ${message.author.username} : ${message.content}`)
@@ -156,6 +158,18 @@ bot.on("message", async (message) => {
                 message.channel.send(Embed_list('Youtube Play List', playlist.title, playlist.url, message.author.username, message.author.avatarURL(), playlist.url))
 
                 if (!serverQueue) {
+                    
+                    const constructor = {
+                        channel_txt: message.channel,
+                        channel_voice: channelVoice,
+                        connection: null,
+                        music: [],
+                        volume: 10,
+                        playing: true,
+                        loop_one: false,
+                        loop_all: false
+                    };
+
                     queue.set(message.guild.id, constructor);
 
                     for (var i = 0; i < playlist.items.length; i++) {
@@ -234,6 +248,17 @@ bot.on("message", async (message) => {
                 message.channel.send(Embed_spotify('Spotify Play List', playlist.name, playListUrl, message.author.username, message.author.avatarURL(), playListUrl))
 
                 if (!serverQueue) {
+                    const constructor = {
+                        channel_txt: message.channel,
+                        channel_voice: channelVoice,
+                        connection: null,
+                        music: [],
+                        volume: 10,
+                        playing: true,
+                        loop_one: false,
+                        loop_all: false
+                    };
+                    
                     queue.set(message.guild.id, constructor);
 
 
@@ -300,6 +325,17 @@ bot.on("message", async (message) => {
 
             if (!serverQueue) {
 
+                const constructor = {
+                    channel_txt: message.channel,
+                    channel_voice: channelVoice,
+                    connection: null,
+                    music: [],
+                    volume: 10,
+                    playing: true,
+                    loop_one: false,
+                    loop_all: false
+                };
+
                 queue.set(message.guild.id, constructor);
 
                 constructor.music.push(music);
@@ -340,23 +376,25 @@ bot.on("message", async (message) => {
     }
 
     async function play(guild, music) {
-        const serverQueue = queue.get(guild.id);
+        const serverQueue = await queue.get(guild.id);
         if (!music) {
-            if (serverQueue.loop)
-                serverQueue.loop = false;
+            if (serverQueue.loop) {
+                serverQueue.loop_all = false;
+                serverQueue.loop_one = false;
+            }
             serverQueue.channel_voice.leave();
             queue.delete(guild.id);
             return;
         }
-
-        var timeoutID = setTimeout(() => {
+        let retry = 0;
+        let timeoutID = setTimeout(() => {
             console.log('*** timeout ***');
             if (!message.member.voice.channel)
                 return message.channel.send('join channel,first');
 
-            if (!serverQueue.loop)
+            if (retry > 3)
                 serverQueue.music.shift();
-
+            retry++;
             play(guild, serverQueue.music[0]);
             return;
         }, 5000);//防止 ytdl 卡住, loop 時較容易發生
@@ -376,7 +414,7 @@ bot.on("message", async (message) => {
                 console.log(new Date().toLocaleString('zh-TW', { timeZone: 'Asia/Taipei' }), ' --Now Playing', music.title, music.url)
                 clearTimeout(timeoutID);
                 message.react('👍')
-                if (!serverQueue.loop) {
+                if (!serverQueue.loop_all && !serverQueue.loop_one) {
                     message.channel.send(Embed_play('Now Playing', music.title, music.url)).then(msg => {
                         msg.delete({ timeout: 600000 })
                     })
@@ -391,12 +429,11 @@ bot.on("message", async (message) => {
                     let music2 = [];
                     let music_length = serverQueue.music.length;
 
-                    for (var i = 0; i <music_length; i++) {
-                        music2[i] = serverQueue.music[(i+1) % music_length];
+                    for (var i = 0; i < music_length; i++) {
+                        music2[i] = serverQueue.music[(i + 1) % music_length];
                     }
                     serverQueue.music = music2;
                 }
-
                 play(guild, serverQueue.music[0]);
             })
     }
@@ -437,19 +474,22 @@ bot.on("message", async (message) => {
             serverQueue.loop_all = true;
             serverQueue.loop_one = false;
             message.react('⭕');
-            console.log('loop : ' + serverQueue.loop)
+            console.log('loop_all : ' + serverQueue.loop_all)
+            console.log('loop_one : ' + serverQueue.loop_one)
         }
-        else if (message.content.split(" ")[1] === "one") {
+        else if (message.content.split(" ")[1] === "one"/* || !message.content.split(" ")[1]*/) {
             serverQueue.loop_all = false;
             serverQueue.loop_one = true;
             message.react('⭕');
-            console.log('loop : ' + serverQueue.loop)
+            console.log('loop_all : ' + serverQueue.loop_all)
+            console.log('loop_one : ' + serverQueue.loop_one)
         }
         else if (message.content.split(" ")[1] === "off") {
             serverQueue.loop_all = false;
             serverQueue.loop_one = false;
             message.react('❌');
-            console.log('loop : ' + serverQueue.loop)
+            console.log('loop_all : ' + serverQueue.loop_all)
+            console.log('loop_one : ' + serverQueue.loop_one)
         }
         else {
             return message.channel.send('loop <all/one/off>');
