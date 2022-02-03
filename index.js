@@ -1,7 +1,8 @@
-const { Player } = require('discord-player');
 const { Client, Intents, Collection } = require('discord.js');
+const { Player } = require('discord-player');
 const fs = require('fs');
 
+const embed = require('./embeds/embeds.js');
 
 let client = new Client({
     intents: [
@@ -14,10 +15,18 @@ let client = new Client({
 });
 
 
-client.config = require('./config');
-client.player = new Player(client, client.config.opt.discordPlayer);
+client.config = require('./config.json');
 client.commands = new Collection();
-const player = client.player
+client.player = new Player(client, {
+    ytdlOptions: {
+        quality: 'highestaudio', 
+        highWaterMark: 1 << 25 
+    }
+});
+
+client.login(client.config.token);
+
+const player = client.player;
 
 
 const events = fs.readdirSync('./events/').filter(file => file.endsWith('.js'));
@@ -47,4 +56,32 @@ fs.readdir('./commands/', (err, files) => {
         client.commands.set(command.name.toLowerCase(), command);
         delete require.cache[require.resolve(`./commands/${file}`)];
     };
+});
+
+
+
+
+const settings = (queue, song) =>
+    `**Volume**: \`${queue.volume}%\` | **Loop**: \`${queue.repeatMode ? (queue.repeatMode === 2 ? 'All' : 'ONE') : 'Off'}\``;
+
+
+
+
+player.on('error', (queue, error) => {
+    console.log(`There was a problem with the song queue => ${error.message}`);
+});
+
+player.on('connectionError', (queue, error) => {
+    console.log(`I'm having trouble connecting => ${error.message}`);
+});
+
+player.on('trackStart', (queue, track) => {
+    if (queue.repeatMode !== 0)
+        return;
+    queue.metadata.send({ embeds: [embed.Embed_play("Playing", track.title, track.url, track.duration, track.thumbnail, settings(queue))] });
+});
+
+player.on('trackAdd', (queue, track) => {
+    if (queue.previousTracks.length > 0)
+        queue.metadata.send({ embeds: [embed.Embed_play("Added", track.title, track.url, track.duration, track.thumbnail, settings(queue))] });
 });
