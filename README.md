@@ -1,4 +1,5 @@
 # discord-music-bot
 A simple Discord music bot  
-there are still many bug need to fix  
-node.js version 16  
+still in development  
+discord.js v13  
+node.js v16  
