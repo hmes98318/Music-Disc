@@ -1,5 +1,4 @@
 const { QueryType } = require('discord-player');
-const embed = require('../embeds/embeds.js');
 
 module.exports = {
     name: 'play',
