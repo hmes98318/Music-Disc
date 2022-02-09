@@ -1,5 +1,3 @@
-const { QueueRepeatMode } = require('discord-player');
-
 module.exports = {
     name: 'loop',
     aliases: ['lp'],
@@ -15,7 +13,7 @@ module.exports = {
         let mode = null;
         const methods = ['Off', 'Single', 'All'];
 
-        switch (args[0]) {
+        switch (args[0].toLowerCase()) {
             case 'off':
                 mode = 0;
                 break;
