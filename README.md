@@ -1,5 +1,15 @@
-# discord-music-bot
-A simple Discord music bot  
+# Discord Music Bot
+ 
 still in development  
-discord.js v13  
-node.js v16  
+### Reference version  
+**node.js  `v16.13.2`**  
+**discord.js  `v13.6.0`** 
+
+
+
+# Installation
+
+### Clone the repository
+```
+git clone https://github.com/hmes98318/MusicBot.git
+```
