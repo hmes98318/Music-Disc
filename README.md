@@ -13,3 +13,8 @@ still in development
 ```
 git clone https://github.com/hmes98318/MusicBot.git
 ```
+
+### Install the depedences
+```
+npm install discord.js discord-player ffmpeg-static ms opusscript express    
+```
