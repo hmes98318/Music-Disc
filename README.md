@@ -12,7 +12,7 @@
 **opusscript  `^0.0.8`**  
 **ms  `^3.0.0-canary.1`**  
 
-# Installation
+# Installation  
 
 ### Clone the repository
 ```
