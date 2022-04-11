@@ -4,7 +4,7 @@ const embed = require('../embeds/embeds.js');
 
 module.exports = {
     name: 'search',
-    aliases: ['f'],
+    aliases: ['find'],
     utilisation: '{prefix}search [song name]',
     voiceChannel: true,
 
