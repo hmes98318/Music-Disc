@@ -1,5 +1,5 @@
 {
-  "name": "Music_Disc",
+  "name": "music_disc",
   "version": "1.0.0",
   "description": "Discord Music Bot",
   "main": "index.js",
