@@ -1,5 +1,4 @@
 {
-    "token": "yourToken",
     "prefix": "+",
     "playing": "+help | music",
     "maxVol": 200
