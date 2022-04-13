@@ -1,8 +1,12 @@
 const { Client, Intents, Collection } = require('discord.js');
 const { Player } = require('discord-player');
 const fs = require('fs');
+require('dotenv').config();
 
 const embed = require('./embeds/embeds.js');
+
+
+
 
 let client = new Client({
     intents: [
@@ -19,12 +23,12 @@ client.config = require('./config.json');
 client.commands = new Collection();
 client.player = new Player(client, {
     ytdlOptions: {
-        quality: 'highestaudio', 
-        highWaterMark: 1 << 25 
+        quality: 'highestaudio',
+        highWaterMark: 1 << 25
     }
 });
 
-client.login(client.config.token);
+client.login(process.env.TOKEN);
 
 const player = client.player;
 
