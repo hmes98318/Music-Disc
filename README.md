@@ -27,7 +27,6 @@ git clone https://github.com/hmes98318/Music_Disc.git
 ### Revise `config.json`
 ```json
 {
-    "token": "yourToken",
     "prefix": "+",
     "playing": "+help | music",
     "maxVol": 200
