@@ -4,15 +4,18 @@
 
 ### still in development  
 
+
 ### Dependencies Modules
 
-**discord.js  `v13.6.0`**  
 **node.js  `v16.13.2`**  
 **discord-player  `^5.2.0`**  
+**discord.js  `^13.6.0`**  
+**dotenv  `^16.0.0`**  
 **ffmpeg-static  `^4.4.0`**  
 **express  `^4.17.2`**  
 **opusscript  `^0.0.8`**  
 **ms  `^3.0.0-canary.1`**  
+
 
 # Installation  
 
