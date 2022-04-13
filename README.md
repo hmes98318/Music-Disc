@@ -1,5 +1,7 @@
-# Discord Music Bot
- 
+<img width="150" height="150" align="right" style="float: right; margin: 0 10px 0 0;" alt="music_disc" src="./music_disc.png">
+
+# Music Disc
+
 ### still in development  
 
 ### Dependencies Modules
@@ -16,7 +18,7 @@
 
 ### Clone the repository
 ```
-git clone https://github.com/hmes98318/MusicBot.git
+git clone https://github.com/hmes98318/Music_Disc.git
 ```
 
 ### Revise `config.json`
