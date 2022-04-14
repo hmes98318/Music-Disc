@@ -24,17 +24,19 @@
 git clone https://github.com/hmes98318/Music_Disc.git
 ```
 
-### Revise `config.json`
-```json
-{
-    "prefix": "+",
-    "playing": "+help | music",
-    "maxVol": 200
-}
+### Install the dependencies
+auto install all dependencies on [`package.json`](./package.json)  
+```
+npm install
 ```
 
-## Running the script 
+### configure [`.env`](./.env) file
+```env
+TOKEN = "your_token"
+```
 
+
+## Running the script 
 ```
 node index.js
 ```
