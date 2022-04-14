@@ -9,7 +9,7 @@ module.exports = {
     name: 'status',
     aliases: ['usage'],
     async execute(client, message) {//uptime, os, node_v, djs_v,cpu, cpu_usage, ram, ping
-        return message.channel.send({ embeds: [embed.Embed_status(Uptime(uptime), await OSversion(), process.version, `v${Discord.version}`, os.cpus()[0].model, Usage(), Math.round((os.totalmem() - os.freemem()) / (1000 * 1000)) + 'MB', Date.now() - message.createdTimestamp)] });
+        return message.channel.send({ embeds: [embed.Embed_status(Uptime(uptime), await OSversion(), process.version, `v${Discord.version}`, os.cpus()[0].model, Usage(), Math.round((os.totalmem() - os.freemem()) / (1000 * 1000)) + 'MB', client.ws.ping)] });
     }
 }
 
