@@ -4,12 +4,12 @@
 ### A Discord Music Bot
 
 
+### Reference version  
+[**node.js  `v16.13.2`**](https://nodejs.org/en/)  
+[**discord.js  `^13.6.0`**](https://discord.js.org/#/)  
 
 ### Dependencies Modules
-
-**node.js  `v16.13.2`**  
 **discord-player  `^5.2.0`**  
-**discord.js  `^13.6.0`**  
 **dotenv  `^16.0.0`**  
 **ffmpeg-static  `^4.4.0`**  
 **express  `^4.17.2`**  
@@ -21,7 +21,7 @@
 
 ### Clone the repository
 ```
-git clone https://github.com/hmes98318/Music_Disc.git
+git clone -b v1.0.0 https://github.com/hmes98318/Music_Disc.git
 ```
 
 ### Install the dependencies
