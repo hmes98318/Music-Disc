@@ -1,0 +1,6 @@
+version: '3.8'
+services:
+  music-disc:
+    image: hmes98318/music-disc:1.0.0
+    environment:
+      TOKEN: "your_token"
