@@ -17,7 +17,7 @@
 **ms  `^3.0.0-canary.1`**  
 
 
-# Installation  
+## Deploying with node.js
 
 ### Clone the repository
 ```
@@ -35,8 +35,25 @@ npm install
 TOKEN = "your_token"
 ```
 
-
 ## Running the script 
 ```
 node index.js
+```
+
+
+## Deploying with Docker  
+**image link** : https://hub.docker.com/r/hmes98318/music-disc  
+### put your Token into [`docker-compose.yml`](./docker-compose.yml)
+```yml
+version: '3.8'
+services:
+  music-disc:
+    image: hmes98318/music-disc:1.0.0
+    environment:
+      TOKEN: "your_token"
+```
+
+### Start the container  
+```
+docker-compose up -d
 ```
