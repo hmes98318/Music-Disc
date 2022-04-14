@@ -1,5 +1,6 @@
 {
-    "prefix": "+",
+    "name":"Music Disc",
+    "prefix": "-",
     "playing": "+help | music",
     "maxVol": 200
 }
