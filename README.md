@@ -9,7 +9,7 @@
 [**discord.js  `^13.6.0`**](https://discord.js.org/#/)  
 
 ### Dependencies Modules
-**discord-player  `^5.2.0`**  
+**discord-player  `^5.2.2`**  
 **dotenv  `^16.0.0`**  
 **ffmpeg-static  `^4.4.0`**  
 **express  `^4.17.2`**  
@@ -30,10 +30,23 @@ auto install all dependencies on [`package.json`](./package.json)
 npm install
 ```
 
-### configure [`.env`](./.env) file
+### Configure Files
+[`.env`](./.env) 
 ```env
 TOKEN = "your_token"
 ```
+
+[`config.json`](./config.json)  
+```json
+{
+    "name": "Music Disc",
+    "prefix": "+",
+    "playing": "+help | music",
+    "maxVol": 200,
+    "autoLeave": true
+}
+```
+**`autoLeave`** : After the music finished, can choose whether let the bot leave automatically or not  
 
 ## Running the script 
 ```
