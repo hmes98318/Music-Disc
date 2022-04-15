@@ -1,4 +1,5 @@
-const { QueryType } = require('discord-player');
+const { QueryType, Util } = require('discord-player');
+const autoLeave = require('../config.json').autoLeave;
 
 module.exports = {
     name: 'play',
@@ -19,7 +20,13 @@ module.exports = {
             return message.channel.send(`❌ | No results found.`);
 
         const queue = await client.player.createQueue(message.guild, {
-            metadata: message.channel
+            metadata: message.channel,
+            leaveOnStop: autoLeave,
+            ytdlOptions: {
+                filter: 'audioonly',
+                quality: 'highestaudio',
+                highWaterMark: 1 << 25
+            }
         });
 
         try {
@@ -36,5 +43,14 @@ module.exports = {
 
         if (!queue.playing)
             await queue.play();
+
+        setInterval(() => { AutoLeave(message) }, 10 * 60 * 1000); // 10 minutes/check
     },
 };
+
+
+function AutoLeave(message) { // if channel no member listening
+    if (autoLeave) {
+        return Util.isVoiceEmpty(message.member.voice.channel);
+    }
+}

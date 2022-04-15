@@ -1,5 +1,6 @@
 const { MessageEmbed } = require('discord.js');
-const { QueryType } = require('discord-player');
+const { QueryType, Util } = require('discord-player');
+const autoLeave = require('../config.json').autoLeave;
 const embed = require('../embeds/embeds.js');
 
 module.exports = {
@@ -20,7 +21,13 @@ module.exports = {
         if (!res || !res.tracks.length) return message.channel.send(`❌ | No search results found.`);
 
         const queue = await client.player.createQueue(message.guild, {
-            metadata: message.channel
+            metadata: message.channel,
+            leaveOnStop: autoLeave,
+            ytdlOptions: {
+                filter: 'audioonly',
+                quality: 'highestaudio',
+                highWaterMark: 1 << 25
+            }
         });
 
 
@@ -65,5 +72,14 @@ module.exports = {
             if (reason === 'time')
                 return message.channel.send(`❌ | Song search time expired`);
         });
+
+        setInterval(() => { AutoLeave(message) }, 10 * 60 * 1000); // 10 minutes/check
     },
 };
+
+
+function AutoLeave(message) { // if channel no member listening
+    if (autoLeave) {
+        return Util.isVoiceEmpty(message.member.voice.channel);
+    }
+}
