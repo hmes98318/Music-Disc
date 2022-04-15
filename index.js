@@ -23,6 +23,7 @@ client.config = require('./config.json');
 client.commands = new Collection();
 client.player = new Player(client, {
     ytdlOptions: {
+        filter: 'audioonly',
         quality: 'highestaudio',
         highWaterMark: 1 << 25
     }
