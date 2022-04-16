@@ -1,3 +1,5 @@
+const prefix = require('../config.json').prefix;
+
 module.exports = {
     name: 'loop',
     aliases: ['lp'],
@@ -13,6 +15,9 @@ module.exports = {
         let mode = null;
         const methods = ['Off', 'Single', 'All'];
 
+        if (!args[0])
+            return message.channel.send(`❌ | ${prefix}loop [all/one/off]`);
+
         switch (args[0].toLowerCase()) {
             case 'off':
                 mode = 0;
@@ -24,11 +29,11 @@ module.exports = {
                 mode = 2;
                 break;
             default:
-                return message.channel.send(`❌ | ${client.config.PREFIX}loop [all/one/off]`);
+                return message.channel.send(`❌ | ${prefix}loop [all/one/off]`);
                 break;
         }
         queue.setRepeatMode(mode);
-        
+
         message.react('👍');
         return message.channel.send(`Set loop to \`${methods[mode]}\``);
     },
