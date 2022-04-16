@@ -46,6 +46,7 @@ for (const file of events) {
 console.log(`-> Loaded commands ----------`);
 
 fs.readdir('./commands/', (err, files) => {
+    console.log(`┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓`);
     if (err)
         return console.log('Could not find any commands!');
 
@@ -56,13 +57,15 @@ fs.readdir('./commands/', (err, files) => {
 
     for (const file of jsFiles) {
         const command = require(`./commands/${file}`);
-        console.log(`Loaded Command ${command.name.toLowerCase()}`);
+
+        console.log(`┃ Loaded Command ${command.name.toLowerCase()}   \t┃`);
 
         client.commands.set(command.name.toLowerCase(), command);
         delete require.cache[require.resolve(`./commands/${file}`)];
     };
+    console.log(`┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛`);
+    console.log('-- loading all files finished --');
 });
-
 
 
 
