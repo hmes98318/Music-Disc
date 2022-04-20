@@ -21,7 +21,7 @@
 
 ### Clone the repository
 ```
-git clone -b v1.1.1 https://github.com/hmes98318/Music_Disc.git
+git clone -b v1.1.1 https://github.com/hmes98318/Music-Disc.git
 ```
 
 ### Install the dependencies
