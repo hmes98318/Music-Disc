@@ -3,6 +3,8 @@ const { QueryType, Util } = require('discord-player');
 const autoLeave = require('../config.json').autoLeave;
 const embed = require('../embeds/embeds.js');
 
+let timeoutID;
+
 module.exports = {
     name: 'search',
     aliases: ['find'],
@@ -73,13 +75,16 @@ module.exports = {
                 return message.channel.send(`❌ | Song search time expired`);
         });
 
-        setInterval(() => { AutoLeave(message) }, 10 * 60 * 1000); // 10 minutes/check
+        timeoutID = setInterval(() => { AutoLeave(client, message) }, 10 * 60 * 1000); // 10 minutes/check
     },
 };
 
 
-function AutoLeave(message) { // if channel no member listening
+async function AutoLeave(client, message) { // if channel no member listening
     if (autoLeave) {
-        return Util.isVoiceEmpty(message.member.voice.channel);
+        if (!message.member.voice.channel) {
+            clearInterval(timeoutID);
+            return await client.player.deleteQueue(message.guild.id);
+        }
     }
 }

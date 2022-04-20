@@ -1,6 +1,8 @@
 const { QueryType, Util } = require('discord-player');
 const autoLeave = require('../config.json').autoLeave;
 
+let timeoutID;
+
 module.exports = {
     name: 'play',
     aliases: ['p'],
@@ -44,13 +46,16 @@ module.exports = {
         if (!queue.playing)
             await queue.play();
 
-        setInterval(() => { AutoLeave(message) }, 10 * 60 * 1000); // 10 minutes/check
+        timeoutID = setInterval(() => { AutoLeave(client, message) }, 10 * 60 * 1000); // 10 minutes/check
     },
 };
 
 
-function AutoLeave(message) { // if channel no member listening
+async function AutoLeave(client, message) { // if channel no member listening
     if (autoLeave) {
-        return Util.isVoiceEmpty(message.member.voice.channel);
+        if (!message.member.voice.channel) {
+            clearInterval(timeoutID);
+            return await client.player.deleteQueue(message.guild.id);
+        }
     }
 }
