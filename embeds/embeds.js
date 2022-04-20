@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const bot_name = require('../config.json').name;
 const bot_version = require('../package.json').version;
-const github = 'https://github.com/hmes98318/Music_Disc';
+const github = 'https://github.com/hmes98318/Music-Disc';
 
 module.exports = {
     Embed_play: function (status, music_title, music_url, music_length, music_thumbnail, settings) {
