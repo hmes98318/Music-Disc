@@ -62,6 +62,7 @@ version: '3.8'
 services:
   music-disc:
     image: hmes98318/music-disc:1.1.1
+    restart: always
     environment:
       TOKEN: "your_token"
 ```
