@@ -15,18 +15,19 @@ module.exports = {
         if (!queue.tracks[0]) return message.channel.send(`❌ | No music in queue after current.`);
 
 
-        let queueMsg = `Now Playing : ${queue.tracks[0].title}\n\n`;
-        if (queue.tracks.length > 10) {
-          for (var i = 1; i <= 10; i++) {
-            queueMsg += `${i}. ${queue.tracks[i].title}\n`;
+        let nowplay = `Now Playing : ${queue.current.title}\n\n`;
+        let queueMsg = '';
+        if (queue.tracks.length > 9) {
+          for (var i = 0; i <= 9; i++) {
+            queueMsg += `${i+1}. ${queue.tracks[i].title}\n`;
           }
-          queueMsg += `and ${queue.tracks.length - 10} other songs`;
+          queueMsg += `and ${queue.tracks.length - 9} other songs`;
         }
         else {
-          for (var i = 1; i < queue.tracks.length; i++) {
-            queueMsg += `${i}. ${queue.tracks[i].title}\n`;
+          for (var i = 0; i < queue.tracks.length; i++) {
+            queueMsg += `${i+1}. ${queue.tracks[i].title}\n`;
           }
         }
-        return message.channel.send({ embeds: [embed.Embed_queue("Queue List", queueMsg)] });
+        return message.channel.send({ embeds: [embed.Embed_queue("Queue List", nowplay, queueMsg)] });
     },
 };

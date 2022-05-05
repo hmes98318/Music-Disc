@@ -15,10 +15,11 @@ module.exports = {
         return Embed_play;
     },
 
-    Embed_queue: function (status, queueMsg) {
+    Embed_queue: function (status, nowplay, queueMsg) {
         const Embed_queue = new Discord.MessageEmbed()
             .setColor('#FFFFFF')
-            .addField(status, queueMsg)
+            .setTitle(status)
+            .addField(nowplay, queueMsg)
             .setTimestamp()
         return Embed_queue;
     },
