@@ -1,7 +1,5 @@
 const { QueryType, Util } = require('discord-player');
-const autoLeave = require('../config.json').autoLeave;
 
-let timeoutID;
 
 module.exports = {
     name: 'play',
@@ -23,7 +21,10 @@ module.exports = {
 
         const queue = await client.player.createQueue(message.guild, {
             metadata: message.channel,
-            leaveOnStop: autoLeave,
+            leaveOnEnd: client.config.autoLeave,
+            leaveOnStop: client.config.autoLeave,
+            leaveOnEmpty: client.config.autoLeave,
+            leaveOnEmptyCooldown: 5 * 60 * 1000, // 5 minutes cooldown
             ytdlOptions: {
                 filter: 'audioonly',
                 quality: 'highestaudio',
@@ -32,8 +33,8 @@ module.exports = {
         });
 
         try {
-            if (!queue.connection)
-                await queue.connect(message.member.voice.channel);
+            //if (!queue.connection)
+            await queue.connect(message.member.voice.channel);
         } catch {
             await client.player.deleteQueue(message.guild.id);
             return message.channel.send(`❌ | I can't join audio channel.`);
@@ -45,17 +46,5 @@ module.exports = {
 
         if (!queue.playing)
             await queue.play();
-
-        timeoutID = setInterval(() => { AutoLeave(client, message) }, 10 * 60 * 1000); // 10 minutes/check
     },
 };
-
-
-async function AutoLeave(client, message) { // if channel no member listening
-    if (autoLeave) {
-        if (!message.member.voice.channel) {
-            clearInterval(timeoutID);
-            return await client.player.deleteQueue(message.guild.id);
-        }
-    }
-}

@@ -3,6 +3,7 @@ const { Player } = require('discord-player');
 const fs = require('fs');
 require('dotenv').config();
 
+const config = require('./config.json');
 const embed = require('./embeds/embeds.js');
 
 
@@ -46,7 +47,7 @@ for (const file of events) {
 console.log(`-> Loaded commands ----------`);
 
 fs.readdir('./commands/', (err, files) => {
-    console.log(`┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓`);
+    console.log(`+-------------------------------+`);
     if (err)
         return console.log('Could not find any commands!');
 
@@ -58,12 +59,12 @@ fs.readdir('./commands/', (err, files) => {
     for (const file of jsFiles) {
         const command = require(`./commands/${file}`);
 
-        console.log(`┃ Loaded Command ${command.name.toLowerCase()}   \t┃`);
+        console.log(`| Loaded Command ${command.name.toLowerCase()}   \t|`);
 
         client.commands.set(command.name.toLowerCase(), command);
         delete require.cache[require.resolve(`./commands/${file}`)];
     };
-    console.log(`┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛`);
+    console.log(`+-------------------------------+`);
     console.log('-- loading all files finished --');
 });
 
@@ -93,3 +94,9 @@ player.on('trackAdd', (queue, track) => {
     if (queue.previousTracks.length > 0)
         queue.metadata.send({ embeds: [embed.Embed_play("Added", track.title, track.url, track.duration, track.thumbnail, settings(queue))] });
 });
+
+
+
+if (client.config.autoLeave) {
+    player.on('channelEmpty', () => { });
+}

@@ -1,9 +1,7 @@
 const { MessageEmbed } = require('discord.js');
 const { QueryType, Util } = require('discord-player');
-const autoLeave = require('../config.json').autoLeave;
 const embed = require('../embeds/embeds.js');
 
-let timeoutID;
 
 module.exports = {
     name: 'search',
@@ -24,7 +22,10 @@ module.exports = {
 
         const queue = await client.player.createQueue(message.guild, {
             metadata: message.channel,
-            leaveOnStop: autoLeave,
+            leaveOnEnd: client.config.autoLeave,
+            leaveOnStop: client.config.autoLeave,
+            leaveOnEmpty: client.config.autoLeave,
+            leaveOnEmptyCooldown: 5 * 60 * 1000, // 5 minutes cooldown
             ytdlOptions: {
                 filter: 'audioonly',
                 quality: 'highestaudio',
@@ -74,17 +75,5 @@ module.exports = {
             if (reason === 'time')
                 return message.channel.send(`❌ | Song search time expired`);
         });
-
-        timeoutID = setInterval(() => { AutoLeave(client, message) }, 10 * 60 * 1000); // 10 minutes/check
     },
 };
-
-
-async function AutoLeave(client, message) { // if channel no member listening
-    if (autoLeave) {
-        if (!message.member.voice.channel) {
-            clearInterval(timeoutID);
-            return await client.player.deleteQueue(message.guild.id);
-        }
-    }
-}
