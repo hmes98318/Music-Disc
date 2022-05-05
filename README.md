@@ -5,7 +5,7 @@
 
 
 ### Reference version  
-[**node.js  `v16.13.2`**](https://nodejs.org/en/)  
+[**node.js  `v16.15.0`**](https://nodejs.org/en/)  
 [**discord.js  `^13.6.0`**](https://discord.js.org/#/)  
 
 ### Dependencies Modules
@@ -61,7 +61,7 @@ node index.js
 version: '3.8'
 services:
   music-disc:
-    image: hmes98318/music-disc:1.1.1
+    image: hmes98318/music-disc:1.1.2
     restart: always
     environment:
       TOKEN: "your_token"
