@@ -46,7 +46,7 @@ TOKEN = "your_token"
     "autoLeave": true
 }
 ```
-**`autoLeave`** : After the music finished, can choose whether let the bot leave automatically or not  
+**`autoLeave`** : After the music finished, can choose whether let the bot leave voice channel automatically or not  
 
 ## Running the script 
 ```
