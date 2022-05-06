@@ -1,4 +1,4 @@
-const { QueryType, Util } = require('discord-player');
+const { QueryType } = require('discord-player');
 
 
 module.exports = {
@@ -24,7 +24,6 @@ module.exports = {
             leaveOnEnd: client.config.autoLeave,
             leaveOnStop: client.config.autoLeave,
             leaveOnEmpty: client.config.autoLeave,
-            leaveOnEmptyCooldown: 5 * 60 * 1000, // 5 minutes cooldown
             ytdlOptions: {
                 filter: 'audioonly',
                 quality: 'highestaudio',
@@ -33,8 +32,8 @@ module.exports = {
         });
 
         try {
-            //if (!queue.connection)
-            await queue.connect(message.member.voice.channel);
+            if (!queue.connection)
+                await queue.connect(message.member.voice.channel);
         } catch {
             await client.player.deleteQueue(message.guild.id);
             return message.channel.send(`❌ | I can't join audio channel.`);

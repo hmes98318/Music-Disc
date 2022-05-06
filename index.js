@@ -1,5 +1,5 @@
 const { Client, Intents, Collection } = require('discord.js');
-const { Player } = require('discord-player');
+const { Player, Util } = require('discord-player');
 const fs = require('fs');
 require('dotenv').config();
 
@@ -96,7 +96,25 @@ player.on('trackAdd', (queue, track) => {
 });
 
 
+player.on('channelEmpty', (queue) => {
+    if (!client.config.autoLeave)
+        queue.stop();
+});
 
-if (client.config.autoLeave) {
-    player.on('channelEmpty', () => { });
-}
+client.on('voiceStateUpdate', async (oldState, newState) => {
+    const display = client.config.displayVoiceState;
+
+    if (newState.channelId === null) {
+        if (display) console.log('--',newState.member.user.username, ' left channel ');
+
+        const queue = await client.player.getQueue(oldState.guild);
+        if (oldState.channel.members.size <= 1)
+            client.player.deleteQueue(oldState.guild.id);
+    }
+    else if (oldState.channelId === null) {
+        if (display) console.log('--',newState.member.user.username, ' joined channel ', newState.channel.name);
+    }
+    else {
+        if (display) console.log('--',newState.member.user.username, ' moved channel ', oldState.channel.name, ' to ', newState.channel.name);
+    }
+});

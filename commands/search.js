@@ -1,5 +1,4 @@
-const { MessageEmbed } = require('discord.js');
-const { QueryType, Util } = require('discord-player');
+const { QueryType } = require('discord-player');
 const embed = require('../embeds/embeds.js');
 
 
@@ -25,7 +24,6 @@ module.exports = {
             leaveOnEnd: client.config.autoLeave,
             leaveOnStop: client.config.autoLeave,
             leaveOnEmpty: client.config.autoLeave,
-            leaveOnEmptyCooldown: 5 * 60 * 1000, // 5 minutes cooldown
             ytdlOptions: {
                 filter: 'audioonly',
                 quality: 'highestaudio',

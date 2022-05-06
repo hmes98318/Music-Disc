@@ -1,7 +1,8 @@
 {
     "name": "Music Disc",
-    "prefix": "+",
+    "prefix": "-",
     "playing": "+help | music",
     "maxVol": 200,
-    "autoLeave": true
+    "autoLeave": true,
+    "displayVoiceState":true
 }
