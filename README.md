@@ -21,7 +21,7 @@
 
 ### Clone the repository
 ```
-git clone -b v1.1.2 https://github.com/hmes98318/Music-Disc.git
+git clone -b v1.1.3 https://github.com/hmes98318/Music-Disc.git
 ```
 
 ### Install the dependencies
@@ -43,10 +43,12 @@ TOKEN = "your_token"
     "prefix": "+",
     "playing": "+help | music",
     "maxVol": 200,
-    "autoLeave": true
+    "autoLeave": true,
+    "displayVoiceState":true
 }
 ```
 **`autoLeave`** : After the music finished, can choose whether let the bot leave voice channel automatically or not  
+**`displayVoiceState`** : Display voice channels state   
 
 ## Running the script 
 ```
@@ -61,7 +63,7 @@ node index.js
 version: '3.8'
 services:
   music-disc:
-    image: hmes98318/music-disc:1.1.2
+    image: hmes98318/music-disc:1.1.3
     restart: always
     environment:
       TOKEN: "your_token"
