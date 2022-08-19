@@ -17,12 +17,13 @@
   },
   "homepage": "https://github.com/hmes98318/Music-Disc#readme",
   "dependencies": {
-    "discord-player": "^5.2.2",
-    "discord.js": "^13.4.0",
-    "dotenv": "^16.0.0",
-    "express": "^4.17.2",
-    "ffmpeg-static": "^4.4.0",
-    "ms": "^3.0.0-canary.1",
-    "opusscript": "^0.0.8"
+    "discord-player": "5.2.2",
+    "discord.js": "13.9.1",
+    "dotenv": "16.0.1",
+    "express": "4.17.2",
+    "ffmpeg-static": "5.0.2",
+    "ms": "3.0.0-canary.1",
+    "opusscript": "0.0.8",
+    "ytdl-core": "4.10.0"
   }
 }
