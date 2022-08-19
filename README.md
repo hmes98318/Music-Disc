@@ -21,7 +21,7 @@
 
 ### Clone the repository
 ```
-git clone -b v1.1.3 https://github.com/hmes98318/Music-Disc.git
+git clone -b v1.1.4 https://github.com/hmes98318/Music-Disc.git
 ```
 
 ### Install the dependencies
@@ -63,7 +63,7 @@ node index.js
 version: '3.8'
 services:
   music-disc:
-    image: hmes98318/music-disc:1.1.3
+    image: hmes98318/music-disc:1.1.4
     restart: always
     environment:
       TOKEN: "your_token"
