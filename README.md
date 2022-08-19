@@ -9,12 +9,12 @@
 [**discord.js  `^13.6.0`**](https://discord.js.org/#/)  
 
 ### Dependencies Modules
-* **discord-player  `^5.2.2`**  
-* **dotenv  `^16.0.0`**  
-* **ffmpeg-static  `^4.4.0`**  
-* **express  `^4.17.2`**  
-* **opusscript  `^0.0.8`**  
-* **ms  `^3.0.0-canary.1`**  
+* **discord-player  `5.2.2`**  
+* **dotenv  `16.0.0`**  
+* **ffmpeg-static  `4.4.0`**  
+* **express  `4.17.2`**  
+* **opusscript  `0.0.8`**  
+* **ms  `3.0.0-canary.1`**  
 
 
 ## Deploying with node.js
