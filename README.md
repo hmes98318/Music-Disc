@@ -6,7 +6,7 @@
 
 ### Reference version  
 [**node.js  `v16.15.0`**](https://nodejs.org/en/)  
-[**discord.js  `^13.6.0`**](https://discord.js.org/#/)  
+[**discord.js  `13.9.1`**](https://discord.js.org/#/)  
 
 ### Dependencies Modules
 * **discord-player  `5.2.2`**  
