@@ -1,5 +1,5 @@
 const { Client, Intents, Collection } = require('discord.js');
-const { Player, Util } = require('discord-player');
+const { Player } = require('discord-player');
 const fs = require('fs');
 require('dotenv').config();
 
@@ -20,7 +20,7 @@ let client = new Client({
 });
 
 
-client.config = require('./config.json');
+client.config = config;
 client.commands = new Collection();
 client.player = new Player(client, {
     ytdlOptions: {
