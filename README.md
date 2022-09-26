@@ -2,18 +2,18 @@
 
 # Music Disc
 ### A Discord Music Bot
-Update to v14 testing  
+
 
 
 ### Reference version  
 [**node.js  `v16.15.0`**](https://nodejs.org/en/)  
-[**discord.js  `13.9.1`**](https://discord.js.org/#/)  
+[**discord.js  `13.6.0`**](https://discord.js.org/#/)  
 
 ### Dependencies Modules
 * **discord-player  `5.2.2`**  
 * **dotenv  `16.0.0`**  
-* **ffmpeg-static  `4.4.0`**  
-* **express  `4.17.2`**  
+* **ffmpeg-static  `4.4.1`**  
+* **express  `4.18.1`**  
 * **opusscript  `0.0.8`**  
 * **ms  `3.0.0-canary.1`**  
 
@@ -24,6 +24,8 @@ Update to v14 testing
 ```
 git clone -b v1.1.4 https://github.com/hmes98318/Music-Disc.git
 ```
+or [**click here**](https://github.com/hmes98318/Music-Disc/releases) to download  
+
 
 ### Install the dependencies
 auto install all dependencies on [`package.json`](./package.json)  
