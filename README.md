@@ -2,7 +2,7 @@
 
 # Music Disc
 ### A Discord Music Bot
-
+**Discord.js v14 coming soon**  
 
 
 ### Reference version  
