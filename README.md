@@ -22,7 +22,7 @@
 
 ### Clone the repository
 ```
-git clone -b v1.1.4 https://github.com/hmes98318/Music-Disc.git
+git clone -b v1.1.5 https://github.com/hmes98318/Music-Disc.git
 ```
 or [**click here**](https://github.com/hmes98318/Music-Disc/releases) to download  
 
@@ -66,7 +66,7 @@ node index.js
 version: '3.8'
 services:
   music-disc:
-    image: hmes98318/music-disc:1.1.4
+    image: hmes98318/music-disc:1.1.5
     restart: always
     environment:
       TOKEN: "your_token"
