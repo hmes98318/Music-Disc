@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const os = require('os');
 const exec = require('child_process').exec;
-const embed = require('../embeds/embeds.js');
+const embed = require('../embeds/embeds');
 
 const uptime = new Date();
 
