@@ -1,4 +1,4 @@
-FROM node:16.15.0-slim
+FROM node:16.17.1-slim
 
 WORKDIR /src/bot
 
