@@ -1,7 +1,13 @@
 version: '3.8'
 services:
   music-disc:
-    image: hmes98318/music-disc:1.1.5
+    image: hmes98318/music-disc:1.2.0
     restart: always
     environment:
       TOKEN: "your_token"
+      PREFIX: "+"
+      PLAYING: "+help | music"
+      QUALITY: "highestaudio"
+      MAXVOL: 200
+      AUTO_LEAVE: true
+      DISPLAY_VOICE_STATE: true
