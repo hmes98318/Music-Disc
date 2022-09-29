@@ -1,28 +1,26 @@
 <img width="150" height="150" align="right" style="float: right; margin: 0 10px 0 0;" alt="music_disc" src="https://i.imgur.com/JWSIlSt.png">
 
-# Music Disc
-### A Discord Music Bot
-**Discord.js v14 coming soon**  
+# Music Disc 
+
+<a href="https://github.com/hmes98318/Music-Disc/releases"><img alt="GitHub package.json version" src="https://img.shields.io/github/package-json/v/hmes98318/Music-Disc?style=for-the-badge"></a> 
+<a href="https://discord.js.org/"><img src="https://img.shields.io/badge/Discord.JS-14.5.0-blue?style=for-the-badge&logo=DISCORD" /></a> 
+<a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node%20Version->=16.13.0-brightgreen?style=for-the-badge&logo=Node.js"></a> 
+<a href="https://github.com/hmes98318/Music-Disc/blob/main/LICENSE"><img alt="GitHub" src="https://img.shields.io/github/license/hmes98318/Music-Disc?style=for-the-badge&color=brightgreen"></a>  
+
+### A Discord Music Bot  
+Supports **YouTube**, **Spotify**, **SoundCloud** streams.
 
 
 ### Reference version  
-[**node.js  `v16.15.0`**](https://nodejs.org/en/)  
-[**discord.js  `13.6.0`**](https://discord.js.org/#/)  
-
-### Dependencies Modules
-* **discord-player  `5.2.2`**  
-* **dotenv  `16.0.0`**  
-* **ffmpeg-static  `4.4.1`**  
-* **express  `4.18.1`**  
-* **opusscript  `0.0.8`**  
-* **ms  `3.0.0-canary.1`**  
+[**node.js  `v16.17.1`**](https://nodejs.org/en/)  
+[**discord.js  `v14.5.0`**](https://www.npmjs.com/package/discord.js)  
 
 
 ## Deploying with node.js
 
 ### Clone the repository
 ```
-git clone -b v1.1.5 https://github.com/hmes98318/Music-Disc.git
+git clone -b v1.2.0 https://github.com/hmes98318/Music-Disc.git
 ```
 or [**click here**](https://github.com/hmes98318/Music-Disc/releases) to download  
 
@@ -45,13 +43,14 @@ TOKEN = "your_token"
     "name": "Music Disc",
     "prefix": "+",
     "playing": "+help | music",
+    "quality": "highestaudio",
     "maxVol": 200,
     "autoLeave": true,
-    "displayVoiceState":true
+    "displayVoiceState": true
 }
 ```
-**`autoLeave`** : After the music finished, can choose whether let the bot leave voice channel automatically or not  
-**`displayVoiceState`** : Display voice channels state   
+**`autoLeave`** : After the music finished, can choose whether let the bot leave voice channel automatically or not.  
+**`displayVoiceState`** : Show voice channel status updates.   
 
 ## Running the script 
 ```
@@ -66,10 +65,16 @@ node index.js
 version: '3.8'
 services:
   music-disc:
-    image: hmes98318/music-disc:1.1.5
+    image: hmes98318/music-disc:1.2.0
     restart: always
     environment:
       TOKEN: "your_token"
+      PREFIX: "+"
+      PLAYING: "+help | music"
+      QUALITY: "highestaudio"
+      MAXVOL: 200
+      AUTO_LEAVE: true
+      DISPLAY_VOICE_STATE: true
 ```
 
 ### Start the container  
