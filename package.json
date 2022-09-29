@@ -4,7 +4,8 @@
   "description": "Discord Music Bot",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",
@@ -17,12 +18,15 @@
   },
   "homepage": "https://github.com/hmes98318/Music-Disc#readme",
   "dependencies": {
-    "discord-player": "5.2.2",
-    "discord.js": "13.6.0",
-    "dotenv": "16.0.0",
-    "express": "4.18.1",
-    "ffmpeg-static": "4.4.1",
-    "ms": "3.0.0-canary.1",
-    "opusscript": "0.0.8"
+    "discord.js": "^14.5.0",
+    "discord-player": "~5.3.1",
+    "opusscript": "~0.0.8",
+    "ffmpeg-static": "~5.1.0",
+    "express": "^4.18.1",
+    "dotenv": "16.0.2",
+    "ms": "2.1.3"
+  },
+  "engines": {
+    "node": ">=16.9"
   }
 }
