@@ -9,5 +9,5 @@ services:
       PLAYING: "+help | music"
       QUALITY: "highestaudio"
       MAXVOL: 200
-      AUTO_LEAVE: true
-      DISPLAY_VOICE_STATE: true
+      AUTO_LEAVE: "true"
+      DISPLAY_VOICE_STATE: "true"
