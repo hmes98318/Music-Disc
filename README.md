@@ -20,7 +20,7 @@ Supports **YouTube**, **Spotify**, **SoundCloud** streams.
 
 ### Clone the repository
 ```
-git clone -b v1.2.0 https://github.com/hmes98318/Music-Disc.git
+git clone -b v1.2.1 https://github.com/hmes98318/Music-Disc.git
 ```
 or [**click here**](https://github.com/hmes98318/Music-Disc/releases) to download  
 
@@ -65,7 +65,7 @@ node index.js
 version: '3.8'
 services:
   music-disc:
-    image: hmes98318/music-disc:1.2.0
+    image: hmes98318/music-disc:1.2.1
     restart: always
     environment:
       TOKEN: "your_token"
