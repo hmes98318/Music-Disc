@@ -1,5 +1,6 @@
 const Discord = require('discord.js');
 const os = require('os');
+const { exec } = require('child_process');
 
 
 module.exports = async (client) => {
