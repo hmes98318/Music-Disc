@@ -28,7 +28,6 @@ client.config = config;
 
 client.config.prefix = process.env.PREFIX || config.prefix;
 client.config.playing = process.env.PLAYING || config.playing;
-client.config.quality = process.env.QUALITY || config.quality;
 client.config.maxVol = process.env.MAXVOL || config.maxVol;
 client.config.autoLeave = process.env.AUTO_LEAVE === 'true' ? true : false || config.autoLeave;
 client.config.displayVoiceState = process.env.DISPLAY_VOICE_STATE === 'true' ? true : false || config.displayVoiceState;
@@ -38,7 +37,7 @@ client.commands = new Collection();
 client.player = new Player(client, {
     ytdlOptions: {
         filter: 'audioonly',
-        quality: client.config.quality,
+        quality: 'highestaudio',
         highWaterMark: 1 << 25
     }
 });
