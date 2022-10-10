@@ -43,7 +43,6 @@ TOKEN = "your_token"
     "name": "Music Disc",
     "prefix": "+",
     "playing": "+help | music",
-    "quality": "highestaudio",
     "maxVol": 200,
     "autoLeave": true,
     "displayVoiceState": true
