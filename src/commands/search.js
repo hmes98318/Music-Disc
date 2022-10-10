@@ -34,12 +34,13 @@ module.exports = {
 
         let title = `Searched Music: ${args.join(' ')}`
         const maxTracks = res.tracks.slice(0, 5);
-        let description = `${maxTracks.map((track, i) => `**${i + 1}**. ${track.title} | ${track.author}`).join('\n\n')}\n\nChoose a song from **1** - **${maxTracks.length}** to send or enter others to cancel selection. ⬇️`;
+        let description = `${maxTracks.map((track, i) => `**${i + 1}**. ${track.title} | ${track.author}`).join('\n\n')}`;
 
-        message.channel.send({ embeds: [embed.Embed_search(title, description)] });
+        const instruction = `Choose a song from **1** to **${maxTracks.length}** to send or enter others to cancel selection. ⬇️`;
+        await message.channel.send({ embeds: [embed.Embed_search(title, description)], content: instruction });
 
         const collector = message.channel.createMessageCollector({
-            time: 15000,
+            time: 10000, // 10s
             errors: ['time'],
             filter: m => m.author.id === message.author.id
         });
@@ -49,7 +50,7 @@ module.exports = {
             const value = parseInt(query.content);
 
             if (!value || value <= 0 || value > maxTracks.length)
-                return message.channel.send(`✅ | Call cancelled.`) && collector.stop();
+                return message.channel.send(`✅ | Cancelled search.`) && collector.stop();
 
             collector.stop();
 
@@ -60,13 +61,12 @@ module.exports = {
                 await client.player.deleteQueue(message.guild.id);
                 return message.channel.send(`❌ | I can't join audio channel.`);
             }
-
-            await message.react('👍');
-
             queue.addTrack(res.tracks[Number(query.content) - 1]);
 
             if (!queue.playing)
                 await queue.play();
+
+            return query.react('👍');
         });
 
         collector.on('end', (msg, reason) => {
