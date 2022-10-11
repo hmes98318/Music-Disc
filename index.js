@@ -3,10 +3,12 @@
 const fs = require('fs');
 const { Client, GatewayIntentBits, Partials, Collection } = require('discord.js');
 const { Player } = require('discord-player');
+const express = require('express')
 require('dotenv').config();
 
 const config = require('./config.json');
 const embed = require('./src/embeds/embeds');
+const { resolve } = require('path');
 
 
 
@@ -31,6 +33,7 @@ client.config.playing = process.env.PLAYING || config.playing;
 client.config.maxVol = process.env.MAXVOL || config.maxVol;
 client.config.autoLeave = process.env.AUTO_LEAVE === 'true' ? true : false || config.autoLeave;
 client.config.displayVoiceState = process.env.DISPLAY_VOICE_STATE === 'true' ? true : false || config.displayVoiceState;
+client.config.port = process.env.PORT || config.port;
 
 
 client.commands = new Collection();
@@ -41,45 +44,89 @@ client.player = new Player(client, {
         highWaterMark: 1 << 25
     }
 });
-
-client.login(process.env.TOKEN);
-
 const player = client.player;
 
 
-const events = fs.readdirSync('./src/events/').filter(file => file.endsWith('.js'));
-for (const file of events) {
-    const event = require(`./src/events/${file}`);
-    console.log(`-> Loaded event ${file.split('.')[0]}`);
-
-    client.on(file.split('.')[0], event.bind(null, client));
-    delete require.cache[require.resolve(`./src/events/${file}`)];
-};
 
 
-console.log(`-> Loaded commands ......`);
+const loadEvents = () => {
+    return new Promise((resolve, reject) => {
+        const events = fs.readdirSync('./src/events/').filter(file => file.endsWith('.js'));
+        for (const file of events) {
+            try {
+                const event = require(`./src/events/${file}`);
+                console.log(`-> Loaded event ${file.split('.')[0]}`);
 
-fs.readdir('./src/commands/', (err, files) => {
-    console.log(`+-------------------------------+`);
-    if (err)
-        return console.log('Could not find any commands!');
+                client.on(file.split('.')[0], event.bind(null, client));
+                delete require.cache[require.resolve(`./src/events/${file}`)];
+            } catch (error) {
+                reject(error);
+            }
+        };
 
-    const jsFiles = files.filter(file => file.endsWith('.js'));
+        resolve();
+    })
+}
 
-    if (jsFiles.length <= 0)
-        return console.log('Could not find any commands!');
 
-    for (const file of jsFiles) {
-        const command = require(`./src/commands/${file}`);
+const loadFramework = () => {
+    console.log(`-> loading web framework ......`);
+    return new Promise((resolve, reject) => {
+        const app = express();
+        const port = client.config.port || 33333;
 
-        console.log(`| Loaded Command ${command.name.toLowerCase()}   \t|`);
+        app.listen(port, function () {
+            console.log(`Server start listening port on ${port}`);
+        })
 
-        client.commands.set(command.name.toLowerCase(), command);
-        delete require.cache[require.resolve(`./src/commands/${file}`)];
-    };
-    console.log(`+-------------------------------+`);
-    console.log('-- loading all files finished --');
-});
+        app.get('/', function (req, res) {
+            res.send('200 ok.')
+        })
+
+        resolve();
+    })
+}
+
+
+const loadCommands = () => {
+    console.log(`-> loading commands ......`);
+    return new Promise((resolve, reject) => {
+        fs.readdir('./src/commands/', (err, files) => {
+            console.log(`+-------------------------------+`);
+            if (err)
+                return console.log('Could not find any commands!');
+
+            const jsFiles = files.filter(file => file.endsWith('.js'));
+
+            if (jsFiles.length <= 0)
+                return console.log('Could not find any commands!');
+
+            for (const file of jsFiles) {
+                try {
+                    const command = require(`./src/commands/${file}`);
+
+                    console.log(`| Loaded Command ${command.name.toLowerCase()}   \t|`);
+
+                    client.commands.set(command.name.toLowerCase(), command);
+                    delete require.cache[require.resolve(`./src/commands/${file}`)];
+                } catch (error) {
+                    reject(error);
+                }
+            };
+            console.log(`+-------------------------------+`);
+            console.log('-- loading Commands finished --');
+
+            resolve();
+        });
+    })
+}
+
+
+Promise.all([loadEvents(), loadFramework(), loadCommands()])
+    .then(function () {
+        console.log('*** All loaded successfully ***');
+        client.login(process.env.TOKEN);
+    });
 
 
 
