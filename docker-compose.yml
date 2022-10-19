@@ -7,6 +7,6 @@ services:
       TOKEN: "your_token"
       PREFIX: "+"
       PLAYING: "+help | music"
-      MAXVOL: 200
+      DEFAULTVOLUME: 50
       AUTO_LEAVE: "true"
       DISPLAY_VOICE_STATE: "true"
