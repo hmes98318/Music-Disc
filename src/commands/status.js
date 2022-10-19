@@ -12,7 +12,8 @@ module.exports = {
                 client.status.os_version,
                 client.status.node_version,
                 client.status.discord_version,
-                os.cpus()[0].model, Usage(),
+                client.status.cpu, 
+                Usage(),
                 Math.round((os.totalmem() - os.freemem()) / (1000 * 1000)) + 'MB',
                 client.ws.ping
             )]

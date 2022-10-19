@@ -1,20 +1,35 @@
 const Discord = require('discord.js');
+const package = require('../../package.json');
 const os = require('os');
 const { exec } = require('child_process');
 
 
+const color = { white: '\x1B[0m', cyan: '\x1B[36m' };
+
+
 module.exports = async (client) => {
-    console.log(`>>> Logged in as ${client.user.username}`);
-
-    client.user.setActivity(client.config.playing);
-
     client.status = {
         uptime: new Date(),
         os_version: await OSversion(),
         node_version: process.version,
-        discord_version: `v${Discord.version}`
+        discord_version: `v${Discord.version}`,
+        bot_version: `v${package.version}`,
+        cpu: `${os.cpus()[0].model}`
     };
+
+
+    console.log(`+-----------------------+`);
+    console.log(`| ${client.config.name}: ${color.cyan}${client.status.bot_version}${color.white} \t|`);
+    console.log(`| Node.js: ${color.cyan}${client.status.node_version}${color.white} \t|`);
+    console.log(`| Discord.js: ${color.cyan}${client.status.discord_version}${color.white} \t|`);
+    console.log(`+-----------------------+`);
+
+
+    client.user.setActivity(client.config.playing);
+    console.log(`>>> Logged in as ${client.user.username}`);
 };
+
+
 
 
 function OSversion() {

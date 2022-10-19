@@ -8,7 +8,6 @@ require('dotenv').config();
 
 const config = require('./config.json');
 const embed = require('./src/embeds/embeds');
-const { resolve } = require('path');
 
 
 
