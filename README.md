@@ -65,7 +65,7 @@ node index.js
 version: '3.8'
 services:
   music-disc:
-    image: hmes98318/music-disc:latest
+    image: hmes98318/music-disc:1.2.2
     container_name: music-disc
     restart: always
     environment:
