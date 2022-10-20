@@ -12,7 +12,7 @@ Supports **YouTube**, **Spotify**, **SoundCloud** streams.
 
 
 ### Reference version  
-[**node.js  `v16.17.1`**](https://nodejs.org/en/)  
+[**node.js  `v16.18.0`**](https://nodejs.org/en/)  
 [**discord.js  `v14.5.0`**](https://www.npmjs.com/package/discord.js)  
 
 
@@ -20,7 +20,7 @@ Supports **YouTube**, **Spotify**, **SoundCloud** streams.
 
 ### Clone the repository
 ```
-git clone -b v1.2.1 https://github.com/hmes98318/Music-Disc.git
+git clone -b v1.2.2 https://github.com/hmes98318/Music-Disc.git
 ```
 or [**click here**](https://github.com/hmes98318/Music-Disc/releases) to download  
 
@@ -43,9 +43,10 @@ TOKEN = "your_token"
     "name": "Music Disc",
     "prefix": "+",
     "playing": "+help | music",
-    "maxVol": 200,
+    "defaultVolume": 50,
     "autoLeave": true,
-    "displayVoiceState": true
+    "displayVoiceState": true,
+    "port": 33333
 }
 ```
 **`autoLeave`** : After the music finished, can choose whether let the bot leave voice channel automatically or not.  
@@ -57,22 +58,25 @@ node index.js
 ```
 
 
-## Deploying with Docker  
+## Deploying with Docker Compose  
 **image link** : https://hub.docker.com/r/hmes98318/music-disc  
 ### put your Token into [`docker-compose.yml`](./docker-compose.yml)
 ```yml
 version: '3.8'
 services:
   music-disc:
-    image: hmes98318/music-disc:1.2.1
+    image: hmes98318/music-disc:latest
+    container_name: music-disc
     restart: always
     environment:
       TOKEN: "your_token"
       PREFIX: "+"
       PLAYING: "+help | music"
-      MAXVOL: 200
-      AUTO_LEAVE: true
-      DISPLAY_VOICE_STATE: true
+      DEFAULTVOLUME: 50
+      AUTO_LEAVE: "true"
+      DISPLAY_VOICE_STATE: "true"
+    ports:
+      - 33333:33333
 ```
 
 ### Start the container  
