@@ -1,6 +1,12 @@
-FROM node:16.17.1-slim
+FROM rockylinux:9.0.20220720
 
 WORKDIR /src/bot
+
+RUN dnf update -y && dnf install curl -y
+
+RUN cd ~ && curl -sL https://rpm.nodesource.com/setup_16.x -o nodesource_setup.sh && bash nodesource_setup.sh
+
+RUN dnf install nodejs -y
 
 COPY ./ /src/bot
 
