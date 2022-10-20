@@ -1,7 +1,8 @@
 version: '3.8'
 services:
   music-disc:
-    image: hmes98318/music-disc:1.2.1
+    image: hmes98318/music-disc:latest
+    container_name: music-disc
     restart: always
     environment:
       TOKEN: "your_token"
@@ -10,3 +11,5 @@ services:
       DEFAULTVOLUME: 50
       AUTO_LEAVE: "true"
       DISPLAY_VOICE_STATE: "true"
+    ports:
+      - 33333:33333
