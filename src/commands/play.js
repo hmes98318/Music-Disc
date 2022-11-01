@@ -25,11 +25,7 @@ module.exports = {
             leaveOnStop: client.config.autoLeave,
             leaveOnEmpty: client.config.autoLeave,
             initialVolume: client.config.defaultVolume,
-            ytdlOptions: {
-                filter: 'audioonly',
-                quality: 'highestaudio',
-                highWaterMark: 1 << 25
-            }
+            ytdlOptions: client.config.ytdlOptions
         });
 
         try {

@@ -34,14 +34,16 @@ client.config.autoLeave = process.env.AUTO_LEAVE === 'true' ? true : false || co
 client.config.displayVoiceState = process.env.DISPLAY_VOICE_STATE === 'true' ? true : false || config.displayVoiceState;
 client.config.port = process.env.PORT || config.port;
 
+client.config.ytdlOptions = {
+    filter: 'audioonly',
+    quality: 'highestaudio',
+    highWaterMark: 1 << 27 // about 134 mins
+}
+
 
 client.commands = new Collection();
 client.player = new Player(client, {
-    ytdlOptions: {
-        filter: 'audioonly',
-        quality: 'highestaudio',
-        highWaterMark: 1 << 25
-    }
+    ytdlOptions: client.config.ytdlOptions
 });
 const player = client.player;
 
