@@ -87,6 +87,6 @@ docker-compose up -d
 
 ## Deploying with Replit  
 Watch it by clicking on the image down below  
-[![Music-Disc-with-Replit](https://img.youtube.com/vi/Q3JSz0N4N48/0.jpg)](https://www.youtube.com/watch?v=Q3JSz0N4N48)  
+[![Music-Disc-with-Replit](https://img.youtube.com/vi/WH5aSHIebcc/0.jpg)](https://youtu.be/WH5aSHIebcc)  
 
 
