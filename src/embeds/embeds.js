@@ -24,6 +24,15 @@ module.exports = {
         return Embed_queue;
     },
 
+    Embed_remove: function (status, music_title) {
+        const Embed_remove = new Discord.EmbedBuilder()
+            .setColor('#FFFFFF')
+            .setTitle(status)
+            .setDescription(`${music_title}`)
+            .setTimestamp()
+        return Embed_remove;
+    },
+
     Embed_save: function (music_title, music_url, music_thumbnail, description) {
         const Embed_queue = new Discord.EmbedBuilder()
             .setColor('#FFFFFF')

@@ -20,7 +20,7 @@ module.exports = {
             for (var i = 0; i <= 9; i++) {
                 queueMsg += `${i + 1}. ${queue.tracks[i].title}\n`;
             }
-            queueMsg += `and ${queue.tracks.length - 9} other songs`;
+            queueMsg += `and ${queue.tracks.length - 10} other songs`;
         }
         else {
             for (var i = 0; i < queue.tracks.length; i++) {
@@ -42,10 +42,18 @@ module.exports = {
             const index = parseInt(query.content);
 
             if (!index || index <= 0 || index > queue.tracks.length)
-                return message.channel.send(`✅ | Cancelled remove.`) && collector.stop();
+                return message.reply({
+                    content: `✅ | Cancelled remove.`,
+                    allowedMentions: { repliedUser: false }
+                }) && collector.stop();
 
             collector.stop();
 
+
+            query.reply({
+                embeds: [embed.Embed_remove("Removed Music", queue.tracks[index - 1].title)],
+                allowedMentions: { repliedUser: false }
+            });
             queue.remove(index - 1);
             return query.react('👍');
         });
