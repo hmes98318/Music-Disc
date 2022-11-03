@@ -1,12 +1,13 @@
 const Discord = require('discord.js');
 const bot_name = require('../../config.json').name;
+const color = require('../../config.json').embedsColor;
 const bot_version = require('../../package.json').version;
 const github = 'https://github.com/hmes98318/Music-Disc';
 
 module.exports = {
     Embed_play: function (status, music_title, music_url, music_length, music_thumbnail, settings) {
         const Embed_play = new Discord.EmbedBuilder()
-            .setColor('#FFFFFF')
+            .setColor(color)
             .setTitle(music_title)
             .setURL(music_url)
             .setThumbnail(music_thumbnail)
@@ -17,7 +18,7 @@ module.exports = {
 
     Embed_queue: function (status, nowplay, queueMsg) {
         const Embed_queue = new Discord.EmbedBuilder()
-            .setColor('#FFFFFF')
+            .setColor(color)
             .setTitle(status)
             .addFields({ name: nowplay, value: queueMsg })
             .setTimestamp()
@@ -26,7 +27,7 @@ module.exports = {
 
     Embed_remove: function (status, music_title) {
         const Embed_remove = new Discord.EmbedBuilder()
-            .setColor('#FFFFFF')
+            .setColor(color)
             .setTitle(status)
             .setDescription(`${music_title}`)
             .setTimestamp()
@@ -35,7 +36,7 @@ module.exports = {
 
     Embed_save: function (music_title, music_url, music_thumbnail, description) {
         const Embed_queue = new Discord.EmbedBuilder()
-            .setColor('#FFFFFF')
+            .setColor(color)
             .setTitle(music_title)
             .setURL(music_url)
             .setThumbnail(music_thumbnail)
@@ -46,7 +47,7 @@ module.exports = {
 
     Embed_search: function (music_title, description) {
         const Embed_cantFindSong = new Discord.EmbedBuilder()
-            .setColor('#FFFFFF')
+            .setColor(color)
             .setTitle(music_title)
             .setDescription(description)
             .setTimestamp()
@@ -55,7 +56,7 @@ module.exports = {
 
     Embed_help: function (help_title, help_thumbnail, description) {
         const Embed_help = new Discord.EmbedBuilder()
-            .setColor('#FFFFFF')
+            .setColor(color)
             .setTitle(help_title)
             .setURL(github)
             .setThumbnail(help_thumbnail)
@@ -66,7 +67,7 @@ module.exports = {
 
     Embed_status: function (uptime, os, node_v, djs_v, cpu, cpu_usage, ram, ping) {
         const Embed_status = new Discord.EmbedBuilder()
-            .setColor('#FFFFFF')
+            .setColor(color)
             .setTitle(`${bot_name} v${bot_version}`)
             .setURL(github)
             .addFields(
@@ -79,7 +80,7 @@ module.exports = {
 
     Embed_server: function (serverlist) {
         const Embed_server = new Discord.EmbedBuilder()
-            .setColor('#FFFFFF')
+            .setColor(color)
             .setTitle(`Servers that have **${bot_name}**`, '')
             .setDescription(serverlist)
         return Embed_server;
@@ -87,7 +88,7 @@ module.exports = {
 
     Embed_ping: function (ping) {
         const Embed_ping = new Discord.EmbedBuilder()
-            .setColor('#FFFFFF')
+            .setColor(color)
             .setDescription(`Ping : **${ping}**ms.`)
         return Embed_ping;
     }
