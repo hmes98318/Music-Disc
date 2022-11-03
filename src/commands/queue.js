@@ -28,6 +28,8 @@ module.exports = {
             queueMsg += `${i+1}. ${queue.tracks[i].title}\n`;
           }
         }
-        return message.channel.send({ embeds: [embed.Embed_queue("Queue List", nowplay, queueMsg)] });
+
+        let loopStatus = queue.repeatMode ? (queue.repeatMode === 2 ? 'All' : 'One') : 'Off';
+        return message.channel.send({ embeds: [embed.Embed_queue("Queue List", nowplay, queueMsg, loopStatus)] });
     },
 };

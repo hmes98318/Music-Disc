@@ -16,12 +16,13 @@ module.exports = {
         return Embed_play;
     },
 
-    Embed_queue: function (status, nowplay, queueMsg) {
+    Embed_queue: function (status, nowplay, queueMsg, loopStatus) {
         const Embed_queue = new Discord.EmbedBuilder()
             .setColor(color)
             .setTitle(status)
             .addFields({ name: nowplay, value: queueMsg })
             .setTimestamp()
+            .setFooter({ text: `Loop: ${loopStatus}`});
         return Embed_queue;
     },
 

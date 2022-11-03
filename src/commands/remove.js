@@ -28,7 +28,8 @@ module.exports = {
             }
         }
         const instruction = `Choose a song from **1** to **${queue.tracks.length}** to **remove** or enter others to cancel selection. ⬇️`
-        await message.channel.send({ embeds: [embed.Embed_queue("Remove List", nowplay, queueMsg)], content: instruction });
+        let loopStatus = queue.repeatMode ? (queue.repeatMode === 2 ? 'All' : 'ONE') : 'Off';
+        await message.channel.send({ embeds: [embed.Embed_queue("Remove List", nowplay, queueMsg, loopStatus)], content: instruction });
 
 
         const collector = message.channel.createMessageCollector({
