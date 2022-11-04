@@ -12,15 +12,15 @@ Supports **YouTube**, **Spotify**, **SoundCloud** streams.
 
 
 ### Reference version  
-[**node.js  `v16.18.0`**](https://nodejs.org/en/)  
-[**discord.js  `v14.5.0`**](https://www.npmjs.com/package/discord.js)  
+[**node.js  `v18.12.0`**](https://nodejs.org/en/)  
+[**discord.js  `v14.6.0`**](https://www.npmjs.com/package/discord.js)  
 
 
 ## Deploying with node.js
 
 ### Clone the repository
 ```
-git clone -b v1.2.2 https://github.com/hmes98318/Music-Disc.git
+git clone -b v1.2.3 https://github.com/hmes98318/Music-Disc.git
 ```
 or [**click here**](https://github.com/hmes98318/Music-Disc/releases) to download  
 
@@ -43,6 +43,7 @@ TOKEN = "your_token"
     "name": "Music Disc",
     "prefix": "+",
     "playing": "+help | music",
+    "color": "#FFFFFF",
     "defaultVolume": 50,
     "autoLeave": true,
     "displayVoiceState": true,
@@ -65,13 +66,14 @@ node index.js
 version: '3.8'
 services:
   music-disc:
-    image: hmes98318/music-disc:1.2.2
+    image: hmes98318/music-disc:1.2.3
     container_name: music-disc
     restart: always
     environment:
       TOKEN: "your_token"
       PREFIX: "+"
       PLAYING: "+help | music"
+      COLOR: "#FFFFFF"
       DEFAULTVOLUME: 50
       AUTO_LEAVE: "true"
       DISPLAY_VOICE_STATE: "true"
