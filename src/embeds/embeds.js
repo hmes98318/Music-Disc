@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 const bot_name = require('../../config.json').name;
-const color = require('../../config.json').embedsColor;
+const color = process.env.COLOR || require('../../config.json').color;
 const bot_version = require('../../package.json').version;
 const github = 'https://github.com/hmes98318/Music-Disc';
 

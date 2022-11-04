@@ -2,7 +2,7 @@
     "name": "Music Disc",
     "prefix": "+",
     "playing": "+help | music",
-    "embedsColor": "#FFFFFF",
+    "color": "#FFFFFF",
     "defaultVolume": 50,
     "autoLeave": true,
     "displayVoiceState": true,
