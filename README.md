@@ -12,7 +12,7 @@ Supports **YouTube**, **Spotify**, **SoundCloud** streams.
 
 
 ### Reference version  
-[**node.js  `v18.12.0`**](https://nodejs.org/en/)  
+[**node.js  `v18.12.1`**](https://nodejs.org/en/)  
 [**discord.js  `v14.6.0`**](https://www.npmjs.com/package/discord.js)  
 
 
