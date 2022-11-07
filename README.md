@@ -7,7 +7,7 @@
 <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node%20Version->=16.13.0-brightgreen?style=for-the-badge&logo=Node.js"></a> 
 <a href="https://github.com/hmes98318/Music-Disc/blob/main/LICENSE"><img alt="GitHub" src="https://img.shields.io/github/license/hmes98318/Music-Disc?style=for-the-badge&color=brightgreen"></a>  
 
-### A Discord Music Bot  
+### Discord.js v14 Music Bot  
 Supports **YouTube**, **Spotify**, **SoundCloud** streams.
 
 
