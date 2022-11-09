@@ -1,12 +1,14 @@
 const embed = require('../embeds/embeds');
 
 module.exports = (client, int) => {
-    if (!int.isButton())
-        return;
+    if (!int.isButton()) return;
 
     const queue = client.player.getQueue(int.guildId);
-    const track = queue.current;
 
+    if (!queue || !queue.playing) return int.reply({ content: `❌ | There is no music currently playing.`, ephemeral: true, components: [] });
+
+
+    const track = queue.current;
     const timestamp = queue.getPlayerTimestamp();
     const trackDuration = timestamp.progress == 'Forever' ? 'Endless (Live)' : track.duration;
     let description = `Author : **${track.author}**\nDuration **${trackDuration}**`;
