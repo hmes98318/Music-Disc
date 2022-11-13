@@ -77,8 +77,10 @@ module.exports = {
             });
 
             collector.on("end", (collected, reason) => {
-                if (reason == "time" && collected.size == 0)
+                if (reason == "time" && collected.size == 0) {
+                    if ((!queue.current || !queue.playing) && queue.connection) queue.destroy();
                     return msg.edit({ content: "❌ | Time expired.", components: [] });
+                }
             });
         }
     },
