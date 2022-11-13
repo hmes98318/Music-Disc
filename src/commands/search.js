@@ -1,6 +1,5 @@
 const { QueryType } = require('discord-player');
-const embed = require('../embeds/embeds');
-
+let { SelectMenuBuilder, ActionRowBuilder } = require("discord.js");
 
 module.exports = {
     name: 'search',
@@ -28,47 +27,61 @@ module.exports = {
             ytdlOptions: client.config.ytdlOptions
         });
 
+        try {
+            if (!queue.connection)
+                await queue.connect(message.member.voice.channel);
+        } catch {
+            await client.player.deleteQueue(message.guild.id);
+            return message.channel.send(`❌ | I can't join audio channel.`);
+        }
 
-        let title = `Searched Music: ${args.join(' ')}`
-        const maxTracks = res.tracks.slice(0, 5);
-        let description = `${maxTracks.map((track, i) => `**${i + 1}**. ${track.title} | ${track.author}`).join('\n\n')}`;
+        await message.react('👍');
 
-        const instruction = `Choose a song from **1** to **${maxTracks.length}** to send or enter others to cancel selection. ⬇️`;
-        await message.channel.send({ embeds: [embed.Embed_search(title, description)], content: instruction });
-
-        const collector = message.channel.createMessageCollector({
-            time: 10000, // 10s
-            errors: ['time'],
-            filter: m => m.author.id === message.author.id
-        });
-
-        collector.on('collect', async (query) => {
-
-            const value = parseInt(query.content);
-
-            if (!value || value <= 0 || value > maxTracks.length)
-                return message.channel.send(`✅ | Cancelled search.`) && collector.stop();
-
-            collector.stop();
-
-            try {
-                if (!queue.connection)
-                    await queue.connect(message.member.voice.channel);
-            } catch {
-                await client.player.deleteQueue(message.guild.id);
-                return message.channel.send(`❌ | I can't join audio channel.`);
-            }
-            queue.addTrack(res.tracks[Number(query.content) - 1]);
+        if (res.playlist || res.tracks.length == 1) {
+            queue.addTracks(res.tracks);
 
             if (!queue.playing)
                 await queue.play();
 
-            return query.react('👍');
-        });
+            return message.reply("✅ | Music added.");
+        }
+        else {
+            let select = new SelectMenuBuilder()
+                .setCustomId("musicSelect")
+                .setPlaceholder("Select the music")
+                .setOptions(res.tracks.map(x => {
+                    return {
+                        label: x.title.length >= 25 ? x.title.substring(0, 22) + "..." : x.title,
+                        description: x.title.length >= 25 ? `${x.title} [${x.duration}]`.substring(0, 100) : `Duration: ${x.duration}`,
+                        value: x.id
+                    }
+                }))
+            let row = new ActionRowBuilder().addComponents(select);
+            let msg = await message.reply({ components: [row] });
 
-        collector.on('end', (msg, reason) => {
-            if (reason === 'time')
-                return message.channel.send(`❌ | Song search time expired`);
-        });
+            const collector = msg.createMessageComponentCollector({
+                time: 20000, // 20s
+                filter: i => i.user.id === message.author.id
+            });
+
+            collector.on("collect", async i => {
+                if (i.customId != "musicSelect") return;
+
+                queue.addTrack(res.tracks.find(x => x.id == i.values[0]));
+
+                if (!queue.playing)
+                    await queue.play();
+
+                i.deferUpdate();
+                return msg.edit({ content: "✅ | Music added.", components: [] });
+            });
+
+            collector.on("end", (collected, reason) => {
+                if (reason == "time" && collected.size == 0) {
+                    if ((!queue.current || !queue.playing) && queue.connection) queue.destroy();
+                    return msg.edit({ content: "❌ | Time expired.", components: [] });
+                }
+            });
+        }
     },
 };
