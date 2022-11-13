@@ -4,6 +4,7 @@
     "playing": "+help | music",
     "color": "#FFFFFF",
     "defaultVolume": 50,
+    "maxVolume": 100,
     "autoLeave": true,
     "displayVoiceState": true,
     "port": 33333

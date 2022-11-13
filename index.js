@@ -30,6 +30,7 @@ client.config = config;
 client.config.prefix = process.env.PREFIX || config.prefix;
 client.config.playing = process.env.PLAYING || config.playing;
 client.config.defaultVolume = Number(process.env.DEFAULTVOLUME || config.defaultVolume);
+client.config.maxVolume = Number(process.env.MAXVOLUME || config.maxVolume);
 client.config.autoLeave = process.env.AUTO_LEAVE === 'true' ? true : false || config.autoLeave;
 client.config.displayVoiceState = process.env.DISPLAY_VOICE_STATE === 'true' ? true : false || config.displayVoiceState;
 client.config.port = process.env.PORT || config.port;
