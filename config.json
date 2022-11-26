@@ -6,7 +6,7 @@
     "defaultVolume": 50,
     "maxVolume": 100,
     "autoLeave": true,
-    "autoLeaveCooldown": 5000,
+    "autoLeaveCooldown": 1000,
     "displayVoiceState": true,
     "port": 33333
 }
