@@ -22,8 +22,10 @@ module.exports = {
         const queue = await client.player.createQueue(message.guild, {
             metadata: message.channel,
             leaveOnEnd: client.config.autoLeave,
+            leaveOnEndCooldown: client.config.autoLeaveCooldown,
             leaveOnStop: client.config.autoLeave,
             leaveOnEmpty: client.config.autoLeave,
+            leaveOnEmptyCooldown: client.config.autoLeaveCooldown,
             initialVolume: client.config.defaultVolume,
             ytdlOptions: client.config.ytdlOptions
         });
