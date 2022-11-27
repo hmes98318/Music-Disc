@@ -18,11 +18,11 @@ module.exports = async (client) => {
     };
 
 
-    console.log(`+-----------------------+`);
-    console.log(`| ${client.config.name}: ${color.cyan}${client.status.bot_version}${color.white} \t|`);
-    console.log(`| Node.js: ${color.cyan}${client.status.node_version}${color.white} \t|`);
-    console.log(`| Discord.js: ${color.cyan}${client.status.discord_version}${color.white} \t|`);
-    console.log(`+-----------------------+`);
+    console.log(`+---------------------+`);
+    console.log(`| ${client.config.name}: ${color.cyan}${client.status.bot_version}${color.white}\t|`);
+    console.log(`| Node.js: ${color.cyan}${client.status.node_version}${color.white}\t|`);
+    console.log(`| Discord.js: ${color.cyan}${client.status.discord_version}${color.white}\t|`);
+    console.log(`+---------------------+`);
 
 
     client.user.setActivity(client.config.playing);

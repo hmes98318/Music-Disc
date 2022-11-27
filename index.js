@@ -5,6 +5,7 @@ const { Client, GatewayIntentBits, Partials, Collection } = require('discord.js'
 const { Player } = require('discord-player');
 const express = require('express')
 require('dotenv').config();
+require('console-stamp')(console, { format: ':date(yyyy/mm/dd HH:MM:ss.l)' });
 
 const config = require('./config.json');
 const embed = require('./src/embeds/embeds');
@@ -32,7 +33,7 @@ client.config.playing = process.env.PLAYING || config.playing;
 client.config.defaultVolume = Number(process.env.DEFAULTVOLUME || config.defaultVolume);
 client.config.maxVolume = Number(process.env.MAXVOLUME || config.maxVolume);
 client.config.autoLeave = process.env.AUTO_LEAVE === 'true' ? true : false || config.autoLeave;
-client.config.autoLeaveCooldown = Number(process.env.AUTO_LEAVE_COOLDOWN  || config.autoLeaveCooldown);
+client.config.autoLeaveCooldown = Number(process.env.AUTO_LEAVE_COOLDOWN || config.autoLeaveCooldown);
 client.config.displayVoiceState = process.env.DISPLAY_VOICE_STATE === 'true' ? true : false || config.displayVoiceState;
 client.config.port = process.env.PORT || config.port;
 
@@ -95,7 +96,7 @@ const loadCommands = () => {
     console.log(`-> loading commands ......`);
     return new Promise((resolve, reject) => {
         fs.readdir('./src/commands/', (err, files) => {
-            console.log(`+-------------------------------+`);
+            console.log(`+-----------------------------+`);
             if (err)
                 return console.log('Could not find any commands!');
 
@@ -108,7 +109,7 @@ const loadCommands = () => {
                 try {
                     const command = require(`./src/commands/${file}`);
 
-                    console.log(`| Loaded Command ${command.name.toLowerCase()}   \t|`);
+                    console.log(`| Loaded Command ${command.name.toLowerCase()}  \t|`);
 
                     client.commands.set(command.name.toLowerCase(), command);
                     delete require.cache[require.resolve(`./src/commands/${file}`)];
@@ -116,7 +117,7 @@ const loadCommands = () => {
                     reject(error);
                 }
             };
-            console.log(`+-------------------------------+`);
+            console.log(`+-----------------------------+`);
             console.log('-- loading Commands finished --');
 
             resolve();

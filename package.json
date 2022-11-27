@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/hmes98318/Music-Disc#readme",
   "dependencies": {
+    "console-stamp": "^3.1.0",
     "discord-player": "~5.3.2",
     "discord.js": "^14.6.0",
     "dotenv": "16.0.2",
