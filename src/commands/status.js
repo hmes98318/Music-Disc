@@ -6,17 +6,18 @@ module.exports = {
     name: 'status',
     aliases: ['usage'],
     async execute(client, message) { //uptime, os, node_v, djs_v, cpu, cpu_usage, ram, ping
-        return message.channel.send({
+        return message.reply({
             embeds: [embed.Embed_status(
                 Uptime(client.status.uptime),
                 client.status.os_version,
                 client.status.node_version,
                 client.status.discord_version,
-                client.status.cpu, 
+                client.status.cpu,
                 Usage(),
                 Math.round((os.totalmem() - os.freemem()) / (1000 * 1000)) + 'MB',
                 client.ws.ping
-            )]
+            )],
+            allowedMentions: { repliedUser: false }
         });
     }
 }

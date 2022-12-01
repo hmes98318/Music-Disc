@@ -8,10 +8,10 @@ module.exports = {
         const queue = client.player.getQueue(message.guild.id);
 
         if (!queue || !queue.playing)
-            return message.channel.send(`${message.author}, There is no music currently playing!. ❌`);
+            return message.reply({ content: `❌ | There is no music currently playing!.`, allowedMentions: { repliedUser: false } });
 
         const success = queue.setPaused(true);
 
-        return success ? message.react('⏸️') : message.channel.send(`❌ | Something went wrong.`);
+        return success ? message.react('⏸️') : message.reply({ content: `❌ | Something went wrong.`, allowedMentions: { repliedUser: false } });
     },
 };

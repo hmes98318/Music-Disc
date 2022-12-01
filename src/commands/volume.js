@@ -9,22 +9,22 @@ module.exports = {
         const queue = client.player.getQueue(message.guild.id);
 
         if (!queue || !queue.playing)
-            return message.channel.send(`❌ | There is no music currently playing.`);
+            return message.reply({ content: `❌ | There is no music currently playing.`, allowedMentions: { repliedUser: false } });
 
         await message.react('👍');
         const vol = parseInt(args[0]);
 
         if (!vol)
-            return message.channel.send(`Current volume: **${queue.volume}** 🔊\n**To change the volume, with \`1\` to \`${maxVolume}\` Type a number between.**`);
+            return message.reply({ content: `Current volume: **${queue.volume}** 🔊\n**To change the volume, with \`1\` to \`${maxVolume}\` Type a number between.**`, allowedMentions: { repliedUser: false } });
 
         if (queue.volume === vol)
-            return message.channel.send(`❌ | The volume you want to change is already the current volume.`);
+            return message.reply({ content: `❌ | The volume you want to change is already the current volume.`, allowedMentions: { repliedUser: false } });
 
         if (vol < 0 || vol > maxVolume)
-            return message.channel.send(`❌ | **Type a number from \`1\` to \`${maxVolume}\` to change the volume .**`);
+            return message.reply({ content: `❌ | **Type a number from \`1\` to \`${maxVolume}\` to change the volume .**`, allowedMentions: { repliedUser: false } });
 
         const success = queue.setVolume(vol);
-
-        return message.channel.send(success ? `🔊 **${vol}**/**${maxVolume}**%` : `❌ | Something went wrong.`);
+        const replymsg = success ? `🔊 **${vol}**/**${maxVolume}**%` : `❌ | Something went wrong.`;
+        return message.reply({ content: replymsg, allowedMentions: { repliedUser: false } });
     },
 };

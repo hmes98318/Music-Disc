@@ -11,14 +11,13 @@ module.exports = {
         const queue = client.player.getQueue(message.guild.id);
 
         if (!queue || !queue.playing)
-            return message.channel.send(`❌ | There is no music currently playing.`);
+            return message.reply({ content: `❌ | There is no music currently playing.`, allowedMentions: { repliedUser: false } });
 
         const track = queue.current;
 
         const timestamp = queue.getPlayerTimestamp();
         const trackDuration = timestamp.progress == 'Forever' ? 'Endless (Live)' : track.duration;
         let description = `Author : **${track.author}**\nDuration **${trackDuration}**`;
-
 
 
         let saveButton = new ButtonBuilder();
@@ -28,8 +27,6 @@ module.exports = {
         const row = new ActionRowBuilder().addComponents(saveButton)
 
 
-
         return message.channel.send({ embeds: [embed.Embed_save(track.title, track.url, track.thumbnail, description)], components: [row] });
-
     },
 };

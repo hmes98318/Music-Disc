@@ -10,13 +10,13 @@ module.exports = {
         const queue = client.player.getQueue(message.guild.id);
 
         if (!queue || !queue.playing)
-            return message.channel.send(`❌ | There is no music currently playing.`);
+            return message.reply({ content: `❌ | There is no music currently playing.`, allowedMentions: { repliedUser: false } });
 
         let mode = null;
         const methods = ['Off', 'Single', 'All'];
 
         if (!args[0])
-            return message.channel.send(`❌ | ${prefix}loop [all/one/off]`);
+            return message.reply({ content: `❌ | ${prefix}loop [all/one/off]`, allowedMentions: { repliedUser: false } });
 
         switch (args[0].toLowerCase()) {
             case 'off':
@@ -29,12 +29,11 @@ module.exports = {
                 mode = 2;
                 break;
             default:
-                return message.channel.send(`❌ | ${prefix}loop [all/one/off]`);
-                break;
+                return message.reply({ content: `❌ | ${prefix}loop [all/one/off]`, allowedMentions: { repliedUser: false } });
         }
         queue.setRepeatMode(mode);
 
         message.react('👍');
-        return message.channel.send(`Set loop to \`${methods[mode]}\``);
+        return message.reply({ content: `Set loop to \`${methods[mode]}\``, allowedMentions: { repliedUser: false } });
     },
 };

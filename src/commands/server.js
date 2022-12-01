@@ -10,6 +10,6 @@ module.exports = {
         client.guilds.cache.forEach((guild) => {
             serverlist = serverlist.concat(" - **" + guild.name + "** ID: " + guild.id + "\n")
         })
-        return message.channel.send({ embeds: [embed.Embed_server(serverlist)] });
+        return message.reply({ embeds: [embed.Embed_server(serverlist)], allowedMentions: { repliedUser: false } });
     },
 };

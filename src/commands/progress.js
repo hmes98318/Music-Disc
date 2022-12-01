@@ -8,14 +8,14 @@ module.exports = {
         const queue = client.player.getQueue(message.guild.id);
 
         if (!queue || !queue.playing)
-            return message.channel.send(`❌ | There is no music currently playing!. `);
+            return message.reply({ content: `❌ | There is no music currently playing!.`, allowedMentions: { repliedUser: false } });
 
         const progress = queue.createProgressBar();
         const timestamp = queue.getPlayerTimestamp();
 
         if (timestamp.progress == 'Infinity')
-            return message.channel.send(`❌ | This song is live streaming, no duration data to display.`);
+            return message.reply({ content: `❌ | This song is live streaming, no duration data to display.`, allowedMentions: { repliedUser: false } });
 
-        message.channel.send(`${progress} (**${timestamp.progress}**%)`);
+        message.reply(`${progress} (**${timestamp.progress}**%)`);
     },
 };

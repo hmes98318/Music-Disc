@@ -10,8 +10,8 @@ module.exports = {
         const queue = client.player.getQueue(message.guild.id);
 
 
-        if (!queue || !queue.playing) return message.channel.send(`❌ | There is no music currently playing.`);
-        if (!queue.tracks[0]) return message.channel.send(`❌ | No music in queue after current.`);
+        if (!queue || !queue.playing) return message.reply({ content: `❌ | There is no music currently playing.`, allowedMentions: { repliedUser: false } });
+        if (!queue.tracks[0]) return message.reply({ content: `❌ | No music in queue after current.`, allowedMentions: { repliedUser: false } });
 
 
         let nowplay = `Now Playing : ${queue.current.title}\n\n`;

@@ -6,6 +6,6 @@ module.exports = {
     utilisation: '{prefix}ping',
 
     execute(client, message) {
-        message.channel.send({embeds:[embed.Embed_ping(client.ws.ping)]});
+        message.reply({embeds:[embed.Embed_ping(client.ws.ping)],allowedMentions: { repliedUser: false }});
     },
 };

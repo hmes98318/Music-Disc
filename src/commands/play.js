@@ -9,7 +9,7 @@ module.exports = {
 
     async execute(client, message, args) {
         if (!args[0])
-            return message.channel.send(`❌ | Write the name of the music you want to search.`);
+            return message.reply({ content: `❌ | Write the name of the music you want to search.`, allowedMentions: { repliedUser: false } });
 
         const res = await client.player.search(args.join(' '), {
             requestedBy: message.member,
@@ -17,7 +17,7 @@ module.exports = {
         });
 
         if (!res || !res.tracks.length)
-            return message.channel.send(`❌ | No results found.`);
+            return message.reply({ content: `❌ | No results found.`, allowedMentions: { repliedUser: false } });
 
         const queue = await client.player.createQueue(message.guild, {
             metadata: message.channel,
@@ -35,7 +35,7 @@ module.exports = {
                 await queue.connect(message.member.voice.channel);
         } catch {
             await client.player.deleteQueue(message.guild.id);
-            return message.channel.send(`❌ | I can't join audio channel.`);
+            return message.reply({ content: `❌ | I can't join audio channel.`, allowedMentions: { repliedUser: false } });
         }
 
         await message.react('👍');

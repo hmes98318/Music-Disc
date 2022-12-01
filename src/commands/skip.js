@@ -8,7 +8,7 @@ module.exports = {
         const queue = client.player.getQueue(message.guild.id);
 
         if (!queue || !queue.playing)
-            return message.channel.send(`❌ | There is no music currently playing.`);
+            return message.reply({ content: `❌ | There is no music currently playing.`, allowedMentions: { repliedUser: false } });
 
 
         if (queue.repeatMode === 1) {

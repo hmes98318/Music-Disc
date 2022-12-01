@@ -9,14 +9,17 @@ module.exports = {
 
     async execute(client, message, args) {
 
-        if (!args[0]) return message.channel.send(`❌ | Please enter a valid song name.`);
+        if (!args[0])
+            return message.reply({ content: `❌ | Please enter a valid song name.`, allowedMentions: { repliedUser: false } });
 
         const res = await client.player.search(args.join(' '), {
             requestedBy: message.member,
             searchEngine: QueryType.AUTO
         });
 
-        if (!res || !res.tracks.length) return message.channel.send(`❌ | No search results found.`);
+        if (!res || !res.tracks.length)
+            return message.reply({ content: `❌ | No search results found.`, allowedMentions: { repliedUser: false } });
+
 
         const queue = await client.player.createQueue(message.guild, {
             metadata: message.channel,
@@ -34,7 +37,7 @@ module.exports = {
                 await queue.connect(message.member.voice.channel);
         } catch {
             await client.player.deleteQueue(message.guild.id);
-            return message.channel.send(`❌ | I can't join audio channel.`);
+            return message.reply({ content: `❌ | I can't join audio channel.`, allowedMentions: { repliedUser: false } });
         }
 
         await message.react('👍');
