@@ -3,6 +3,7 @@ module.exports = {
     aliases: ['rewind'],
     description: 'Back to previous song',
     voiceChannel: true,
+    options: [],
 
     async execute(client, message) {
         const queue = client.player.getQueue(message.guild.id);

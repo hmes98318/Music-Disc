@@ -3,6 +3,7 @@ module.exports = {
     aliases: [],
     description: 'Pause current song',
     voiceChannel: true,
+    options: [],
 
     execute(client, message) {
         const queue = client.player.getQueue(message.guild.id);

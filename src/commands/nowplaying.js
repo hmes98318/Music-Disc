@@ -6,6 +6,7 @@ module.exports = {
     aliases: ['np'],
     description: 'Show now playing song',
     voiceChannel: true,
+    options: [],
 
     execute(client, message) {
         const queue = client.player.getQueue(message.guild.id);

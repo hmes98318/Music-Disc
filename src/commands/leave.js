@@ -3,6 +3,7 @@ module.exports = {
     aliases: ['stop'],
     description: 'Leave current voice channel',
     voiceChannel: true,
+    options: [],
 
     execute(client, message) {
         const queue = client.player.getQueue(message.guild.id);

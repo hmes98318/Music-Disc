@@ -5,6 +5,7 @@ module.exports = {
     aliases: ['h'],
     showHelp: false,
     description: 'Get some command help',
+    options: [],
 
     execute(client, message, args) {
 
