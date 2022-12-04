@@ -1,5 +1,5 @@
 const { QueryType } = require('discord-player');
-let { SelectMenuBuilder, ActionRowBuilder } = require("discord.js");
+const { SelectMenuBuilder, ActionRowBuilder } = require("discord.js");
 
 module.exports = {
     name: 'search',
@@ -57,10 +57,10 @@ module.exports = {
                 .setOptions(res.tracks.map(x => {
                     return {
                         label: x.title.length >= 25 ? x.title.substring(0, 22) + "..." : x.title,
-                        description: x.title.length >= 25 ? `${x.title} [${x.duration}]`.substring(0, 100) : `Duration: ${x.duration}`,
+                        description: x.title.length >= 25 ? `[${x.duration}] ${x.title}`.substring(0, 100) : `Duration: ${x.duration}`,
                         value: x.id
                     }
-                }))
+                }));
             let row = new ActionRowBuilder().addComponents(select);
             let msg = await message.reply({ components: [row] });
 

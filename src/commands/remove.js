@@ -14,7 +14,7 @@ module.exports = {
         if (!queue.tracks[0]) return message.reply({ content: `❌ | No music in queue after current.`, allowedMentions: { repliedUser: false } });
 
 
-        let nowplay = `Now Playing : ${queue.current.title}\n\n`;
+        let nowplaying = `Now Playing : ${queue.current.title}`;
         let queueMsg = '';
         if (queue.tracks.length > 9) {
             for (var i = 0; i <= 9; i++) {
@@ -29,7 +29,7 @@ module.exports = {
         }
         const instruction = `Choose a song from **1** to **${queue.tracks.length}** to **remove** or enter others to cancel selection. ⬇️`
         let loopStatus = queue.repeatMode ? (queue.repeatMode === 2 ? 'All' : 'ONE') : 'Off';
-        await message.channel.send({ embeds: [embed.Embed_queue("Remove List", nowplay, queueMsg, loopStatus)], content: instruction });
+        await message.reply({ content: instruction, embeds: [embed.Embed_queue("Remove List", nowplaying, queueMsg, loopStatus)], allowedMentions: { repliedUser: false } });
 
 
         const collector = message.channel.createMessageCollector({
