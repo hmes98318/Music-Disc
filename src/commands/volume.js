@@ -3,6 +3,14 @@ module.exports = {
     aliases: ['v'],
     description: `Configure bot volume`,
     voiceChannel: true,
+    options: [
+        {
+            name: "volume",
+            description: "The number of the volume",
+            type: 4,
+            required: true
+        }
+    ],
 
     async execute(client, message, args) {
         const maxVolume = client.config.maxVolume;

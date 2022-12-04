@@ -3,6 +3,7 @@ module.exports = {
     aliases: ['random'],
     description: 'Shuffle Playlist',
     voiceChannel: true,
+    options: [],
 
     execute(client, message) {
         const queue = client.player.getQueue(message.guild.id);

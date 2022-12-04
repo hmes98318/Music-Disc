@@ -6,6 +6,14 @@ module.exports = {
     aliases: ['find'],
     description: 'Enter song name to search',
     voiceChannel: true,
+    options: [
+        {
+            name: "song",
+            description: "The song name",
+            type: 3,
+            required: true
+        }
+    ],
 
     async execute(client, message, args) {
 

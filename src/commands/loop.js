@@ -5,6 +5,28 @@ module.exports = {
     aliases: ['lp'],
     description: 'Turns the music loop mode on or off',
     voiceChannel: true,
+    options: [
+        {
+            name: "mode",
+            description: "The loop mode",
+            type: 3,
+            required: true,
+            choices: [
+                {
+                    name: "Off", 
+                    value: "off"
+                }, 
+                {
+                    name: "All", 
+                    value: "all"
+                }, 
+                {
+                    name: "One", 
+                    value: "one"
+                }
+            ]
+        }
+    ],
 
     execute(client, message, args) {
         const queue = client.player.getQueue(message.guild.id);

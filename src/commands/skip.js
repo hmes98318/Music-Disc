@@ -3,6 +3,7 @@ module.exports = {
     aliases: ['s'],
     description: 'Skip currnet song',
     voiceChannel: true,
+    options: [],
 
     async execute(client, message) {
         const queue = client.player.getQueue(message.guild.id);

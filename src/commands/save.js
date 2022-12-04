@@ -5,6 +5,7 @@ module.exports = {
     aliases: [],
     description: 'Save the current song',
     voiceChannel: true,
+    options: [],
 
     async execute(client, message) {
         const queue = client.player.getQueue(message.guild.id);

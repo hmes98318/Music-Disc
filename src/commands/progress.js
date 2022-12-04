@@ -3,6 +3,7 @@ module.exports = {
     aliases: ["t"],
     description: 'show the current time of the song',
     voiceChannel: true,
+    options: [],
 
     async execute(client, message) {
         const queue = client.player.getQueue(message.guild.id);

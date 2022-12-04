@@ -5,6 +5,7 @@ module.exports = {
     aliases: ['r'],
     description: 'Select a song to remove from the playlist',
     voiceChannel: true,
+    options: [],
 
     async execute(client, message) {
         const queue = client.player.getQueue(message.guild.id);

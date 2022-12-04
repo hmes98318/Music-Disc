@@ -6,6 +6,14 @@ module.exports = {
     aliases: ['p'],
     description: 'Enter your song link or song name to play',
     voiceChannel: true,
+    options: [
+        {
+            name: "search",
+            description: "The name of the music",
+            type: 3,
+            required: true
+        }
+    ],
 
     async execute(client, message, args) {
         if (!args[0])

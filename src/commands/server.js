@@ -4,6 +4,7 @@ module.exports = {
     name: 'server',
     aliases: [],
     description: 'Show currently active servers',
+    options: [],
 
     execute(client, message) {
         let serverlist = ''

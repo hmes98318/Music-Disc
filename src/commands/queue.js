@@ -5,6 +5,7 @@ module.exports = {
     aliases: ['q', 'list'],
     description: 'Show playlist',
     voiceChannel: true,
+    options: [],
 
     execute(client, message) {
         const queue = client.player.getQueue(message.guild.id);

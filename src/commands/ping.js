@@ -4,6 +4,7 @@ module.exports = {
     name: 'ping',
     aliases: [],
     description: 'Get server ping',
+    options: [],
 
     execute(client, message) {
         message.reply({embeds:[embed.Embed_ping(client.ws.ping)],allowedMentions: { repliedUser: false }});
