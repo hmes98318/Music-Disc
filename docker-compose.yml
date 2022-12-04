@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   music-disc:
-    image: hmes98318/music-disc:1.2.4
+    image: hmes98318/music-disc:1.2.5
     container_name: music-disc
     restart: always
     environment:
@@ -12,6 +12,7 @@ services:
       DEFAULTVOLUME: 50
       MAXVOLUME: 100
       AUTO_LEAVE: "true"
+      AUTO_LEAVE_COOLDOWN: 5000
       DISPLAY_VOICE_STATE: "true"
     ports:
       - 33333:33333

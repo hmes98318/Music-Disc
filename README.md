@@ -20,7 +20,7 @@ Supports **YouTube**, **Spotify**, **SoundCloud** streams.
 
 ### Clone the repository
 ```
-git clone -b v1.2.4 https://github.com/hmes98318/Music-Disc.git
+git clone -b v1.2.5 https://github.com/hmes98318/Music-Disc.git
 ```
 or [**click here**](https://github.com/hmes98318/Music-Disc/releases) to download  
 
@@ -47,12 +47,13 @@ TOKEN = "your_token"
     "defaultVolume": 50,
     "maxVolume": 100,
     "autoLeave": true,
-    "autoLeaveCooldown": 1000,
+    "autoLeaveCooldown": 5000,
     "displayVoiceState": true,
     "port": 33333
 }
 ```
 **`autoLeave`** : After the music finished, can choose whether let the bot leave voice channel automatically or not.  
+**`autoLeaveCooldown`** : Timer for auto disconnect(ms).  
 **`displayVoiceState`** : Show voice channel status updates.   
 
 ## Running the script 
@@ -68,7 +69,7 @@ node index.js
 version: '3.8'
 services:
   music-disc:
-    image: hmes98318/music-disc:1.2.4
+    image: hmes98318/music-disc:1.2.5
     container_name: music-disc
     restart: always
     environment:
@@ -79,6 +80,7 @@ services:
       DEFAULTVOLUME: 50
       MAXVOLUME: 100
       AUTO_LEAVE: "true"
+      AUTO_LEAVE_COOLDOWN: 5000
       DISPLAY_VOICE_STATE: "true"
     ports:
       - 33333:33333
