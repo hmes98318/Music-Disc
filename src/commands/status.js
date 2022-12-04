@@ -5,6 +5,8 @@ const embed = require('../embeds/embeds');
 module.exports = {
     name: 'status',
     aliases: ['usage'],
+    description: 'Show the bot status',
+
     async execute(client, message) { //uptime, os, node_v, djs_v, cpu, cpu_usage, ram, ping
         return message.reply({
             embeds: [embed.Embed_status(

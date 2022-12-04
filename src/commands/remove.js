@@ -3,7 +3,7 @@ const embed = require('../embeds/embeds');
 module.exports = {
     name: 'remove',
     aliases: ['r'],
-    utilisation: '{prefix}remove',
+    description: 'Select a song to remove from the playlist',
     voiceChannel: true,
 
     async execute(client, message) {

@@ -4,7 +4,7 @@ const { SelectMenuBuilder, ActionRowBuilder } = require("discord.js");
 module.exports = {
     name: 'search',
     aliases: ['find'],
-    utilisation: '{prefix}search [song name]',
+    description: 'Enter song name to search',
     voiceChannel: true,
 
     async execute(client, message, args) {

@@ -1,7 +1,7 @@
 module.exports = {
     name: 'back',
     aliases: ['rewind'],
-    utilisation: '{prefix}back',
+    description: 'Back to previous song',
     voiceChannel: true,
 
     async execute(client, message) {

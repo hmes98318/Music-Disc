@@ -1,7 +1,7 @@
 module.exports = {
     name: 'time',
     aliases: ["t"],
-    utilisation: '{prefix}time',
+    description: 'show the current time of the song',
     voiceChannel: true,
 
     async execute(client, message) {

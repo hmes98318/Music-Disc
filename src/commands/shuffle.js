@@ -1,7 +1,7 @@
 module.exports = {
     name: 'shuffle',
     aliases: ['random'],
-    utilisation: '{prefix}shuffle',
+    description: 'Shuffle Playlist',
     voiceChannel: true,
 
     execute(client, message) {

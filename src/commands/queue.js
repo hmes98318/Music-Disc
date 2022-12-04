@@ -3,7 +3,7 @@ const embed = require('../embeds/embeds');
 module.exports = {
     name: 'queue',
     aliases: ['q', 'list'],
-    utilisation: '{prefix}queue',
+    description: 'Show playlist',
     voiceChannel: true,
 
     execute(client, message) {

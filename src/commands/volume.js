@@ -1,7 +1,7 @@
 module.exports = {
     name: 'volume',
     aliases: ['v'],
-    utilisation: `{prefix}volume [number]`,
+    description: `Configure bot volume`,
     voiceChannel: true,
 
     async execute(client, message, args) {

@@ -1,7 +1,7 @@
 module.exports = {
     name: 'leave',
     aliases: ['stop'],
-    utilisation: '{prefix}leave',
+    description: 'Leave current voice channel',
     voiceChannel: true,
 
     execute(client, message) {

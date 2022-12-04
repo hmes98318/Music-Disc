@@ -1,7 +1,7 @@
 module.exports = {
     name: 'resume',
     aliases: [],
-    utilisation: '{prefix}resume',
+    description: 'Resume paused song',
     voiceChannel: true,
 
     execute(client, message) {

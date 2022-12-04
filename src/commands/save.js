@@ -3,7 +3,7 @@ const embed = require('../embeds/embeds');
 module.exports = {
     name: 'save',
     aliases: [],
-    utilisation: '{prefix}save',
+    description: 'Save the current song',
     voiceChannel: true,
 
     async execute(client, message) {

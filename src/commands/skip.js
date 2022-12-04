@@ -1,7 +1,7 @@
 module.exports = {
     name: 'skip',
     aliases: ['s'],
-    utilisation: '{prefix}skip',
+    description: 'Skip currnet song',
     voiceChannel: true,
 
     async execute(client, message) {

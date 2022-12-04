@@ -3,7 +3,7 @@
 const fs = require('fs');
 const { Client, GatewayIntentBits, Partials, Collection } = require('discord.js');
 const { Player } = require('discord-player');
-const express = require('express')
+const express = require('express');
 require('dotenv').config();
 require('console-stamp')(console, { format: ':date(yyyy/mm/dd HH:MM:ss.l)' });
 

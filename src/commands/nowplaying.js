@@ -4,7 +4,7 @@ const embed = require('../embeds/embeds');
 module.exports = {
     name: 'nowplaying',
     aliases: ['np'],
-    utilisation: '{prefix}nowplaying',
+    description: 'Show now playing song',
     voiceChannel: true,
 
     execute(client, message) {

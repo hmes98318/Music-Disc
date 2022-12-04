@@ -3,7 +3,7 @@ const embed = require('../embeds/embeds');
 module.exports = {
     name: 'server',
     aliases: [],
-    utilisation: '{prefix}server',
+    description: 'Show currently active servers',
 
     execute(client, message) {
         let serverlist = ''

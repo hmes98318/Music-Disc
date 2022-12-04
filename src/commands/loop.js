@@ -3,7 +3,7 @@ const prefix = require('../../config.json').prefix;
 module.exports = {
     name: 'loop',
     aliases: ['lp'],
-    utilisation: '{prefix}loop <queue>',
+    description: 'Turns the music loop mode on or off',
     voiceChannel: true,
 
     execute(client, message, args) {

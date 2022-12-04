@@ -4,7 +4,7 @@ module.exports = {
     name: 'help',
     aliases: ['h'],
     showHelp: false,
-    utilisation: '{prefix}help',
+    description: 'Get some command help',
 
     execute(client, message, args) {
 
