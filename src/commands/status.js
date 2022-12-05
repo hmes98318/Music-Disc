@@ -22,6 +22,22 @@ module.exports = {
             )],
             allowedMentions: { repliedUser: false }
         });
+    },
+
+    async slashExecute(client, interaction) { //uptime, os, node_v, djs_v, cpu, cpu_usage, ram, ping
+        return interaction.reply({
+            embeds: [embed.Embed_status(
+                Uptime(client.status.uptime),
+                client.status.os_version,
+                client.status.node_version,
+                client.status.discord_version,
+                client.status.cpu,
+                Usage(),
+                Math.round((os.totalmem() - os.freemem()) / (1000 * 1000)) + 'MB',
+                client.ws.ping
+            )],
+            allowedMentions: { repliedUser: false }
+        });
     }
 }
 

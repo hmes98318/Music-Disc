@@ -15,4 +15,15 @@ module.exports = {
 
         return success ? message.react('👍') : message.reply({ content: `❌ | Something went wrong.`, allowedMentions: { repliedUser: false } });
     },
+
+    slashExecute(client, interaction) {
+        const queue = client.player.getQueue(interaction.guild.id);
+
+        if (!queue || !queue.playing)
+            return interaction.reply({ content: `❌ | There is no music currently playing!.`, allowedMentions: { repliedUser: false } });
+
+        const success = queue.shuffle();
+
+        return success ? interaction.reply('todo') : interaction.reply({ content: `❌ | Something went wrong.`, allowedMentions: { repliedUser: false } });
+    },
 };

@@ -27,4 +27,24 @@ module.exports = {
                 message.react('❌');
             });
     },
+
+    async slashExecute(client, interaction) {
+        const queue = client.player.getQueue(interaction.guild.id);
+
+        if (!queue || !queue.playing)
+            return interaction.reply({ content: `❌ | There is no music currently playing!. `, allowedMentions: { repliedUser: false } });
+
+
+        const timestamp = queue.getPlayerTimestamp();
+        const trackDuration = timestamp.progress == 'Forever' ? 'Endless (Live)' : queue.current.duration;
+        let description = `Author : **${queue.current.author}**\nDuration **${trackDuration}**`;
+
+        interaction.user.send({ embeds: [embed.Embed_save(queue.current.title, queue.current.url, queue.current.thumbnail, description)] })
+            .then(() => {
+                interaction.reply("todo")
+            }).catch(e => {
+                console.log(e);
+                interaction.reply("todo")
+            });
+    },
 };

@@ -1,8 +1,7 @@
 const embed = require('../embeds/embeds');
 
 module.exports = (client, int) => {
-    if (!int.isButton()) return;
-
+    if (int.isButton()) {
     const queue = client.player.getQueue(int.guildId);
 
     if (!queue || !queue.playing) return int.reply({ content: `❌ | There is no music currently playing.`, ephemeral: true, components: [] });
@@ -25,5 +24,10 @@ module.exports = (client, int) => {
                     return int.reply({ content: `❌ | I can't send you a private message.`, ephemeral: true, components: [] });
                 });
         }
+    }
+    } else {
+        if(!int.isCommand() || !int.inGuild() || int.member.user.bot) return;
+        const cmd = client.commands.get(int.commandName)
+        if(cmd) cmd.slashExecute(client, int);
     }
 };

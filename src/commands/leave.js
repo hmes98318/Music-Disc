@@ -14,4 +14,14 @@ module.exports = {
         queue.destroy();
         return message.react('👍');
     },
+
+    slashExecute(client, interaction) {
+        const queue = client.player.getQueue(interaction.guild.id);
+
+        if (!queue || !queue.playing)
+            return interaction.reply({ content: `❌ | There is no music currently playing.`, allowedMentions: { repliedUser: false } });
+
+        queue.destroy();
+        return interaction.reply('todo');
+    },
 };
