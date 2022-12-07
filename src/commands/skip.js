@@ -40,7 +40,7 @@ module.exports = {
         else
             queue.skip();
 
-        return interaction.reply('todo');
+        return interaction.reply('✅ | Music skipped.');
     },
 };
 

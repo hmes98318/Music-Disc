@@ -12,7 +12,6 @@ module.exports = {
             return message.reply({ content: `❌ | There is no music currently playing.`, allowedMentions: { repliedUser: false } });
 
         const success = queue.setPaused(false);
-
         return success ? message.react('▶️') : message.reply({ content: `❌ | Something went wrong.`, allowedMentions: { repliedUser: false } });
     },
 
@@ -23,7 +22,6 @@ module.exports = {
             return interaction.reply({ content: `❌ | There is no music currently playing.`, allowedMentions: { repliedUser: false } });
 
         const success = queue.setPaused(false);
-
-        return success ? interaction.reply("todo") : interaction.reply({ content: `❌ | Something went wrong.`, allowedMentions: { repliedUser: false } });
+        return success ? interaction.reply("✅ | Music resumed.") : interaction.reply({ content: `❌ | Something went wrong.`, allowedMentions: { repliedUser: false } });
     },
 };

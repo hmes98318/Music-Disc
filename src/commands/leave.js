@@ -22,6 +22,6 @@ module.exports = {
             return interaction.reply({ content: `❌ | There is no music currently playing.`, allowedMentions: { repliedUser: false } });
 
         queue.destroy();
-        return interaction.reply('todo');
+        return interaction.reply('✅ | Bot leave.');
     },
 };

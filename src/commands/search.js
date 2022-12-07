@@ -1,6 +1,7 @@
 const { QueryType } = require('discord-player');
 const { SelectMenuBuilder, ActionRowBuilder } = require("discord.js");
 
+
 module.exports = {
     name: 'search',
     aliases: ['find'],
@@ -99,14 +100,13 @@ module.exports = {
     },
 
     async slashExecute(client, interaction) {
-        await interaction.deferReply()
+        await interaction.deferReply();
 
         const res = await client.player.search(interaction.options.getString("search"), {
             requestedBy: interaction.member,
             searchEngine: QueryType.AUTO
         });
-
-        console.log(res.tracks.length)
+        // console.log(res.tracks.length)
 
         if (!res || !res.tracks.length)
             return interaction.editReply({ content: `❌ | No search results found.`, allowedMentions: { repliedUser: false } });

@@ -1,8 +1,12 @@
 const Discord = require('discord.js');
+require('dotenv').config();
+
 const bot_name = require('../../config.json').name;
-const color = process.env.COLOR || require('../../config.json').color;
 const bot_version = require('../../package.json').version;
+const color = process.env.COLOR || require('../../config.json').color;
+
 const github = 'https://github.com/hmes98318/Music-Disc';
+
 
 module.exports = {
     Embed_play: function (status, music_title, music_url, music_length, music_thumbnail, settings) {
@@ -22,7 +26,7 @@ module.exports = {
             .setTitle(status)
             .addFields({ name: nowplay, value: queueMsg })
             .setTimestamp()
-            .setFooter({ text: `Loop: ${loopStatus}`});
+            .setFooter({ text: `Loop: ${loopStatus}` });
         return Embed_queue;
     },
 

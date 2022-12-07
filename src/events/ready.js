@@ -1,7 +1,7 @@
-const Discord = require('discord.js');
-const package = require('../../package.json');
 const os = require('os');
 const { exec } = require('child_process');
+const Discord = require('discord.js');
+const package = require('../../package.json');
 
 
 const color = { white: '\x1B[0m', cyan: '\x1B[36m' };
@@ -31,7 +31,7 @@ module.exports = async (client) => {
             description: cmd.description,
             options: cmd.options
         }
-    }))
+    }));
     
     client.user.setActivity(client.config.playing);
     console.log(`>>> Logged in as ${client.user.username}`);

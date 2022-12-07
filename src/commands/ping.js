@@ -1,5 +1,6 @@
 const embed = require('../embeds/embeds');
 
+
 module.exports = {
     name: 'ping',
     aliases: [],
@@ -7,10 +8,10 @@ module.exports = {
     options: [],
 
     execute(client, message) {
-        message.reply({embeds:[embed.Embed_ping(client.ws.ping)],allowedMentions: { repliedUser: false }});
+        message.reply({ embeds: [embed.Embed_ping(client.ws.ping)], allowedMentions: { repliedUser: false } });
     },
 
     slashExecute(client, interaction) {
-        interaction.reply({embeds: [embed.Embed_ping(client.ws.ping)], allowedMentions: { repliedUser: false }});
+        interaction.reply({ embeds: [embed.Embed_ping(client.ws.ping)], allowedMentions: { repliedUser: false } });
     },
 };

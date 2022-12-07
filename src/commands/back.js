@@ -28,6 +28,6 @@ module.exports = {
             return interaction.reply({ content: `❌ | There was no music playing before.`, allowedMentions: { repliedUser: false } });
 
         await queue.back();
-        return await interaction.reply("todo");
+        return await interaction.reply("✅ | Music rewound.");
     },
 };

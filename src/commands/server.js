@@ -1,5 +1,6 @@
 const embed = require('../embeds/embeds');
 
+
 module.exports = {
     name: 'server',
     aliases: [],
@@ -7,7 +8,7 @@ module.exports = {
     options: [],
 
     execute(client, message) {
-        let serverlist = ''
+        let serverlist = '';
         client.guilds.cache.forEach((guild) => {
             serverlist = serverlist.concat(" - **" + guild.name + "** ID: " + guild.id + "\n")
         })
@@ -15,7 +16,7 @@ module.exports = {
     },
 
     slashExecute(client, interaction) {
-        let serverlist = ''
+        let serverlist = '';
         client.guilds.cache.forEach((guild) => {
             serverlist = serverlist.concat(" - **" + guild.name + "** ID: " + guild.id + "\n")
         })

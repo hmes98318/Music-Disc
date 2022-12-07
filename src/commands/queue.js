@@ -1,5 +1,6 @@
 const embed = require('../embeds/embeds');
 
+
 module.exports = {
     name: 'queue',
     aliases: ['q', 'list'],
@@ -11,9 +12,11 @@ module.exports = {
         const queue = client.player.getQueue(message.guild.id);
 
 
-        if (!queue || !queue.playing) return message.reply({ content: `❌ | There is no music currently playing.`, allowedMentions: { repliedUser: false } });
+        if (!queue || !queue.playing)
+            return message.reply({ content: `❌ | There is no music currently playing.`, allowedMentions: { repliedUser: false } });
 
-        if (!queue.tracks[0]) return message.reply({ content: `❌ | No music in queue after current.`, allowedMentions: { repliedUser: false } });
+        if (!queue.tracks[0])
+            return message.reply({ content: `❌ | No music in queue after current.`, allowedMentions: { repliedUser: false } });
 
 
         let nowplay = `Now Playing : ${queue.current.title}\n\n`;
@@ -38,9 +41,11 @@ module.exports = {
         const queue = client.player.getQueue(interaction.guild.id);
 
 
-        if (!queue || !queue.playing) return interaction.reply({ content: `❌ | There is no music currently playing.`, allowedMentions: { repliedUser: false } });
+        if (!queue || !queue.playing)
+            return interaction.reply({ content: `❌ | There is no music currently playing.`, allowedMentions: { repliedUser: false } });
 
-        if (!queue.tracks[0]) return interaction.reply({ content: `❌ | No music in queue after current.`, allowedMentions: { repliedUser: false } });
+        if (!queue.tracks[0])
+            return interaction.reply({ content: `❌ | No music in queue after current.`, allowedMentions: { repliedUser: false } });
 
 
         let nowplay = `Now Playing : ${queue.current.title}\n\n`;

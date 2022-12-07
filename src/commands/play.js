@@ -9,7 +9,7 @@ module.exports = {
     options: [
         {
             name: "search",
-            description: "The song name",
+            description: "The song link or song name",
             type: 3,
             required: true
         }
@@ -82,7 +82,7 @@ module.exports = {
             return interaction.reply({ content: `❌ | I can't join audio channel.`, allowedMentions: { repliedUser: false } });
         }
 
-        await interaction.reply("todo");
+        await interaction.reply("✅ | Music added.");
 
         res.playlist ? queue.addTracks(res.tracks) : queue.addTrack(res.tracks[0]);
 

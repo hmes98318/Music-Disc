@@ -1,5 +1,6 @@
 const prefix = require('../../config.json').prefix;
 
+
 module.exports = {
     name: 'loop',
     aliases: ['lp'],
@@ -13,15 +14,15 @@ module.exports = {
             required: true,
             choices: [
                 {
-                    name: "Off", 
+                    name: "Off",
                     value: "off"
-                }, 
+                },
                 {
-                    name: "All", 
+                    name: "All",
                     value: "all"
-                }, 
+                },
                 {
-                    name: "One", 
+                    name: "One",
                     value: "one"
                 }
             ]

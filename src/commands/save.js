@@ -1,5 +1,6 @@
 const embed = require('../embeds/embeds');
 
+
 module.exports = {
     name: 'save',
     aliases: [],
@@ -22,8 +23,9 @@ module.exports = {
             //message.author.send(`Registered track: **${queue.current.title}** | ${queue.current.author}, Saved server: **${message.guild.name}** ✅`)
             .then(() => {
                 message.react('👍');
-            }).catch(e => {
-                console.log(e);
+            })
+            .catch(error => {
+                console.log('error: ' + error);
                 message.react('❌');
             });
     },
@@ -41,10 +43,11 @@ module.exports = {
 
         interaction.user.send({ embeds: [embed.Embed_save(queue.current.title, queue.current.url, queue.current.thumbnail, description)] })
             .then(() => {
-                interaction.reply("todo")
-            }).catch(e => {
-                console.log(e);
-                interaction.reply("todo")
+                interaction.reply("✅ | Music sent.")
+            })
+            .catch(error => {
+                console.log('error: ' + error);
+                interaction.reply("❌ | I can't send you the music.")
             });
     },
 };

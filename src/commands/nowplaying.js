@@ -1,6 +1,7 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const embed = require('../embeds/embeds');
 
+
 module.exports = {
     name: 'nowplaying',
     aliases: ['np'],
@@ -25,8 +26,7 @@ module.exports = {
         saveButton.setCustomId('Save Song');
         saveButton.setLabel('Save Song');
         saveButton.setStyle(ButtonStyle.Success);
-        const row = new ActionRowBuilder().addComponents(saveButton)
-
+        const row = new ActionRowBuilder().addComponents(saveButton);
 
         return message.channel.send({ embeds: [embed.Embed_save(track.title, track.url, track.thumbnail, description)], components: [row] });
     },
@@ -48,8 +48,7 @@ module.exports = {
         saveButton.setCustomId('Save Song');
         saveButton.setLabel('Save Song');
         saveButton.setStyle(ButtonStyle.Success);
-        const row = new ActionRowBuilder().addComponents(saveButton)
-
+        const row = new ActionRowBuilder().addComponents(saveButton);
 
         return interaction.reply({ embeds: [embed.Embed_save(track.title, track.url, track.thumbnail, description)], components: [row] });
     },
