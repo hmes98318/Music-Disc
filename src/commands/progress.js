@@ -3,6 +3,7 @@ module.exports = {
     aliases: ["t"],
     description: 'show the current time of the song',
     voiceChannel: true,
+    options: [],
 
     async execute(client, message) {
         const queue = client.player.getQueue(message.guild.id);
@@ -17,5 +18,20 @@ module.exports = {
             return message.reply({ content: `❌ | This song is live streaming, no duration data to display.`, allowedMentions: { repliedUser: false } });
 
         message.reply(`${progress} (**${timestamp.progress}**%)`);
+    },
+
+    async slashExecute(client, interaction) {
+        const queue = client.player.getQueue(interaction.guild.id);
+
+        if (!queue || !queue.playing)
+            return interaction.reply({ content: `❌ | There is no music currently playing!.`, allowedMentions: { repliedUser: false } });
+
+        const progress = queue.createProgressBar();
+        const timestamp = queue.getPlayerTimestamp();
+
+        if (timestamp.progress == 'Infinity')
+            return interaction.reply({ content: `❌ | This song is live streaming, no duration data to display.`, allowedMentions: { repliedUser: false } });
+
+        interaction.reply(`${progress} (**${timestamp.progress}**%)`);
     },
 };

@@ -6,6 +6,14 @@ module.exports = {
     aliases: ['p'],
     description: 'Enter your song link or song name to play',
     voiceChannel: true,
+    options: [
+        {
+            name: "search",
+            description: "The song link or song name",
+            type: 3,
+            required: true
+        }
+    ],
 
     async execute(client, message, args) {
         if (!args[0])
@@ -39,6 +47,42 @@ module.exports = {
         }
 
         await message.react('👍');
+
+        res.playlist ? queue.addTracks(res.tracks) : queue.addTrack(res.tracks[0]);
+
+        if (!queue.playing)
+            await queue.play();
+    },
+
+    async slashExecute(client, interaction) {
+        const res = await client.player.search(interaction.options.getString("search"), {
+            requestedBy: interaction.member,
+            searchEngine: QueryType.AUTO
+        });
+
+        if (!res || !res.tracks.length)
+            return interaction.reply({ content: `❌ | No results found.`, allowedMentions: { repliedUser: false } });
+
+        const queue = await client.player.createQueue(interaction.guild, {
+            metadata: interaction.channel,
+            leaveOnEnd: client.config.autoLeave,
+            leaveOnEndCooldown: client.config.autoLeaveCooldown,
+            leaveOnStop: client.config.autoLeave,
+            leaveOnEmpty: client.config.autoLeave,
+            leaveOnEmptyCooldown: client.config.autoLeaveCooldown,
+            initialVolume: client.config.defaultVolume,
+            ytdlOptions: client.config.ytdlOptions
+        });
+
+        try {
+            if (!queue.connection)
+                await queue.connect(interaction.member.voice.channel);
+        } catch {
+            await client.player.deleteQueue(interaction.guild.id);
+            return interaction.reply({ content: `❌ | I can't join audio channel.`, allowedMentions: { repliedUser: false } });
+        }
+
+        await interaction.reply("✅ | Music added.");
 
         res.playlist ? queue.addTracks(res.tracks) : queue.addTrack(res.tracks[0]);
 

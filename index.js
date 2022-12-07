@@ -148,8 +148,7 @@ player.on('connectionError', (queue, error) => {
 });
 
 player.on('trackStart', (queue, track) => {
-    if (queue.repeatMode !== 0)
-        return;
+    if (queue.repeatMode !== 0) return;
     queue.metadata.send({ embeds: [embed.Embed_play("Playing", track.title, track.url, track.duration, track.thumbnail, settings(queue))] });
 });
 
