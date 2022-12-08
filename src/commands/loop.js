@@ -1,6 +1,3 @@
-const prefix = require('../../config.json').prefix;
-
-
 module.exports = {
     name: 'loop',
     aliases: ['lp'],
@@ -31,6 +28,7 @@ module.exports = {
 
     execute(client, message, args) {
         const queue = client.player.getQueue(message.guild.id);
+        const prefix = client.config.prefix;
 
         if (!queue || !queue.playing)
             return message.reply({ content: `❌ | There is no music currently playing.`, allowedMentions: { repliedUser: false } });
@@ -65,6 +63,7 @@ module.exports = {
 
         if (!queue || !queue.playing)
             return interaction.reply({ content: `❌ | There is no music currently playing.`, allowedMentions: { repliedUser: false } });
+
 
         const methods = {
             off: 0,

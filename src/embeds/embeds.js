@@ -1,11 +1,14 @@
 const Discord = require('discord.js');
-require('dotenv').config();
+const path = require('path');
+const dotenv = require('dotenv');
 
-const bot_name = require('../../config.json').name;
-const bot_version = require('../../package.json').version;
-const color = process.env.COLOR || require('../../config.json').color;
+const ENV = dotenv.config({ path: path.resolve(__dirname, '../../config.env') }).parsed;
 
 const github = 'https://github.com/hmes98318/Music-Disc';
+const bot_version = require('../../package.json').version;
+
+const bot_name = typeof (process.env.NAME) === 'undefined' ? 'Music Disc' : (ENV.NAME);
+const color = typeof (process.env.COLOR) === 'undefined' ? '#FFFFFF' : (ENV.COLOR);
 
 
 module.exports = {
@@ -71,6 +74,7 @@ module.exports = {
     },
 
     Embed_status: function (uptime, os, node_v, djs_v, cpu, cpu_usage, ram, ping) {
+        console.log('color:', color)
         const Embed_status = new Discord.EmbedBuilder()
             .setColor(color)
             .setTitle(`${bot_name} v${bot_version}`)

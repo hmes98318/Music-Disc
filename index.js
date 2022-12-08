@@ -1,13 +1,15 @@
 'use strict';
 
 const fs = require('fs');
+const path = require('path');
+const dotenv = require('dotenv');
 const { Client, GatewayIntentBits, Partials, Collection } = require('discord.js');
 const { Player } = require('discord-player');
 const express = require('express');
-require('dotenv').config();
 require('console-stamp')(console, { format: ':date(yyyy/mm/dd HH:MM:ss.l)' });
 
-const config = require('./config.json');
+
+const ENV = dotenv.config({ path: path.resolve(__dirname, './config.env') }).parsed;
 const embed = require('./src/embeds/embeds');
 
 
@@ -26,16 +28,17 @@ let client = new Client({
 });
 
 
-client.config = config;
-
-client.config.prefix = process.env.PREFIX || config.prefix;
-client.config.playing = process.env.PLAYING || config.playing;
-client.config.defaultVolume = Number(process.env.DEFAULTVOLUME || config.defaultVolume);
-client.config.maxVolume = Number(process.env.MAXVOLUME || config.maxVolume);
-client.config.autoLeave = process.env.AUTO_LEAVE === 'true' ? true : false || config.autoLeave;
-client.config.autoLeaveCooldown = Number(process.env.AUTO_LEAVE_COOLDOWN || config.autoLeaveCooldown);
-client.config.displayVoiceState = process.env.DISPLAY_VOICE_STATE === 'true' ? true : false || config.displayVoiceState;
-client.config.port = process.env.PORT || config.port;
+client.config = {
+    name: 'Music Disc',
+    prefix: '-',
+    playing: '+help | music',
+    defaultVolume: 50,
+    maxVolume: 100,
+    autoLeave: true,
+    autoLeaveCooldown: 5000,
+    displayVoiceState: true,
+    port: 33333
+};
 
 client.config.ytdlOptions = {
     filter: 'audioonly',
@@ -51,6 +54,48 @@ client.player = new Player(client, {
 const player = client.player;
 
 
+
+
+const setEnvironment = () => {
+
+    client.config.name = typeof (ENV.NAME) === 'undefined' ?
+        client.config.name :
+        ENV.NAME;
+
+    client.config.prefix = typeof (ENV.PREFIX) === 'undefined' ?
+        client.config.prefix :
+        ENV.PREFIX;
+
+    client.config.playing = typeof (ENV.PLAYING) === 'undefined' ?
+        client.config.playing :
+        ENV.PLAYING;
+
+    client.config.defaultVolume = typeof (ENV.DEFAULT_VOLUME) === 'undefined' ?
+        client.config.defaultVolume :
+        Number(ENV.DEFAULT_VOLUME);
+
+    client.config.maxVolume = typeof (ENV.MAX_VOLUME) === 'undefined' ?
+        client.config.maxVolume :
+        Number(ENV.MAX_VOLUME);
+
+    client.config.autoLeave = typeof (ENV.AUTO_LEAVE) === 'undefined' ?
+        client.config.autoLeave :
+        (String(ENV.AUTO_LEAVE) === 'true' ? true : false);
+
+    client.config.autoLeaveCooldown = typeof (ENV.AUTO_LEAVE_COOLDOWN) === 'undefined' ?
+        client.config.autoLeaveCooldown :
+        Number(ENV.AUTO_LEAVE_COOLDOWN);
+
+    client.config.displayVoiceState = typeof (ENV.DISPLAY_VOICE_STATE) === 'undefined' ?
+        client.config.displayVoiceState :
+        (String(ENV.DISPLAY_VOICE_STATE) === 'true' ? true : false);
+
+    client.config.port = typeof (ENV.PORT) === 'undefined' ?
+        client.config.port :
+        Number(ENV.PORT);
+
+    return console.log('setEnvironment: ', client.config);
+}
 
 
 const loadEvents = () => {
@@ -126,10 +171,10 @@ const loadCommands = () => {
 }
 
 
-Promise.all([loadEvents(), loadFramework(), loadCommands()])
+Promise.all([setEnvironment(), loadEvents(), loadFramework(), loadCommands()])
     .then(function () {
         console.log('\x1B[32m*** All loaded successfully ***\x1B[0m');
-        client.login(process.env.TOKEN);
+        client.login(ENV.TOKEN);
     });
 
 
