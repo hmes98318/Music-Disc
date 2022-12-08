@@ -25,7 +25,7 @@ module.exports = {
             for (var i = 0; i <= 9; i++) {
                 queueMsg += `${i + 1}. ${queue.tracks[i].title}\n`;
             }
-            queueMsg += `and ${queue.tracks.length - 9} other songs`;
+            queueMsg += `and ${queue.tracks.length - 10} other songs`;
         }
         else {
             for (var i = 0; i < queue.tracks.length; i++) {
@@ -34,7 +34,7 @@ module.exports = {
         }
 
         let loopStatus = queue.repeatMode ? (queue.repeatMode === 2 ? 'All' : 'One') : 'Off';
-        return message.reply({ embeds: [embed.Embed_queue("Queue List", nowplay, queueMsg, loopStatus)] });
+        return message.reply({ embeds: [embed.Embed_queue("Queue List", nowplay, queueMsg, loopStatus)], allowedMentions: { repliedUser: false } });
     },
 
     slashExecute(client, interaction) {
