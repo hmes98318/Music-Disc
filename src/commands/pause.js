@@ -22,6 +22,6 @@ module.exports = {
             return interaction.reply({ content: `❌ | There is no music currently playing!.`, allowedMentions: { repliedUser: false } });
 
         const success = queue.setPaused(true);
-        return success ? interaction.reply("Song paused sucessfully.") : interaction.reply({ content: `❌ | Something went wrong.`, allowedMentions: { repliedUser: false } });
+        return success ? interaction.reply("⏸️ | Music paused.") : interaction.reply({ content: `❌ | Something went wrong.`, allowedMentions: { repliedUser: false } });
     },
 };
