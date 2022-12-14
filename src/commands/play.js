@@ -22,10 +22,15 @@ module.exports = {
         const res = await client.player.search(args.join(' '), {
             requestedBy: message.member,
             searchEngine: QueryType.AUTO
-        });
+        })
+            .catch((error) => {
+                console.log(error);
+                return message.reply({ content: `❌ | The service is experiencing some problems, please try again.`, allowedMentions: { repliedUser: false } });
+            });
 
-        if (!res || !res.tracks.length)
+        if (!res || !res?.tracks?.length)
             return message.reply({ content: `❌ | No results found.`, allowedMentions: { repliedUser: false } });
+
 
         const queue = await client.player.createQueue(message.guild, {
             metadata: message.channel,
@@ -55,13 +60,19 @@ module.exports = {
     },
 
     async slashExecute(client, interaction) {
+
         const res = await client.player.search(interaction.options.getString("search"), {
             requestedBy: interaction.member,
             searchEngine: QueryType.AUTO
-        });
+        })
+            .catch((error) => {
+                console.log(error);
+                return message.reply({ content: `❌ | The service is experiencing some problems, please try again.`, allowedMentions: { repliedUser: false } });
+            });
 
         if (!res || !res.tracks.length)
             return interaction.reply({ content: `❌ | No results found.`, allowedMentions: { repliedUser: false } });
+
 
         const queue = await client.player.createQueue(interaction.guild, {
             metadata: interaction.channel,
