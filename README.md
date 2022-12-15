@@ -31,26 +31,20 @@ auto install all dependencies on [`package.json`](./package.json)
 npm install
 ```
 
-### Configure Files
-[`.env`](./.env) 
+### Configure environment
+[`config.env`](./config.env) 
 ```env
 TOKEN = "your_token"
-```
-
-[`config.json`](./config.json)  
-```json
-{
-    "name": "Music Disc",
-    "prefix": "+",
-    "playing": "+help | music",
-    "color": "#FFFFFF",
-    "defaultVolume": 50,
-    "maxVolume": 100,
-    "autoLeave": true,
-    "autoLeaveCooldown": 5000,
-    "displayVoiceState": true,
-    "port": 33333
-}
+NAME = "Music Disc"
+PREFIX = "+"
+PLAYING = "+help | music"
+COLOR = "#FFFFFF"
+DEFAULT_VOLUME = 50
+MAX_VOLUME = 100
+AUTO_LEAVE = true
+AUTO_LEAVE_COOLDOWN = 5000
+DISPLAY_VOICE_STATE = true
+PORT = 33333
 ```
 **`autoLeave`** : After the music finished, can choose whether let the bot leave voice channel automatically or not.  
 **`autoLeaveCooldown`** : Timer for auto disconnect(ms).  
@@ -58,7 +52,7 @@ TOKEN = "your_token"
 
 ## Running the script 
 ```
-node index.js
+npm run start
 ```
 
 
