@@ -46,9 +46,9 @@ AUTO_LEAVE_COOLDOWN = 5000
 DISPLAY_VOICE_STATE = true
 PORT = 33333
 ```
-**`autoLeave`** : After the music finished, can choose whether let the bot leave voice channel automatically or not.  
-**`autoLeaveCooldown`** : Timer for auto disconnect(ms).  
-**`displayVoiceState`** : Show voice channel status updates.   
+**`AUTO_LEAVE`** : After the music finished, can choose whether let the bot leave voice channel automatically or not.  
+**`AUTO_LEAVE_COOLDOWN`** : Timer for auto disconnect(ms).  
+**`DISPLAY_VOICE_STATE`** : Show voice channel status updates.   
 
 ## Running the script 
 ```
