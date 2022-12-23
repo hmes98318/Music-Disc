@@ -1,8 +1,8 @@
+const color = { white: '\x1B[0m', grey: '\x1B[2m' };
 let pool = [];
 
 module.exports = async (client, oldState, newState) => {
     const display = client.config.displayVoiceState;
-    const color = { white: '\x1B[0m', grey: '\x1B[2m' };
 
     if (newState.channelId === null) {
         if (display) console.log(`${color.grey}-- ${newState.member.user.username} left channel${color.white}`);

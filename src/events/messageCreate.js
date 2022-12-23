@@ -1,3 +1,5 @@
+const color = { white: '\x1B[0m', grey: '\x1B[2m' };
+
 module.exports = (client, message) => {
     if (message.author.bot || message.channel.type === 'dm')
         return;
@@ -21,7 +23,7 @@ module.exports = (client, message) => {
     }
 
     if (cmd) {
-        console.log(`${message.author.username} : ${message.content}`);
+        console.log(`(${color.grey}${message.guild.name}${color.white}) ${message.author.username} : ${message.content}`);
         cmd.execute(client, message, args);
     }
 };

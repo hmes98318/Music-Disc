@@ -74,7 +74,6 @@ module.exports = {
     },
 
     Embed_status: function (uptime, os, node_v, djs_v, cpu, cpu_usage, ram, ping) {
-        console.log('color:', color)
         const Embed_status = new Discord.EmbedBuilder()
             .setColor(color)
             .setTitle(`${bot_name} v${bot_version}`)
