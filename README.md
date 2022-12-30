@@ -13,14 +13,14 @@ Supports **YouTube**, **Spotify**, **SoundCloud** streams.
 
 ### Reference version  
 [**node.js  `v18.12.1`**](https://nodejs.org/en/)  
-[**discord.js  `v14.6.0`**](https://www.npmjs.com/package/discord.js)  
+[**discord.js  `v14.7.1`**](https://www.npmjs.com/package/discord.js)  
 
 
 ## Deploying with node.js
 
 ### Clone the repository
 ```
-git clone -b v1.2.5 https://github.com/hmes98318/Music-Disc.git
+git clone -b v1.2.6 https://github.com/hmes98318/Music-Disc.git
 ```
 or [**click here**](https://github.com/hmes98318/Music-Disc/releases) to download  
 
@@ -63,7 +63,7 @@ npm run start
 version: '3.8'
 services:
   music-disc:
-    image: hmes98318/music-disc:1.2.5
+    image: hmes98318/music-disc:1.2.6
     container_name: music-disc
     restart: always
     environment:
