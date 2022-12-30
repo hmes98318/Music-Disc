@@ -32,7 +32,7 @@ npm install
 ```
 
 ### Configure environment
-[`config.env`](./config.env) 
+[`.env`](./.env) 
 ```env
 TOKEN = "your_token"
 NAME = "Music Disc"
