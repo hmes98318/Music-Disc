@@ -6,10 +6,10 @@ const dotenv = require('dotenv');
 const { Client, GatewayIntentBits, Partials, Collection } = require('discord.js');
 const { Player } = require('discord-player');
 const express = require('express');
-require('console-stamp')(console, { format: ':date(yyyy/mm/dd HH:MM:ss.l)' });
+require('console-stamp')(console, { format: ':date(yyyy/mm/dd HH:MM:ss)' });
 
 
-const ENV = dotenv.config({ path: path.resolve(__dirname, './config.env') }).parsed;
+const ENV = dotenv.config().parsed;
 const embed = require('./src/embeds/embeds');
 
 

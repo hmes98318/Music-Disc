@@ -1,8 +1,7 @@
-const Discord = require('discord.js');
-const path = require('path');
 const dotenv = require('dotenv');
+const Discord = require('discord.js');
 
-const ENV = dotenv.config({ path: path.resolve(__dirname, '../../config.env') }).parsed;
+const ENV = dotenv.config().parsed;
 
 const github = 'https://github.com/hmes98318/Music-Disc';
 const bot_version = require('../../package.json').version;
