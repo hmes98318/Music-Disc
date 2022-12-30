@@ -2,6 +2,7 @@ module.exports = {
     name: 'back',
     aliases: ['rewind'],
     description: 'Back to previous song',
+    usage: 'back',
     voiceChannel: true,
     options: [],
 

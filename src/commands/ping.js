@@ -5,6 +5,7 @@ module.exports = {
     name: 'ping',
     aliases: [],
     description: 'Get server ping',
+    usage: 'ping',
     options: [],
 
     execute(client, message) {

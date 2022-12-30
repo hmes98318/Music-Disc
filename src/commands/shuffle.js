@@ -2,6 +2,7 @@ module.exports = {
     name: 'shuffle',
     aliases: ['random'],
     description: 'Shuffle Playlist',
+    usage: 'random',
     voiceChannel: true,
     options: [],
 

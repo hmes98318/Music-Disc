@@ -2,6 +2,7 @@ module.exports = {
     name: 'loop',
     aliases: ['lp'],
     description: 'Turns the music loop mode on or off',
+    usage: 'loop <all/one/off>',
     voiceChannel: true,
     options: [
         {
@@ -37,7 +38,7 @@ module.exports = {
         const methods = ['Off', 'Single', 'All'];
 
         if (!args[0])
-            return message.reply({ content: `❌ | ${prefix}loop [all/one/off]`, allowedMentions: { repliedUser: false } });
+            return message.reply({ content: `❌ | ${prefix}loop <all/one/off>`, allowedMentions: { repliedUser: false } });
 
         switch (args[0].toLowerCase()) {
             case 'off':
@@ -50,7 +51,7 @@ module.exports = {
                 mode = 2;
                 break;
             default:
-                return message.reply({ content: `❌ | ${prefix}loop [all/one/off]`, allowedMentions: { repliedUser: false } });
+                return message.reply({ content: `❌ | ${prefix}loop <all/one/off>`, allowedMentions: { repliedUser: false } });
         }
         queue.setRepeatMode(mode);
 

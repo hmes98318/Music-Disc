@@ -2,6 +2,7 @@ module.exports = {
     name: 'volume',
     aliases: ['v'],
     description: `Configure bot volume`,
+    usage: 'v <0-100>',
     voiceChannel: true,
     options: [
         {

@@ -6,6 +6,7 @@ module.exports = {
     name: 'search',
     aliases: ['find'],
     description: 'Enter song name to search',
+    usage: 'search <URL/song name>',
     voiceChannel: true,
     options: [
         {

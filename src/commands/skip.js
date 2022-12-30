@@ -2,6 +2,7 @@ module.exports = {
     name: 'skip',
     aliases: ['s'],
     description: 'Skip currnet song',
+    usage: 'skip',
     voiceChannel: true,
     options: [],
 

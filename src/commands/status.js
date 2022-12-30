@@ -6,6 +6,7 @@ module.exports = {
     name: 'status',
     aliases: ['usage'],
     description: 'Show the bot status',
+    usage: 'status',
     options: [],
 
     async execute(client, message) { //uptime, os, node_v, djs_v, cpu, cpu_usage, ram, ping

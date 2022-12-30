@@ -72,6 +72,14 @@ module.exports = {
         return Embed_help;
     },
 
+    Embed_help2: function (command, description) {
+        const Embed_help2 = new Discord.EmbedBuilder()
+            .setColor(color)
+            .setTitle(`Command **${command}**`, '')
+            .setDescription(description)
+        return Embed_help2;
+    },
+
     Embed_status: function (uptime, os, node_v, djs_v, cpu, cpu_usage, ram, ping) {
         const Embed_status = new Discord.EmbedBuilder()
             .setColor(color)

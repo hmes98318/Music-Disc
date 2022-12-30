@@ -4,7 +4,9 @@ const embed = require('../embeds/embeds');
 module.exports = {
     name: 'server',
     aliases: [],
+    showHelp: false,
     description: 'Show currently active servers',
+    usage: 'server',
     options: [],
 
     execute(client, message) {

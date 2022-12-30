@@ -6,6 +6,7 @@ module.exports = {
     name: 'nowplaying',
     aliases: ['np'],
     description: 'Show now playing song',
+    usage: 'nowplaying',
     voiceChannel: true,
     options: [],
 

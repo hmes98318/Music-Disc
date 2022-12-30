@@ -2,6 +2,7 @@ module.exports = {
     name: 'leave',
     aliases: ['stop'],
     description: 'Leave current voice channel',
+    usage: 'leave',
     voiceChannel: true,
     options: [],
 

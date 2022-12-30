@@ -5,6 +5,7 @@ module.exports = {
     name: 'remove',
     aliases: ['r'],
     description: 'Select a song to remove from the playlist',
+    usage: 'remove <song index number>',
     voiceChannel: true,
     options: [],
 
