@@ -8,7 +8,8 @@ const express = require('express');
 require('console-stamp')(console, { format: ':date(yyyy/mm/dd HH:MM:ss)' });
 
 
-const ENV = dotenv.config().parsed;
+dotenv.config()
+const ENV = process.env;
 const embed = require('./src/embeds/embeds');
 
 const color = {
@@ -63,9 +64,9 @@ const player = client.player;
 
 const setEnvironment = () => {
 
-    client.config.name = typeof (ENV.NAME) === 'undefined' ?
+    client.config.name = typeof (ENV.BOT_NAME) === 'undefined' ?
         client.config.name :
-        ENV.NAME;
+        ENV.BOT_NAME;
 
     client.config.prefix = typeof (ENV.PREFIX) === 'undefined' ?
         client.config.prefix :

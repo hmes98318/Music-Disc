@@ -1,13 +1,14 @@
 const dotenv = require('dotenv');
 const Discord = require('discord.js');
 
-const ENV = dotenv.config().parsed;
+dotenv.config()
+const ENV = process.env;
 
 const github = 'https://github.com/hmes98318/Music-Disc';
 const bot_version = require('../../package.json').version;
 
-const bot_name = typeof (process.env.NAME) === 'undefined' ? 'Music Disc' : (ENV.NAME);
-const color = typeof (process.env.COLOR) === 'undefined' ? '#FFFFFF' : (ENV.COLOR);
+const bot_name = typeof (process.env.BOT_NAME) === 'undefined' ? 'Music Disc' : (ENV.BOT_NAME);
+const color = typeof (process.env.EMBEDS_COLOR) === 'undefined' ? '#FFFFFF' : (ENV.EMBEDS_COLOR);
 
 
 module.exports = {
