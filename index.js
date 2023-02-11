@@ -63,45 +63,46 @@ const player = client.player;
 
 
 const setEnvironment = () => {
+    return new Promise((resolve, reject) => {
+        client.config.name = typeof (ENV.BOT_NAME) === 'undefined' ?
+            client.config.name :
+            ENV.BOT_NAME;
 
-    client.config.name = typeof (ENV.BOT_NAME) === 'undefined' ?
-        client.config.name :
-        ENV.BOT_NAME;
+        client.config.prefix = typeof (ENV.PREFIX) === 'undefined' ?
+            client.config.prefix :
+            ENV.PREFIX;
 
-    client.config.prefix = typeof (ENV.PREFIX) === 'undefined' ?
-        client.config.prefix :
-        ENV.PREFIX;
+        client.config.playing = typeof (ENV.PLAYING) === 'undefined' ?
+            client.config.playing :
+            ENV.PLAYING;
 
-    client.config.playing = typeof (ENV.PLAYING) === 'undefined' ?
-        client.config.playing :
-        ENV.PLAYING;
+        client.config.defaultVolume = typeof (ENV.DEFAULT_VOLUME) === 'undefined' ?
+            client.config.defaultVolume :
+            Number(ENV.DEFAULT_VOLUME);
 
-    client.config.defaultVolume = typeof (ENV.DEFAULT_VOLUME) === 'undefined' ?
-        client.config.defaultVolume :
-        Number(ENV.DEFAULT_VOLUME);
+        client.config.maxVolume = typeof (ENV.MAX_VOLUME) === 'undefined' ?
+            client.config.maxVolume :
+            Number(ENV.MAX_VOLUME);
 
-    client.config.maxVolume = typeof (ENV.MAX_VOLUME) === 'undefined' ?
-        client.config.maxVolume :
-        Number(ENV.MAX_VOLUME);
+        client.config.autoLeave = typeof (ENV.AUTO_LEAVE) === 'undefined' ?
+            client.config.autoLeave :
+            (String(ENV.AUTO_LEAVE) === 'true' ? true : false);
 
-    client.config.autoLeave = typeof (ENV.AUTO_LEAVE) === 'undefined' ?
-        client.config.autoLeave :
-        (String(ENV.AUTO_LEAVE) === 'true' ? true : false);
+        client.config.autoLeaveCooldown = typeof (ENV.AUTO_LEAVE_COOLDOWN) === 'undefined' ?
+            client.config.autoLeaveCooldown :
+            Number(ENV.AUTO_LEAVE_COOLDOWN);
 
-    client.config.autoLeaveCooldown = typeof (ENV.AUTO_LEAVE_COOLDOWN) === 'undefined' ?
-        client.config.autoLeaveCooldown :
-        Number(ENV.AUTO_LEAVE_COOLDOWN);
+        client.config.displayVoiceState = typeof (ENV.DISPLAY_VOICE_STATE) === 'undefined' ?
+            client.config.displayVoiceState :
+            (String(ENV.DISPLAY_VOICE_STATE) === 'true' ? true : false);
 
-    client.config.displayVoiceState = typeof (ENV.DISPLAY_VOICE_STATE) === 'undefined' ?
-        client.config.displayVoiceState :
-        (String(ENV.DISPLAY_VOICE_STATE) === 'true' ? true : false);
+        client.config.port = typeof (ENV.PORT) === 'undefined' ?
+            client.config.port :
+            Number(ENV.PORT);
 
-    client.config.port = typeof (ENV.PORT) === 'undefined' ?
-        client.config.port :
-        Number(ENV.PORT);
-
-    //console.log('setEnvironment: ', client.config);
-    return;
+        //console.log('setEnvironment: ', client.config);
+        resolve();
+    })
 }
 
 
@@ -136,15 +137,14 @@ const loadFramework = () => {
         const app = express();
         const port = client.config.port || 33333;
 
-        app.listen(port, function () {
-            console.log(`Server start listening port on ${port}`);
-        })
-
         app.get('/', function (req, res) {
             res.send('200 ok.')
-        })
+        });
 
-        resolve();
+        app.listen(port, function () {
+            console.log(`Server start listening port on ${port}`);
+            resolve();
+        });
     })
 }
 
@@ -184,7 +184,11 @@ const loadCommands = () => {
 }
 
 
-Promise.all([setEnvironment(), loadEvents(), loadFramework(), loadCommands()])
+Promise.resolve()
+    .then(() => setEnvironment())
+    .then(() => loadFramework())
+    .then(() => loadEvents())
+    .then(() => loadCommands())
     .then(() => {
         console.log(`${color.green}*** All loaded successfully ***${color.white}`);
         client.login(ENV.TOKEN);
