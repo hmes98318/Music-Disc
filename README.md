@@ -26,7 +26,7 @@ or [**click here**](https://github.com/hmes98318/Music-Disc/releases) to downloa
 
 
 ### Install the dependencies
-auto install all dependencies on [`package.json`](./package.json)  
+install all the dependencies from [`package.json`](./package.json)  
 ```
 npm install
 ```
