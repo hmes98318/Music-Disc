@@ -1,17 +1,18 @@
 'use strict';
 
 const fs = require('fs');
+
 const dotenv = require('dotenv');
 const { Client, GatewayIntentBits, Partials, Collection } = require('discord.js');
 const { Player } = require('discord-player');
 const express = require('express');
 require('console-stamp')(console, { format: ':date(yyyy/mm/dd HH:MM:ss)' });
 
+const embed = require(`${__dirname}/src/embeds/embeds`);
 
-dotenv.config()
+
+dotenv.config();
 const ENV = process.env;
-const embed = require('./src/embeds/embeds');
-
 const color = {
     white: '\x1B[0m',
     grey: '\x1B[2m',
@@ -109,16 +110,16 @@ const setEnvironment = () => {
 const loadEvents = () => {
     console.log(`-> loading Events ......`);
     return new Promise((resolve, reject) => {
-        const files = fs.readdirSync('./src/events/').filter(file => file.endsWith('.js'));
+        const files = fs.readdirSync(`${__dirname}/src/events/`).filter(file => file.endsWith('.js'));
 
         console.log(`+--------------------------------+`);
         for (const file of files) {
             try {
-                const event = require(`./src/events/${file}`);
+                const event = require(`${__dirname}/src/events/${file}`);
                 console.log(`| Loaded event ${file.split('.')[0].padEnd(17, ' ')} |`);
 
                 client.on(file.split('.')[0], event.bind(null, client));
-                delete require.cache[require.resolve(`./src/events/${file}`)];
+                delete require.cache[require.resolve(`${__dirname}/src/events/${file}`)];
             } catch (error) {
                 reject(error);
             }
@@ -152,17 +153,17 @@ const loadFramework = () => {
 const loadCommands = () => {
     console.log(`-> loading Commands ......`);
     return new Promise((resolve, reject) => {
-        const files = fs.readdirSync('./src/commands/').filter(file => file.endsWith('.js'));
+        const files = fs.readdirSync(`${__dirname}/src/commands/`).filter(file => file.endsWith('.js'));
 
         console.log(`+---------------------------+`);
         for (const file of files) {
             try {
-                const command = require(`./src/commands/${file}`);
+                const command = require(`${__dirname}/src/commands/${file}`);
 
                 console.log(`| Loaded Command ${command.name.toLowerCase().padEnd(10, ' ')} |`);
 
                 client.commands.set(command.name.toLowerCase(), command);
-                delete require.cache[require.resolve(`./src/commands/${file}`)];
+                delete require.cache[require.resolve(`${__dirname}/src/commands/${file}`)];
             } catch (error) {
                 reject(error);
             }
