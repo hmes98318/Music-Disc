@@ -18,7 +18,7 @@ module.exports = {
         if (timestamp.progress == 'Infinity')
             return message.reply({ content: `❌ | This song is live streaming, no duration data to display.`, allowedMentions: { repliedUser: false } });
 
-        message.reply(`${progress} (**${timestamp.progress}**%)`);
+        return message.reply({ content: `${progress} (**${timestamp.progress}**%)`, allowedMentions: { repliedUser: false } });
     },
 
     async slashExecute(client, interaction) {
@@ -33,6 +33,6 @@ module.exports = {
         if (timestamp.progress == 'Infinity')
             return interaction.reply({ content: `❌ | This song is live streaming, no duration data to display.`, allowedMentions: { repliedUser: false } });
 
-        interaction.reply(`${progress} (**${timestamp.progress}**%)`);
+        return interaction.reply({ content: `${progress} (**${timestamp.progress}**%)`, allowedMentions: { repliedUser: false } });
     },
 };
