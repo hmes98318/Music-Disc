@@ -1,4 +1,4 @@
-FROM rockylinux:9.0.20220720
+FROM rockylinux:9.1.20230215
 
 WORKDIR /src/bot
 
@@ -12,4 +12,4 @@ COPY ./ /src/bot
 
 RUN npm install
 
-CMD [ "node","index.js" ]
+CMD [ "npm", "run", "start" ]
