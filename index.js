@@ -109,10 +109,10 @@ const setEnvironment = () => {
 const loadEvents = () => {
     console.log(`-> loading Events ......`);
     return new Promise((resolve, reject) => {
-        const events = fs.readdirSync('./src/events/').filter(file => file.endsWith('.js'));
+        const files = fs.readdirSync('./src/events/').filter(file => file.endsWith('.js'));
 
         console.log(`+--------------------------------+`);
-        for (const file of events) {
+        for (const file of files) {
             try {
                 const event = require(`./src/events/${file}`);
                 console.log(`| Loaded event ${file.split('.')[0].padEnd(17, ' ')} |`);
@@ -152,34 +152,25 @@ const loadFramework = () => {
 const loadCommands = () => {
     console.log(`-> loading Commands ......`);
     return new Promise((resolve, reject) => {
-        fs.readdir('./src/commands/', (err, files) => {
+        const files = fs.readdirSync('./src/commands/').filter(file => file.endsWith('.js'));
 
-            console.log(`+---------------------------+`);
-            if (err)
-                return console.log('Could not find any commands!');
+        console.log(`+---------------------------+`);
+        for (const file of files) {
+            try {
+                const command = require(`./src/commands/${file}`);
 
-            const jsFiles = files.filter(file => file.endsWith('.js'));
+                console.log(`| Loaded Command ${command.name.toLowerCase().padEnd(10, ' ')} |`);
 
-            if (jsFiles.length <= 0)
-                return console.log('Could not find any commands!');
+                client.commands.set(command.name.toLowerCase(), command);
+                delete require.cache[require.resolve(`./src/commands/${file}`)];
+            } catch (error) {
+                reject(error);
+            }
+        };
+        console.log(`+---------------------------+`);
+        console.log(`${color.grey}-- loading Commands finished --${color.white}`);
 
-            for (const file of jsFiles) {
-                try {
-                    const command = require(`./src/commands/${file}`);
-
-                    console.log(`| Loaded Command ${command.name.toLowerCase().padEnd(10, ' ')} |`);
-
-                    client.commands.set(command.name.toLowerCase(), command);
-                    delete require.cache[require.resolve(`./src/commands/${file}`)];
-                } catch (error) {
-                    reject(error);
-                }
-            };
-            console.log(`+---------------------------+`);
-            console.log(`${color.grey}-- loading Commands finished --${color.white}`);
-
-            resolve();
-        });
+        resolve();
     })
 }
 
