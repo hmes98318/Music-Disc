@@ -193,41 +193,25 @@ const settings = (queue, song) =>
     `**Volume**: \`${queue.volume}%\` | **Loop**: \`${queue.repeatMode ? (queue.repeatMode === 2 ? 'All' : 'ONE') : 'Off'}\``;
 
 
-player.on('error', (queue, error) => {
-    console.log(`There was a problem with the song queue => ${error.message}`);
+player.events.on('playerStart', (queue, track) => {
+    if (queue.repeatMode !== 0) return;
+    queue.metadata.channel.send({ embeds: [embed.Embed_play("Playing", track.title, track.url, track.duration, track.thumbnail, settings(queue))] });
 });
 
-player.on('connectionError', (queue, error) => {
+player.events.on('audioTrackAdd', (queue, track) => {
+    if (queue.isPlaying())
+        queue.metadata.channel.send({ embeds: [embed.Embed_play("Added", track.title, track.url, track.duration, track.thumbnail, settings(queue))] });
+});
+
+player.events.on('playerError', (queue, error) => {
     console.log(`I'm having trouble connecting => ${error.message}`);
 });
 
-player.on('trackStart', (queue, track) => {
-    if (queue.repeatMode !== 0) return;
-    queue.metadata.send({ embeds: [embed.Embed_play("Playing", track.title, track.url, track.duration, track.thumbnail, settings(queue))] });
+player.events.on('error', (queue, error) => {
+    console.log(`There was a problem with the song queue => ${error.message}`);
 });
 
-player.on('trackAdd', (queue, track) => {
-    if (queue.previousTracks.length > 0)
-        queue.metadata.send({ embeds: [embed.Embed_play("Added", track.title, track.url, track.duration, track.thumbnail, settings(queue))] });
-});
-
-player.on('channelEmpty', (queue) => {
+player.events.on('emptyChannel', (queue) => {
     if (!client.config.autoLeave)
-        queue.stop();
-});
-
-
-player.on('connectionCreate', (queue) => {
-    queue.connection.voiceConnection.on('stateChange', (oldState, newState) => {
-        const oldNetworking = Reflect.get(oldState, 'networking');
-        const newNetworking = Reflect.get(newState, 'networking');
-
-        const networkStateChangeHandler = (oldNetworkState, newNetworkState) => {
-            const newUdp = Reflect.get(newNetworkState, 'udp');
-            clearInterval(newUdp?.keepAliveInterval);
-        }
-
-        oldNetworking?.off('stateChange', networkStateChangeHandler);
-        newNetworking?.on('stateChange', networkStateChangeHandler);
-    });
+        if (!queue?.deleted) queue?.delete();
 });
