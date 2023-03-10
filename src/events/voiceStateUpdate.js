@@ -16,7 +16,7 @@ module.exports = async (client, oldState, newState) => {
 
         // If the member who left the channel is not bot, check if the channel still has members
         if (!oldState.member.user.bot) {
-            const queue = await client.player.getQueue(oldState.guild.id);
+            const queue = await client.player.nodes.get(oldState.guild.id);
             const botChannelId = queue?.connection?.channel?.id;
             const oldChannelId = oldState.channel.id;
             const newChannelId = newState.channel.id;
