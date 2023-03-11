@@ -46,7 +46,7 @@ module.exports = {
                 leaveOnEndCooldown: client.config.autoLeaveCooldown,
                 volume: client.config.defaultVolume,
             }
-        });
+        }); // The two play methods are the same
         */
         const queue = await client.player.nodes.create(message.guild, {
             metadata: {
