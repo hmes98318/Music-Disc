@@ -4,14 +4,14 @@ const embed = require('../embeds/embeds');
 module.exports = (client, int) => {
 
     if (int.isButton()) {
-        const queue = client.player.getQueue(int.guildId);
+        const queue = client.player.nodes.get(int.guildId);
 
-        if (!queue || !queue.playing)
+        if (!queue || !queue.isPlaying())
             return int.reply({ content: `❌ | There is no music currently playing.`, ephemeral: true, components: [] });
 
 
-        const track = queue.current;
-        const timestamp = queue.getPlayerTimestamp();
+        const track = queue.currentTrack;
+        const timestamp = queue.node.getTimestamp();
         const trackDuration = timestamp.progress == 'Forever' ? 'Endless (Live)' : track.duration;
         let description = `Author : **${track.author}**\nDuration **${trackDuration}**`;
 
@@ -19,7 +19,7 @@ module.exports = (client, int) => {
         switch (int.customId) {
             case 'Save Song': {
 
-                if (!queue || !queue.playing)
+                if (!queue || !queue.isPlaying())
                     return int.reply({ content: `❌ | No music currently playing.`, ephemeral: true, components: [] });
 
 
