@@ -8,18 +8,11 @@ const { Player } = require('discord-player');
 const express = require('express');
 require('console-stamp')(console, { format: ':date(yyyy/mm/dd HH:MM:ss)' });
 
-const embed = require(`${__dirname}/src/embeds/embeds`);
+const embed = require(`${__dirname}/embeds/embeds`);
 
 
 dotenv.config();
 const ENV = process.env;
-const color = {
-    white: '\x1B[0m',
-    grey: '\x1B[2m',
-    green: '\x1B[32m'
-};
-
-
 
 
 let client = new Client({
@@ -47,18 +40,21 @@ client.config = {
     port: 33333
 };
 
-client.config.ytdlOptions = {
-    filter: 'audioonly',
-    quality: 'highestaudio',
-    highWaterMark: 1 << 27
-}
-
-
 client.commands = new Collection();
 client.player = new Player(client, {
-    ytdlOptions: client.config.ytdlOptions
+    ytdlOptions: {
+        filter: 'audioonly',
+        quality: 'highestaudio',
+        highWaterMark: 1 << 27
+    }
 });
+
 const player = client.player;
+const color = {
+    white: '\x1B[0m',
+    grey: '\x1B[2m',
+    green: '\x1B[32m'
+};
 
 
 
@@ -107,31 +103,6 @@ const setEnvironment = () => {
 }
 
 
-const loadEvents = () => {
-    console.log(`-> loading Events ......`);
-    return new Promise((resolve, reject) => {
-        const files = fs.readdirSync(`${__dirname}/src/events/`).filter(file => file.endsWith('.js'));
-
-        console.log(`+--------------------------------+`);
-        for (const file of files) {
-            try {
-                const event = require(`${__dirname}/src/events/${file}`);
-                console.log(`| Loaded event ${file.split('.')[0].padEnd(17, ' ')} |`);
-
-                client.on(file.split('.')[0], event.bind(null, client));
-                delete require.cache[require.resolve(`${__dirname}/src/events/${file}`)];
-            } catch (error) {
-                reject(error);
-            }
-        };
-        console.log(`+--------------------------------+`);
-        console.log(`${color.grey}-- loading Events finished --${color.white}`);
-
-        resolve();
-    })
-}
-
-
 const loadFramework = () => {
     console.log(`-> loading Web Framework ......`);
     return new Promise((resolve, reject) => {
@@ -150,20 +121,45 @@ const loadFramework = () => {
 }
 
 
+const loadEvents = () => {
+    console.log(`-> loading Events ......`);
+    return new Promise((resolve, reject) => {
+        const files = fs.readdirSync(`${__dirname}/events/`).filter(file => file.endsWith('.js'));
+
+        console.log(`+--------------------------------+`);
+        for (const file of files) {
+            try {
+                const event = require(`${__dirname}/events/${file}`);
+                console.log(`| Loaded event ${file.split('.')[0].padEnd(17, ' ')} |`);
+
+                client.on(file.split('.')[0], event.bind(null, client));
+                delete require.cache[require.resolve(`${__dirname}/events/${file}`)];
+            } catch (error) {
+                reject(error);
+            }
+        };
+        console.log(`+--------------------------------+`);
+        console.log(`${color.grey}-- loading Events finished --${color.white}`);
+
+        resolve();
+    })
+}
+
+
 const loadCommands = () => {
     console.log(`-> loading Commands ......`);
     return new Promise((resolve, reject) => {
-        const files = fs.readdirSync(`${__dirname}/src/commands/`).filter(file => file.endsWith('.js'));
+        const files = fs.readdirSync(`${__dirname}/commands/`).filter(file => file.endsWith('.js'));
 
         console.log(`+---------------------------+`);
         for (const file of files) {
             try {
-                const command = require(`${__dirname}/src/commands/${file}`);
+                const command = require(`${__dirname}/commands/${file}`);
 
                 console.log(`| Loaded Command ${command.name.toLowerCase().padEnd(10, ' ')} |`);
 
                 client.commands.set(command.name.toLowerCase(), command);
-                delete require.cache[require.resolve(`${__dirname}/src/commands/${file}`)];
+                delete require.cache[require.resolve(`${__dirname}/commands/${file}`)];
             } catch (error) {
                 reject(error);
             }
