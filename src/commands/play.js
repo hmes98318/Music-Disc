@@ -20,85 +20,105 @@ module.exports = {
         if (!args[0])
             return message.reply({ content: `❌ | Write the name of the music you want to search.`, allowedMentions: { repliedUser: false } });
 
-        const res = await client.player.search(args.join(' '), {
-            requestedBy: message.member,
-            searchEngine: QueryType.AUTO
-        })
+
+        const results = await client.player.search(args.join(' '))
             .catch((error) => {
                 console.log(error);
                 return message.reply({ content: `❌ | The service is experiencing some problems, please try again.`, allowedMentions: { repliedUser: false } });
             });
 
-        if (!res || !res?.tracks?.length)
+        if (!results || !results.hasTracks())
             return message.reply({ content: `❌ | No results found.`, allowedMentions: { repliedUser: false } });
 
 
-        const queue = await client.player.createQueue(message.guild, {
-            metadata: message.channel,
-            leaveOnEnd: client.config.autoLeave,
-            leaveOnEndCooldown: client.config.autoLeaveCooldown,
-            leaveOnStop: client.config.autoLeave,
+        /*
+        const queue = await client.player.play(message.member.voice.channel.id, results, {
+            nodeOptions: {
+                metadata: {
+                    channel: message.channel,
+                    client: message.guild.members.me,
+                    requestedBy: message.user
+                },
+                selfDeaf: true,
+                leaveOnEmpty: client.config.autoLeave,
+                leaveOnEnd: client.config.autoLeave,
+                leaveOnEmptyCooldown: client.config.autoLeaveCooldown,
+                leaveOnEndCooldown: client.config.autoLeaveCooldown,
+                volume: client.config.defaultVolume,
+            }
+        });
+        */
+        const queue = await client.player.nodes.create(message.guild, {
+            metadata: {
+                channel: message.channel,
+                client: message.guild.members.me,
+                requestedBy: message.user
+            },
+            selfDeaf: true,
             leaveOnEmpty: client.config.autoLeave,
+            leaveOnEnd: client.config.autoLeave,
             leaveOnEmptyCooldown: client.config.autoLeaveCooldown,
-            initialVolume: client.config.defaultVolume,
-            ytdlOptions: client.config.ytdlOptions
+            leaveOnEndCooldown: client.config.autoLeaveCooldown,
+            volume: client.config.defaultVolume,
         });
 
         try {
             if (!queue.connection)
                 await queue.connect(message.member.voice.channel);
-        } catch {
-            await client.player.deleteQueue(message.guild.id);
+        } catch (error) {
+            console.log(error);
+            if (!queue?.deleted) queue?.delete();
             return message.reply({ content: `❌ | I can't join audio channel.`, allowedMentions: { repliedUser: false } });
         }
 
-        await message.react('👍');
+        results.playlist ? queue.addTrack(results.tracks) : queue.addTrack(results.tracks[0]);
 
-        res.playlist ? queue.addTracks(res.tracks) : queue.addTrack(res.tracks[0]);
+        if (!queue.isPlaying())
+            await queue.node.play();
 
-        if (!queue.playing)
-            await queue.play();
+        return message.react('👍');
     },
 
     async slashExecute(client, interaction) {
 
-        const res = await client.player.search(interaction.options.getString("search"), {
-            requestedBy: interaction.member,
-            searchEngine: QueryType.AUTO
-        })
+        const results = await client.player.search(interaction.options.getString("search"))
             .catch((error) => {
                 console.log(error);
-                return message.reply({ content: `❌ | The service is experiencing some problems, please try again.`, allowedMentions: { repliedUser: false } });
+                return interaction.reply({ content: `❌ | The service is experiencing some problems, please try again.`, allowedMentions: { repliedUser: false } });
             });
 
-        if (!res || !res.tracks.length)
+        if (!results || !results.tracks.length)
             return interaction.reply({ content: `❌ | No results found.`, allowedMentions: { repliedUser: false } });
 
 
-        const queue = await client.player.createQueue(interaction.guild, {
-            metadata: interaction.channel,
-            leaveOnEnd: client.config.autoLeave,
-            leaveOnEndCooldown: client.config.autoLeaveCooldown,
-            leaveOnStop: client.config.autoLeave,
+        const queue = await client.player.nodes.create(interaction.guild, {
+            metadata: {
+                channel: interaction.channel,
+                client: interaction.guild.members.me,
+                requestedBy: interaction.user
+            },
+            selfDeaf: true,
             leaveOnEmpty: client.config.autoLeave,
+            leaveOnEnd: client.config.autoLeave,
             leaveOnEmptyCooldown: client.config.autoLeaveCooldown,
-            initialVolume: client.config.defaultVolume,
-            ytdlOptions: client.config.ytdlOptions
+            leaveOnEndCooldown: client.config.autoLeaveCooldown,
+            volume: client.config.defaultVolume,
         });
 
         try {
             if (!queue.connection)
                 await queue.connect(interaction.member.voice.channel);
-        } catch {
-            await client.player.deleteQueue(interaction.guild.id);
+        } catch (error) {
+            console.log(error);
+            if (!queue?.deleted) queue?.delete();
             return interaction.reply({ content: `❌ | I can't join audio channel.`, allowedMentions: { repliedUser: false } });
         }
 
-        await interaction.reply("✅ | Music added.");
+        results.playlist ? queue.addTracks(results.tracks) : queue.addTrack(results.tracks[0]);
 
-        res.playlist ? queue.addTracks(res.tracks) : queue.addTrack(res.tracks[0]);
+        if (!queue.isPlaying())
+            await queue.node.play();
 
-        if (!queue.playing)
-            await queue.play();
+        return interaction.reply("✅ | Music added.");
     },
 };

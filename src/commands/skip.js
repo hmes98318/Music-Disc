@@ -7,39 +7,41 @@ module.exports = {
     options: [],
 
     async execute(client, message) {
-        const queue = client.player.getQueue(message.guild.id);
+        const queue = client.player.nodes.get(message.guild.id);
 
-        if (!queue || !queue.playing)
+        if (!queue || !queue.isPlaying())
             return message.reply({ content: `❌ | There is no music currently playing.`, allowedMentions: { repliedUser: false } });
 
 
         if (queue.repeatMode === 1) {
             queue.setRepeatMode(0);
-            queue.skip();
+            queue.node.skip();
             await wait(500);
             queue.setRepeatMode(1);
         }
-        else
-            queue.skip();
+        else {
+            queue.node.skip();
+        }
 
         return message.react('👍');
     },
 
     async slashExecute(client, interaction) {
-        const queue = client.player.getQueue(interaction.guild.id);
+        const queue = client.player.nodes.get(interaction.guild.id);
 
-        if (!queue || !queue.playing)
+        if (!queue || !queue.isPlaying())
             return interaction.reply({ content: `❌ | There is no music currently playing.`, allowedMentions: { repliedUser: false } });
 
 
         if (queue.repeatMode === 1) {
             queue.setRepeatMode(0);
-            queue.skip();
+            queue.node.skip();
             await wait(500);
             queue.setRepeatMode(1);
         }
-        else
-            queue.skip();
+        else {
+            queue.node.skip();
+        }
 
         return interaction.reply('✅ | Music skipped.');
     },
@@ -48,6 +50,6 @@ module.exports = {
 
 
 
-function wait(ms) {
+const wait = (ms) => {
     return new Promise((resolve) => setTimeout(() => resolve(), ms));
 };

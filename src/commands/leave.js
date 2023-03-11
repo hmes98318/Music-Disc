@@ -7,22 +7,26 @@ module.exports = {
     options: [],
 
     execute(client, message) {
-        const queue = client.player.getQueue(message.guild.id);
+        const queue = client.player.nodes.get(message.guild.id);
 
-        if (!queue || !queue.playing)
+        if (!queue || !queue.isPlaying())
             return message.reply({ content: `❌ | There is no music currently playing.`, allowedMentions: { repliedUser: false } });
 
-        queue.destroy();
+        if (!queue.deleted)
+            queue.delete();
+
         return message.react('👍');
     },
 
     slashExecute(client, interaction) {
-        const queue = client.player.getQueue(interaction.guild.id);
+        const queue = client.player.nodes.get(interaction.guild.id);
 
-        if (!queue || !queue.playing)
+        if (!queue || !queue.isPlaying())
             return interaction.reply({ content: `❌ | There is no music currently playing.`, allowedMentions: { repliedUser: false } });
 
-        queue.destroy();
+        if (!queue.deleted)
+            queue.delete();
+
         return interaction.reply('✅ | Bot leave.');
     },
 };

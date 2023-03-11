@@ -7,22 +7,22 @@ module.exports = {
     options: [],
 
     execute(client, message) {
-        const queue = client.player.getQueue(message.guild.id);
+        const queue = client.player.nodes.get(message.guild.id);
 
-        if (!queue || !queue.playing)
+        if (!queue || !queue.isPlaying())
             return message.reply({ content: `❌ | There is no music currently playing!.`, allowedMentions: { repliedUser: false } });
 
-        const success = queue.setPaused(true);
+        const success = queue.node.pause();
         return success ? message.react('⏸️') : message.reply({ content: `❌ | Something went wrong.`, allowedMentions: { repliedUser: false } });
     },
 
     slashExecute(client, interaction) {
-        const queue = client.player.getQueue(interaction.guild.id);
+        const queue = client.player.nodes.get(interaction.guild.id);
 
-        if (!queue || !queue.playing)
+        if (!queue || !queue.isPlaying())
             return interaction.reply({ content: `❌ | There is no music currently playing!.`, allowedMentions: { repliedUser: false } });
 
-        const success = queue.setPaused(true);
+        const success = queue.node.pause();
         return success ? interaction.reply("⏸️ | Music paused.") : interaction.reply({ content: `❌ | Something went wrong.`, allowedMentions: { repliedUser: false } });
     },
 };

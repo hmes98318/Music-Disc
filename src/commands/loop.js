@@ -28,10 +28,10 @@ module.exports = {
     ],
 
     execute(client, message, args) {
-        const queue = client.player.getQueue(message.guild.id);
+        const queue = client.player.nodes.get(message.guild.id);
         const prefix = client.config.prefix;
 
-        if (!queue || !queue.playing)
+        if (!queue || !queue.isPlaying())
             return message.reply({ content: `❌ | There is no music currently playing.`, allowedMentions: { repliedUser: false } });
 
         let mode = null;
@@ -60,9 +60,9 @@ module.exports = {
     },
 
     slashExecute(client, interaction) {
-        const queue = client.player.getQueue(interaction.guild.id);
+        const queue = client.player.nodes.get(interaction.guild.id);
 
-        if (!queue || !queue.playing)
+        if (!queue || !queue.isPlaying())
             return interaction.reply({ content: `❌ | There is no music currently playing.`, allowedMentions: { repliedUser: false } });
 
 

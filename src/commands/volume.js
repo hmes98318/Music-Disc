@@ -16,17 +16,17 @@ module.exports = {
 
     async execute(client, message, args) {
         const maxVolume = client.config.maxVolume;
-        const queue = client.player.getQueue(message.guild.id);
+        const queue = client.player.nodes.get(message.guild.id);
 
-        if (!queue || !queue.playing)
+        if (!queue || !queue.isPlaying())
             return message.reply({ content: `❌ | There is no music currently playing.`, allowedMentions: { repliedUser: false } });
 
 
         await message.react('👍');
-        const vol = parseInt(args[0]);
+        const vol = parseInt(args[0], 10);
 
         if (!vol)
-            return message.reply({ content: `Current volume: **${queue.volume}** 🔊\n**To change the volume, with \`1\` to \`${maxVolume}\` Type a number between.**`, allowedMentions: { repliedUser: false } });
+            return message.reply({ content: `Current volume: **${queue.node.volume}** 🔊\n**To change the volume, with \`1\` to \`${maxVolume}\` Type a number between.**`, allowedMentions: { repliedUser: false } });
 
         if (queue.volume === vol)
             return message.reply({ content: `❌ | The volume you want to change is already the current volume.`, allowedMentions: { repliedUser: false } });
@@ -35,19 +35,22 @@ module.exports = {
             return message.reply({ content: `❌ | **Type a number from \`1\` to \`${maxVolume}\` to change the volume .**`, allowedMentions: { repliedUser: false } });
 
 
-        const success = queue.setVolume(vol);
+        const success = queue.node.setVolume(vol);
         const replymsg = success ? `🔊 **${vol}**/**${maxVolume}**%` : `❌ | Something went wrong.`;
         return message.reply({ content: replymsg, allowedMentions: { repliedUser: false } });
     },
 
     async slashExecute(client, interaction) {
         const maxVolume = client.config.maxVolume;
-        const queue = client.player.getQueue(interaction.guild.id);
+        const queue = client.player.nodes.get(interaction.guild.id);
 
-        if (!queue || !queue.playing)
+        if (!queue || !queue.isPlaying())
             return interaction.reply({ content: `❌ | There is no music currently playing.`, allowedMentions: { repliedUser: false } });
 
-        const vol = interaction.options.getInteger("volume");
+        const vol = parseInt(interaction.options.getInteger("volume"), 10);
+
+        if (!vol)
+            return interaction.reply({ content: `Current volume: **${queue.node.volume}** 🔊\n**To change the volume, with \`1\` to \`${maxVolume}\` Type a number between.**`, allowedMentions: { repliedUser: false } });
 
         if (queue.volume === vol)
             return interaction.reply({ content: `❌ | The volume you want to change is already the current volume.`, allowedMentions: { repliedUser: false } });
@@ -56,7 +59,7 @@ module.exports = {
             return interaction.reply({ content: `❌ | **Type a number from \`1\` to \`${maxVolume}\` to change the volume .**`, allowedMentions: { repliedUser: false } });
 
 
-        const success = queue.setVolume(vol);
+        const success = queue.node.setVolume(vol);
         const replymsg = success ? `🔊 **${vol}**/**${maxVolume}**%` : `❌ | Something went wrong.`;
         return interaction.reply({ content: replymsg, allowedMentions: { repliedUser: false } });
     },

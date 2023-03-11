@@ -6,25 +6,23 @@ module.exports = {
     voiceChannel: true,
     options: [],
 
-    execute(client, message) {
-        const queue = client.player.getQueue(message.guild.id);
+    async execute(client, message) {
+        const queue = client.player.nodes.get(message.guild.id);
 
-        if (!queue || !queue.playing)
+        if (!queue || !queue.isPlaying())
             return message.reply({ content: `❌ | There is no music currently playing!.`, allowedMentions: { repliedUser: false } });
 
-
-        const success = queue.shuffle();
-        return success ? message.react('👍') : message.reply({ content: `❌ | Something went wrong.`, allowedMentions: { repliedUser: false } });
+        queue.tracks.shuffle();
+        return message.react('👍');
     },
 
     slashExecute(client, interaction) {
-        const queue = client.player.getQueue(interaction.guild.id);
+        const queue = client.player.nodes.get(interaction.guild.id);
 
-        if (!queue || !queue.playing)
+        if (!queue || !queue.isPlaying())
             return interaction.reply({ content: `❌ | There is no music currently playing!.`, allowedMentions: { repliedUser: false } });
 
-
-        const success = queue.shuffle();
-        return success ? interaction.reply('✅ | Music shuffled.') : interaction.reply({ content: `❌ | Something went wrong.`, allowedMentions: { repliedUser: false } });
+        queue.tracks.shuffle();
+        return interaction.reply('✅ | Music shuffled.');
     },
 };
