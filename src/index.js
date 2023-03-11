@@ -209,5 +209,5 @@ player.events.on('error', (queue, error) => {
 
 player.events.on('emptyChannel', (queue) => {
     if (!client.config.autoLeave)
-        if (!queue?.deleted) queue?.delete();
+        queue.node.stop();
 });
