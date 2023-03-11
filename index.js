@@ -190,7 +190,7 @@ Promise.resolve()
 
 
 const settings = (queue, song) =>
-    `**Volume**: \`${queue.volume}%\` | **Loop**: \`${queue.repeatMode ? (queue.repeatMode === 2 ? 'All' : 'ONE') : 'Off'}\``;
+    `**Volume**: \`${queue.node.volume}%\` | **Loop**: \`${queue.repeatMode ? (queue.repeatMode === 2 ? 'All' : 'ONE') : 'Off'}\``;
 
 
 player.events.on('playerStart', (queue, track) => {
