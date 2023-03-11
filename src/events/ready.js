@@ -10,7 +10,7 @@ const color = { white: '\x1B[0m', cyan: '\x1B[36m' };
 module.exports = async (client) => {
     client.status = {
         uptime: new Date(),
-        os_version: await OSversion(),
+        os_version: await getOSVersion(),
         node_version: process.version,
         discord_version: `v${Discord.version}`,
         bot_version: `v${package.version}`,
@@ -45,23 +45,26 @@ module.exports = async (client) => {
 
 
 
-function OSversion() {
-    let platform = process.platform;
+const getOSVersion = () => {
+    return new Promise((resolve, reject) => {
+        const platform = process.platform;
 
-    if (platform === "win32")
-        return os.type();
-
-    else if (platform === "linux")
-        return new Promise(function (resolve, reject) {
+        if (platform === "win32") {
+            resolve(os.type());
+        }
+        else if (platform === "linux") {
             exec('cat /etc/*release | grep -E ^PRETTY_NAME',
                 (error, stdout, stderr) => {
-                    if (error !== null) reject(error);
-
-                    let os_version = stdout.split('"')[1];
-                    resolve(os_version);
+                    if (error) {
+                        resolve(process.platform);
+                    } else {
+                        const os_version = stdout.split('"')[1];
+                        resolve(os_version);
+                    }
                 });
-        });
-
-    else
-        return process.platform;
+        }
+        else {
+            resolve(process.platform);
+        }
+    });
 }
