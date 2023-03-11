@@ -1,6 +1,6 @@
 FROM rockylinux:9.1.20230215
 
-WORKDIR /src/bot
+WORKDIR /bot
 
 RUN dnf update -y
 
@@ -8,7 +8,7 @@ RUN cd ~ && curl -sL https://rpm.nodesource.com/setup_18.x -o nodesource_setup.s
 
 RUN dnf install nodejs -y
 
-COPY ./ /src/bot
+COPY . /bot
 
 RUN npm install
 
