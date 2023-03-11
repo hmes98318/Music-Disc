@@ -4,7 +4,7 @@
 
 <a href="https://github.com/hmes98318/Music-Disc/releases"><img alt="GitHub package.json version" src="https://img.shields.io/github/package-json/v/hmes98318/Music-Disc?style=for-the-badge"></a> 
 <a href="https://discord.js.org/"><img src="https://img.shields.io/badge/Discord.JS-v14-blue?style=for-the-badge&logo=DISCORD" /></a> 
-<a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node%20Version->=16.13.0-brightgreen?style=for-the-badge&logo=Node.js"></a> 
+<a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node.JS->=16.13.0-brightgreen?style=for-the-badge&logo=Node.js"></a> 
 <a href="https://github.com/hmes98318/Music-Disc/blob/main/LICENSE"><img alt="GitHub" src="https://img.shields.io/github/license/hmes98318/Music-Disc?style=for-the-badge&color=brightgreen"></a>  
 
 ### Discord.js v14 Music Bot  
@@ -20,7 +20,7 @@ Supports **YouTube**, **Spotify**, **SoundCloud** streams.
 
 ### Clone the repository
 ```
-git clone -b v1.2.7 https://github.com/hmes98318/Music-Disc.git
+git clone -b v1.3.0 https://github.com/hmes98318/Music-Disc.git
 ```
 or [**click here**](https://github.com/hmes98318/Music-Disc/releases) to download  
 
@@ -63,7 +63,7 @@ npm run start
 version: '3.8'
 services:
   music-disc:
-    image: hmes98318/music-disc:1.2.7
+    image: hmes98318/music-disc:1.3.0
     container_name: music-disc
     restart: always
     environment:
