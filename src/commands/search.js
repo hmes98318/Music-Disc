@@ -1,5 +1,5 @@
 const { Player } = require('discord-player');
-const { SelectMenuBuilder, ActionRowBuilder } = require("discord.js");
+const { StringSelectMenuBuilder, ActionRowBuilder } = require("discord.js");
 
 
 module.exports = {
@@ -67,7 +67,7 @@ module.exports = {
             return message.reply({ content: "✅ | Music added.", allowedMentions: { repliedUser: false } });
         }
         else {
-            let select = new SelectMenuBuilder()
+            let select = new StringSelectMenuBuilder()
                 .setCustomId("musicSelect")
                 .setPlaceholder("Select the music")
                 .setOptions(results.tracks.map(x => {
@@ -151,7 +151,7 @@ module.exports = {
             return interaction.editReply("✅ | Music added.");
         }
         else {
-            let select = new SelectMenuBuilder()
+            let select = new StringSelectMenuBuilder()
                 .setCustomId("musicSelect")
                 .setPlaceholder("Select the music")
                 .setOptions(results.tracks.map(x => {
