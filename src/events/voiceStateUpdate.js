@@ -5,13 +5,13 @@ module.exports = async (client, oldState, newState) => {
     const display = client.config.displayVoiceState;
 
     if (newState.channelId === null) {
-        if (display) console.log(`${color.grey}-- ${newState.member.user.username} left channel${color.white}`);
+        if (display) console.log(`${color.grey}-- ${newState.member.user.username}이(가) 채널을 떠났습니다. ${color.red}`);
     }
     else if (oldState.channelId === null) {
-        if (display) console.log(`${color.grey}-- ${newState.member.user.username} joined channel ${newState.channel.name}${color.white}`);
+        if (display) console.log(`${color.grey}-- ${newState.member.user.username}이(가) ${newState.channel.name}에 가입했습니다. ${color.green}`);
     }
     else {
-        if (display) console.log(`${color.grey}-- ${newState.member.user.username} moved channel ${oldState.channel.name} to ${newState.channel.name}${color.white}`);
+        if (display) console.log(`${color.grey}-- ${newState.member.user.username}이(가) ${oldState.channel.name}에서 ${newState.channel.name}으로 채널을 이동했습니다. ${color.blue}`);
 
 
         // If the member who left the channel is not bot, check if the channel still has members

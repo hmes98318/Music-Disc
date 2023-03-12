@@ -16,10 +16,10 @@ module.exports = (client, message) => {
 
     if (cmd && cmd.voiceChannel) {
         if (!message.member.voice.channel)
-            return message.channel.send(`❌ | You are not connected to an audio channel.`);
+            return message.channel.send(`⛔ㅣ음성 채널에 연결되어 있지 않습니다.`);
 
         if (message.guild.members.me.voice.channel && message.member.voice.channelId !== message.guild.members.me.voice.channelId)
-            return message.channel.send(`❌ | You are not on the same audio channel as me.`);
+            return message.channel.send(`⛔ㅣ당신은 봇과 같은 음성 채널에 있지 않습니다.`);
     }
 
     if (cmd) {
