@@ -9,7 +9,7 @@ module.exports = {
     voiceChannel: true,
     options: [
         {
-            name: "검색",
+            name: "search",
             description: "재생할 노래 링크 또는 노래 이름",
             type: 3,
             required: true
