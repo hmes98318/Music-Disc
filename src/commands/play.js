@@ -4,13 +4,13 @@ const { QueryType } = require('discord-player');
 module.exports = {
     name: 'play',
     aliases: ['p'],
-    description: 'Enter your song link or song name to play',
-    usage: 'play <URL/song name>',
+    description: '재생할 노래 링크 또는 노래 이름을 입력하십시오.',
+    usage: 'play <노래 링크 혹은 노래 이름>',
     voiceChannel: true,
     options: [
         {
-            name: "search",
-            description: "The song link or song name",
+            name: "검색",
+            description: "재생할 노래 링크 또는 노래 이름",
             type: 3,
             required: true
         }
@@ -18,17 +18,17 @@ module.exports = {
 
     async execute(client, message, args) {
         if (!args[0])
-            return message.reply({ content: `❌ | Write the name of the music you want to search.`, allowedMentions: { repliedUser: false } });
+            return message.reply({ content: `⛔ㅣ검색할 음악의 이름을 입력합니다.`, allowedMentions: { repliedUser: false } });
 
 
         const results = await client.player.search(args.join(' '))
             .catch((error) => {
                 console.log(error);
-                return message.reply({ content: `❌ | The service is experiencing some problems, please try again.`, allowedMentions: { repliedUser: false } });
+                return message.reply({ content: `⛔ㅣ서비스에 문제가 있습니다. 다시 시도하십시오.`, allowedMentions: { repliedUser: false } });
             });
 
         if (!results || !results.hasTracks())
-            return message.reply({ content: `❌ | No results found.`, allowedMentions: { repliedUser: false } });
+            return message.reply({ content: `⛔ㅣ결과를 찾을 수 없습니다.`, allowedMentions: { repliedUser: false } });
 
 
         /*
@@ -68,7 +68,7 @@ module.exports = {
         } catch (error) {
             console.log(error);
             if (!queue?.deleted) queue?.delete();
-            return message.reply({ content: `❌ | I can't join audio channel.`, allowedMentions: { repliedUser: false } });
+            return message.reply({ content: `⛔ㅣ음성 채널에 가입할 수 없습니다.`, allowedMentions: { repliedUser: false } });
         }
 
         results.playlist ? queue.addTrack(results.tracks) : queue.addTrack(results.tracks[0]);
@@ -84,11 +84,11 @@ module.exports = {
         const results = await client.player.search(interaction.options.getString("search"))
             .catch((error) => {
                 console.log(error);
-                return interaction.reply({ content: `❌ | The service is experiencing some problems, please try again.`, allowedMentions: { repliedUser: false } });
+                return interaction.reply({ content: `⛔ㅣ서비스에 문제가 있습니다. 다시 시도하십시오.`, allowedMentions: { repliedUser: false } });
             });
 
         if (!results || !results.tracks.length)
-            return interaction.reply({ content: `❌ | No results found.`, allowedMentions: { repliedUser: false } });
+            return interaction.reply({ content: `⛔ㅣ결과를 찾을 수 없습니다.`, allowedMentions: { repliedUser: false } });
 
 
         const queue = await client.player.nodes.create(interaction.guild, {
@@ -111,7 +111,7 @@ module.exports = {
         } catch (error) {
             console.log(error);
             if (!queue?.deleted) queue?.delete();
-            return interaction.reply({ content: `❌ | I can't join audio channel.`, allowedMentions: { repliedUser: false } });
+            return interaction.reply({ content: `⛔ㅣ음성 채널에 가입할 수 없습니다.`, allowedMentions: { repliedUser: false } });
         }
 
         results.playlist ? queue.addTracks(results.tracks) : queue.addTrack(results.tracks[0]);
@@ -119,6 +119,6 @@ module.exports = {
         if (!queue.isPlaying())
             await queue.node.play();
 
-        return interaction.reply("✅ | Music added.");
+        return interaction.reply("✅ㅣ음악이 추가되었습니다.");
     },
 };
