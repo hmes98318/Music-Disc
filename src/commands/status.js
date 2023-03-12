@@ -5,7 +5,7 @@ const embed = require('../embeds/embeds');
 module.exports = {
     name: 'status',
     aliases: ['usage'],
-    description: 'Show the bot status',
+    description: '봇 상태를 표시합니다.',
     usage: 'status',
     options: [],
 
@@ -52,19 +52,19 @@ function Uptime(uptime) {
     let date2 = Today.getTime();
     let total = (date2 - date1) / 1000;
 
-    let day = parseInt(total / (24 * 60 * 60)); // 計算整數天數
-    let afterDay = total - day * 24 * 60 * 60; // 取得算出天數後剩餘的秒數
-    let hour = parseInt(afterDay / (60 * 60)); // 計算整數小時數
-    let afterHour = total - day * 24 * 60 * 60 - hour * 60 * 60; // 取得算出小時數後剩餘的秒數
-    let min = parseInt(afterHour / 60); // 計算整數分
-    let afterMin = Math.round(total - day * 24 * 60 * 60 - hour * 60 * 60 - min * 60); // 取得算出分後剩餘的秒數
+    let day = parseInt(total / (24 * 60 * 60));
+    let afterDay = total - day * 24 * 60 * 60;
+    let hour = parseInt(afterDay / (60 * 60));
+    let afterHour = total - day * 24 * 60 * 60 - hour * 60 * 60;
+    let min = parseInt(afterHour / 60);
+    let afterMin = Math.round(total - day * 24 * 60 * 60 - hour * 60 * 60 - min * 60);
     console.log(day + ' / ' + hour + ':' + min + ':' + afterMin);
 
 
     if (day >= 1)
-        return day + ' Day(s) ' + hour + 'Hour(s)'/* + min + 'Minute(s)' + afterMin*/;
+        return day + '일 ' + hour + '시간'/* + min + 'Minute(s)' + afterMin*/;
     else
-        return /*day + ' Days' +*/ hour + 'Hour(s) ' + min + 'Minute(s)' /*+ afterMin + 'Second(s)'*/;
+        return /*day + ' Days' +*/ hour + '시간 ' + min + '분' /*+ afterMin + 'Second(s)'*/;
 }
 
 function Usage() {
