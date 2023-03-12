@@ -156,7 +156,7 @@ const loadCommands = () => {
             try {
                 const command = require(`${__dirname}/commands/${file}`);
 
-                console.log(`ㅣ${command.name.toLowerCase().padEnd(10, ' ')}의 명령어가 로드됨.ㅣ`);
+                console.log(`ㅣ${command.name.toLowerCase().padEnd(10, ' ')} 명령어가 로드됨.ㅣ`);
 
                 client.commands.set(command.name.toLowerCase(), command);
                 delete require.cache[require.resolve(`${__dirname}/commands/${file}`)];
