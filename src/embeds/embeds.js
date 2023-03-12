@@ -7,7 +7,7 @@ const ENV = process.env;
 const github = 'https://github.com/hmes98318/Music-Disc';
 const bot_version = require('../../package.json').version;
 
-const bot_name = typeof (process.env.BOT_NAME) === 'undefined' ? 'Music Disc' : (ENV.BOT_NAME);
+const bot_name = typeof (process.env.BOT_NAME) === 'undefined' ? 'hoehoetvhs Bot' : (ENV.BOT_NAME);
 const color = typeof (process.env.EMBEDS_COLOR) === 'undefined' ? '#FFFFFF' : (ENV.EMBEDS_COLOR);
 
 
@@ -18,7 +18,7 @@ module.exports = {
             .setTitle(music_title)
             .setURL(music_url)
             .setThumbnail(music_thumbnail)
-            .addFields({ name: status, value: `**Duration**: \`${music_length}\` | ${settings}`, inline: true })
+            .addFields({ name: status, value: `**길이:** \`${music_length}\`ㅣ${settings}`, inline: true })
             .setTimestamp()
         return Embed_play;
     },
@@ -29,7 +29,7 @@ module.exports = {
             .setTitle(status)
             .addFields({ name: nowplay, value: queueMsg })
             .setTimestamp()
-            .setFooter({ text: `Loop: ${loopStatus}` });
+            .setFooter({ text: `**반복:** ${loopStatus}` });
         return Embed_queue;
     },
 
@@ -76,7 +76,7 @@ module.exports = {
     Embed_help2: function (command, description) {
         const Embed_help2 = new Discord.EmbedBuilder()
             .setColor(color)
-            .setTitle(`Command **${command}**`, '')
+            .setTitle(`명령어 도움말`, '')
             .setDescription(description)
         return Embed_help2;
     },
@@ -87,8 +87,8 @@ module.exports = {
             .setTitle(`${bot_name} v${bot_version}`)
             .setURL(github)
             .addFields(
-                { name: `⚙️ SYSTEM`, value: `OS : **${os}**\nNode.js : **${node_v}**\nDiscord.js : **${djs_v}**\nCPU : **${cpu}**\n━━━━━━━━━━━━━━━━━━━━━━`, inline: false },
-                { name: `📊 USAGE`, value: `CPU : **${cpu_usage}**\nMEM : **${ram}**\nUptime : **${uptime}**\nPING : **${ping}ms**\n━━━━━━━━━━━━━━━━━━━━━━`, inline: false }
+                { name: `⚙️ 시스템`, value: `**OS:** ${os}\n**Node.js:** ${node_v}\n**Discord.js:** ${djs_v}\n**CPU:** ${cpu}\n━━━━━━━━━━━━━━━━━━━━━━`, inline: false },
+                { name: `📊 사용량`, value: `**CPU:** ${cpu_usage}\n**메모리:** ${ram}\n**작동 시간:** ${uptime}\n**응답 속도:** ${ping}ms\n━━━━━━━━━━━━━━━━━━━━━━`, inline: false }
             )
             .setTimestamp()
         return Embed_status;
@@ -97,7 +97,7 @@ module.exports = {
     Embed_server: function (serverlist) {
         const Embed_server = new Discord.EmbedBuilder()
             .setColor(color)
-            .setTitle(`Servers that have **${bot_name}**`, '')
+            .setTitle(`**${bot_name}**이 있는 서버 목록은 다음과 같습니다.`, '')
             .setDescription(serverlist)
         return Embed_server;
     },
@@ -105,7 +105,7 @@ module.exports = {
     Embed_ping: function (ping) {
         const Embed_ping = new Discord.EmbedBuilder()
             .setColor(color)
-            .setDescription(`Ping : **${ping}**ms.`)
+            .setDescription(`**응답 속도:** ${ping}ms`)
         return Embed_ping;
     }
 }
