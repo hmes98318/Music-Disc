@@ -1,7 +1,7 @@
 module.exports = {
     name: 'back',
     aliases: ['b', 'rewind'],
-    description: 'Back to previous song',
+    description: '이전 노래로 돌아갑니다.',
     usage: 'back',
     voiceChannel: true,
     options: [],
@@ -10,10 +10,10 @@ module.exports = {
         const queue = client.player.nodes.get(message.guild.id);
 
         if (!queue || !queue.isPlaying())
-            return message.reply({ content: `❌ | No music currently playing.`, allowedMentions: { repliedUser: false } });
+            return message.reply({ content: `⛔ㅣ현재 재생 중인 음악이 없습니다.`, allowedMentions: { repliedUser: false } });
 
         if (!queue.history.previousTrack)
-            return message.reply({ content: `❌ | There was no music playing before.`, allowedMentions: { repliedUser: false } });
+            return message.reply({ content: `⛔ㅣ이전에는 음악이 재생되지 않았습니다.`, allowedMentions: { repliedUser: false } });
 
         await queue.history.back();
         return await message.react('👍');
@@ -23,12 +23,12 @@ module.exports = {
         const queue = client.player.nodes.get(interaction.guild.id);
 
         if (!queue || !queue.isPlaying())
-            return interaction.reply({ content: `❌ | No music currently playing.`, allowedMentions: { repliedUser: false } });
+            return interaction.reply({ content: `⛔ㅣ현재 재생 중인 음악이 없습니다.`, allowedMentions: { repliedUser: false } });
 
         if (!queue.history.previousTrack)
-            return interaction.reply({ content: `❌ | There was no music playing before.`, allowedMentions: { repliedUser: false } });
+            return interaction.reply({ content: `⛔ㅣ이전에는 음악이 재생되지 않았습니다.`, allowedMentions: { repliedUser: false } });
 
         await queue.history.back();
-        return await interaction.reply("✅ | Music rewound.");
+        return await interaction.reply("✅ㅣ이전 노래로 돌아갔습니다.");
     },
 };

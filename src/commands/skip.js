@@ -1,7 +1,7 @@
 module.exports = {
     name: 'skip',
     aliases: ['s'],
-    description: 'Skip currnet song',
+    description: '현재 노래를 건너뛰기합니다.',
     usage: 'skip',
     voiceChannel: true,
     options: [],
@@ -10,7 +10,7 @@ module.exports = {
         const queue = client.player.nodes.get(message.guild.id);
 
         if (!queue || !queue.isPlaying())
-            return message.reply({ content: `❌ | There is no music currently playing.`, allowedMentions: { repliedUser: false } });
+            return message.reply({ content: `⛔ㅣ현재 재생 중인 음악이 없습니다.`, allowedMentions: { repliedUser: false } });
 
 
         if (queue.repeatMode === 1) {
@@ -30,7 +30,7 @@ module.exports = {
         const queue = client.player.nodes.get(interaction.guild.id);
 
         if (!queue || !queue.isPlaying())
-            return interaction.reply({ content: `❌ | There is no music currently playing.`, allowedMentions: { repliedUser: false } });
+            return interaction.reply({ content: `⛔ㅣ현재 재생 중인 음악이 없습니다.`, allowedMentions: { repliedUser: false } });
 
 
         if (queue.repeatMode === 1) {
@@ -43,7 +43,7 @@ module.exports = {
             queue.node.skip();
         }
 
-        return interaction.reply('✅ | Music skipped.');
+        return interaction.reply('✅ㅣ음악을 건너뛰었습니다.');
     },
 };
 
