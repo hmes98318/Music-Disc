@@ -61,8 +61,13 @@ module.exports = {
         if (results.playlist || results.tracks.length == 1) {
             queue.addTrack(results.tracks);
 
-            if (!queue.isPlaying())
-                await queue.node.play();
+            if (!queue.isPlaying()) {
+                await queue.node.play()
+                    .catch((error) => {
+                        console.log(error);
+                        return message.reply({ content: `❌ | I can't play this track.`, allowedMentions: { repliedUser: false } });
+                    });
+            }
 
             return message.reply({ content: "✅ | Music added.", allowedMentions: { repliedUser: false } });
         }
@@ -90,8 +95,13 @@ module.exports = {
 
                 queue.addTrack(results.tracks.find(x => x.id == i.values[0]));
 
-                if (!queue.isPlaying())
-                    await queue.node.play();
+                if (!queue.isPlaying()) {
+                    await queue.node.play()
+                        .catch((error) => {
+                            console.log(error);
+                            return message.reply({ content: `❌ | I can't play this track.`, allowedMentions: { repliedUser: false } });
+                        });
+                }
 
                 i.deferUpdate();
                 return msg.edit({ content: "✅ | Music added.", components: [], allowedMentions: { repliedUser: false } });
@@ -145,8 +155,13 @@ module.exports = {
         if (results.playlist || results.tracks.length == 1) {
             queue.addTrack(results.tracks);
 
-            if (!queue.isPlaying())
-                await queue.node.play();
+            if (!queue.isPlaying()) {
+                await queue.node.play()
+                    .catch((error) => {
+                        console.log(error);
+                        return interaction.reply({ content: `❌ | I can't play this track.`, allowedMentions: { repliedUser: false } });
+                    });
+            }
 
             return interaction.editReply("✅ | Music added.");
         }
@@ -174,8 +189,13 @@ module.exports = {
 
                 queue.addTrack(results.tracks.find(x => x.id == i.values[0]));
 
-                if (!queue.isPlaying())
-                    await queue.node.play();
+                if (!queue.isPlaying()) {
+                    await queue.node.play()
+                        .catch((error) => {
+                            console.log(error);
+                            return interaction.reply({ content: `❌ | I can't play this track.`, allowedMentions: { repliedUser: false } });
+                        });
+                }
 
                 i.deferUpdate();
                 return interaction.editReply({ content: "✅ | Music added.", components: [] });

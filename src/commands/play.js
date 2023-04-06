@@ -74,7 +74,11 @@ module.exports = {
         results.playlist ? queue.addTrack(results.tracks) : queue.addTrack(results.tracks[0]);
 
         if (!queue.isPlaying())
-            await queue.node.play();
+            await queue.node.play()
+            .catch((error) => {
+                console.log(error);
+                return message.reply({ content: `❌ | I can't play this track.`, allowedMentions: { repliedUser: false } });
+            });
 
         return message.react('👍');
     },
@@ -117,7 +121,11 @@ module.exports = {
         results.playlist ? queue.addTracks(results.tracks) : queue.addTrack(results.tracks[0]);
 
         if (!queue.isPlaying())
-            await queue.node.play();
+            await queue.node.play()
+            .catch((error) => {
+                console.log(error);
+                return interaction.reply({ content: `❌ | I can't play this track.`, allowedMentions: { repliedUser: false } });
+            });
 
         return interaction.reply("✅ | Music added.");
     },
