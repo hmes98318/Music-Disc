@@ -12,7 +12,7 @@ Supports **YouTube**, **Spotify**, **SoundCloud** streams.
 
 
 ### Reference version  
-[**node.js  `v18.14.2`**](https://nodejs.org/en/)  
+[**node.js  `v18.15.0`**](https://nodejs.org/en/)  
 [**discord.js  `v14.7.1`**](https://www.npmjs.com/package/discord.js)  
 
 
@@ -20,7 +20,7 @@ Supports **YouTube**, **Spotify**, **SoundCloud** streams.
 
 ### Clone the repository
 ```
-git clone -b v1.3.0 https://github.com/hmes98318/Music-Disc.git
+git clone -b v1.3.1 https://github.com/hmes98318/Music-Disc.git
 ```
 or [**click here**](https://github.com/hmes98318/Music-Disc/releases) to download  
 
@@ -44,11 +44,13 @@ MAX_VOLUME = 100
 AUTO_LEAVE = true
 AUTO_LEAVE_COOLDOWN = 5000
 DISPLAY_VOICE_STATE = true
+DP_FORCE_YTDL_MOD = "play-dl"
 PORT = 33333
 ```
 **`AUTO_LEAVE`** : After the music finished, can choose whether let the bot leave voice channel automatically or not.  
 **`AUTO_LEAVE_COOLDOWN`** : Timer for auto disconnect(ms).  
 **`DISPLAY_VOICE_STATE`** : Show voice channel status updates.   
+**`DP_FORCE_YTDL_MOD`** : Streaming extractor settings.
 
 ## Running the script 
 ```
@@ -63,21 +65,21 @@ npm run start
 version: '3.8'
 services:
   music-disc:
-    image: hmes98318/music-disc:1.3.0
+    image: hmes98318/music-disc:1.3.1
     container_name: music-disc
     restart: always
+    ports:
+      - 33333:33333
     environment:
       TOKEN: "your_token"
       PREFIX: "+"
       PLAYING: "+help | music"
       COLOR: "#FFFFFF"
-      DEFAULTVOLUME: 50
-      MAXVOLUME: 100
+      DEFAULT_VOLUME: 50
+      MAX_VOLUME: 100
       AUTO_LEAVE: "true"
       AUTO_LEAVE_COOLDOWN: 5000
       DISPLAY_VOICE_STATE: "true"
-    ports:
-      - 33333:33333
 ```
 
 ### Start the container  
