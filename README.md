@@ -13,7 +13,7 @@ Supports **YouTube**, **Spotify**, **SoundCloud** streams.
 
 ### Reference version  
 [**node.js  `v18.15.0`**](https://nodejs.org/en/)  
-[**discord.js  `v14.7.1`**](https://www.npmjs.com/package/discord.js)  
+[**discord.js  `v14.9.0`**](https://www.npmjs.com/package/discord.js)  
 
 
 ## Deploying with node.js
@@ -44,13 +44,42 @@ MAX_VOLUME = 100
 AUTO_LEAVE = true
 AUTO_LEAVE_COOLDOWN = 5000
 DISPLAY_VOICE_STATE = true
-DP_FORCE_YTDL_MOD = "play-dl"
 PORT = 33333
+
+TEXT_QUERY_TYPE = "youtubeSearch"
+URL_QUERY_TYPE = "auto"
+DP_FORCE_YTDL_MOD = "play-dl"
 ```
-**`AUTO_LEAVE`** : After the music finished, can choose whether let the bot leave voice channel automatically or not.  
-**`AUTO_LEAVE_COOLDOWN`** : Timer for auto disconnect(ms).  
-**`DISPLAY_VOICE_STATE`** : Show voice channel status updates.   
-**`DP_FORCE_YTDL_MOD`** : Streaming extractor settings.
+
+<details> 
+  <summary>Detailed description</summary>
+
+  **`AUTO_LEAVE`** : After the music finished, can choose whether let the bot leave voice channel automatically or not.  
+  **`AUTO_LEAVE_COOLDOWN`** : Timer for auto disconnect(ms).  
+  **`DISPLAY_VOICE_STATE`** : Show voice channel status updates.   
+  </br>
+  
+  **`TEXT_QUERY_TYPE`** : The default search engine for text search.  
+  The following are the available options for **TEXT_QUERY_TYPE**:
+    <pre>
+      autoSearch, youtubeSearch, spotifySearch, soundcloudSearch, appleMusicSearch
+    </pre>
+
+  **`URL_QUERY_TYPE`** : The default search engine for links.  
+  The following are the available options for **URL_QUERY_TYPE**:
+    <pre>
+      auto, youtube, spotifySong soundcloud, appleMusicSong
+    </pre>
+
+  **`DP_FORCE_YTDL_MOD`** : Streaming extractor settings. The default streaming library used is **play-dl**.  
+  If you want to use another library, you can install one of the following libraries and change the `DP_FORCE_YTDL_MOD` setting.  
+    <pre>
+      $ npm install ytdl-core
+      $ npm install @distube/ytdl-core
+    </pre>
+</details>
+
+
 
 ## Running the script 
 ```
@@ -80,6 +109,8 @@ services:
       AUTO_LEAVE: "true"
       AUTO_LEAVE_COOLDOWN: 5000
       DISPLAY_VOICE_STATE: "true"
+      TEXT_QUERY_TYPE: "youtubeSearch"
+      URL_QUERY_TYPE: "auto"
       DP_FORCE_YTDL_MOD: "play-dl"
 ```
 
