@@ -16,4 +16,6 @@ services:
       AUTO_LEAVE: "true"
       AUTO_LEAVE_COOLDOWN: 5000
       DISPLAY_VOICE_STATE: "true"
+      TEXT_QUERY_TYPE: "youtubeSearch"
+      URL_QUERY_TYPE: "auto"
       DP_FORCE_YTDL_MOD: "play-dl"
