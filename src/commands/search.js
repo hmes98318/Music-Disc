@@ -1,5 +1,5 @@
-const { Player } = require('discord-player');
 const { StringSelectMenuBuilder, ActionRowBuilder } = require("discord.js");
+const { URL } = require('url');
 
 
 module.exports = {
@@ -21,8 +21,16 @@ module.exports = {
         if (!args[0])
             return message.reply({ content: `❌ | Please enter a valid song name.`, allowedMentions: { repliedUser: false } });
 
+        const str = args.join(' ');
+        let queryType = '';
 
-        const results = await client.player.search(args.join(' '))
+        if (isValidUrl(str)) queryType = client.config.urlQuery;
+        else queryType = client.config.textQuery;
+
+        const results = await client.player.search(str, {
+            requestedBy: message.member,
+            searchEngine: queryType
+        })
             .catch((error) => {
                 console.log(error);
                 return message.reply({ content: `❌ | The service is experiencing some problems, please try again.`, allowedMentions: { repliedUser: false } });
@@ -119,7 +127,16 @@ module.exports = {
     async slashExecute(client, interaction) {
         await interaction.deferReply();
 
-        const results = await client.player.search(interaction.options.getString("search"))
+        const str = interaction.options.getString("search");
+        let queryType = '';
+
+        if (isValidUrl(str)) queryType = client.config.urlQuery;
+        else queryType = client.config.textQuery;
+
+        const results = await client.player.search(str, {
+            requestedBy: message.member,
+            searchEngine: queryType
+        })
             .catch((error) => {
                 console.log(error);
                 return message.reply({ content: `❌ | The service is experiencing some problems, please try again.`, allowedMentions: { repliedUser: false } });
@@ -210,3 +227,15 @@ module.exports = {
         }
     },
 };
+
+
+
+
+const isValidUrl = (str) => {
+    try {
+        new URL(str);
+        return true;
+    } catch (err) {
+        return false;
+    }
+}

@@ -1,4 +1,4 @@
-const { QueryType } = require('discord-player');
+const { URL } = require('url');
 
 
 module.exports = {
@@ -20,8 +20,16 @@ module.exports = {
         if (!args[0])
             return message.reply({ content: `❌ | Write the name of the music you want to search.`, allowedMentions: { repliedUser: false } });
 
+        const str = args.join(' ');
+        let queryType = '';
 
-        const results = await client.player.search(args.join(' '))
+        if (isValidUrl(str)) queryType = client.config.urlQuery;
+        else queryType = client.config.textQuery;
+
+        const results = await client.player.search(str, {
+            requestedBy: message.member,
+            searchEngine: queryType
+        })
             .catch((error) => {
                 console.log(error);
                 return message.reply({ content: `❌ | The service is experiencing some problems, please try again.`, allowedMentions: { repliedUser: false } });
@@ -73,19 +81,29 @@ module.exports = {
 
         results.playlist ? queue.addTrack(results.tracks) : queue.addTrack(results.tracks[0]);
 
-        if (!queue.isPlaying())
+        if (!queue.isPlaying()) {
             await queue.node.play()
-            .catch((error) => {
-                console.log(error);
-                return message.reply({ content: `❌ | I can't play this track.`, allowedMentions: { repliedUser: false } });
-            });
+                .catch((error) => {
+                    console.log(error);
+                    return message.reply({ content: `❌ | I can't play this track.`, allowedMentions: { repliedUser: false } });
+                });
+        }
 
         return message.react('👍');
     },
 
     async slashExecute(client, interaction) {
 
-        const results = await client.player.search(interaction.options.getString("search"))
+        const str = interaction.options.getString("search");
+        let queryType = '';
+
+        if (isValidUrl(str)) queryType = client.config.urlQuery;
+        else queryType = client.config.textQuery;
+
+        const results = await client.player.search(str, {
+            requestedBy: message.member,
+            searchEngine: queryType
+        })
             .catch((error) => {
                 console.log(error);
                 return interaction.reply({ content: `❌ | The service is experiencing some problems, please try again.`, allowedMentions: { repliedUser: false } });
@@ -120,13 +138,26 @@ module.exports = {
 
         results.playlist ? queue.addTracks(results.tracks) : queue.addTrack(results.tracks[0]);
 
-        if (!queue.isPlaying())
+        if (!queue.isPlaying()) {
             await queue.node.play()
-            .catch((error) => {
-                console.log(error);
-                return interaction.reply({ content: `❌ | I can't play this track.`, allowedMentions: { repliedUser: false } });
-            });
+                .catch((error) => {
+                    console.log(error);
+                    return interaction.reply({ content: `❌ | I can't play this track.`, allowedMentions: { repliedUser: false } });
+                });
+        }
 
         return interaction.reply("✅ | Music added.");
     },
 };
+
+
+
+
+const isValidUrl = (str) => {
+    try {
+        new URL(str);
+        return true;
+    } catch (err) {
+        return false;
+    }
+}
