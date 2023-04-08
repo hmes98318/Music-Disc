@@ -136,7 +136,7 @@ module.exports = {
             return interaction.reply({ content: `❌ | I can't join audio channel.`, allowedMentions: { repliedUser: false } });
         }
 
-        results.playlist ? queue.addTracks(results.tracks) : queue.addTrack(results.tracks[0]);
+        results.playlist ? queue.addTrack(results.tracks) : queue.addTrack(results.tracks[0]);
 
         if (!queue.isPlaying()) {
             await queue.node.play()
