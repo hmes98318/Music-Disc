@@ -101,7 +101,7 @@ module.exports = {
         else queryType = client.config.textQuery;
 
         const results = await client.player.search(str, {
-            requestedBy: message.member,
+            requestedBy: interaction.member,
             searchEngine: queryType
         })
             .catch((error) => {
