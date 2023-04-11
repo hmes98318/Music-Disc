@@ -221,3 +221,10 @@ player.events.on('emptyChannel', (queue) => {
     if (!client.config.autoLeave)
         queue.node.stop();
 });
+
+
+
+
+process.on('unhandledRejection', error => {
+    console.error('Unhandled promise rejection:', error);
+});
