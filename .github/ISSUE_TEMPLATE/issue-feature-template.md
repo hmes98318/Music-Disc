@@ -24,6 +24,7 @@ assignees: ''
      * discord-player: x.x.x
      * ffmpeg-static: x.x.x
      * opusscript: x.x.x
+     * play-dl: x.x.x (or ytdl-core)
 
 **Additional context**
 <!-- Add any other context about the problem here. -->
