@@ -38,7 +38,7 @@ TOKEN = "your_token"
 NAME = "Music Disc"
 PREFIX = "+"
 PLAYING = "+help | music"
-COLOR = "#FFFFFF"
+EMBEDS_COLOR = "#FFFFFF"
 DEFAULT_VOLUME = 50
 MAX_VOLUME = 100
 AUTO_LEAVE = true
@@ -103,7 +103,7 @@ services:
       TOKEN: "your_token"
       PREFIX: "+"
       PLAYING: "+help | music"
-      COLOR: "#FFFFFF"
+      EMBEDS_COLOR: "#FFFFFF"
       DEFAULT_VOLUME: 50
       MAX_VOLUME: 100
       AUTO_LEAVE: "true"
