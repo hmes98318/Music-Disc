@@ -68,6 +68,7 @@ module.exports = {
             leaveOnEmptyCooldown: client.config.autoLeaveCooldown,
             leaveOnEndCooldown: client.config.autoLeaveCooldown,
             volume: client.config.defaultVolume,
+            connectionTimeout: 999_999_999
         });
 
         try {
@@ -125,6 +126,7 @@ module.exports = {
             leaveOnEmptyCooldown: client.config.autoLeaveCooldown,
             leaveOnEndCooldown: client.config.autoLeaveCooldown,
             volume: client.config.defaultVolume,
+            connectionTimeout: 999_999_999
         });
 
         try {
