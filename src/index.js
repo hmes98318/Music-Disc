@@ -9,7 +9,7 @@ const express = require('express');
 require('console-stamp')(console, { format: ':date(yyyy/mm/dd HH:MM:ss)' });
 
 const registerPlayerEvents = require('./events/discord-player/player');
-
+const cst = require(`${__dirname}//utils/constants`);
 
 dotenv.config();
 const ENV = process.env;
@@ -27,36 +27,14 @@ let client = new Client({
     disableMentions: 'everyone',
 });
 
-
-client.config = {
-    name: 'Music Disc',
-    prefix: '-',
-    playing: '+help | music',
-    defaultVolume: 50,
-    maxVolume: 100,
-    autoLeave: true,
-    autoLeaveCooldown: 5000,
-    displayVoiceState: true,
-    port: 33333,
-    urlQuery: QueryType.AUTO,
-    textQuery: QueryType.AUTO
-};
-
+client.config = cst.config;
 client.commands = new Collection();
 client.player = new Player(client, {
-    ytdlOptions: {
-        filter: 'audioonly',
-        quality: 'highestaudio',
-        highWaterMark: 1 << 27
-    }
+    ytdlOptions: cst.ytdlOptions
 });
 
+
 const player = client.player;
-const color = {
-    white: '\x1B[0m',
-    grey: '\x1B[2m',
-    green: '\x1B[32m'
-};
 
 
 
@@ -149,7 +127,7 @@ const loadEvents = () => {
             }
         };
         console.log(`+--------------------------------+`);
-        console.log(`${color.grey}-- loading Events finished --${color.white}`);
+        console.log(`${cst.color.grey}-- loading Events finished --${cst.color.white}`);
 
         resolve();
     })
@@ -179,7 +157,7 @@ const loadCommands = () => {
             }
         };
         console.log(`+---------------------------+`);
-        console.log(`${color.grey}-- loading Commands finished --${color.white}`);
+        console.log(`${cst.color.grey}-- loading Commands finished --${cst.color.white}`);
 
         resolve();
     })
@@ -193,7 +171,7 @@ Promise.resolve()
     .then(() => loadPlayer())
     .then(() => loadCommands())
     .then(() => {
-        console.log(`${color.green}*** All loaded successfully ***${color.white}`);
+        console.log(`${cst.color.green}*** All loaded successfully ***${cst.color.white}`);
         client.login(ENV.TOKEN);
     });
 

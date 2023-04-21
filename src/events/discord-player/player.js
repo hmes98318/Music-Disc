@@ -1,5 +1,7 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+
 const embed = require(`${__dirname}/../../embeds/embeds`);
+const { label } = require(`${__dirname}/../../utils/constants`);
 
 
 const settings = (queue, song) =>
@@ -9,11 +11,11 @@ const settings = (queue, song) =>
 const registerPlayerEvents = (player) => {
 
     player.events.on('connection', async (queue) => {
-        const playPauseButton = new ButtonBuilder().setCustomId('Playing-PlayPause').setLabel('❚❚').setStyle(ButtonStyle.Secondary);
-        const skipButton = new ButtonBuilder().setCustomId('Playing-Skip').setLabel('►❚').setStyle(ButtonStyle.Secondary);
-        const loopButton = new ButtonBuilder().setCustomId('Playing-Loop').setLabel('🔁').setStyle(ButtonStyle.Secondary);
-        const stopButton = new ButtonBuilder().setCustomId('Playing-Stop').setLabel('◼').setStyle(ButtonStyle.Danger);
-        const shuffleButton = new ButtonBuilder().setCustomId('Playing-Shuffle').setLabel('🔀').setStyle(ButtonStyle.Secondary);
+        const playPauseButton = new ButtonBuilder().setCustomId('Playing-PlayPause').setLabel(label.pause).setStyle(ButtonStyle.Secondary);
+        const skipButton = new ButtonBuilder().setCustomId('Playing-Skip').setLabel(label.skip).setStyle(ButtonStyle.Secondary);
+        const loopButton = new ButtonBuilder().setCustomId('Playing-Loop').setLabel(label.loop).setStyle(ButtonStyle.Secondary);
+        const stopButton = new ButtonBuilder().setCustomId('Playing-Stop').setLabel(label.stop).setStyle(ButtonStyle.Danger);
+        const shuffleButton = new ButtonBuilder().setCustomId('Playing-Shuffle').setLabel(label.suuffle).setStyle(ButtonStyle.Secondary);
         const row = new ActionRowBuilder().addComponents(playPauseButton, skipButton, loopButton, stopButton, shuffleButton);
 
         queue.dashboard = await queue.metadata.channel.send({ embeds: [embed.Embed_connect()], components: [row] });
@@ -23,11 +25,11 @@ const registerPlayerEvents = (player) => {
     player.events.on('playerStart', async (queue, track) => {
         let playing = queue.node.isPaused();
 
-        const playPauseButton = new ButtonBuilder().setCustomId('Playing-PlayPause').setLabel(playing ? '►' : '❚❚').setStyle(ButtonStyle.Secondary);
-        const skipButton = new ButtonBuilder().setCustomId('Playing-Skip').setLabel('►❚').setStyle(ButtonStyle.Secondary);
-        const loopButton = new ButtonBuilder().setCustomId('Playing-Loop').setLabel('🔁').setStyle(ButtonStyle.Secondary);
-        const stopButton = new ButtonBuilder().setCustomId('Playing-Stop').setLabel('◼').setStyle(ButtonStyle.Danger);
-        const shuffleButton = new ButtonBuilder().setCustomId('Playing-Shuffle').setLabel('🔀').setStyle(ButtonStyle.Secondary);
+        const playPauseButton = new ButtonBuilder().setCustomId('Playing-PlayPause').setLabel(playing ? label.play : label.pause).setStyle(ButtonStyle.Secondary);
+        const skipButton = new ButtonBuilder().setCustomId('Playing-Skip').setLabel(label.skip).setStyle(ButtonStyle.Secondary);
+        const loopButton = new ButtonBuilder().setCustomId('Playing-Loop').setLabel(label.loop).setStyle(ButtonStyle.Secondary);
+        const stopButton = new ButtonBuilder().setCustomId('Playing-Stop').setLabel(label.stop).setStyle(ButtonStyle.Danger);
+        const shuffleButton = new ButtonBuilder().setCustomId('Playing-Shuffle').setLabel(label.suuffle).setStyle(ButtonStyle.Secondary);
         const row = new ActionRowBuilder().addComponents(playPauseButton, skipButton, loopButton, stopButton, shuffleButton);
 
         return await queue.dashboard.edit({ embeds: [embed.Embed_play("Playing", track.title, track.url, track.duration, track.thumbnail, settings(queue))], components: [row] });
@@ -37,19 +39,14 @@ const registerPlayerEvents = (player) => {
         if (queue.isPlaying()) {
             await queue.metadata.channel.send({ embeds: [embed.Embed_play("Added", track.title, track.url, track.duration, track.thumbnail, settings(queue))] });
 
-            try {
-                await queue.dashboard.delete();
-            } catch (error) {
-                console.log('Dashboard delete error:', error);
-            }
 
             let playing = queue.node.isPaused();
 
-            const playPauseButton = new ButtonBuilder().setCustomId('Playing-PlayPause').setLabel(playing ? '►' : '❚❚').setStyle(ButtonStyle.Secondary);
-            const skipButton = new ButtonBuilder().setCustomId('Playing-Skip').setLabel('►❚').setStyle(ButtonStyle.Secondary);
-            const loopButton = new ButtonBuilder().setCustomId('Playing-Loop').setLabel('🔁').setStyle(ButtonStyle.Secondary);
-            const stopButton = new ButtonBuilder().setCustomId('Playing-Stop').setLabel('◼').setStyle(ButtonStyle.Danger);
-            const shuffleButton = new ButtonBuilder().setCustomId('Playing-Shuffle').setLabel('🔀').setStyle(ButtonStyle.Secondary);
+            const playPauseButton = new ButtonBuilder().setCustomId('Playing-PlayPause').setLabel(playing ? label.play : label.pause).setStyle(ButtonStyle.Secondary);
+            const skipButton = new ButtonBuilder().setCustomId('Playing-Skip').setLabel(label.skip).setStyle(ButtonStyle.Secondary);
+            const loopButton = new ButtonBuilder().setCustomId('Playing-Loop').setLabel(label.loop).setStyle(ButtonStyle.Secondary);
+            const stopButton = new ButtonBuilder().setCustomId('Playing-Stop').setLabel(label.stop).setStyle(ButtonStyle.Danger);
+            const shuffleButton = new ButtonBuilder().setCustomId('Playing-Shuffle').setLabel(label.suuffle).setStyle(ButtonStyle.Secondary);
             const row = new ActionRowBuilder().addComponents(playPauseButton, skipButton, loopButton, stopButton, shuffleButton);
 
             const cur = queue.currentTrack;
