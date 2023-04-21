@@ -1,7 +1,7 @@
 const dotenv = require('dotenv');
 const Discord = require('discord.js');
 
-dotenv.config()
+dotenv.config();
 const ENV = process.env;
 
 const github = 'https://github.com/hmes98318/Music-Disc';
@@ -107,5 +107,19 @@ module.exports = {
             .setColor(color)
             .setDescription(`Ping : **${ping}**ms.`)
         return Embed_ping;
+    },
+
+    Embed_connect: function () {
+        const Embed_connect = new Discord.EmbedBuilder()
+            .setColor(color)
+            .setDescription('Voice channel connected successfully.')
+        return Embed_connect;
+    },
+
+    Embed_disconnect: function () {
+        const Embed_disconnect = new Discord.EmbedBuilder()
+            .setColor(color)
+            .setDescription('Finished playing.')
+        return Embed_disconnect;
     }
 }
