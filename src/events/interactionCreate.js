@@ -6,6 +6,13 @@ const embed = require('../embeds/embeds');
 module.exports = async (client, int) => {
 
     if (int.isButton()) {
+        if (!int.member.voice.channel)
+            return int.reply({ content: `❌ | You are not connected to an audio channel.`, ephemeral: true, components: [] });
+
+        if (int.guild.members.me.voice.channel && int.member.voice.channelId !== int.guild.members.me.voice.channelId)
+            return int.reply({ content: `❌ | You are not on the same audio channel as me.`, ephemeral: true, components: [] });
+
+
         const queue = client.player.nodes.get(int.guildId);
 
         if (!queue || !queue.isPlaying())
@@ -16,7 +23,6 @@ module.exports = async (client, int) => {
         const timestamp = queue.node.getTimestamp();
         const trackDuration = timestamp.progress == 'Forever' ? 'Endless (Live)' : track.duration;
         let description = `Author : **${track.author}**\nDuration **${trackDuration}**`;
-
 
         switch (int.customId) {
             case 'Save Song': {
