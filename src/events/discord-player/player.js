@@ -2,10 +2,8 @@ const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 
 const embed = require(`${__dirname}/../../embeds/embeds`);
 const { label } = require(`${__dirname}/../../utils/constants`);
-
-
-const settings = (queue, song) =>
-    `**Volume**: \`${queue.node.volume}%\` | **Loop**: \`${queue.repeatMode ? (queue.repeatMode === 2 ? 'All' : 'Single') : 'Off'}\``;
+const { settings } = require(`${__dirname}/../../utils/player/settings`);
+const { finishPlaying } = require(`${__dirname}/../../utils/player/finishPlaying`);
 
 
 const registerPlayerEvents = (player) => {
@@ -66,27 +64,15 @@ const registerPlayerEvents = (player) => {
     player.events.on('emptyChannel', (queue) => {
         if (!client.config.autoLeave) queue.node.stop();
 
-        try {
-            queue.dashboard.edit({ embeds: [embed.Embed_disconnect()], components: [] });
-        } catch (error) {
-            console.log('Dashboard error:', error);
-        }
+        finishPlaying(queue);
     });
 
     player.events.on('disconnect', (queue) => {
-        try {
-            queue.dashboard.edit({ embeds: [embed.Embed_disconnect()], components: [] });
-        } catch (error) {
-            console.log('Dashboard error:', error);
-        }
+        finishPlaying(queue);
     });
 
     player.events.on('emptyQueue', (queue) => {
-        try {
-            queue.dashboard.edit({ embeds: [embed.Embed_disconnect()], components: [] });
-        } catch (error) {
-            console.log('Dashboard error:', error);
-        }
+        finishPlaying(queue);
     });
 }
 module.exports = registerPlayerEvents;

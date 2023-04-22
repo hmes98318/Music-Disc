@@ -1,4 +1,4 @@
-const { URL } = require('url');
+const { isValidUrl } = require(`../utils/functions/isValidUrl`);
 
 
 module.exports = {
@@ -151,15 +151,3 @@ module.exports = {
         return interaction.reply("✅ | Music added.");
     },
 };
-
-
-
-
-const isValidUrl = (str) => {
-    try {
-        new URL(str);
-        return true;
-    } catch (err) {
-        return false;
-    }
-}
