@@ -37,6 +37,11 @@ const registerPlayerEvents = (player) => {
         if (queue.isPlaying()) {
             await queue.metadata.channel.send({ embeds: [embed.Embed_play("Added", track.title, track.url, track.duration, track.thumbnail, settings(queue))] });
 
+            try {
+                await queue.dashboard.delete();
+            } catch (error) {
+                console.log('Dashboard delete error:', error);
+            }
 
             let playing = queue.node.isPaused();
 
