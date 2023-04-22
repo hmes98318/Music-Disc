@@ -1,6 +1,8 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder } = require('discord.js');
 
 const embed = require('../embeds/embeds');
+const { settings } = require('../utils/player/settings');
+const { wait } = require('../utils/functions/wait');
 
 
 module.exports = async (client, int) => {
@@ -165,13 +167,4 @@ module.exports = async (client, int) => {
             cmd.slashExecute(client, int);
         }
     }
-};
-
-
-const settings = (queue, song) =>
-    `**Volume**: \`${queue.node.volume}%\` | **Loop**: \`${queue.repeatMode ? (queue.repeatMode === 2 ? 'All' : 'Single') : 'Off'}\``;
-
-
-const wait = (ms) => {
-    return new Promise((resolve) => setTimeout(() => resolve(), ms));
 };
