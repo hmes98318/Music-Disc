@@ -4,12 +4,12 @@ const fs = require('fs');
 
 const dotenv = require('dotenv');
 const { Client, GatewayIntentBits, Partials, Collection } = require('discord.js');
-const { Player, QueryType } = require('discord-player');
+const { Player } = require('discord-player');
 const express = require('express');
 require('console-stamp')(console, { format: ':date(yyyy/mm/dd HH:MM:ss)' });
 
-const registerPlayerEvents = require('./events/discord-player/player');
-const cst = require(`${__dirname}//utils/constants`);
+const registerPlayerEvents = require(`${__dirname}/events/discord-player/player`);
+const cst = require(`${__dirname}/utils/constants`);
 
 dotenv.config();
 const ENV = process.env;
@@ -128,13 +128,20 @@ const loadEvents = () => {
         };
         console.log(`+--------------------------------+`);
         console.log(`${cst.color.grey}-- loading Events finished --${cst.color.white}`);
-
         resolve();
     })
 }
 
 const loadPlayer = () => {
-    return registerPlayerEvents(player);
+    return new Promise((resolve, reject) => {
+        try {
+            registerPlayerEvents(player);
+        } catch (error) {
+            reject(error);
+        }
+        console.log('-> loading Player Events finished');
+        resolve();
+    })
 }
 
 
@@ -158,7 +165,6 @@ const loadCommands = () => {
         };
         console.log(`+---------------------------+`);
         console.log(`${cst.color.grey}-- loading Commands finished --${cst.color.white}`);
-
         resolve();
     })
 }
@@ -174,9 +180,6 @@ Promise.resolve()
         console.log(`${cst.color.green}*** All loaded successfully ***${cst.color.white}`);
         client.login(ENV.TOKEN);
     });
-
-
-
 
 
 

@@ -1,4 +1,6 @@
-const color = { white: '\x1B[0m', grey: '\x1B[2m' };
+const { color } = require(`${__dirname}/../utils/constants`);
+
+
 let pool = [];
 
 module.exports = async (client, oldState, newState) => {

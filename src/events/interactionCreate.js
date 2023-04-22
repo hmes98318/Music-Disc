@@ -1,8 +1,9 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder } = require('discord.js');
 
-const embed = require('../embeds/embeds');
-const { settings } = require('../utils/player/settings');
-const { wait } = require('../utils/functions/wait');
+const embed = require(`${__dirname}/../embeds/embeds`);
+const { settings } = require(`${__dirname}/../utils/player/settings`);
+const { wait } = require(`${__dirname}/../utils/functions/wait`);
+const { color } = require(`${__dirname}/../utils/constants`);
 
 
 module.exports = async (client, int) => {
@@ -163,7 +164,7 @@ module.exports = async (client, int) => {
 
         const cmd = client.commands.get(int.commandName);
         if (cmd) {
-            console.log(`(\x1B[2m${int.member.guild.name}\x1B[0m) ${int.user.username} : /${int.commandName}`);
+            console.log(`(${color.grey}${int.member.guild.name}${color.white}) ${int.user.username} : /${int.commandName}`);
             cmd.slashExecute(client, int);
         }
     }
