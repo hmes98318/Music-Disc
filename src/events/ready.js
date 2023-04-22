@@ -1,10 +1,9 @@
 const os = require('os');
-const { exec } = require('child_process');
 const Discord = require('discord.js');
-const package = require('../../package.json');
 
-
-const color = { white: '\x1B[0m', cyan: '\x1B[36m' };
+const package = require(`${__dirname}/../../package.json`);
+const { getOSVersion } = require(`${__dirname}/../utils/functions/getOSVersion`);
+const { color } = require(`${__dirname}/../utils/constants`);
 
 
 module.exports = async (client) => {
@@ -41,30 +40,3 @@ module.exports = async (client) => {
     client.user.setActivity(client.config.playing);
     console.log(`>>> Logged in as ${client.user.username}`);
 };
-
-
-
-
-const getOSVersion = () => {
-    return new Promise((resolve, reject) => {
-        const platform = process.platform;
-
-        if (platform === "win32") {
-            resolve(os.type());
-        }
-        else if (platform === "linux") {
-            exec('cat /etc/*release | grep -E ^PRETTY_NAME',
-                (error, stdout, stderr) => {
-                    if (error) {
-                        resolve(process.platform);
-                    } else {
-                        const os_version = stdout.split('"')[1];
-                        resolve(os_version);
-                    }
-                });
-        }
-        else {
-            resolve(process.platform);
-        }
-    });
-}
