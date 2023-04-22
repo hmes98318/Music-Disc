@@ -12,7 +12,7 @@ const cst = {
         back        : '❚◄',
         stop        : '◼',
         loop        : '🔁',
-        suuffle     : '🔀',
+        shuffle     : '🔀',
     },
     config: {
         name                : 'Music Disc',

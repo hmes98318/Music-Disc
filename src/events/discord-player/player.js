@@ -13,7 +13,7 @@ const registerPlayerEvents = (player) => {
         const skipButton = new ButtonBuilder().setCustomId('Playing-Skip').setLabel(label.skip).setStyle(ButtonStyle.Secondary);
         const loopButton = new ButtonBuilder().setCustomId('Playing-Loop').setLabel(label.loop).setStyle(ButtonStyle.Secondary);
         const stopButton = new ButtonBuilder().setCustomId('Playing-Stop').setLabel(label.stop).setStyle(ButtonStyle.Danger);
-        const shuffleButton = new ButtonBuilder().setCustomId('Playing-Shuffle').setLabel(label.suuffle).setStyle(ButtonStyle.Secondary);
+        const shuffleButton = new ButtonBuilder().setCustomId('Playing-Shuffle').setLabel(label.shuffle).setStyle(ButtonStyle.Secondary);
         const row = new ActionRowBuilder().addComponents(playPauseButton, skipButton, loopButton, stopButton, shuffleButton);
 
         queue.dashboard = await queue.metadata.channel.send({ embeds: [embed.Embed_connect()], components: [row] });
@@ -27,7 +27,7 @@ const registerPlayerEvents = (player) => {
         const skipButton = new ButtonBuilder().setCustomId('Playing-Skip').setLabel(label.skip).setStyle(ButtonStyle.Secondary);
         const loopButton = new ButtonBuilder().setCustomId('Playing-Loop').setLabel(label.loop).setStyle(ButtonStyle.Secondary);
         const stopButton = new ButtonBuilder().setCustomId('Playing-Stop').setLabel(label.stop).setStyle(ButtonStyle.Danger);
-        const shuffleButton = new ButtonBuilder().setCustomId('Playing-Shuffle').setLabel(label.suuffle).setStyle(ButtonStyle.Secondary);
+        const shuffleButton = new ButtonBuilder().setCustomId('Playing-Shuffle').setLabel(label.shuffle).setStyle(ButtonStyle.Secondary);
         const row = new ActionRowBuilder().addComponents(playPauseButton, skipButton, loopButton, stopButton, shuffleButton);
 
         return await queue.dashboard.edit({ embeds: [embed.Embed_play("Playing", track.title, track.url, track.duration, track.thumbnail, settings(queue))], components: [row] });
@@ -49,7 +49,7 @@ const registerPlayerEvents = (player) => {
             const skipButton = new ButtonBuilder().setCustomId('Playing-Skip').setLabel(label.skip).setStyle(ButtonStyle.Secondary);
             const loopButton = new ButtonBuilder().setCustomId('Playing-Loop').setLabel(label.loop).setStyle(ButtonStyle.Secondary);
             const stopButton = new ButtonBuilder().setCustomId('Playing-Stop').setLabel(label.stop).setStyle(ButtonStyle.Danger);
-            const shuffleButton = new ButtonBuilder().setCustomId('Playing-Shuffle').setLabel(label.suuffle).setStyle(ButtonStyle.Secondary);
+            const shuffleButton = new ButtonBuilder().setCustomId('Playing-Shuffle').setLabel(label.shuffle).setStyle(ButtonStyle.Secondary);
             const row = new ActionRowBuilder().addComponents(playPauseButton, skipButton, loopButton, stopButton, shuffleButton);
 
             const cur = queue.currentTrack;
