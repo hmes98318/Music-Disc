@@ -1,6 +1,6 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const embed = require('../embeds/embeds');
-const { label } = require('../utils/constants');
+const { button } = require('../utils/constants');
 const { settings } = require('../utils/player/settings');
 
 
@@ -27,12 +27,12 @@ module.exports = {
 
         let playing = queue.node.isPaused();
 
-        const playPauseButton = new ButtonBuilder().setCustomId('Playing-PlayPause').setLabel(playing ? label.play : label.pause).setStyle(ButtonStyle.Secondary);
-        const skipButton = new ButtonBuilder().setCustomId('Playing-Skip').setLabel(label.skip).setStyle(ButtonStyle.Secondary);
-        const loopButton = new ButtonBuilder().setCustomId('Playing-Loop').setLabel(label.loop).setStyle(ButtonStyle.Secondary);
-        const stopButton = new ButtonBuilder().setCustomId('Playing-Stop').setLabel(label.stop).setStyle(ButtonStyle.Danger);
-        const shuffleButton = new ButtonBuilder().setCustomId('Playing-Shuffle').setLabel(label.shuffle).setStyle(ButtonStyle.Secondary);
-        const row = new ActionRowBuilder().addComponents(playPauseButton, skipButton, loopButton, stopButton, shuffleButton);
+        const playPauseButton = new ButtonBuilder().setCustomId('Playing-PlayPause').setLabel(playing ? button.play : button.pause).setStyle(ButtonStyle.Secondary);
+        const skipButton = new ButtonBuilder().setCustomId('Playing-Skip').setLabel(button.skip).setStyle(ButtonStyle.Secondary);
+        const stopButton = new ButtonBuilder().setCustomId('Playing-Stop').setLabel(button.stop).setStyle(ButtonStyle.Danger);
+        const loopButton = new ButtonBuilder().setCustomId('Playing-Loop').setLabel(button.loop).setStyle(ButtonStyle.Secondary);
+        const shuffleButton = new ButtonBuilder().setCustomId('Playing-Shuffle').setLabel(button.shuffle).setStyle(ButtonStyle.Secondary);
+        const row = new ActionRowBuilder().addComponents(playPauseButton, skipButton, stopButton, loopButton, shuffleButton);
 
         const cur = queue.currentTrack;
         queue.dashboard = await queue.metadata.channel.send({ embeds: [embed.Embed_play("Playing", cur.title, cur.url, cur.duration, cur.thumbnail, settings(queue))], components: [row] });
@@ -54,11 +54,11 @@ module.exports = {
 
         let playing = queue.node.isPaused();
 
-        const playPauseButton = new ButtonBuilder().setCustomId('Playing-PlayPause').setLabel(playing ? label.play : label.pause).setStyle(ButtonStyle.Secondary);
-        const skipButton = new ButtonBuilder().setCustomId('Playing-Skip').setLabel(label.skip).setStyle(ButtonStyle.Secondary);
-        const loopButton = new ButtonBuilder().setCustomId('Playing-Loop').setLabel(label.loop).setStyle(ButtonStyle.Secondary);
-        const stopButton = new ButtonBuilder().setCustomId('Playing-Stop').setLabel(label.stop).setStyle(ButtonStyle.Danger);
-        const shuffleButton = new ButtonBuilder().setCustomId('Playing-Shuffle').setLabel(label.shuffle).setStyle(ButtonStyle.Secondary);
+        const playPauseButton = new ButtonBuilder().setCustomId('Playing-PlayPause').setLabel(playing ? button.play : button.pause).setStyle(ButtonStyle.Secondary);
+        const skipButton = new ButtonBuilder().setCustomId('Playing-Skip').setLabel(button.skip).setStyle(ButtonStyle.Secondary);
+        const loopButton = new ButtonBuilder().setCustomId('Playing-Loop').setLabel(button.loop).setStyle(ButtonStyle.Secondary);
+        const stopButton = new ButtonBuilder().setCustomId('Playing-Stop').setLabel(button.stop).setStyle(ButtonStyle.Danger);
+        const shuffleButton = new ButtonBuilder().setCustomId('Playing-Shuffle').setLabel(button.shuffle).setStyle(ButtonStyle.Secondary);
         const row = new ActionRowBuilder().addComponents(playPauseButton, skipButton, loopButton, stopButton, shuffleButton);
 
         const cur = queue.currentTrack;

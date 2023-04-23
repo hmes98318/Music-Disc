@@ -5,14 +5,14 @@ const { QueryType } = require('discord-player');
  * Constants variables
  */
 const cst = {
-    label: {
+    button: {
         play        : '►',
         pause       : '❚❚',
         skip        : '►❚',
         back        : '❚◄',
         stop        : '◼',
-        loop        : '🔁',
-        shuffle     : '🔀',
+        loop        : 'Loop Mode',
+        shuffle     : 'Shuffle',
     },
     config: {
         name                : 'Music Disc',
