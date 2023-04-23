@@ -12,15 +12,26 @@ const color = typeof (process.env.EMBEDS_COLOR) === 'undefined' ? '#FFFFFF' : (E
 
 
 module.exports = {
-    Embed_play: function (status, music_title, music_url, music_length, music_thumbnail, settings) {
-        const Embed_play = new Discord.EmbedBuilder()
+    Embed_dashboard: function (status, music_title, music_url, music_thumbnail, music_description) {
+        const Embed_dashboard = new Discord.EmbedBuilder()
             .setColor(color)
             .setTitle(music_title)
             .setURL(music_url)
             .setThumbnail(music_thumbnail)
-            .addFields({ name: status, value: `**Duration**: \`${music_length}\` | ${settings}`, inline: true })
+            .addFields({ name: status, value: music_description })
             .setTimestamp()
-        return Embed_play;
+        return Embed_dashboard;
+    },
+
+    Embed_add: function (status, music_title, music_url, music_thumbnail, music_author, music_length) {
+        const Embed_add = new Discord.EmbedBuilder()
+            .setColor(color)
+            .setTitle(music_title)
+            .setURL(music_url)
+            .setThumbnail(music_thumbnail)
+            .addFields({ name: status, value: `Author : **${music_author}**\nDuration **${music_length}**`, inline: true })
+            .setTimestamp()
+        return Embed_add;
     },
 
     Embed_queue: function (status, nowplay, queueMsg, loopStatus) {

@@ -30,12 +30,15 @@ const registerPlayerEvents = (player) => {
         const shuffleButton = new ButtonBuilder().setCustomId('Playing-Shuffle').setLabel(button.shuffle).setStyle(ButtonStyle.Secondary);
         const row = new ActionRowBuilder().addComponents(playPauseButton, skipButton, stopButton, loopButton, shuffleButton);
 
-        return await queue.dashboard.edit({ embeds: [embed.Embed_play("Playing", track.title, track.url, track.duration, track.thumbnail, settings(queue))], components: [row] });
+        return await queue.dashboard.edit({ embeds: [embed.Embed_dashboard('Dashboard', track.title, track.url, track.thumbnail, settings(queue))], components: [row] });
     });
 
     player.events.on('audioTrackAdd', async (queue, track) => {
         if (queue.isPlaying()) {
-            await queue.metadata.channel.send({ embeds: [embed.Embed_play("Added", track.title, track.url, track.duration, track.thumbnail, settings(queue))] });
+            const author = track.author;
+            const timestamp = queue.node.getTimestamp();
+            const trackDuration = timestamp.progress == 'Forever' ? 'Endless (Live)' : track.duration;
+            await queue.metadata.channel.send({ embeds: [embed.Embed_add('Added', track.title, track.url, track.thumbnail, author, trackDuration)] });
 
             try {
                 await queue.dashboard.delete();
@@ -53,7 +56,7 @@ const registerPlayerEvents = (player) => {
             const row = new ActionRowBuilder().addComponents(playPauseButton, skipButton, stopButton, loopButton, shuffleButton);
 
             const cur = queue.currentTrack;
-            queue.dashboard = await queue.metadata.channel.send({ embeds: [embed.Embed_play("Playing", cur.title, cur.url, cur.duration, cur.thumbnail, settings(queue))], components: [row] });
+            queue.dashboard = await queue.metadata.channel.send({ embeds: [embed.Embed_dashboard('Dashboard', cur.title, cur.url, cur.thumbnail, settings(queue))], components: [row] });
             return;
         }
     });
