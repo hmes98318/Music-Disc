@@ -1,4 +1,5 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+
 const embed = require('../embeds/embeds');
 const { button } = require('../utils/constants');
 const { settings } = require('../utils/player/settings');
@@ -7,7 +8,7 @@ const { settings } = require('../utils/player/settings');
 module.exports = {
     name: 'dashboard',
     aliases: ['d', 'main'],
-    description: 'Move the embed message to control music playing to the bottom',
+    description: 'Move the dashboard embed to the bottom',
     usage: 'dashboard',
     voiceChannel: true,
     options: [],
