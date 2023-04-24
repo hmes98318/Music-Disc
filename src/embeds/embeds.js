@@ -1,7 +1,7 @@
 const dotenv = require('dotenv');
 const Discord = require('discord.js');
 
-dotenv.config()
+dotenv.config();
 const ENV = process.env;
 
 const github = 'https://github.com/hmes98318/Music-Disc';
@@ -12,15 +12,26 @@ const color = typeof (process.env.EMBEDS_COLOR) === 'undefined' ? '#FFFFFF' : (E
 
 
 module.exports = {
-    Embed_play: function (status, music_title, music_url, music_length, music_thumbnail, settings) {
-        const Embed_play = new Discord.EmbedBuilder()
+    Embed_dashboard: function (status, music_title, music_url, music_thumbnail, music_description) {
+        const Embed_dashboard = new Discord.EmbedBuilder()
             .setColor(color)
             .setTitle(music_title)
             .setURL(music_url)
             .setThumbnail(music_thumbnail)
-            .addFields({ name: status, value: `**Duration**: \`${music_length}\` | ${settings}`, inline: true })
+            .addFields({ name: status, value: music_description })
             .setTimestamp()
-        return Embed_play;
+        return Embed_dashboard;
+    },
+
+    Embed_add: function (status, music_title, music_url, music_thumbnail, music_author, music_length) {
+        const Embed_add = new Discord.EmbedBuilder()
+            .setColor(color)
+            .setTitle(music_title)
+            .setURL(music_url)
+            .setThumbnail(music_thumbnail)
+            .addFields({ name: status, value: `Author : **${music_author}**\nDuration **${music_length}**`, inline: true })
+            .setTimestamp()
+        return Embed_add;
     },
 
     Embed_queue: function (status, nowplay, queueMsg, loopStatus) {
@@ -107,5 +118,19 @@ module.exports = {
             .setColor(color)
             .setDescription(`Ping : **${ping}**ms.`)
         return Embed_ping;
+    },
+
+    Embed_connect: function () {
+        const Embed_connect = new Discord.EmbedBuilder()
+            .setColor(color)
+            .setDescription('Voice channel connected successfully.')
+        return Embed_connect;
+    },
+
+    Embed_disconnect: function () {
+        const Embed_disconnect = new Discord.EmbedBuilder()
+            .setColor(color)
+            .setDescription('Finished playing.')
+        return Embed_disconnect;
     }
 }

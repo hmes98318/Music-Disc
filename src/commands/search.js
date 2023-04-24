@@ -1,5 +1,5 @@
 const { StringSelectMenuBuilder, ActionRowBuilder } = require("discord.js");
-const { URL } = require('url');
+const { isValidUrl } = require(`../utils/functions/isValidUrl`);
 
 
 module.exports = {
@@ -229,15 +229,3 @@ module.exports = {
         }
     },
 };
-
-
-
-
-const isValidUrl = (str) => {
-    try {
-        new URL(str);
-        return true;
-    } catch (err) {
-        return false;
-    }
-}

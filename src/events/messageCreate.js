@@ -1,4 +1,5 @@
-const color = { white: '\x1B[0m', grey: '\x1B[2m' };
+const { color } = require(`${__dirname}/../utils/constants`);
+
 
 module.exports = (client, message) => {
     if (message.author.bot || message.channel.type === 'dm')

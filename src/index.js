@@ -4,12 +4,12 @@ const fs = require('fs');
 
 const dotenv = require('dotenv');
 const { Client, GatewayIntentBits, Partials, Collection } = require('discord.js');
-const { Player, QueryType } = require('discord-player');
+const { Player } = require('discord-player');
 const express = require('express');
 require('console-stamp')(console, { format: ':date(yyyy/mm/dd HH:MM:ss)' });
 
-const embed = require(`${__dirname}/embeds/embeds`);
-
+const registerPlayerEvents = require(`${__dirname}/events/discord-player/player`);
+const cst = require(`${__dirname}/utils/constants`);
 
 dotenv.config();
 const ENV = process.env;
@@ -27,36 +27,14 @@ let client = new Client({
     disableMentions: 'everyone',
 });
 
-
-client.config = {
-    name: 'Music Disc',
-    prefix: '-',
-    playing: '+help | music',
-    defaultVolume: 50,
-    maxVolume: 100,
-    autoLeave: true,
-    autoLeaveCooldown: 5000,
-    displayVoiceState: true,
-    port: 33333,
-    urlQuery: QueryType.AUTO,
-    textQuery: QueryType.AUTO
-};
-
+client.config = cst.config;
 client.commands = new Collection();
 client.player = new Player(client, {
-    ytdlOptions: {
-        filter: 'audioonly',
-        quality: 'highestaudio',
-        highWaterMark: 1 << 27
-    }
+    ytdlOptions: cst.ytdlOptions
 });
 
+
 const player = client.player;
-const color = {
-    white: '\x1B[0m',
-    grey: '\x1B[2m',
-    green: '\x1B[32m'
-};
 
 
 
@@ -149,8 +127,19 @@ const loadEvents = () => {
             }
         };
         console.log(`+--------------------------------+`);
-        console.log(`${color.grey}-- loading Events finished --${color.white}`);
+        console.log(`${cst.color.grey}-- loading Events finished --${cst.color.white}`);
+        resolve();
+    })
+}
 
+const loadPlayer = () => {
+    return new Promise((resolve, reject) => {
+        try {
+            registerPlayerEvents(player);
+        } catch (error) {
+            reject(error);
+        }
+        console.log('-> loading Player Events finished');
         resolve();
     })
 }
@@ -175,8 +164,7 @@ const loadCommands = () => {
             }
         };
         console.log(`+---------------------------+`);
-        console.log(`${color.grey}-- loading Commands finished --${color.white}`);
-
+        console.log(`${cst.color.grey}-- loading Commands finished --${cst.color.white}`);
         resolve();
     })
 }
@@ -186,41 +174,12 @@ Promise.resolve()
     .then(() => setEnvironment())
     .then(() => loadFramework())
     .then(() => loadEvents())
+    .then(() => loadPlayer())
     .then(() => loadCommands())
     .then(() => {
-        console.log(`${color.green}*** All loaded successfully ***${color.white}`);
+        console.log(`${cst.color.green}*** All loaded successfully ***${cst.color.white}`);
         client.login(ENV.TOKEN);
     });
-
-
-
-
-const settings = (queue, song) =>
-    `**Volume**: \`${queue.node.volume}%\` | **Loop**: \`${queue.repeatMode ? (queue.repeatMode === 2 ? 'All' : 'ONE') : 'Off'}\``;
-
-
-player.events.on('playerStart', (queue, track) => {
-    if (queue.repeatMode !== 0) return;
-    queue.metadata.channel.send({ embeds: [embed.Embed_play("Playing", track.title, track.url, track.duration, track.thumbnail, settings(queue))] });
-});
-
-player.events.on('audioTrackAdd', (queue, track) => {
-    if (queue.isPlaying())
-        queue.metadata.channel.send({ embeds: [embed.Embed_play("Added", track.title, track.url, track.duration, track.thumbnail, settings(queue))] });
-});
-
-player.events.on('playerError', (queue, error) => {
-    console.log(`I'm having trouble connecting => ${error.message}`);
-});
-
-player.events.on('error', (queue, error) => {
-    console.log(`There was a problem with the song queue => ${error.message}`);
-});
-
-player.events.on('emptyChannel', (queue) => {
-    if (!client.config.autoLeave)
-        queue.node.stop();
-});
 
 
 
