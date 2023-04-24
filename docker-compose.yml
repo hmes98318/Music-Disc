@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   music-disc:
-    image: hmes98318/music-disc:1.3.2
+    image: hmes98318/music-disc:1.4.0
     container_name: music-disc
     restart: always
     ports:
