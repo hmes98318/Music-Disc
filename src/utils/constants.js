@@ -14,6 +14,7 @@ const cst = {
         loop        : 'Loop Mode',
         shuffle     : 'Shuffle',
     },
+    // Default config
     config: {
         name                : 'Music Disc',
         prefix              : '+',
