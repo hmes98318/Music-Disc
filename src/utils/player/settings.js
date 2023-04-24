@@ -6,9 +6,8 @@ const settings = (queue) => {
     const timestamp = queue.node.getTimestamp();
     const trackDuration = timestamp.progress == 'Forever' ? 'Endless (Live)' : track.duration;
 
-
     return `Author : **${author}**\nDuration **${trackDuration}**\n`
-        + `\n`
+        + `────────────────────\n`
         + `Volume: \`${volume}%\` | Loop: \`${loop}\``;
 };
 
