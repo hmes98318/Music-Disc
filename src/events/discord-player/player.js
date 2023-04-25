@@ -6,7 +6,7 @@ const { settings } = require(`${__dirname}/../../utils/player/settings`);
 const { finishPlaying } = require(`${__dirname}/../../utils/player/finishPlaying`);
 
 
-const registerPlayerEvents = (player) => {
+const registerPlayerEvents = (player, client) => {
 
     player.events.on('connection', async (queue) => {
         const playPauseButton = new ButtonBuilder().setCustomId('Playing-PlayPause').setLabel(button.pause).setStyle(ButtonStyle.Secondary);

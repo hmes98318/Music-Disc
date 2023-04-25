@@ -135,7 +135,7 @@ const loadEvents = () => {
 const loadPlayer = () => {
     return new Promise((resolve, reject) => {
         try {
-            registerPlayerEvents(player);
+            registerPlayerEvents(player, client);
         } catch (error) {
             reject(error);
         }
