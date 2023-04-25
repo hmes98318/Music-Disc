@@ -30,6 +30,7 @@ let client = new Client({
 client.config = cst.config;
 client.commands = new Collection();
 client.player = new Player(client, {
+    autoRegisterExtractor: false,
     ytdlOptions: cst.ytdlOptions
 });
 
@@ -133,8 +134,9 @@ const loadEvents = () => {
 }
 
 const loadPlayer = () => {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         try {
+            await player.extractors.loadDefault();
             registerPlayerEvents(player, client);
         } catch (error) {
             reject(error);
