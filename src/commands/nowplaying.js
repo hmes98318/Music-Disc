@@ -18,14 +18,18 @@ module.exports = {
 
 
         const track = queue.currentTrack;
+        const progress = queue.node.createProgressBar();
         const timestamp = queue.node.getTimestamp();
         const trackDuration = timestamp.progress == 'Forever' ? 'Endless (Live)' : track.duration;
-        let description = `Author : **${track.author}**\nDuration **${trackDuration}**`;
+        let description = `Author : **${track.author}**\nDuration **${trackDuration}**\n`
+            + '\n'
+            + `${progress} (**${timestamp.progress}**%)`;
 
-        let saveButton = new ButtonBuilder();
-        saveButton.setCustomId('Save Song');
-        saveButton.setLabel('Save Song');
-        saveButton.setStyle(ButtonStyle.Success);
+
+        const saveButton = new ButtonBuilder()
+            .setCustomId('Save Song')
+            .setLabel('Save Song')
+            .setStyle(ButtonStyle.Success);
         const row = new ActionRowBuilder().addComponents(saveButton);
 
         return message.channel.send({ embeds: [embed.Embed_save(track.title, track.url, track.thumbnail, description)], components: [row] });
@@ -39,14 +43,18 @@ module.exports = {
 
 
         const track = queue.currentTrack;
+        const progress = queue.node.createProgressBar();
         const timestamp = queue.node.getTimestamp();
         const trackDuration = timestamp.progress == 'Forever' ? 'Endless (Live)' : track.duration;
-        let description = `Author : **${track.author}**\nDuration **${trackDuration}**`;
+        let description = `Author : **${track.author}**\nDuration **${trackDuration}**\n`
+            + '\n'
+            + `${progress} (**${timestamp.progress}**%)`;
 
-        let saveButton = new ButtonBuilder();
-        saveButton.setCustomId('Save Song');
-        saveButton.setLabel('Save Song');
-        saveButton.setStyle(ButtonStyle.Success);
+
+        const saveButton = new ButtonBuilder()
+            .setCustomId('Save Song')
+            .setLabel('Save Song')
+            .setStyle(ButtonStyle.Success);
         const row = new ActionRowBuilder().addComponents(saveButton);
 
         return interaction.reply({ embeds: [embed.Embed_save(track.title, track.url, track.thumbnail, description)], components: [row] });
