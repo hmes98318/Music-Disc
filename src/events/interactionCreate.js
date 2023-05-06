@@ -82,7 +82,7 @@ module.exports = async (client, int) => {
             } break;
 
             case 'Playing-Loop': {
-                const methods = ['Off', 'Single', 'All'];
+                const methods = ['Off', 'Single', 'All', 'Autoplay'];
                 let mode = 0;
 
                 const select = new StringSelectMenuBuilder()
@@ -116,6 +116,9 @@ module.exports = async (client, int) => {
                             break;
                         case 'All':
                             mode = 2;
+                            break;
+                        case 'Autoplay':
+                            mode = 3;
                             break;
                     }
                     queue.setRepeatMode(mode);

@@ -1,5 +1,5 @@
 const settings = (queue) => {
-    const loop = queue.repeatMode ? (queue.repeatMode === 2 ? 'All' : 'Single') : 'Off';
+    const loop = queue.repeatMode ? (queue.repeatMode === 2 ? 'All' : (queue.repeatMode === 1 ? 'Single' : (queue.repeatMode === 3 ? 'Autoplay' : 'Off' ))) : 'Off';
     const volume = queue.node.volume;
     const track = queue.currentTrack;
     const author = track.author;

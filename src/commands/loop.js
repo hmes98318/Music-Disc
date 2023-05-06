@@ -2,7 +2,7 @@ module.exports = {
     name: 'loop',
     aliases: ['lp'],
     description: 'Turns the music loop mode on or off',
-    usage: 'loop <all/one/off>',
+    usage: 'loop <ap/all/one/off>',
     voiceChannel: true,
     options: [
         {
@@ -22,6 +22,10 @@ module.exports = {
                 {
                     name: "One",
                     value: "one"
+                },
+                {
+                    name: "Autoplay",
+                    value: "ap"
                 }
             ]
         }
@@ -35,10 +39,10 @@ module.exports = {
             return message.reply({ content: `❌ | There is no music currently playing.`, allowedMentions: { repliedUser: false } });
 
         let mode = null;
-        const methods = ['Off', 'Single', 'All'];
+        const methods = ['Off', 'Single', 'All', 'Autoplay'];
 
         if (!args[0])
-            return message.reply({ content: `❌ | ${prefix}loop <all/one/off>`, allowedMentions: { repliedUser: false } });
+            return message.reply({ content: `❌ | ${prefix}loop <ap/all/one/off>`, allowedMentions: { repliedUser: false } });
 
         switch (args[0].toLowerCase()) {
             case 'off':
@@ -50,8 +54,11 @@ module.exports = {
             case 'all' || 'queue':
                 mode = 2;
                 break;
+            case 'ap' || 'autoplay':
+                mode = 3;
+                break;
             default:
-                return message.reply({ content: `❌ | ${prefix}loop <all/one/off>`, allowedMentions: { repliedUser: false } });
+                return message.reply({ content: `❌ | ${prefix}loop <ap/all/one/off>`, allowedMentions: { repliedUser: false } });
         }
         queue.setRepeatMode(mode);
 
@@ -69,12 +76,14 @@ module.exports = {
         const methods = {
             off: 0,
             one: 1,
-            all: 2
+            all: 2,
+            ap: 3
         }
         const names = {
             off: "Off",
             one: "Single",
-            all: "All"
+            all: "All",
+            ap: "Autoplay"
         }
 
         queue.setRepeatMode(methods[interaction.options.getString("mode")]);
