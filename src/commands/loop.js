@@ -58,7 +58,7 @@ module.exports = {
                 mode = 3;
                 break;
             default:
-                return message.reply({ content: `❌ | ${prefix}loop <all/one/off>`, allowedMentions: { repliedUser: false } });
+                return message.reply({ content: `❌ | ${prefix}loop <ap/all/one/off>`, allowedMentions: { repliedUser: false } });
         }
         queue.setRepeatMode(mode);
 
