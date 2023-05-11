@@ -13,6 +13,7 @@ const cst = require(`${__dirname}/utils/constants`);
 
 dotenv.config();
 const ENV = process.env;
+process.env.FFMPEG_PATH = cst.ffmpegPath;
 
 
 let client = new Client({

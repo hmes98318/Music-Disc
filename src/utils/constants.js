@@ -38,7 +38,9 @@ const cst = {
         grey    : '\x1B[2m',
         green   : '\x1B[32m',
         cyan    : '\x1B[36m'
-    }
+    },
+    // discord-player@6.3.0 requires manually setting the ffmpeg path
+    ffmpegPath: require('@ffmpeg-installer/ffmpeg')
 };
 
 module.exports = cst;
