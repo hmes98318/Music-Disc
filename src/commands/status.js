@@ -10,7 +10,12 @@ module.exports = {
     usage: 'status',
     options: [],
 
-    async execute(client, message) { //uptime, os, node_v, djs_v, cpu, cpu_usage, ram, ping
+    async execute(client, message) { //uptime, os, node_v, djs_v, cpu, cpu_usage, ram, ping, serverCount
+        const botPing = `${Date.now() - message.createdTimestamp}ms`;
+        const load = await usage.cpu();
+        const memory = usage.ram();
+        const heap = usage.heap();
+
         return message.reply({
             embeds: [embed.Embed_status(
                 uptime(client.status.uptime),
@@ -18,15 +23,22 @@ module.exports = {
                 client.status.node_version,
                 client.status.discord_version,
                 client.status.cpu,
-                usage.cpu(),
-                usage.ram(),
-                client.ws.ping
+                (`${load.percent}  \`${load.detail}\``),
+                (`${memory.percent}  \`${memory.detail}\``),
+                (`${heap.percent}  \`${heap.detail}\``),
+                { bot: (botPing), api: client.ws.ping },
+                client.guilds.cache.size
             )],
             allowedMentions: { repliedUser: false }
         });
     },
 
     async slashExecute(client, interaction) {
+        const botPing = `${Date.now() - interaction.createdTimestamp}ms`;
+        const load = await usage.cpu();
+        const memory = usage.ram();
+        const heap = usage.heap();
+
         return await interaction.reply({
             embeds: [embed.Embed_status(
                 uptime(client.status.uptime),
@@ -34,9 +46,11 @@ module.exports = {
                 client.status.node_version,
                 client.status.discord_version,
                 client.status.cpu,
-                usage.cpu(),
-                usage.ram(),
-                client.ws.ping
+                (`${load.percent}  \`${load.detail}\``),
+                (`${memory.percent}  \`${memory.detail}\``),
+                (`${heap.percent}  \`${heap.detail}\``),
+                { bot: (botPing), api: client.ws.ping },
+                client.guilds.cache.size
             )],
             allowedMentions: { repliedUser: false }
         });

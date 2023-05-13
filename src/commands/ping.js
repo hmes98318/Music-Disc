@@ -9,10 +9,12 @@ module.exports = {
     options: [],
 
     execute(client, message) {
-        message.reply({ embeds: [embed.Embed_ping(client.ws.ping)], allowedMentions: { repliedUser: false } });
+        const botPing = `${Date.now() - message.createdTimestamp}ms`;
+        message.reply({ embeds: [embed.Embed_ping(botPing, client.ws.ping)], allowedMentions: { repliedUser: false } });
     },
 
     slashExecute(client, interaction) {
-        interaction.reply({ embeds: [embed.Embed_ping(client.ws.ping)], allowedMentions: { repliedUser: false } });
+        const botPing = `${Date.now() - interaction.createdTimestamp}ms`;
+        interaction.reply({ embeds: [embed.Embed_ping(botPing, client.ws.ping)], allowedMentions: { repliedUser: false } });
     },
 };

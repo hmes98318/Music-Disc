@@ -92,14 +92,16 @@ module.exports = {
         return Embed_help2;
     },
 
-    Embed_status: function (uptime, os, node_v, djs_v, cpu, cpu_usage, ram, ping) {
+    Embed_status: function (uptime, os, node_v, djs_v, cpu, cpu_usage, ram, heap, ping, serverCount) {
         const Embed_status = new Discord.EmbedBuilder()
             .setColor(color)
             .setTitle(`${bot_name} v${bot_version}`)
             .setURL(github)
+            .setDescription(`**• Serving ${serverCount} servers**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━`)
             .addFields(
-                { name: `⚙️ SYSTEM`, value: `OS : **${os}**\nNode.js : **${node_v}**\nDiscord.js : **${djs_v}**\nCPU : **${cpu}**\n━━━━━━━━━━━━━━━━━━━━━━`, inline: false },
-                { name: `📊 USAGE`, value: `CPU : **${cpu_usage}**\nMEM : **${ram}**\nUptime : **${uptime}**\nPING : **${ping}ms**\n━━━━━━━━━━━━━━━━━━━━━━`, inline: false }
+                { name: `⚙️ SYSTEM`, value: `OS : **${os}**\nNode.js : **${node_v}**\nDiscord.js : **${djs_v}**\nCPU : **${cpu}**\nUptime : **${uptime}**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━`, inline: false },
+                { name: `📊 USAGE`, value: `CPU : **${cpu_usage}**\nRam : **${ram}**\nHeap : **${heap}**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━`, inline: false },
+                { name: `🛰️ LATENCY`, value: `Bot : **${ping.bot}**\nAPI : **${ping.api}ms**`, inline: false }
             )
             .setTimestamp()
         return Embed_status;
@@ -113,10 +115,11 @@ module.exports = {
         return Embed_server;
     },
 
-    Embed_ping: function (ping) {
+    Embed_ping: function (bot, api) {
         const Embed_ping = new Discord.EmbedBuilder()
             .setColor(color)
-            .setDescription(`Ping : **${ping}**ms.`)
+            .setTitle('🛰️ LATENCY')
+            .setDescription(`Bot : **${bot}**\nAPI : **${api}ms**`)
         return Embed_ping;
     },
 
