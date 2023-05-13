@@ -1,4 +1,13 @@
 const { QueryType } = require('discord-player');
+const ffmpeg = require('@ffmpeg-installer/ffmpeg');
+
+
+/**
+ * Custom ffmpeg source
+ * Starting from discord-player@6.3.0 requires manually setting the ffmpeg path
+ */
+process.env.FFMPEG_PATH = ffmpeg.path;
+process.env.DP_NO_FFMPEG_WARN = true; // Mute ffmpeg warning
 
 
 /**
@@ -39,9 +48,7 @@ const cst = {
         grey    : '\x1B[2m',
         green   : '\x1B[32m',
         cyan    : '\x1B[36m'
-    },
-    // discord-player@6.3.0 requires manually setting the ffmpeg path
-    ffmpegPath: require('@ffmpeg-installer/ffmpeg')
+    }
 };
 
 module.exports = cst;
