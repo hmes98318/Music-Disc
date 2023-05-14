@@ -166,6 +166,15 @@ module.exports = async (client, int) => {
 
 
         const cmd = client.commands.get(int.commandName);
+
+        if (cmd && cmd.voiceChannel) {
+            if (!int.member.voice.channel)
+                return int.reply({ content: `❌ | You are not connected to an audio channel.`, allowedMentions: { repliedUser: false } });
+
+            if (int.guild.members.me.voice.channel && int.member.voice.channelId !== int.guild.members.me.voice.channelId)
+                return int.reply({ content: `❌ | You are not on the same audio channel as me.`, allowedMentions: { repliedUser: false } });
+        }
+
         if (cmd) {
             console.log(`(${color.grey}${int.member.guild.name}${color.white}) ${int.user.username} : /${int.commandName}`);
             cmd.slashExecute(client, int);
