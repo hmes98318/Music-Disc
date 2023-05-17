@@ -63,6 +63,19 @@ const registerPlayerEvents = (player, client) => {
 
     player.events.on('playerError', (queue, error) => {
         console.log(`I'm having trouble connecting => ${error.message}`);
+
+        if (error.message.includes('Sign in to confirm your age')) {
+            if (queue.tracks.data.length < 1) {
+                if (!queue.deleted) queue.delete();
+                finishPlaying(queue);
+                return queue.metadata.channel.send({ content: `❌ | I can't play Age-restricted videos.`, allowedMentions: { repliedUser: false } });
+            }
+
+            else {
+                queue.node.skip();
+                return queue.metadata.channel.send({ content: `❌ | I skipped Age-restricted video.`, allowedMentions: { repliedUser: false } });
+            }
+        }
     });
 
     player.events.on('error', (queue, error) => {
