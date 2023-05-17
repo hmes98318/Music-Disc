@@ -51,6 +51,7 @@ module.exports = {
             leaveOnEnd: client.config.autoLeave,
             leaveOnEmptyCooldown: client.config.autoLeaveCooldown,
             leaveOnEndCooldown: client.config.autoLeaveCooldown,
+            skipOnNoStream: true,
             volume: client.config.defaultVolume,
             connectionTimeout: 999_999_999
         });
@@ -158,6 +159,7 @@ module.exports = {
             leaveOnEnd: client.config.autoLeave,
             leaveOnEmptyCooldown: client.config.autoLeaveCooldown,
             leaveOnEndCooldown: client.config.autoLeaveCooldown,
+            skipOnNoStream: true,
             volume: client.config.defaultVolume,
             connectionTimeout: 999_999_999
         });
