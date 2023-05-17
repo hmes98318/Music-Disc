@@ -36,6 +36,9 @@ module.exports = {
         const tragetTime = timeToSeconds(str);
         const musicLength = timeToSeconds(track.duration);
 
+        if(!tragetTime)
+            return message.reply({ content: `❌ | Invalid format for the target time.\n(**\`ex: 3m20s, 1m 50s, 1:20:55, 5:20\`**)`, allowedMentions: { repliedUser: false } });
+
         if (tragetTime >= musicLength)
             return message.reply({ content: `❌ | Target time exceeds music duration. (\`${track.duration}\`)`, allowedMentions: { repliedUser: false } });
 
@@ -60,6 +63,9 @@ module.exports = {
         const str = interaction.options.getString("seek");
         const tragetTime = timeToSeconds(str);
         const musicLength = timeToSeconds(track.duration);
+
+        if(!tragetTime)
+            return interaction.reply({ content: `❌ | Invalid format for the target time.\n(**\`ex: 3m20s, 1m 50s, 1:20:55, 5:20\`**)`, allowedMentions: { repliedUser: false } });
 
         if (tragetTime >= musicLength)
             return interaction.reply({ content: `❌ | Target time exceeds music duration. (\`${track.duration}\`)`, allowedMentions: { repliedUser: false } });
