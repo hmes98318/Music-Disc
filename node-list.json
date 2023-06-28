@@ -1,0 +1,8 @@
+[
+    {
+        "id": "Node 1",
+        "hostname": "localhost",
+        "port": 2333,
+        "password": "youshallnotpass"
+    }
+]
