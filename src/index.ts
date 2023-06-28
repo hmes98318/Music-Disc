@@ -31,7 +31,7 @@ declare module 'discord.js' {
             uptime: Date,
             os_version: string,
             node_version: string,
-            discord_version: string,
+            dc_version: string,
             bot_version: string,
             cpu: string
         }
