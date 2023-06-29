@@ -15,7 +15,7 @@ consoleStamp(console, { format: ':date(yyyy/mm/dd HH:MM:ss)' });
 declare module 'discord.js' {
     export interface Client {
         commands: Collection<unknown, any>,
-        player: LavaShark,
+        lavashark: LavaShark,
         config: {
             name: string,
             prefix: string,
@@ -30,9 +30,10 @@ declare module 'discord.js' {
         status: {
             uptime: Date,
             os_version: string,
+            bot_version: string,
             node_version: string,
             dc_version: string,
-            bot_version: string,
+            shark_version: string,
             cpu: string
         }
     }
@@ -51,7 +52,7 @@ let client = new Client({
     ]
 });
 client.commands = new Collection();
-client.player = new LavaShark({
+client.lavashark = new LavaShark({
     nodes: nodeList,
     sendWS: (guildId, payload) => { client.guilds.cache.get(guildId)?.shard.send(payload); }
 })
