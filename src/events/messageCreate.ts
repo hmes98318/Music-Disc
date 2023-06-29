@@ -1,4 +1,5 @@
 import { Client, Message, ChannelType } from "discord.js";
+import { cst } from "../utils/constants";
 
 
 export default async (client: Client, message: Message) => {
@@ -9,13 +10,20 @@ export default async (client: Client, message: Message) => {
 
 
     const args = message.content.slice(prefix.length).trim().split(/ +/g);
-    const command = args.shift()?.toLowerCase();
-
+    const command = String(args.shift()).toLowerCase();
     const cmd = client.commands.get(command) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(command));
 
+    if (cmd && cmd.voiceChannel) {
+        if (!message.member?.voice.channel)
+            return message.reply({ content: `❌ | You are not connected to an audio channel.`, allowedMentions: { repliedUser: false } });
+
+        if (message.guild?.members.me?.voice.channel && message.member.voice.channelId !== message.guild.members.me.voice.channelId)
+            return message.reply({ content: `❌ | You are not on the same audio channel as me.`, allowedMentions: { repliedUser: false } });
+    }
+
     if (cmd) {
-        console.log(`(\x1B[2m${message.guild?.name}\x1B[0m) ${message.author.username} : ${message.content}`);
-        await message.channel.sendTyping();
+        console.log(`(${cst.color.grey}${message.guild?.name}${cst.color.white}) ${message.author.username} : ${message.content}`);
+        message.channel.sendTyping();
         cmd.execute(client, message, args);
     }
 };
