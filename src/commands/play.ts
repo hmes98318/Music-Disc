@@ -1,4 +1,4 @@
-import { Client, Message, ChatInputCommandInteraction } from "discord.js";
+import { ChatInputCommandInteraction, Client, Message } from "discord.js";
 
 export const name = 'play';
 export const aliases = ['p'];
@@ -17,8 +17,9 @@ export const options = [
 
 
 export const execute = async (client: Client, message: Message, args: string[]) => {
-    if (!args[0])
+    if (!args[0]) {
         return message.reply({ content: `❌ | Write the name of the music you want to search.`, allowedMentions: { repliedUser: false } });
+    }
 
     const str = args.join(' ');
     const res = await client.lavashark.search(str);
@@ -75,7 +76,6 @@ export const execute = async (client: Client, message: Message, args: string[]) 
 }
 
 export const slashExecute = async (client: Client, interaction: ChatInputCommandInteraction) => {
-
     const str = String(interaction.options.get("search", true).value);
     const res = await client.lavashark.search(str);
 
