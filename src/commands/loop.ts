@@ -1,5 +1,5 @@
 import { Client, Message, ChatInputCommandInteraction } from "discord.js";
-import { Player, RepeatMode } from "lavashark";
+import { RepeatMode } from "lavashark";
 
 
 export const name = 'loop';
@@ -8,26 +8,28 @@ export const description = 'Turns the music loop mode on or off';
 export const usage = 'loop <off/one/all>'
 export const voiceChannel = true;
 export const showHelp = true;
-export const options = [{
-    name: "mode",
-    description: "The loop mode",
-    type: 3,
-    required: true,
-    choices: [
-        {
-            name: "Off",
-            value: "off"
-        },
-        {
-            name: "One",
-            value: "one"
-        },
-        {
-            name: "All",
-            value: "all"
-        }
-    ]
-}];
+export const options = [
+    {
+        name: "mode",
+        description: "The loop mode",
+        type: 3,
+        required: true,
+        choices: [
+            {
+                name: "Off",
+                value: "off"
+            },
+            {
+                name: "One",
+                value: "one"
+            },
+            {
+                name: "All",
+                value: "all"
+            }
+        ]
+    }
+];
 
 
 export const execute = async (client: Client, message: Message, args: string[]) => {
