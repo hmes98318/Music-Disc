@@ -1,12 +1,15 @@
 import * as fs from 'fs';
 
 import * as dotenv from 'dotenv';
-import { Client, GatewayIntentBits, Collection } from 'discord.js';
+import { Client, Collection, GatewayIntentBits } from 'discord.js';
 import { LavaShark } from "lavashark";
 import consoleStamp from 'console-stamp';
 
 import { cst } from "./utils/constants";
 import nodeList from "../node-list.json";
+
+import { Config, Info } from "./@types";
+
 
 dotenv.config();
 consoleStamp(console, { format: ':date(yyyy/mm/dd HH:MM:ss)' });
@@ -16,26 +19,8 @@ declare module 'discord.js' {
     export interface Client {
         commands: Collection<unknown, any>,
         lavashark: LavaShark,
-        config: {
-            name: string,
-            prefix: string,
-            playing: string,
-            defaultVolume: number,
-            maxVolume: number,
-            autoLeave: boolean,
-            autoLeaveCooldown: number,
-            displayVoiceState: boolean,
-            port: number
-        },
-        status: {
-            uptime: Date,
-            os_version: string,
-            bot_version: string,
-            node_version: string,
-            dc_version: string,
-            shark_version: string,
-            cpu: string
-        }
+        config: Config,
+        info: Info
     }
 }
 
