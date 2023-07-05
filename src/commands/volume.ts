@@ -49,21 +49,21 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
     const player = client.lavashark.getPlayer(interaction.guild!.id);
 
     if (!player) {
-        return interaction.reply({ content: '❌ | There is no music currently playing.', allowedMentions: { repliedUser: false } });
+        return interaction.editReply({ content: '❌ | There is no music currently playing.', allowedMentions: { repliedUser: false } });
     }
 
     const vol = Math.floor(interaction.options.getInteger("volume")!);
 
     if (!vol) {
-        return interaction.reply({ content: `Current volume: **${player.volume}** 🔊\n**To change the volume, with \`1\` to \`${maxVolume}\` Type a number between.**`, allowedMentions: { repliedUser: false } });
+        return interaction.editReply({ content: `Current volume: **${player.volume}** 🔊\n**To change the volume, with \`1\` to \`${maxVolume}\` Type a number between.**`, allowedMentions: { repliedUser: false } });
     }
     if (player.volume === vol) {
-        return interaction.reply({ content: `❌ | The volume you want to change is already the current volume.`, allowedMentions: { repliedUser: false } });
+        return interaction.editReply({ content: `❌ | The volume you want to change is already the current volume.`, allowedMentions: { repliedUser: false } });
     }
     if (vol < 0 || vol > maxVolume) {
-        return interaction.reply({ content: `❌ | **Type a number from \`1\` to \`${maxVolume}\` to change the volume .**`, allowedMentions: { repliedUser: false } });
+        return interaction.editReply({ content: `❌ | **Type a number from \`1\` to \`${maxVolume}\` to change the volume .**`, allowedMentions: { repliedUser: false } });
     }
 
     player.filters.setVolume(vol);
-    return interaction.reply({ content: `🔊 **${vol}**/**${maxVolume}**%`, allowedMentions: { repliedUser: false } });
+    return interaction.editReply({ content: `🔊 **${vol}**/**${maxVolume}**%`, allowedMentions: { repliedUser: false } });
 }

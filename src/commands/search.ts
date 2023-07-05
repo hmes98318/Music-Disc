@@ -116,8 +116,8 @@ export const execute = async (client: Client, message: Message, args: string[]) 
 }
 
 export const slashExecute = async (client: Client, interaction: ChatInputCommandInteraction) => {
-    const str = String(interaction.options.get("search", true).value);
-    const res = await client.lavashark.search(str);
+    const str = interaction.options.getString("search");
+    const res = await client.lavashark.search(str!);
 
     if (res.loadType === "LOAD_FAILED") {
         console.log(`Search Error: ${res.exception?.message}`);
@@ -154,7 +154,7 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
             player.queue.add(track);
         }
 
-        return interaction.reply({ content: "✅ | Music added.", allowedMentions: { repliedUser: false } });
+        return interaction.editReply({ content: "✅ | Music added.", allowedMentions: { repliedUser: false } });
     }
     else {
         let select = new StringSelectMenuBuilder()
@@ -168,7 +168,7 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
                 }
             }));
         let row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(select);
-        let msg = await interaction.reply({ components: [row.toJSON()] });
+        let msg = await interaction.editReply({ components: [row.toJSON()] });
 
         const collector = msg.createMessageComponentCollector({
             time: 20000, // 20s
@@ -183,7 +183,7 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
             if (!player.playing) await player.play()
                 .catch((error: any) => {
                     console.log(error);
-                    return interaction.reply({ content: `❌ | I can't play this track.`, allowedMentions: { repliedUser: false } });
+                    return interaction.editReply({ content: `❌ | I can't play this track.`, allowedMentions: { repliedUser: false } });
                 });
 
             i.deferUpdate();

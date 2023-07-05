@@ -74,7 +74,7 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
     const player = client.lavashark.getPlayer(interaction.guild!.id);
 
     if (!player) {
-        return interaction.reply({ content: '❌ | There is no music currently playing.', allowedMentions: { repliedUser: false } });
+        return interaction.editReply({ content: '❌ | There is no music currently playing.', allowedMentions: { repliedUser: false } });
     }
 
     let mode = null;
@@ -97,9 +97,9 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
             break;
         }
         default: {
-            return interaction.reply({ content: `❌ | ${client.config.prefix}${usage}`, allowedMentions: { repliedUser: false } });
+            return interaction.editReply({ content: `❌ | ${client.config.prefix}${usage}`, allowedMentions: { repliedUser: false } });
         }
     }
 
-    return interaction.reply({ content: `Set loop to \`${methods[mode!]}\``, allowedMentions: { repliedUser: false } });
+    return interaction.editReply({ content: `Set loop to \`${methods[mode!]}\``, allowedMentions: { repliedUser: false } });
 }

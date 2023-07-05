@@ -26,10 +26,10 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
     const player = client.lavashark.getPlayer(interaction.guild!.id);
 
     if (!player) {
-        return interaction.reply({ content: '❌ | There is no music currently playing.', allowedMentions: { repliedUser: false } });
+        return interaction.editReply({ content: '❌ | There is no music currently playing.', allowedMentions: { repliedUser: false } });
     }
 
     await player.destroy();
 
-    return await interaction.reply('✅ | Bot leave.');
+    return await interaction.editReply('✅ | Bot leave.');
 }

@@ -25,9 +25,9 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
     const player = client.lavashark.getPlayer(interaction.guild!.id);
 
     if (!player) {
-        return interaction.reply({ content: '❌ | There is no music currently playing.', allowedMentions: { repliedUser: false } });
+        return interaction.editReply({ content: '❌ | There is no music currently playing.', allowedMentions: { repliedUser: false } });
     }
 
     const SUCCESS = await player.skip();
-    return SUCCESS ? interaction.reply('✅ | Music skipped.') : interaction.reply('❌ | Music skip failed.');
+    return SUCCESS ? interaction.editReply('✅ | Music skipped.') : interaction.editReply('❌ | Music skip failed.');
 }

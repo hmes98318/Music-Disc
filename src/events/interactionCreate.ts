@@ -23,6 +23,7 @@ export default async (client: Client, interaction: ChatInputCommandInteraction) 
 
         if (cmd) {
             console.log(`(${cst.color.grey}${guildMember?.guild.name}${cst.color.white}) ${interaction.user.username} : /${interaction.commandName}`);
+            await interaction.deferReply();
             cmd.slashExecute(client, interaction);
         }
     }

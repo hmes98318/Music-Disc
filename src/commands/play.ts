@@ -8,7 +8,7 @@ export const voiceChannel = true;
 export const showHelp = true;
 export const options = [
     {
-        name: "search",
+        name: "play",
         description: "The song link or song name",
         type: 3,
         required: true
@@ -76,8 +76,8 @@ export const execute = async (client: Client, message: Message, args: string[]) 
 }
 
 export const slashExecute = async (client: Client, interaction: ChatInputCommandInteraction) => {
-    const str = String(interaction.options.get("search", true).value);
-    const res = await client.lavashark.search(str);
+    const str = interaction.options.getString("play");
+    const res = await client.lavashark.search(str!);
 
     if (res.loadType === "LOAD_FAILED") {
         console.log(`Search Error: ${res.exception?.message}`);

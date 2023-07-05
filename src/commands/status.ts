@@ -45,7 +45,7 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
         serverCount: client.guilds.cache.size
     }
 
-    return interaction.reply({
+    return interaction.editReply({
         embeds: [embeds.status(client.config, client.info, systemStatus)],
         allowedMentions: { repliedUser: false }
     });

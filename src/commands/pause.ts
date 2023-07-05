@@ -29,13 +29,13 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
     const player = client.lavashark.getPlayer(interaction.guild!.id);
 
     if (!player) {
-        return interaction.reply({ content: '❌ | There is no music currently playing.', allowedMentions: { repliedUser: false } });
+        return interaction.editReply({ content: '❌ | There is no music currently playing.', allowedMentions: { repliedUser: false } });
     }
 
     if(player.paused) {
-        return interaction.reply({ content: '❌ | The music has been paused.', allowedMentions: { repliedUser: false } });
+        return interaction.editReply({ content: '❌ | The music has been paused.', allowedMentions: { repliedUser: false } });
     }
 
     const SUCCESS = await player.pause();
-    return SUCCESS ? interaction.reply("⏸️ | Music paused.") : interaction.reply('❌ | Music pause failed.');
+    return SUCCESS ? interaction.editReply("⏸️ | Music paused.") : interaction.editReply('❌ | Music pause failed.');
 }
