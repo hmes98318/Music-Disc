@@ -7,7 +7,7 @@ import { sysusage } from "../utils/functions/sysusage";
 export const name = 'status';
 export const aliases = ['info'];
 export const description = 'Show the bot status';
-export const usage = 'leave'
+export const usage = 'status';
 export const voiceChannel = false;
 export const showHelp = true;
 export const options = [];

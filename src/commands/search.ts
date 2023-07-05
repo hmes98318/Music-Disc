@@ -14,7 +14,7 @@ import { Player } from "lavashark";
 export const name = 'search';
 export const aliases = ['find'];
 export const description = 'Enter song name to search';
-export const usage = 'search <URL/song name>'
+export const usage = 'search <URL/song name>';
 export const voiceChannel = true;
 export const showHelp = true;
 export const options = [

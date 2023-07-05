@@ -5,7 +5,7 @@ import { RepeatMode } from "lavashark";
 export const name = 'loop';
 export const aliases = ['lp'];
 export const description = 'Turns the music loop mode on or off';
-export const usage = 'loop <off/one/all>'
+export const usage = 'loop <off/one/all>';
 export const voiceChannel = true;
 export const showHelp = true;
 export const options = [

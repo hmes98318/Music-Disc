@@ -3,7 +3,7 @@ import { ChatInputCommandInteraction, Client, Message } from "discord.js";
 export const name = 'play';
 export const aliases = ['p'];
 export const description = 'Enter your song link or song name to play';
-export const usage = 'play <URL/song name>'
+export const usage = 'play <URL/song name>';
 export const voiceChannel = true;
 export const showHelp = true;
 export const options = [

@@ -4,7 +4,7 @@ import { ChatInputCommandInteraction, Client, Message } from "discord.js";
 export const name = 'leave';
 export const aliases = ['stop'];
 export const description = 'Leave current voice channel';
-export const usage = 'leave'
+export const usage = 'leave';
 export const voiceChannel = true;
 export const showHelp = true;
 export const options = [];

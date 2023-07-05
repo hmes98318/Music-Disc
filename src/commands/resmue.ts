@@ -4,7 +4,7 @@ import { ChatInputCommandInteraction, Client, Message } from "discord.js";
 export const name = 'resume';
 export const aliases = [];
 export const description = 'Resume paused track';
-export const usage = 'resume'
+export const usage = 'resume';
 export const voiceChannel = true;
 export const showHelp = true;
 export const options = [];

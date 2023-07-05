@@ -4,7 +4,7 @@ import { ChatInputCommandInteraction, Client, Message } from "discord.js";
 export const name = 'skip';
 export const aliases = ['s'];
 export const description = 'Skip currnet track';
-export const usage = 'leave'
+export const usage = 'skip';
 export const voiceChannel = true;
 export const showHelp = true;
 export const options = [];
