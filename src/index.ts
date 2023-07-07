@@ -46,6 +46,23 @@ client.config = cst.config;
 
 
 
+const setEnvironment = (): Promise<void> => {
+    return new Promise<void>((resolve, _reject) => {
+        client.config.name = process.env.BOT_NAME ?? client.config.name;
+        client.config.prefix = process.env.PREFIX ?? client.config.prefix;
+        client.config.playing = process.env.PLAYING ?? client.config.playing;
+        client.config.defaultVolume = Number(process.env.DEFAULT_VOLUME) ?? client.config.defaultVolume;
+        client.config.maxVolume = Number(process.env.MAX_VOLUME) ?? client.config.maxVolume;
+        client.config.autoLeave = process.env.AUTO_LEAVE === 'true' ?? client.config.autoLeave;
+        client.config.autoLeaveCooldown = Number(process.env.AUTO_LEAVE_COOLDOWN) ?? client.config.autoLeaveCooldown;
+        client.config.displayVoiceState = process.env.DISPLAY_VOICE_STATE === 'true' ?? client.config.displayVoiceState;
+        client.config.port = Number(process.env.PORT) ?? client.config.port;
+
+        // console.log('setEnvironment: ', client.config);
+        resolve();
+    });
+};
+
 const loadEvents = () => {
     console.log(`-> loading Events ......`);
     return new Promise<void>(async (resolve, reject) => {
@@ -94,6 +111,7 @@ const loadCommands = () => {
 
 
 Promise.resolve()
+    .then(() => setEnvironment())
     .then(() => loadEvents())
     .then(() => loadCommands())
     .then(() => {
