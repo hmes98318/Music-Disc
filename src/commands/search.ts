@@ -102,6 +102,7 @@ export const execute = async (client: Client, message: Message, args: string[]) 
                     return message.reply({ content: `❌ | I can't play this track.`, allowedMentions: { repliedUser: false } });
                 });
 
+            player.filters.setVolume(client.config.defaultVolume);
             i.deferUpdate();
             await msg.edit({ content: "✅ | Music added.", components: [], allowedMentions: { repliedUser: false } });
         });
@@ -186,6 +187,7 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
                     return interaction.editReply({ content: `❌ | I can't play this track.`, allowedMentions: { repliedUser: false } });
                 });
 
+            player.filters.setVolume(client.config.defaultVolume);
             i.deferUpdate();
             await msg.edit({ content: "✅ | Music added.", components: [], allowedMentions: { repliedUser: false } });
         });

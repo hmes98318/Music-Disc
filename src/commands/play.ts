@@ -72,6 +72,7 @@ export const execute = async (client: Client, message: Message, args: string[]) 
             return message.reply({ content: `❌ | I can't play this track.`, allowedMentions: { repliedUser: false } });
         });
 
+    player.filters.setVolume(client.config.defaultVolume);
     return message.react('👍');
 }
 
@@ -128,4 +129,6 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
             console.log(error);
             return interaction.editReply({ content: `❌ | I can't play this track.`, allowedMentions: { repliedUser: false } });
         });
+
+    return player.filters.setVolume(client.config.defaultVolume);
 }
