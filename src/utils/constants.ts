@@ -7,6 +7,7 @@ export const cst = {
         name                : 'Music Disc',
         prefix              : '+',
         playing             : '+help | music',
+        embedsColor         : '#FFFFFF',
         defaultVolume       : 50,
         maxVolume           : 100,
         autoLeave           : true,
