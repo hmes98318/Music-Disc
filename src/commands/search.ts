@@ -70,6 +70,28 @@ export const execute = async (client: Client, message: Message, args: string[]) 
             player.queue.add(track);
         }
 
+        if (!player.playing) await player.play()
+            .catch((error: any) => {
+                console.log(error);
+                return message.reply({ content: `❌ | I can't play this track.`, allowedMentions: { repliedUser: false } });
+            });
+
+        player.filters.setVolume(client.config.defaultVolume);
+        return message.reply({ content: "✅ | Music added.", allowedMentions: { repliedUser: false } });
+    }
+    else if (res.tracks.length === 1) {
+        const track = res.tracks[0];
+        track.setRequester(client.user);
+
+        player.queue.add(track);
+
+        if (!player.playing) await player.play()
+            .catch((error: any) => {
+                console.log(error);
+                return message.reply({ content: `❌ | I can't play this track.`, allowedMentions: { repliedUser: false } });
+            });
+
+        player.filters.setVolume(client.config.defaultVolume);
         return message.reply({ content: "✅ | Music added.", allowedMentions: { repliedUser: false } });
     }
     else {
@@ -155,6 +177,28 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
             player.queue.add(track);
         }
 
+        if (!player.playing) await player.play()
+            .catch((error: any) => {
+                console.log(error);
+                return interaction.reply({ content: `❌ | I can't play this track.`, allowedMentions: { repliedUser: false } });
+            });
+
+        player.filters.setVolume(client.config.defaultVolume);
+        return interaction.editReply({ content: "✅ | Music added.", allowedMentions: { repliedUser: false } });
+    }
+    else if (res.tracks.length === 1) {
+        const track = res.tracks[0];
+        track.setRequester(client.user);
+
+        player.queue.add(track);
+
+        if (!player.playing) await player.play()
+            .catch((error: any) => {
+                console.log(error);
+                return interaction.reply({ content: `❌ | I can't play this track.`, allowedMentions: { repliedUser: false } });
+            });
+
+        player.filters.setVolume(client.config.defaultVolume);
         return interaction.editReply({ content: "✅ | Music added.", allowedMentions: { repliedUser: false } });
     }
     else {
