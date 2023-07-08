@@ -3,6 +3,7 @@ import { queue } from "./queue";
 import { removeList, removeTrack } from "./remove";
 import { help } from "./help";
 import { server } from "./server";
+import { save } from "./save";
 
 
 const embeds = {
@@ -11,7 +12,8 @@ const embeds = {
     removeList,
     removeTrack,
     help,
-    server
+    server,
+    save
 }
 
 export { embeds };
