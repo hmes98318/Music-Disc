@@ -7,6 +7,7 @@ export const description = 'Skip currnet track';
 export const usage = 'skip';
 export const voiceChannel = true;
 export const showHelp = true;
+export const sendTyping = false;
 export const options = [];
 
 

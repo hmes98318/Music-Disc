@@ -8,6 +8,7 @@ export const description = 'Show currnet playlist';
 export const usage = 'queue';
 export const voiceChannel = true;
 export const showHelp = true;
+export const sendTyping = true;
 export const options = [];
 
 

@@ -10,6 +10,7 @@ export const description = 'Show the bot status';
 export const usage = 'status';
 export const voiceChannel = false;
 export const showHelp = true;
+export const sendTyping = true;
 export const options = [];
 
 

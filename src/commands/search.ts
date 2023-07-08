@@ -17,6 +17,7 @@ export const description = 'Enter song name to search';
 export const usage = 'search <URL/song name>';
 export const voiceChannel = true;
 export const showHelp = true;
+export const sendTyping = true;
 export const options = [
     {
         name: "search",

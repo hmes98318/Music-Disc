@@ -7,6 +7,7 @@ export const description = 'Shuffle Playlist';
 export const usage = 'shuffle';
 export const voiceChannel = true;
 export const showHelp = true;
+export const sendTyping = false;
 export const options = [];
 
 

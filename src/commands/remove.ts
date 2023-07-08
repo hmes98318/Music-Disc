@@ -8,6 +8,7 @@ export const description = 'Select a song to remove from the playlist';
 export const usage = 'remove <track index number> [from index to index 2 track]';
 export const voiceChannel = true;
 export const showHelp = true;
+export const sendTyping = true;
 export const options = [
     {
         name: "index",

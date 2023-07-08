@@ -7,6 +7,7 @@ export const description = 'Leave current voice channel';
 export const usage = 'leave';
 export const voiceChannel = true;
 export const showHelp = true;
+export const sendTyping = false;
 export const options = [];
 
 

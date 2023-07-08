@@ -17,6 +17,7 @@ export const description = 'Get commands help';
 export const usage = 'help [command]';
 export const voiceChannel = false;
 export const showHelp = true;
+export const sendTyping = true;
 export const options = [
     {
         name: "command",

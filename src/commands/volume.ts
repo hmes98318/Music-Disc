@@ -7,6 +7,7 @@ export const description = 'Configure bot volume';
 export const usage = 'v <0-100>';
 export const voiceChannel = true;
 export const showHelp = true;
+export const sendTyping = true;
 export const options = [
     {
         name: "volume",

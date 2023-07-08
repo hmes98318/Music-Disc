@@ -6,6 +6,7 @@ export const description = 'Enter your song link or song name to play';
 export const usage = 'play <URL/song name>';
 export const voiceChannel = true;
 export const showHelp = true;
+export const sendTyping = true;
 export const options = [
     {
         name: "play",

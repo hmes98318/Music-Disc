@@ -23,7 +23,8 @@ export default async (client: Client, message: Message) => {
 
     if (cmd) {
         console.log(`(${cst.color.grey}${message.guild?.name}${cst.color.white}) ${message.author.username} : ${message.content}`);
-        message.channel.sendTyping();
+
+        if (cmd.sendTyping) message.channel.sendTyping();
         cmd.execute(client, message, args);
     }
 };

@@ -7,6 +7,7 @@ export const description = 'Pause current track';
 export const usage = 'pause';
 export const voiceChannel = true;
 export const showHelp = true;
+export const sendTyping = false;
 export const options = [];
 
 

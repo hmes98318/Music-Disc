@@ -7,6 +7,7 @@ export const description = 'Resume paused track';
 export const usage = 'resume';
 export const voiceChannel = true;
 export const showHelp = true;
+export const sendTyping = false;
 export const options = [];
 
 
