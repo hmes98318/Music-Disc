@@ -17,7 +17,8 @@ const status = (config: Config, info: Info, systemStatus: SystemStatus) => {
             { name: `📊 USAGE`, value: `CPU : **${cpuUsage}**\nRam : **${ramUsage}**\nHeap : **${heapUsage}**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━`, inline: false },
             { name: `🛰️ LATENCY`, value: `Bot : **${systemStatus.ping.bot}**\nAPI : **${systemStatus.ping.api}ms**`, inline: false }
         )
-        .setTimestamp()
+        .setTimestamp();
+
     return embed_;
 }
 
