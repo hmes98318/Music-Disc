@@ -9,6 +9,7 @@ import { cst } from "./utils/constants";
 import nodeList from "../node-list.json";
 
 import { Config, Info } from "./@types";
+import { EventListeners } from 'lavashark/typings/src/@types';
 
 
 dotenv.config();
@@ -66,13 +67,15 @@ const setEnvironment = (): Promise<void> => {
 const loadEvents = () => {
     console.log(`-> loading Events ......`);
     return new Promise<void>(async (resolve, reject) => {
-        const events = fs.readdirSync(`${__dirname}/events/`);
+        const events = fs.readdirSync(`${__dirname}/events/discord/`);
 
         console.log(`+--------------------------------+`);
         for (const file of events) {
             try {
-                const event = await import(`${__dirname}/events/${file}`);
-                client.on(file.split('.')[0], event.default.bind(null, client));
+                const event = await import(`${__dirname}/events/discord/${file}`);
+                const eventName = file.split('.')[0];
+
+                client.on(eventName, event.default.bind(null, client));
                 console.log(`| Loaded event ${file.split('.')[0].padEnd(17, ' ')} |`);
             }
             catch (error) {

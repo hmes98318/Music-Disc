@@ -1,5 +1,5 @@
 import { Client, Message, ChannelType } from "discord.js";
-import { cst } from "../utils/constants";
+import { cst } from "../../utils/constants";
 
 
 export default async (client: Client, message: Message) => {

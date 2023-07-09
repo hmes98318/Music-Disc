@@ -11,8 +11,9 @@ export default async (client: Client, oldState: VoiceState, newState: VoiceState
 
         // If the member who left the channel is not bot, check if the channel still has members
         if (!oldState.member?.user.bot) {
-            let player: any;
-            try { player = client.lavashark.getPlayer(oldState.guild.id); } catch (_) { return; }
+            const player = client.lavashark.getPlayer(oldState.guild.id);
+            if (!player) return;
+
             const botChannelId = player?.voiceChannelId;
             const oldChannelId = oldState.channel?.id;
 
@@ -37,8 +38,9 @@ export default async (client: Client, oldState: VoiceState, newState: VoiceState
 
         // If the member who left the channel is not bot, check if the channel still has members
         if (!oldState.member?.user.bot) {
-            let player: any;
-            try { player = client.lavashark.getPlayer(oldState.guild.id); } catch (_) { return; }
+            const player = client.lavashark.getPlayer(newState.guild.id);
+            if (!player) return;
+
             const botChannelId = player?.voiceChannelId;
             const newChannelId = newState.channel?.id;
 
@@ -65,8 +67,9 @@ export default async (client: Client, oldState: VoiceState, newState: VoiceState
 
         // If the member who left the channel is not bot, check if the channel still has members
         if (!oldState.member?.user.bot) {
-            let player: any;
-            try { player = client.lavashark.getPlayer(oldState.guild.id); } catch (_) { return; }
+            const player = client.lavashark.getPlayer(oldState.guild.id);
+            if (!player) return;
+
             const botChannelId = player?.voiceChannelId;
             const oldChannelId = oldState.channel?.id;
             const newChannelId = newState.channel?.id;

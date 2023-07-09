@@ -3,9 +3,9 @@ import os from 'os';
 import { Client, version as dcVersion } from 'discord.js';
 import { VERSION as sharkVersion } from 'lavashark';
 
-import { version as botVersion } from '../../package.json';
-import { getOSVersion } from '../utils/functions/getOSVersion';
-import { cst } from '../utils/constants';
+import { version as botVersion } from '../../../package.json';
+import { getOSVersion } from '../../utils/functions/getOSVersion';
+import { cst } from '../../utils/constants';
 
 
 module.exports = async (client: Client) => {

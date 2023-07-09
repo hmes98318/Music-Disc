@@ -1,6 +1,6 @@
 import { Client, Interaction } from "discord.js";
-import { cst } from "../utils/constants";
-import { embeds } from "../embeds";
+import { cst } from "../../utils/constants";
+import { embeds } from "../../embeds";
 
 
 export default async (client: Client, interaction: Interaction) => {
