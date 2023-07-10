@@ -18,7 +18,13 @@ export const execute = async (client: Client, message: Message) => {
         return message.reply({ content: '❌ | There is no music currently playing.', allowedMentions: { repliedUser: false } });
     }
 
-    await player.destroy();
+    if (client.config.autoLeave) {
+        await player.destroy();
+    }
+    else {
+        player.queue.clear();
+        await player.skip();
+    }
 
     return await message.react('👍');
 }
@@ -30,7 +36,13 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
         return interaction.editReply({ content: '❌ | There is no music currently playing.', allowedMentions: { repliedUser: false } });
     }
 
-    await player.destroy();
+    if (client.config.autoLeave) {
+        await player.destroy();
+    }
+    else {
+        player.queue.clear();
+        await player.skip();
+    }
 
     return await interaction.editReply('✅ | Bot leave.');
 }
