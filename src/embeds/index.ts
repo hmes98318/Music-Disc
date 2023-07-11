@@ -4,6 +4,7 @@ import { removeList, removeTrack } from "./remove";
 import { help } from "./help";
 import { server } from "./server";
 import { save } from "./save";
+import { connected, disconnect, dashboard } from "./dashboard";
 
 
 const embeds = {
@@ -13,7 +14,10 @@ const embeds = {
     removeTrack,
     help,
     server,
-    save
+    save,
+    connected,
+    disconnect,
+    dashboard
 }
 
 export { embeds };

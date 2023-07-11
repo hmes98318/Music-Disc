@@ -1,4 +1,8 @@
 import { ChatInputCommandInteraction, Client, Message } from "discord.js";
+import { Player } from "lavashark";
+
+import { dashboard } from "../dashboard";
+
 
 export const name = 'play';
 export const aliases = ['p'];
@@ -33,7 +37,7 @@ export const execute = async (client: Client, message: Message, args: string[]) 
         return message.reply({ content: `❌ | No matches.`, allowedMentions: { repliedUser: false } });
     }
 
-    let player;
+    let player: Player;
     try {
         // Creates the audio player
         player = client.lavashark.createPlayer({
@@ -45,6 +49,9 @@ export const execute = async (client: Client, message: Message, args: string[]) 
 
         // Connects to the voice channel
         player.connect();
+
+        // Intial dashboard
+        if (!player.dashboard) await dashboard.initial(client, message, player);
     } catch (error) {
         console.log(error);
         return message.reply({ content: `❌ | I can't join voice channel.`, allowedMentions: { repliedUser: false } });
@@ -53,7 +60,7 @@ export const execute = async (client: Client, message: Message, args: string[]) 
 
     if (res.loadType === 'PLAYLIST_LOADED') {
         for (const track of res.tracks) {
-            track.setRequester(client.user);
+            track.setRequester(message.author);
             player.queue.add(track);
         }
 
@@ -61,7 +68,7 @@ export const execute = async (client: Client, message: Message, args: string[]) 
     }
     else {
         const track = res.tracks[0];
-        track.setRequester(client.user);
+        track.setRequester(message.author);
 
         player.queue.add(track);
         message.reply(`Queued \`${track.title}\``);
@@ -89,7 +96,7 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
         return interaction.editReply({ content: `❌ | No matches.`, allowedMentions: { repliedUser: false } });
     }
 
-    let player;
+    let player: Player;
     try {
         const guildMember = interaction.guild!.members.cache.get(interaction.user.id);
         const { channel } = guildMember!.voice;
@@ -103,6 +110,9 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
 
         // Connects to the voice channel
         player.connect();
+
+        // Intial dashboard
+        if (!player.dashboard) await dashboard.initial(client, interaction, player);
     } catch (error) {
         console.log(error);
         return interaction.editReply({ content: `❌ | I can't join voice channel.`, allowedMentions: { repliedUser: false } });
@@ -111,7 +121,7 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
 
     if (res.loadType === 'PLAYLIST_LOADED') {
         for (const track of res.tracks) {
-            track.setRequester(client.user);
+            track.setRequester(interaction.user);
             player.queue.add(track);
         }
 
@@ -119,7 +129,7 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
     }
     else {
         const track = res.tracks[0];
-        track.setRequester(client.user);
+        track.setRequester(interaction.user);
 
         player.queue.add(track);
         interaction.editReply(`Queued \`${track.title}\``);

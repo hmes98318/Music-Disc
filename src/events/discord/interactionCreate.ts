@@ -1,6 +1,17 @@
-import { Client, Interaction } from "discord.js";
+import {
+    ActionRowBuilder,
+    ButtonBuilder,
+    ButtonStyle,
+    Client,
+    Interaction,
+    StringSelectMenuBuilder,
+    StringSelectMenuInteraction
+} from "discord.js";
+import { RepeatMode } from "lavashark";
+
 import { cst } from "../../utils/constants";
 import { embeds } from "../../embeds";
+import { dashboard } from "../../dashboard";
 
 
 export default async (client: Client, interaction: Interaction) => {
@@ -38,10 +49,125 @@ export default async (client: Client, interaction: Interaction) => {
 
                 break;
             }
+
+            case 'Dashboard-PlayPause': {
+                const playing = !(player.paused);
+
+                if (playing) {
+                    player.pause();
+                }
+                else {
+                    player.resume();
+                }
+
+                const playPauseButton = new ButtonBuilder().setCustomId('Dashboard-PlayPause').setEmoji(playing ? cst.button.play : cst.button.pause).setStyle(playing ? ButtonStyle.Success : ButtonStyle.Secondary);
+                const skipButton = new ButtonBuilder().setCustomId('Dashboard-Skip').setEmoji(cst.button.skip).setStyle(ButtonStyle.Secondary);
+                const stopButton = new ButtonBuilder().setCustomId('Dashboard-Stop').setEmoji(cst.button.stop).setStyle(ButtonStyle.Danger);
+                const loopButton = new ButtonBuilder().setCustomId('Dashboard-Loop').setEmoji(cst.button.loop).setStyle(ButtonStyle.Secondary);
+                const shuffleButton = new ButtonBuilder().setCustomId('Dashboard-Shuffle').setEmoji(cst.button.shuffle).setStyle(ButtonStyle.Secondary);
+                const row = new ActionRowBuilder<ButtonBuilder>().addComponents(playPauseButton, skipButton, stopButton, loopButton, shuffleButton);
+
+                await interaction.update({ components: [row] });
+                break;
+            }
+
+            case 'Dashboard-Skip': {
+                const playing = !(player.paused);
+                const repeatMode = player.queueRepeat ? RepeatMode.QUEUE : (player.trackRepeat ? RepeatMode.TRACK : RepeatMode.OFF);
+
+                if (repeatMode === RepeatMode.TRACK) {
+                    player.setRepeatMode(RepeatMode.OFF);
+                    await player.skip();
+                    player.setRepeatMode(RepeatMode.TRACK);
+                }
+                else {
+                    await player.skip();
+                }
+
+                const playPauseButton = new ButtonBuilder().setCustomId('Dashboard-PlayPause').setEmoji(playing ? cst.button.play : cst.button.pause).setStyle(playing ? ButtonStyle.Success : ButtonStyle.Secondary);
+                const skipButton = new ButtonBuilder().setCustomId('Dashboard-Skip').setEmoji(cst.button.skip).setStyle(ButtonStyle.Secondary);
+                const stopButton = new ButtonBuilder().setCustomId('Dashboard-Stop').setEmoji(cst.button.stop).setStyle(ButtonStyle.Danger);
+                const loopButton = new ButtonBuilder().setCustomId('Dashboard-Loop').setEmoji(cst.button.loop).setStyle(ButtonStyle.Secondary);
+                const shuffleButton = new ButtonBuilder().setCustomId('Dashboard-Shuffle').setEmoji(cst.button.shuffle).setStyle(ButtonStyle.Secondary);
+                const row = new ActionRowBuilder<ButtonBuilder>().addComponents(playPauseButton, skipButton, stopButton, loopButton, shuffleButton);
+
+                await interaction.update({ components: [row] });
+                break;
+            }
+
+            case 'Dashboard-Loop': {
+                let mode = 0;
+                const methods = ['Off', 'Single', 'All'];
+
+                const select = new StringSelectMenuBuilder()
+                    .setCustomId("Playing-Loop Select")
+                    .setPlaceholder("Select the loop mode")
+                    .setOptions(methods.map(x => {
+                        return {
+                            label: x,
+                            description: x,
+                            value: x
+                        }
+                    }));
+
+                const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(select);
+                let msg = await interaction.reply({ content: `Select a song loop mode.`, ephemeral: true, components: [row] });
+
+                const collector = msg.createMessageComponentCollector({
+                    time: 20000, // 20s
+                    filter: i => i.user.id === interaction.user.id
+                });
+
+                collector.on("collect", async (i: StringSelectMenuInteraction) => {
+                    if (i.customId != "Playing-Loop Select") return;
+
+                    switch (i.values[0]) {
+                        case 'off': {
+                            mode = 0;
+                            player.setRepeatMode(RepeatMode.OFF);
+                            break;
+                        }
+                        case 'one' || 'single': {
+                            mode = 1;
+                            player.setRepeatMode(RepeatMode.TRACK);
+                            break;
+                        }
+                        case 'all' || 'queue': {
+                            mode = 2;
+                            player.setRepeatMode(RepeatMode.QUEUE);
+                            break;
+                        }
+                    }
+                    await dashboard.update(client, player, player.current!);
+
+                    await i.deferUpdate();
+                    await interaction.reply({ content: `✅ | Set loop to \`${methods[mode]}\`.`, ephemeral: true, components: [] });
+                })
+                break;
+            }
+
+            case 'Dashboard-Stop': {
+                if (client.config.autoLeave) {
+                    await player.destroy();
+                }
+                else {
+                    player.queue.clear();
+                    await player.skip();
+                    await dashboard.destroy(client, player);
+                }
+
+                await interaction.reply({ content: '✅ | Bot leave.', ephemeral: true, components: [] });
+                break;
+            }
+
+            case 'Dashboard-Shuffle': {
+                player.queue.shuffle();
+
+                await interaction.reply({ content: '✅ | Music shuffled.', ephemeral: true, components: [] });
+                break;
+            }
         }
     }
-
-
     else {
         if (!interaction.isCommand() || !interaction.inGuild() || interaction.member.user.bot) return;
 

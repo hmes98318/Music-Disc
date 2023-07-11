@@ -15,10 +15,21 @@ export const cst = {
         displayVoiceState   : true,
         port                : 33333
     },
+    // Console color
     color: {
         white   : '\x1B[0m',
         grey    : '\x1B[2m',
         green   : '\x1B[32m',
         cyan    : '\x1B[36m'
+    },
+    // Dashboard button icon
+    button: {
+        play        : '<:w_play:1106270709644271656>',
+        pause       : '<:w_pause:1106270708243386428>',
+        skip        : '<:w_skip:1106270714664849448>',
+        back        : '<:w_back:1106270704049061928>',
+        stop        : '<:w_stop:1106272001909346386>',
+        loop        : '<:w_loop:1106270705575792681>',
+        shuffle     : '<:w_shuffle:1106270712542531624>',
     }
-}
+};

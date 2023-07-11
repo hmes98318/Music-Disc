@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 
 import * as dotenv from 'dotenv';
-import { Client, Collection, GatewayIntentBits } from 'discord.js';
+import { Client, Collection, GatewayIntentBits, Message } from 'discord.js';
 import { LavaShark } from "lavashark";
 import consoleStamp from 'console-stamp';
 
@@ -23,7 +23,12 @@ declare module 'discord.js' {
         config: Config,
         info: Info
     }
-}
+};
+declare module 'lavashark' {
+    export interface Player {
+        dashboard: Message<boolean> | null
+    }
+};
 
 
 
@@ -89,6 +94,31 @@ const loadEvents = () => {
     });
 }
 
+const loadLavaSharkEvents = () => {
+    console.log(`-> loading LavaShark Events ......`);
+    return new Promise<void>(async (resolve, reject) => {
+        const events = fs.readdirSync(`${__dirname}/events/lavashark/`);
+
+        console.log(`+--------------------------------+`);
+        for (const file of events) {
+            try {
+                const event = await import(`${__dirname}/events/lavashark/${file}`);
+                const eventName = file.split('.')[0] as keyof EventListeners<typeof client.lavashark>;
+
+                client.lavashark.on(eventName, event.default.bind(null, client));
+                console.log(`| Loaded event ${file.split('.')[0].padEnd(17, ' ')} |`);
+            }
+            catch (error) {
+                reject(error);
+            }
+        }
+        console.log(`+--------------------------------+`);
+        console.log(`${cst.color.grey}-- loading LavaShark Events finished --${cst.color.white}`);
+
+        resolve();
+    });
+}
+
 const loadCommands = () => {
     console.log(`-> loading Commands ......`);
     return new Promise<void>(async (resolve, reject) => {
@@ -116,6 +146,7 @@ const loadCommands = () => {
 Promise.resolve()
     .then(() => setEnvironment())
     .then(() => loadEvents())
+    .then(() => loadLavaSharkEvents())
     .then(() => loadCommands())
     .then(() => {
         console.log(`${cst.color.green}*** All loaded successfully ***${cst.color.white}`);
