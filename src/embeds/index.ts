@@ -1,23 +1,25 @@
-import { status } from "./status";
+import { connected, dashboard, disconnect } from "./dashboard";
+import { help } from "./help";
+import { ping } from "./ping";
 import { queue } from "./queue";
 import { removeList, removeTrack } from "./remove";
-import { help } from "./help";
-import { server } from "./server";
 import { save } from "./save";
-import { connected, disconnect, dashboard } from "./dashboard";
+import { server } from "./server";
+import { status } from "./status";
 
 
 const embeds = {
-    status,
+    connected,
+    dashboard,
+    disconnect,
+    help,
+    ping,
     queue,
     removeList,
     removeTrack,
-    help,
-    server,
     save,
-    connected,
-    disconnect,
-    dashboard
-}
+    server,
+    status,
+};
 
 export { embeds };
