@@ -60,7 +60,7 @@ export default async (client: Client, interaction: Interaction) => {
                     player.resume();
                 }
 
-                const playPauseButton = new ButtonBuilder().setCustomId('Dashboard-PlayPause').setEmoji(playing ? cst.button.play : cst.button.pause).setStyle(playing ? ButtonStyle.Success : ButtonStyle.Secondary);
+                const playPauseButton = new ButtonBuilder().setCustomId('Dashboard-PlayPause').setEmoji(!playing ? cst.button.pause : cst.button.play).setStyle(!playing ? ButtonStyle.Secondary : ButtonStyle.Success);
                 const skipButton = new ButtonBuilder().setCustomId('Dashboard-Skip').setEmoji(cst.button.skip).setStyle(ButtonStyle.Secondary);
                 const stopButton = new ButtonBuilder().setCustomId('Dashboard-Stop').setEmoji(cst.button.stop).setStyle(ButtonStyle.Danger);
                 const loopButton = new ButtonBuilder().setCustomId('Dashboard-Loop').setEmoji(cst.button.loop).setStyle(ButtonStyle.Secondary);
@@ -84,7 +84,7 @@ export default async (client: Client, interaction: Interaction) => {
                     await player.skip();
                 }
 
-                const playPauseButton = new ButtonBuilder().setCustomId('Dashboard-PlayPause').setEmoji(playing ? cst.button.play : cst.button.pause).setStyle(playing ? ButtonStyle.Success : ButtonStyle.Secondary);
+                const playPauseButton = new ButtonBuilder().setCustomId('Dashboard-PlayPause').setEmoji(playing ? cst.button.pause : cst.button.play).setStyle(playing ? ButtonStyle.Secondary : ButtonStyle.Success);
                 const skipButton = new ButtonBuilder().setCustomId('Dashboard-Skip').setEmoji(cst.button.skip).setStyle(ButtonStyle.Secondary);
                 const stopButton = new ButtonBuilder().setCustomId('Dashboard-Stop').setEmoji(cst.button.stop).setStyle(ButtonStyle.Danger);
                 const loopButton = new ButtonBuilder().setCustomId('Dashboard-Loop').setEmoji(cst.button.loop).setStyle(ButtonStyle.Secondary);
