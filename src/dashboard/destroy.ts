@@ -5,10 +5,14 @@ import { embeds } from "../embeds";
 
 
 async function destroy(client: Client, player: Player) {
-    await player.dashboard!.edit({
-        embeds: [embeds.disconnect(client.config.embedsColor)],
-        components: []
-    });
+    try {
+        await player.dashboard!.edit({
+            embeds: [embeds.disconnect(client.config.embedsColor)],
+            components: []
+        });
+    } catch (error) {
+        console.log('Dashboard error:', error);
+    }
 
     player.dashboard = null;
     return;
