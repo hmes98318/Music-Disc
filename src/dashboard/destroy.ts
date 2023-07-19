@@ -11,6 +11,7 @@ async function destroy(client: Client, player: Player) {
     });
 
     player.dashboard = null;
+    return;
 }
 
 export { destroy };

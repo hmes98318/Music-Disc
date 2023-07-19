@@ -10,7 +10,6 @@ export default async (client: Client, player: Player) => {
     if (client.config.autoLeave) {
         await player.destroy();
     }
-    else {
-        await dashboard.destroy(client, player);
-    }
+
+    await dashboard.destroy(client, player);
 };
