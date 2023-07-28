@@ -5,11 +5,9 @@ import { dashboard } from "../../dashboard";
 
 
 export default async (client: Client, player: Player) => {
-    console.log('// -------- queue end -------- //');
-
     if (client.config.autoLeave) {
         await player.destroy();
     }
 
-    await dashboard.destroy(client, player);
+    await dashboard.destroy(player, client.config.embedsColor);
 };

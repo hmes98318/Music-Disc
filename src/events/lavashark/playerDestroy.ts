@@ -5,7 +5,5 @@ import { dashboard } from "../../dashboard";
 
 
 export default async (client: Client, player: Player) => {
-    console.log('// -------- player Destroy -------- //');
-
-    await dashboard.destroy(client, player);
+    await dashboard.destroy(player, client.config.embedsColor);
 };
