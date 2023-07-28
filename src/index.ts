@@ -1,19 +1,21 @@
 import * as fs from 'fs';
 
 import * as dotenv from 'dotenv';
-import { Client, Collection, GatewayIntentBits, Message } from 'discord.js';
+import {
+    ChatInputCommandInteraction,
+    Client,
+    Collection,
+    GatewayIntentBits,
+    Message
+} from 'discord.js';
 import { LavaShark } from "lavashark";
 import consoleStamp from 'console-stamp';
 
 import { cst } from "./utils/constants";
 import nodeList from "../node-list.json";
 
-import { Config, Info } from "./@types";
-import { EventListeners } from 'lavashark/typings/src/@types';
-
-
-dotenv.config();
-consoleStamp(console, { format: ':date(yyyy/mm/dd HH:MM:ss)' });
+import type { Config, Info } from "./@types";
+import type { EventListeners } from 'lavashark/typings/src/@types';
 
 
 declare module 'discord.js' {
@@ -26,11 +28,14 @@ declare module 'discord.js' {
 };
 declare module 'lavashark' {
     export interface Player {
-        dashboard: Message<boolean> | null
+        dashboard: Message<boolean> | null,
+        metadata: Message<boolean> | ChatInputCommandInteraction | null
     }
 };
 
 
+dotenv.config();
+consoleStamp(console, { format: ':date(yyyy/mm/dd HH:MM:ss)' });
 
 
 let client = new Client({
@@ -52,7 +57,7 @@ client.config = cst.config;
 
 
 
-const setEnvironment = (): Promise<void> => {
+const setEnvironment = () => {
     return new Promise<void>((resolve, _reject) => {
         client.config.name = process.env.BOT_NAME ?? client.config.name;
         client.config.prefix = process.env.PREFIX ?? client.config.prefix;

@@ -49,6 +49,7 @@ export const execute = async (client: Client, message: Message, args: string[]) 
 
         // Connects to the voice channel
         await player.connect();
+        player.metadata = message;
 
         // Intial dashboard
         if (!player.dashboard) await dashboard.initial(client, message, player);
@@ -60,14 +61,10 @@ export const execute = async (client: Client, message: Message, args: string[]) 
 
     if (res.loadType === 'PLAYLIST_LOADED') {
         player.addTracks(res.tracks, message.author);
-
-        message.reply(`Playlist \`${res.playlistInfo.name}\` loaded!`);
     }
     else {
         const track = res.tracks[0];
         player.addTracks(track, message.author);
-
-        message.reply(`Queued \`${track.title}\``);
     }
 
     if (!player.playing) await player.play()
@@ -106,6 +103,7 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
 
         // Connects to the voice channel
         await player.connect();
+        player.metadata = interaction;
 
         // Intial dashboard
         if (!player.dashboard) await dashboard.initial(client, interaction, player);
@@ -116,15 +114,11 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
 
 
     if (res.loadType === 'PLAYLIST_LOADED') {
-            player.addTracks(res.tracks, interaction.user);
-
-        interaction.editReply(`Playlist \`${res.playlistInfo.name}\` loaded!`);
+        player.addTracks(res.tracks, interaction.user);
     }
     else {
         const track = res.tracks[0];
         player.addTracks(track, interaction.user);
-
-        interaction.editReply(`Queued \`${track.title}\``);
     }
 
     if (!player.playing) await player.play()
@@ -133,5 +127,6 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
             return interaction.editReply({ content: `❌ | I can't play this track.`, allowedMentions: { repliedUser: false } });
         });
 
-    return player.filters.setVolume(client.config.defaultVolume);
+    player.filters.setVolume(client.config.defaultVolume);
+    return interaction.editReply({ content: "✅ | Music added.", allowedMentions: { repliedUser: false } });
 }

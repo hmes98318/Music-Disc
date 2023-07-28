@@ -9,6 +9,7 @@ import {
     StringSelectMenuInteraction,
 } from "discord.js";
 import { Player } from "lavashark";
+import { dashboard } from "../dashboard";
 
 
 export const name = 'search';
@@ -56,6 +57,10 @@ export const execute = async (client: Client, message: Message, args: string[]) 
 
         // Connects to the voice channel
         await player.connect();
+        player.metadata = message;
+
+        // Intial dashboard
+        if (!player.dashboard) await dashboard.initial(client, message, player);
     } catch (error) {
         console.log(error);
         return message.reply({ content: `❌ | I can't join voice channel.`, allowedMentions: { repliedUser: false } });
@@ -112,7 +117,7 @@ export const execute = async (client: Client, message: Message, args: string[]) 
         collector.on("collect", async (i: StringSelectMenuInteraction) => {
             if (i.customId != "musicSelect") return;
 
-        player.addTracks(res.tracks.find(x => x.uri == i.values[0])!, message.author);
+            player.addTracks(res.tracks.find(x => x.uri == i.values[0])!, message.author);
 
             if (!player.playing) await player.play()
                 .catch((error: any) => {
@@ -160,6 +165,10 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
 
         // Connects to the voice channel
         await player.connect();
+        player.metadata = interaction;
+
+        // Intial dashboard
+        if (!player.dashboard) await dashboard.initial(client, interaction, player);
     } catch (error) {
         console.log(error);
         return interaction.editReply({ content: `❌ | I can't join voice channel.`, allowedMentions: { repliedUser: false } });
