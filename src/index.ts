@@ -14,8 +14,8 @@ import consoleStamp from 'console-stamp';
 import { cst } from "./utils/constants";
 import nodeList from "../node-list.json";
 
-import type { Config, Info } from "./@types";
 import type { Node } from "lavashark";
+import type { Config, Info } from "./@types";
 import type { EventListeners } from 'lavashark/typings/src/@types';
 
 
@@ -27,6 +27,7 @@ declare module 'discord.js' {
         info: Info
     }
 };
+
 declare module 'lavashark' {
     export interface Player {
         dashboard: Message<boolean> | null,
@@ -173,3 +174,10 @@ Promise.resolve()
         console.log(`${cst.color.green}*** All loaded successfully ***${cst.color.white}`);
         client.login(process.env.TOKEN);
     });
+
+
+
+
+process.on('unhandledRejection', (error) => {
+    console.error('Unhandled promise rejection:', error);
+});
