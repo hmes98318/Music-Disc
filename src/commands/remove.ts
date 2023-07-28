@@ -42,7 +42,7 @@ export const execute = async (client: Client, message: Message, args: string[]) 
 
     if (args.length === 1) { // +rm 1
         let index = parseInt(args[0]);
-        SUCCESS = player.queue.remove(index);
+        SUCCESS = player.queue.remove(index - 1);
 
         if (!SUCCESS) {
             return message.react('❌');
@@ -58,7 +58,7 @@ export const execute = async (client: Client, message: Message, args: string[]) 
     else if (args.length === 2) { // +rm 3 4
         let index1 = parseInt(args[0]),
             index2 = parseInt(args[1]);
-        SUCCESS = player.queue.remove(index1, index2);
+        SUCCESS = player.queue.remove(index1 - 1, index2 - index1 + 1);
 
         if (!SUCCESS) {
             return message.react('❌');
@@ -114,7 +114,7 @@ export const execute = async (client: Client, message: Message, args: string[]) 
             }
 
             await query.react('👍');
-            player.queue.remove(index);
+            player.queue.remove(index - 1);
 
             await query.reply({
                 embeds: [embeds.removeTrack(client.config.embedsColor, tracks[index - 1])],
@@ -150,7 +150,7 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
 
     if ((index1 === null && index2 !== null) || (index1 !== null && index2 === null)) { // +rm 1
         let index = index1 || index2;
-        SUCCESS = player.queue.remove(index!);
+        SUCCESS = player.queue.remove(index! - 1);
 
         if (!SUCCESS) {
             return interaction.editReply('❌ | Music remove failed.');
@@ -163,7 +163,7 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
         }
     }
     else if (index1 !== null && index2 !== null) { // +rm 3 4
-        SUCCESS = player.queue.remove(index1, index2);
+        SUCCESS = player.queue.remove(index1 - 1, index2 - index1 + 1);
 
         if (!SUCCESS) {
             return interaction.editReply('❌ | Music remove failed.');
@@ -217,7 +217,7 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
             }
 
             await query.react('👍');
-            player.queue.remove(index);
+            player.queue.remove(index - 1);
 
             await query.reply({
                 embeds: [embeds.removeTrack(client.config.embedsColor, tracks[index - 1])],
