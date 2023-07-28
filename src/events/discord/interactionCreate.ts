@@ -153,7 +153,7 @@ export default async (client: Client, interaction: Interaction) => {
                 else {
                     player.queue.clear();
                     await player.skip();
-                    await dashboard.destroy(client, player);
+                    await dashboard.destroy(player, client.config.embedsColor);
                 }
 
                 await interaction.reply({ content: '✅ | Bot leave.', ephemeral: true, components: [] });

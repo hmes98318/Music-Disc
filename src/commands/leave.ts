@@ -25,7 +25,7 @@ export const execute = async (client: Client, message: Message) => {
     else {
         player.queue.clear();
         await player.skip();
-        await dashboard.destroy(client, player);
+        await dashboard.destroy(player, client.config.embedsColor);
     }
 
     return message.react('👍');
@@ -44,7 +44,7 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
     else {
         player.queue.clear();
         await player.skip();
-        await dashboard.destroy(client, player);
+        await dashboard.destroy(player, client.config.embedsColor);
     }
 
     return interaction.editReply('✅ | Bot leave.');

@@ -4,10 +4,10 @@ import { Player } from "lavashark";
 import { embeds } from "../embeds";
 
 
-async function destroy(client: Client, player: Player) {
+async function destroy(player: Player, embedsColor: string | number) {
     try {
         await player.dashboard!.edit({
-            embeds: [embeds.disconnect(client.config.embedsColor)],
+            embeds: [embeds.disconnect(embedsColor)],
             components: []
         });
     } catch (error) {
