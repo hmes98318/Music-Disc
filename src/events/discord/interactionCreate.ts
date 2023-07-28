@@ -73,7 +73,7 @@ export default async (client: Client, interaction: Interaction) => {
 
             case 'Dashboard-Skip': {
                 const playing = !(player.paused);
-                const repeatMode = player.queueRepeat ? RepeatMode.QUEUE : (player.trackRepeat ? RepeatMode.TRACK : RepeatMode.OFF);
+                const repeatMode = player.repeatMode;
 
                 if (repeatMode === RepeatMode.TRACK) {
                     player.setRepeatMode(RepeatMode.OFF);

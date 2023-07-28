@@ -87,13 +87,14 @@ export const execute = async (client: Client, message: Message, args: string[]) 
             tracksQueue = tracks.join('\n');
         }
 
-        let repeatMode = player.queueRepeat ? 'All' : (player.trackRepeat ? 'One' : 'Off');
+        const methods = ['Off', 'Single', 'All'];
+        const repeatMode = player.repeatMode;
         const instruction = `Choose a song from **1** to **${tracks.length}** to **remove** or enter others to cancel selection. ⬇️`;
 
         await message.react('👍');
         await message.reply({
             content: instruction,
-            embeds: [embeds.removeList(client.config.embedsColor, nowplaying, tracksQueue, repeatMode)],
+            embeds: [embeds.removeList(client.config.embedsColor, nowplaying, tracksQueue, methods[repeatMode])],
             allowedMentions: { repliedUser: false }
         });
 
@@ -190,12 +191,13 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
             tracksQueue = tracks.join('\n');
         }
 
-        let repeatMode = player.queueRepeat ? 'All' : (player.trackRepeat ? 'One' : 'Off');
+        const methods = ['Off', 'Single', 'All'];
+        const repeatMode = player.repeatMode;
         const instruction = `Choose a song from **1** to **${tracks.length}** to **remove** or enter others to cancel selection. ⬇️`;
 
         await interaction.editReply({
             content: instruction,
-            embeds: [embeds.removeList(client.config.embedsColor, nowplaying, tracksQueue, repeatMode)],
+            embeds: [embeds.removeList(client.config.embedsColor, nowplaying, tracksQueue, methods[repeatMode])],
             allowedMentions: { repliedUser: false }
         });
 

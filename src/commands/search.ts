@@ -55,7 +55,7 @@ export const execute = async (client: Client, message: Message, args: string[]) 
         });
 
         // Connects to the voice channel
-        player.connect();
+        await player.connect();
     } catch (error) {
         console.log(error);
         return message.reply({ content: `❌ | I can't join voice channel.`, allowedMentions: { repliedUser: false } });
@@ -66,10 +66,7 @@ export const execute = async (client: Client, message: Message, args: string[]) 
 
 
     if (res.loadType === 'PLAYLIST_LOADED') {
-        for (const track of res.tracks) {
-            track.setRequester(client.user);
-            player.queue.add(track);
-        }
+        player.addTracks(res.tracks, message.author);
 
         if (!player.playing) await player.play()
             .catch((error: any) => {
@@ -82,9 +79,7 @@ export const execute = async (client: Client, message: Message, args: string[]) 
     }
     else if (res.tracks.length === 1) {
         const track = res.tracks[0];
-        track.setRequester(client.user);
-
-        player.queue.add(track);
+        player.addTracks(track, message.author);
 
         if (!player.playing) await player.play()
             .catch((error: any) => {
@@ -117,7 +112,7 @@ export const execute = async (client: Client, message: Message, args: string[]) 
         collector.on("collect", async (i: StringSelectMenuInteraction) => {
             if (i.customId != "musicSelect") return;
 
-            player.queue.add(res.tracks.find(x => x.uri == i.values[0])!);
+        player.addTracks(res.tracks.find(x => x.uri == i.values[0])!, message.author);
 
             if (!player.playing) await player.play()
                 .catch((error: any) => {
@@ -164,7 +159,7 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
         });
 
         // Connects to the voice channel
-        player.connect();
+        await player.connect();
     } catch (error) {
         console.log(error);
         return interaction.editReply({ content: `❌ | I can't join voice channel.`, allowedMentions: { repliedUser: false } });
@@ -173,10 +168,7 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
 
 
     if (res.loadType === 'PLAYLIST_LOADED') {
-        for (const track of res.tracks) {
-            track.setRequester(client.user);
-            player.queue.add(track);
-        }
+        player.addTracks(res.tracks, interaction.user);
 
         if (!player.playing) await player.play()
             .catch((error: any) => {
@@ -189,9 +181,7 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
     }
     else if (res.tracks.length === 1) {
         const track = res.tracks[0];
-        track.setRequester(client.user);
-
-        player.queue.add(track);
+        player.addTracks(track, interaction.user);
 
         if (!player.playing) await player.play()
             .catch((error: any) => {
@@ -224,7 +214,7 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
         collector.on("collect", async (i: StringSelectMenuInteraction) => {
             if (i.customId != "musicSelect") return;
 
-            player.queue.add(res.tracks.find(x => x.uri == i.values[0])!);
+            player.addTracks(res.tracks.find(x => x.uri == i.values[0])!, interaction.user);
 
             if (!player.playing) await player.play()
                 .catch((error: any) => {

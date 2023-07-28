@@ -48,7 +48,7 @@ export const execute = async (client: Client, message: Message, args: string[]) 
         });
 
         // Connects to the voice channel
-        player.connect();
+        await player.connect();
 
         // Intial dashboard
         if (!player.dashboard) await dashboard.initial(client, message, player);
@@ -59,18 +59,14 @@ export const execute = async (client: Client, message: Message, args: string[]) 
 
 
     if (res.loadType === 'PLAYLIST_LOADED') {
-        for (const track of res.tracks) {
-            track.setRequester(message.author);
-            player.queue.add(track);
-        }
+        player.addTracks(res.tracks, message.author);
 
         message.reply(`Playlist \`${res.playlistInfo.name}\` loaded!`);
     }
     else {
         const track = res.tracks[0];
-        track.setRequester(message.author);
+        player.addTracks(track, message.author);
 
-        player.queue.add(track);
         message.reply(`Queued \`${track.title}\``);
     }
 
@@ -109,7 +105,7 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
         });
 
         // Connects to the voice channel
-        player.connect();
+        await player.connect();
 
         // Intial dashboard
         if (!player.dashboard) await dashboard.initial(client, interaction, player);
@@ -120,18 +116,14 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
 
 
     if (res.loadType === 'PLAYLIST_LOADED') {
-        for (const track of res.tracks) {
-            track.setRequester(interaction.user);
-            player.queue.add(track);
-        }
+            player.addTracks(res.tracks, interaction.user);
 
         interaction.editReply(`Playlist \`${res.playlistInfo.name}\` loaded!`);
     }
     else {
         const track = res.tracks[0];
-        track.setRequester(interaction.user);
+        player.addTracks(track, interaction.user);
 
-        player.queue.add(track);
         interaction.editReply(`Queued \`${track.title}\``);
     }
 

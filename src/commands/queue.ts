@@ -34,10 +34,11 @@ export const execute = async (client: Client, message: Message) => {
         tracksQueue = tracks.join('\n');
     }
 
-    let repeatMode = player.queueRepeat ? 'All' : (player.trackRepeat ? 'One' : 'Off');
+    const methods = ['Off', 'Single', 'All'];
+    const repeatMode = player.repeatMode;
 
     return message.reply({
-        embeds: [embeds.queue(client.config.embedsColor, nowplaying, tracksQueue, repeatMode)],
+        embeds: [embeds.queue(client.config.embedsColor, nowplaying, tracksQueue, methods[repeatMode])],
         allowedMentions: { repliedUser: false }
     });
 }
@@ -64,10 +65,11 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
         tracksQueue = tracks.join('\n');
     }
 
-    let repeatMode = player.queueRepeat ? 'All' : (player.trackRepeat ? 'One' : 'Off');
+    const methods = ['Off', 'Single', 'All'];
+    const repeatMode = player.repeatMode;
 
     return interaction.editReply({
-        embeds: [embeds.queue(client.config.embedsColor, nowplaying, tracksQueue, repeatMode)],
+        embeds: [embeds.queue(client.config.embedsColor, nowplaying, tracksQueue, methods[repeatMode])],
         allowedMentions: { repliedUser: false }
     });
 }
