@@ -20,7 +20,8 @@ export const cst = {
         white   : '\x1B[0m',
         grey    : '\x1B[2m',
         green   : '\x1B[32m',
-        cyan    : '\x1B[36m'
+        cyan    : '\x1B[36m',
+        red     : '\x1B[31m'
     },
     // Dashboard button icon
     button: {

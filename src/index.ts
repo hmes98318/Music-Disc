@@ -15,6 +15,7 @@ import { cst } from "./utils/constants";
 import nodeList from "../node-list.json";
 
 import type { Config, Info } from "./@types";
+import type { Node } from "lavashark";
 import type { EventListeners } from 'lavashark/typings/src/@types';
 
 
@@ -129,30 +130,45 @@ const loadCommands = () => {
     return new Promise<void>(async (resolve, reject) => {
         const jsFiles = fs.readdirSync(`${__dirname}/commands/`);
 
-        console.log(`+---------------------------+`);
+        console.log(`+--------------------------------+`);
         for (const file of jsFiles) {
             try {
                 const command = await import(`${__dirname}/commands/${file}`);
                 client.commands.set(command.name.toLowerCase(), command);
-                console.log(`| Loaded Command ${command.name.toLowerCase().padEnd(10, ' ')} |`);
+                console.log(`| Loaded Command ${command.name.toLowerCase().padEnd(15, ' ')} |`);
             }
             catch (error) {
                 reject(error);
             }
         }
-        console.log(`+---------------------------+`);
+        console.log(`+--------------------------------+`);
         console.log(`${cst.color.grey}-- loading Commands finished --${cst.color.white}`);
 
         resolve();
     });
 }
 
+const checkNodesStats = async (nodes: Node[]) => {
+    console.log(`-> Checking stats for all nodes ......`);
+    console.log(`+--------------------------------+`);
+    for (const node of nodes) {
+        try {
+            await node.getStats();
+            console.log(`| ${node.identifier}: ${cst.color.green}CONNECTED${cst.color.white}`.padEnd(42, ' ') + '|');
+        } catch (_) {
+            console.log(`| ${node.identifier}: ${cst.color.red}DISCONNECTED${cst.color.white}`.padEnd(42, ' ') + '|');
+        }
+    }
+    console.log(`+--------------------------------+`);
+    console.log(`${cst.color.grey}-- All node stats have been checked --${cst.color.white}`);
+};
 
 Promise.resolve()
     .then(() => setEnvironment())
     .then(() => loadEvents())
     .then(() => loadLavaSharkEvents())
     .then(() => loadCommands())
+    .then(() => checkNodesStats(client.lavashark.nodes))
     .then(() => {
         console.log(`${cst.color.green}*** All loaded successfully ***${cst.color.white}`);
         client.login(process.env.TOKEN);
