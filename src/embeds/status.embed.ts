@@ -25,7 +25,7 @@ const botStatus = (config: Config, info: Info, systemStatus: SystemStatus) => {
 const nodesStatus = (embedsColor: HexColorString | string | number, nodeHealth: string, nodesStatus: { name: string; value: string; }[]) => {
     const embed_ = new EmbedBuilder()
         .setColor(embedsColor as HexColorString | number)
-        .setTitle(`🛰️ Active Nodes`)
+        .setTitle(`🛰️ Nodes Status`)
         .setDescription(`**${nodeHealth}**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━`)
         .addFields(nodesStatus)
         .setTimestamp();
