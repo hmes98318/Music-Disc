@@ -2,7 +2,7 @@ import { EmbedBuilder, HexColorString } from "discord.js";
 import { Config, Info, SystemStatus } from "../@types";
 
 
-const status = (config: Config, info: Info, systemStatus: SystemStatus) => {
+const botStatus = (config: Config, info: Info, systemStatus: SystemStatus) => {
     const cpuUsage = `${systemStatus.load.percent}  \`${systemStatus.load.detail}\``;
     const ramUsage = `${systemStatus.memory.percent}  \`${systemStatus.memory.detail}\``;
     const heapUsage = `${systemStatus.heap.percent}  \`${systemStatus.heap.detail}\``;
@@ -22,4 +22,15 @@ const status = (config: Config, info: Info, systemStatus: SystemStatus) => {
     return embed_;
 }
 
-export { status };
+const nodesStatus = (embedsColor: HexColorString | string | number, nodeHealth: string, nodesStatus: { name: string; value: string; }[]) => {
+    const embed_ = new EmbedBuilder()
+        .setColor(embedsColor as HexColorString | number)
+        .setTitle(`🛰️ Active Nodes`)
+        .setDescription(`**${nodeHealth}**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━`)
+        .addFields(nodesStatus)
+        .setTimestamp();
+
+    return embed_;
+}
+
+export { botStatus, nodesStatus };

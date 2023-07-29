@@ -28,7 +28,7 @@ export const execute = async (client: Client, message: Message) => {
     }
 
     return message.reply({
-        embeds: [embeds.status(client.config, client.info, systemStatus)],
+        embeds: [embeds.botStatus(client.config, client.info, systemStatus)],
         allowedMentions: { repliedUser: false }
     });
 }
@@ -47,7 +47,7 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
     }
 
     return interaction.editReply({
-        embeds: [embeds.status(client.config, client.info, systemStatus)],
+        embeds: [embeds.botStatus(client.config, client.info, systemStatus)],
         allowedMentions: { repliedUser: false }
     });
 }
