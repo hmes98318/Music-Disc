@@ -17,29 +17,5 @@ services:
     volumes:
       - ./node-list.json:/bot/node-list.json
       - ./blacklist.json:/bot/blacklist.json
-    networks:
-      - lavalink
     ports:
       - 33333:33333
-
-  lavalink:
-    image: ghcr.io/lavalink-devs/lavalink:3
-    container_name: lavalink_v3
-    restart: unless-stopped
-    environment:
-      - _JAVA_OPTIONS=-Xmx6G
-      - SERVER_PORT=2333
-      - LAVALINK_SERVER_PASSWORD=youshallnotpass
-    volumes:
-      - ./application.yml:/opt/Lavalink/application.yml
-      - ./plugins/:/opt/Lavalink/plugins/
-    networks:
-      - lavalink
-    expose:
-      - 2333
-    ports:
-      - 2333:2333
-
-networks:
-  lavalink:
-    name: lavalink
