@@ -13,6 +13,7 @@ If you need the version of [**discord-player**](https://github.com/Androz2091/di
 
 Supports **YouTube**, **Spotify**, **SoundCloud** streams.  
 
+If you encounter any issues or would like to contribute to the community, please join our [Discord server](https://discord.gg/7rQEx7SPGr).  
 
 ## Deploying with node.js
 
