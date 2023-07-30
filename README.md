@@ -74,6 +74,59 @@ npm run start
 ```
 
 
+## Deploying with Docker
+**image link** : https://hub.docker.com/r/hmes98318/music-disc  
 
+If you don't have any available nodes, you need to first start the server container using [Docker Compose](server/docker-compose.yml) in the server directory.  
 
+### Start with Docker
+Use the following command to start the container:  
+Please put your **token** into the `TOKEN` variable.  
+```
+docker run -d \
+  --name music-disc \
+  -e TOKEN="your_token" \
+  -e PREFIX="+" \
+  -e PLAYING="+help | music" \
+  -e EMBEDS_COLOR="#FFFFFF" \
+  -e DEFAULT_VOLUME=50 \
+  -e MAX_VOLUME=100 \
+  -e AUTO_LEAVE="true" \
+  -e AUTO_LEAVE_COOLDOWN=5000 \
+  -e DISPLAY_VOICE_STATE="true" \
+  -v ./node-list.json:/bot/node-list.json \
+  -v ./blacklist.json:/bot/blacklist.json \
+  -p 33333:33333 \
+  hmes98318/music-disc:2.0.0
+```
 
+### Start with Docker-Compose
+Please put your **token** into the `TOKEN` variable.  
+```yml
+version: '3.8'
+services:
+  music-disc:
+    image: hmes98318/music-disc:2.0.0
+    container_name: music-disc
+    restart: always
+    environment:
+      TOKEN: "your_token"
+      PREFIX: "+"
+      PLAYING: "+help | music"
+      EMBEDS_COLOR: "#FFFFFF"
+      DEFAULT_VOLUME: 50
+      MAX_VOLUME: 100
+      AUTO_LEAVE: "true"
+      AUTO_LEAVE_COOLDOWN: 5000
+      DISPLAY_VOICE_STATE: "true"
+    volumes:
+      - ./node-list.json:/bot/node-list.json
+      - ./blacklist.json:/bot/blacklist.json
+    ports:
+      - 33333:33333
+```
+
+#### Start the container  
+```
+docker-compose up -d
+```
