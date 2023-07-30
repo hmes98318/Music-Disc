@@ -11,6 +11,8 @@
 This is a music bot developed based on [**LavaShark**](https://lavashark.js.org/).  
 If you need the version of [**discord-player**](https://github.com/Androz2091/discord-player), please refer to this [**branch**](https://github.com/hmes98318/Music-Disc/tree/discord-player).  
 
+Supports **YouTube**, **Spotify**, **SoundCloud** streams.  
+
 
 ## Deploying with node.js
 
