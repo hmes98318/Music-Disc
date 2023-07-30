@@ -5,7 +5,7 @@ import { dashboard } from "../../dashboard";
 
 
 export default async (client: Client, player: Player/*, track: Track*/) => {
-    console.log('// -------- track start -------- //');
+    // console.log('// -------- track start -------- //');
 
     const track = player.current; //--------------------------
     await dashboard.update(client, player, track!);
