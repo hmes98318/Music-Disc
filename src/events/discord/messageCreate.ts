@@ -6,6 +6,7 @@ export default async (client: Client, message: Message) => {
     const prefix = client.config.prefix;
 
     if (message.author.bot || message.channel.type !== ChannelType.GuildText) return;
+    if (client.config.blacklist && client.config.blacklist.includes(message.author.id)) return;
     if (message.content.indexOf(prefix) !== 0) return;
 
 

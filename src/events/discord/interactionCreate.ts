@@ -15,6 +15,8 @@ import { dashboard } from "../../dashboard";
 
 
 export default async (client: Client, interaction: Interaction) => {
+    if (client.config.blacklist && client.config.blacklist.includes(interaction.user.id)) return;
+
     const guildMember = interaction.guild!.members.cache.get(interaction.user.id);
     const voiceChannel = guildMember!.voice.channel;
 

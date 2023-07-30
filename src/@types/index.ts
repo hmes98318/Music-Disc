@@ -12,6 +12,7 @@ export interface Config {
     autoLeaveCooldown: number;
     displayVoiceState: boolean;
     port: number;
+    blacklist: string[];
 }
 
 export interface Info {

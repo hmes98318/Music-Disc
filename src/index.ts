@@ -170,6 +170,23 @@ const checkNodesStats = async (nodes: Node[]) => {
     console.log(`${cst.color.grey}-- All node stats have been checked --${cst.color.white}`);
 };
 
+const loadBlacklist = async () => {
+    try {
+        const jsonString = fs.readFileSync('blacklist.json', 'utf-8');
+        const blacklistArray = JSON.parse(jsonString);
+
+        if (Array.isArray(blacklistArray) && blacklistArray.length > 0) {
+            client.config.blacklist = blacklistArray;
+            console.log('Blacklist loaded:', client.config.blacklist.length, 'users');
+        }
+        else {
+            console.log('No blacklist entries found.');
+        }
+    } catch (error) {
+        console.error('Error loading blacklist:', error);
+    }
+}
+
 
 Promise.resolve()
     .then(() => setEnvironment())
@@ -177,6 +194,7 @@ Promise.resolve()
     .then(() => loadLavaSharkEvents())
     .then(() => loadCommands())
     .then(() => checkNodesStats(client.lavashark.nodes))
+    .then(() => loadBlacklist())
     .then(() => {
         console.log(`${cst.color.green}*** All loaded successfully ***${cst.color.white}`);
         client.login(process.env.TOKEN);

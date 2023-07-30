@@ -13,7 +13,8 @@ export const cst = {
         autoLeave           : true,
         autoLeaveCooldown   : 5000,
         displayVoiceState   : true,
-        port                : 33333
+        port                : 33333,
+        blacklist           : []    // It must be the user ID
     },
     // Console color
     color: {
