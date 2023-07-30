@@ -8,31 +8,43 @@
 <a href="https://github.com/hmes98318/Music-Disc/blob/main/LICENSE"><img alt="GitHub" src="https://img.shields.io/github/license/hmes98318/Music-Disc?style=for-the-badge&color=brightgreen"></a>  
 
 ### Discord.js v14 Music Bot  
-Supports **YouTube**, **Spotify**, **SoundCloud** streams.
-
-
-### Reference version  
-[**node.js  `v18.16.0`**](https://nodejs.org/en/)  
-[**discord.js  `v14.11.0`**](https://www.npmjs.com/package/discord.js)  
+This is a music bot developed based on [**LavaShark**](https://lavashark.js.org/).  
+If you need the version of [**discord-player**](https://github.com/Androz2091/discord-player), please refer to this [**branch**](https://github.com/hmes98318/Music-Disc/tree/discord-player).  
 
 
 ## Deploying with node.js
 
 ### Clone the latest version of the repository
 ```
-git clone -b v1.4.2 https://github.com/hmes98318/Music-Disc.git
+git clone -b v2.0.0 https://github.com/hmes98318/Music-Disc.git
 ```
 or [**click here**](https://github.com/hmes98318/Music-Disc/releases) to download  
 
 
 ### Install the dependencies
-install all the dependencies from [`package.json`](./package.json)  
+install all the dependencies from [**package.json**](./package.json)  
 ```
 npm install
 ```
 
+
+### Add Lavalink node
+Please refer to this [**documentation**](https://lavashark.js.org/docs/server-config) for detailed information.  
+Edit the file [**node-list.json**](./node-list.json)  
+```json
+[
+    {
+        "id": "Node 1",
+        "hostname": "localhost",
+        "port": 2333,
+        "password": "youshallnotpass"
+    }
+]
+```
+
+
 ### Configure environment
-[`.env`](./.env) 
+Edit the file [**.env**](./.env) 
 ```env
 TOKEN = "your_token"
 NAME = "Music Disc"
@@ -45,10 +57,6 @@ AUTO_LEAVE = true
 AUTO_LEAVE_COOLDOWN = 5000
 DISPLAY_VOICE_STATE = true
 PORT = 33333
-
-TEXT_QUERY_TYPE = "youtubeSearch"
-URL_QUERY_TYPE = "auto"
-DP_FORCE_YTDL_MOD = "play-dl"
 ```
 
 <details> 
@@ -57,47 +65,50 @@ DP_FORCE_YTDL_MOD = "play-dl"
   **`AUTO_LEAVE`** : After the music finished, can choose whether let the bot leave voice channel automatically or not.  
   **`AUTO_LEAVE_COOLDOWN`** : Timer for auto disconnect(ms).  
   **`DISPLAY_VOICE_STATE`** : Show voice channel status updates.   
-  </br>
-  
-  **`TEXT_QUERY_TYPE`** : The default search engine for text search.  
-  The following are the available options for **TEXT_QUERY_TYPE**:
-    <pre>
-      autoSearch, youtubeSearch, spotifySearch, soundcloudSearch, appleMusicSearch
-    </pre>
-
-  **`URL_QUERY_TYPE`** : The default search engine for links.  
-  The following are the available options for **URL_QUERY_TYPE**:
-    <pre>
-      auto, youtube, spotifySong soundcloud, appleMusicSong
-    </pre>
-
-  **`DP_FORCE_YTDL_MOD`** : Streaming extractor settings. The default streaming library used is **play-dl**.  
-  If you want to use another library, you can install one of the following libraries and change the `DP_FORCE_YTDL_MOD` setting.  
-    <pre>
-      $ npm install ytdl-core
-      $ npm install @distube/ytdl-core
-    </pre>
 </details>
 
 
-## Running the script 
+### Running the script 
 ```
 npm run start
 ```
 
 
-## Deploying with Docker Compose  
+## Deploying with Docker
 **image link** : https://hub.docker.com/r/hmes98318/music-disc  
-### put your Token into [`docker-compose.yml`](./docker-compose.yml)
+
+If you don't have any available nodes, you need to first start the server container using [Docker Compose](server/docker-compose.yml) in the server directory.  
+
+### Start with Docker
+Use the following command to start the container:  
+Please put your **token** into the `TOKEN` variable.  
+```
+docker run -d \
+  --name music-disc \
+  -e TOKEN="your_token" \
+  -e PREFIX="+" \
+  -e PLAYING="+help | music" \
+  -e EMBEDS_COLOR="#FFFFFF" \
+  -e DEFAULT_VOLUME=50 \
+  -e MAX_VOLUME=100 \
+  -e AUTO_LEAVE="true" \
+  -e AUTO_LEAVE_COOLDOWN=5000 \
+  -e DISPLAY_VOICE_STATE="true" \
+  -v ./node-list.json:/bot/node-list.json \
+  -v ./blacklist.json:/bot/blacklist.json \
+  -p 33333:33333 \
+  hmes98318/music-disc:2.0.0
+```
+
+### Start with Docker-Compose
+Please put your **token** into the `TOKEN` variable.  
 ```yml
 version: '3.8'
 services:
   music-disc:
-    image: hmes98318/music-disc:1.4.2
+    image: hmes98318/music-disc:2.0.0
     container_name: music-disc
     restart: always
-    ports:
-      - 33333:33333
     environment:
       TOKEN: "your_token"
       PREFIX: "+"
@@ -108,19 +119,14 @@ services:
       AUTO_LEAVE: "true"
       AUTO_LEAVE_COOLDOWN: 5000
       DISPLAY_VOICE_STATE: "true"
-      TEXT_QUERY_TYPE: "youtubeSearch"
-      URL_QUERY_TYPE: "auto"
-      DP_FORCE_YTDL_MOD: "play-dl"
+    volumes:
+      - ./node-list.json:/bot/node-list.json
+      - ./blacklist.json:/bot/blacklist.json
+    ports:
+      - 33333:33333
 ```
 
-### Start the container  
+#### Start the container  
 ```
 docker-compose up -d
 ```
-
-
-## Deploying with Replit  
-Watch it by clicking on the image down below  
-[![Music-Disc-with-Replit](https://img.youtube.com/vi/WH5aSHIebcc/0.jpg)](https://youtu.be/WH5aSHIebcc)  
-
-

@@ -1,11 +1,9 @@
 version: '3.8'
 services:
   music-disc:
-    image: hmes98318/music-disc:1.4.2
+    image: hmes98318/music-disc:2.0.0
     container_name: music-disc
     restart: always
-    ports:
-      - 33333:33333
     environment:
       TOKEN: "your_token"
       PREFIX: "+"
@@ -16,6 +14,8 @@ services:
       AUTO_LEAVE: "true"
       AUTO_LEAVE_COOLDOWN: 5000
       DISPLAY_VOICE_STATE: "true"
-      TEXT_QUERY_TYPE: "youtubeSearch"
-      URL_QUERY_TYPE: "auto"
-      DP_FORCE_YTDL_MOD: "play-dl"
+    volumes:
+      - ./node-list.json:/bot/node-list.json
+      - ./blacklist.json:/bot/blacklist.json
+    ports:
+      - 33333:33333
