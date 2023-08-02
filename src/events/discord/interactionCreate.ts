@@ -122,19 +122,19 @@ export default async (client: Client, interaction: Interaction) => {
 
                 collector.on("collect", async (i: StringSelectMenuInteraction) => {
                     if (i.customId != "Playing-Loop Select") return;
-
+                    console.log('mode:', i.values[0]);
                     switch (i.values[0]) {
-                        case 'off': {
+                        case 'Off': {
                             mode = 0;
                             player.setRepeatMode(RepeatMode.OFF);
                             break;
                         }
-                        case 'one' || 'single': {
+                        case 'Single': {
                             mode = 1;
                             player.setRepeatMode(RepeatMode.TRACK);
                             break;
                         }
-                        case 'all' || 'queue': {
+                        case 'All': {
                             mode = 2;
                             player.setRepeatMode(RepeatMode.QUEUE);
                             break;
@@ -143,7 +143,8 @@ export default async (client: Client, interaction: Interaction) => {
                     await dashboard.update(client, player, player.current!);
 
                     await i.deferUpdate();
-                    await interaction.reply({ content: `✅ | Set loop to \`${methods[mode]}\`.`, ephemeral: true, components: [] });
+                    interaction.ephemeral = true;
+                    await interaction.editReply({ content: `✅ | Set loop to \`${methods[mode]}\`.`, components: [] });
                 })
                 break;
             }
