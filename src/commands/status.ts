@@ -15,13 +15,16 @@ export const options = [];
 
 
 export const execute = async (client: Client, message: Message) => {
+    const botPing = `${Date.now() - message.createdTimestamp}ms`;
+    const sysload = await sysusage.cpu();
+
     const systemStatus = {
-        load: await sysusage.cpu(),
+        load: sysload,
         memory: sysusage.ram(),
         heap: sysusage.heap(),
         uptime: uptime(client.info.uptime),
         ping: {
-            bot: (`${Date.now() - message.createdTimestamp}ms`),
+            bot: botPing,
             api: client.ws.ping
         },
         serverCount: client.guilds.cache.size
@@ -34,13 +37,16 @@ export const execute = async (client: Client, message: Message) => {
 }
 
 export const slashExecute = async (client: Client, interaction: ChatInputCommandInteraction) => {
+    const botPing = `${Date.now() - interaction.createdTimestamp}ms`;
+    const sysload = await sysusage.cpu();
+
     const systemStatus = {
-        load: await sysusage.cpu(),
+        load: sysload,
         memory: sysusage.ram(),
         heap: sysusage.heap(),
         uptime: uptime(client.info.uptime),
         ping: {
-            bot: (`${Date.now() - interaction.createdTimestamp}ms`),
+            bot: botPing,
             api: client.ws.ping
         },
         serverCount: client.guilds.cache.size
