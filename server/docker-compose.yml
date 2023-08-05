@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
     lavalink:
-        image: ghcr.io/lavalink-devs/lavalink:3 # pin the image version to Lavalink v3
+        image: fredboat/lavalink:3.7.8 # pin the image version to Lavalink v3
         container_name: lavalink_v3
         restart: unless-stopped
         environment:
