@@ -8,7 +8,6 @@ import {
     StringSelectMenuBuilder,
     StringSelectMenuInteraction,
 } from "discord.js";
-import { Player } from "lavashark";
 import { dashboard } from "../dashboard";
 
 
@@ -45,16 +44,16 @@ export const execute = async (client: Client, message: Message, args: string[]) 
         return message.reply({ content: `❌ | No matches.`, allowedMentions: { repliedUser: false } });
     }
 
-    let player: Player;
-    try {
-        // Creates the audio player
-        player = client.lavashark.createPlayer({
-            guildId: String(message.guild?.id),
-            voiceChannelId: String(message.member?.voice.channelId),
-            textChannelId: message.channel.id,
-            selfDeaf: true
-        });
 
+    // Creates the audio player
+    const player = client.lavashark.createPlayer({
+        guildId: String(message.guild?.id),
+        voiceChannelId: String(message.member?.voice.channelId),
+        textChannelId: message.channel.id,
+        selfDeaf: true
+    });
+
+    try {
         // Connects to the voice channel
         await player.connect();
         player.metadata = message;
@@ -63,36 +62,44 @@ export const execute = async (client: Client, message: Message, args: string[]) 
         if (!player.dashboard) await dashboard.initial(client, message, player);
     } catch (error) {
         console.log(error);
+        await dashboard.destroy(player, client.config.embedsColor);
         return message.reply({ content: `❌ | I can't join voice channel.`, allowedMentions: { repliedUser: false } });
     }
 
     await message.react('👍');
 
 
-
     if (res.loadType === 'PLAYLIST_LOADED') {
         player.addTracks(res.tracks, message.author);
 
-        if (!player.playing) await player.play()
-            .catch((error: any) => {
-                console.log(error);
-                return message.reply({ content: `❌ | I can't play this track.`, allowedMentions: { repliedUser: false } });
-            });
+        if (!player.playing) {
+            await player.play()
+                .catch(async (error) => {
+                    console.log(error);
+                    await message.reply({ content: `❌ | The service is experiencing some problems, please try again.`, allowedMentions: { repliedUser: false } });
+                    return await player.destroy();
+                });
 
-        player.filters.setVolume(client.config.defaultVolume);
+            player.filters.setVolume(client.config.defaultVolume);
+        }
+
         return message.reply({ content: "✅ | Music added.", allowedMentions: { repliedUser: false } });
     }
     else if (res.tracks.length === 1) {
         const track = res.tracks[0];
         player.addTracks(track, message.author);
 
-        if (!player.playing) await player.play()
-            .catch((error: any) => {
-                console.log(error);
-                return message.reply({ content: `❌ | I can't play this track.`, allowedMentions: { repliedUser: false } });
-            });
+        if (!player.playing) {
+            await player.play()
+                .catch(async (error) => {
+                    console.log(error);
+                    await message.reply({ content: `❌ | The service is experiencing some problems, please try again.`, allowedMentions: { repliedUser: false } });
+                    return await player.destroy();
+                });
 
-        player.filters.setVolume(client.config.defaultVolume);
+            player.filters.setVolume(client.config.defaultVolume);
+        }
+
         return message.reply({ content: "✅ | Music added.", allowedMentions: { repliedUser: false } });
     }
     else {
@@ -119,20 +126,24 @@ export const execute = async (client: Client, message: Message, args: string[]) 
 
             player.addTracks(res.tracks.find(x => x.uri == i.values[0])!, message.author);
 
-            if (!player.playing) await player.play()
-                .catch((error: any) => {
-                    console.log(error);
-                    return message.reply({ content: `❌ | I can't play this track.`, allowedMentions: { repliedUser: false } });
-                });
+            if (!player.playing) {
+                await player.play()
+                    .catch(async (error) => {
+                        console.log(error);
+                        await message.reply({ content: `❌ | The service is experiencing some problems, please try again.`, allowedMentions: { repliedUser: false } });
+                        return await player.destroy();
+                    });
 
-            player.filters.setVolume(client.config.defaultVolume);
+                player.filters.setVolume(client.config.defaultVolume);
+            }
+
             i.deferUpdate();
             await msg.edit({ content: "✅ | Music added.", components: [], allowedMentions: { repliedUser: false } });
         });
 
         collector.on("end", async (collected: Collection<string, ButtonInteraction>, reason: string) => {
             if (reason == "time" && collected.size == 0) {
-                if (!player.playing) player.destroy();
+                if (!player.playing) await player.destroy();
                 await msg.edit({ content: "❌ | Time expired.", components: [], allowedMentions: { repliedUser: false } });
             }
         });
@@ -151,18 +162,18 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
         return interaction.editReply({ content: `❌ | No matches.`, allowedMentions: { repliedUser: false } });
     }
 
-    let player: Player;
-    try {
-        const guildMember = interaction.guild!.members.cache.get(interaction.user.id);
-        const { channel } = guildMember!.voice;
-        // Creates the audio player
-        player = client.lavashark.createPlayer({
-            guildId: String(interaction.guild?.id),
-            voiceChannelId: String(channel?.id),
-            textChannelId: interaction.channel?.id,
-            selfDeaf: true
-        });
 
+    const guildMember = interaction.guild!.members.cache.get(interaction.user.id);
+    const { channel } = guildMember!.voice;
+    // Creates the audio player
+    const player = client.lavashark.createPlayer({
+        guildId: String(interaction.guild?.id),
+        voiceChannelId: String(channel?.id),
+        textChannelId: interaction.channel?.id,
+        selfDeaf: true
+    });
+
+    try {
         // Connects to the voice channel
         await player.connect();
         player.metadata = interaction;
@@ -171,34 +182,42 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
         if (!player.dashboard) await dashboard.initial(client, interaction, player);
     } catch (error) {
         console.log(error);
+        await dashboard.destroy(player, client.config.embedsColor);
         return interaction.editReply({ content: `❌ | I can't join voice channel.`, allowedMentions: { repliedUser: false } });
     }
-
 
 
     if (res.loadType === 'PLAYLIST_LOADED') {
         player.addTracks(res.tracks, interaction.user);
 
-        if (!player.playing) await player.play()
-            .catch((error: any) => {
-                console.log(error);
-                return interaction.reply({ content: `❌ | I can't play this track.`, allowedMentions: { repliedUser: false } });
-            });
+        if (!player.playing) {
+            await player.play()
+                .catch(async (error) => {
+                    console.log(error);
+                    await interaction.reply({ content: `❌ | The service is experiencing some problems, please try again.`, allowedMentions: { repliedUser: false } });
+                    return await player.destroy();
+                });
 
-        player.filters.setVolume(client.config.defaultVolume);
+            player.filters.setVolume(client.config.defaultVolume);
+        }
+
         return interaction.editReply({ content: "✅ | Music added.", allowedMentions: { repliedUser: false } });
     }
     else if (res.tracks.length === 1) {
         const track = res.tracks[0];
         player.addTracks(track, interaction.user);
 
-        if (!player.playing) await player.play()
-            .catch((error: any) => {
-                console.log(error);
-                return interaction.reply({ content: `❌ | I can't play this track.`, allowedMentions: { repliedUser: false } });
-            });
+        if (!player.playing) {
+            await player.play()
+                .catch(async (error) => {
+                    console.log(error);
+                    await interaction.reply({ content: `❌ | The service is experiencing some problems, please try again.`, allowedMentions: { repliedUser: false } });
+                    return await player.destroy();
+                });
 
-        player.filters.setVolume(client.config.defaultVolume);
+            player.filters.setVolume(client.config.defaultVolume);
+        }
+
         return interaction.editReply({ content: "✅ | Music added.", allowedMentions: { repliedUser: false } });
     }
     else {
@@ -225,20 +244,24 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
 
             player.addTracks(res.tracks.find(x => x.uri == i.values[0])!, interaction.user);
 
-            if (!player.playing) await player.play()
-                .catch((error: any) => {
-                    console.log(error);
-                    return interaction.editReply({ content: `❌ | I can't play this track.`, allowedMentions: { repliedUser: false } });
-                });
+            if (!player.playing) {
+                await player.play()
+                    .catch(async (error) => {
+                        console.log(error);
+                        await interaction.editReply({ content: `❌ | The service is experiencing some problems, please try again.`, allowedMentions: { repliedUser: false } });
+                        return await player.destroy();
+                    });
 
-            player.filters.setVolume(client.config.defaultVolume);
+                player.filters.setVolume(client.config.defaultVolume);
+            }
+
             i.deferUpdate();
             await msg.edit({ content: "✅ | Music added.", components: [], allowedMentions: { repliedUser: false } });
         });
 
         collector.on("end", async (collected: Collection<string, ButtonInteraction>, reason: string) => {
             if (reason == "time" && collected.size == 0) {
-                if (!player.playing) player.destroy();
+                if (!player.playing) await player.destroy();
                 await msg.edit({ content: "❌ | Time expired.", components: [], allowedMentions: { repliedUser: false } });
             }
         });

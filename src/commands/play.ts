@@ -1,6 +1,4 @@
 import { ChatInputCommandInteraction, Client, Message } from "discord.js";
-import { Player } from "lavashark";
-
 import { dashboard } from "../dashboard";
 
 
@@ -37,16 +35,16 @@ export const execute = async (client: Client, message: Message, args: string[]) 
         return message.reply({ content: `❌ | No matches.`, allowedMentions: { repliedUser: false } });
     }
 
-    let player: Player;
-    try {
-        // Creates the audio player
-        player = client.lavashark.createPlayer({
-            guildId: String(message.guild?.id),
-            voiceChannelId: String(message.member?.voice.channelId),
-            textChannelId: message.channel.id,
-            selfDeaf: true
-        });
 
+    // Creates the audio player
+    const player = client.lavashark.createPlayer({
+        guildId: String(message.guild?.id),
+        voiceChannelId: String(message.member?.voice.channelId),
+        textChannelId: message.channel.id,
+        selfDeaf: true
+    });
+
+    try {
         // Connects to the voice channel
         await player.connect();
         player.metadata = message;
@@ -55,6 +53,7 @@ export const execute = async (client: Client, message: Message, args: string[]) 
         if (!player.dashboard) await dashboard.initial(client, message, player);
     } catch (error) {
         console.log(error);
+        await dashboard.destroy(player, client.config.embedsColor);
         return message.reply({ content: `❌ | I can't join voice channel.`, allowedMentions: { repliedUser: false } });
     }
 
@@ -67,13 +66,17 @@ export const execute = async (client: Client, message: Message, args: string[]) 
         player.addTracks(track, message.author);
     }
 
-    if (!player.playing) await player.play()
-        .catch((error) => {
-            console.log(error);
-            return message.reply({ content: `❌ | I can't play this track.`, allowedMentions: { repliedUser: false } });
-        });
+    if (!player.playing) {
+        await player.play()
+            .catch(async (error) => {
+                console.log(error);
+                await message.reply({ content: `❌ | The service is experiencing some problems, please try again.`, allowedMentions: { repliedUser: false } });
+                return await player.destroy();
+            });
 
-    player.filters.setVolume(client.config.defaultVolume);
+        player.filters.setVolume(client.config.defaultVolume);
+    }
+
     return message.react('👍');
 }
 
@@ -89,26 +92,29 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
         return interaction.editReply({ content: `❌ | No matches.`, allowedMentions: { repliedUser: false } });
     }
 
-    let player: Player;
-    try {
-        const guildMember = interaction.guild!.members.cache.get(interaction.user.id);
-        const { channel } = guildMember!.voice;
-        // Creates the audio player
-        player = client.lavashark.createPlayer({
-            guildId: String(interaction.guild?.id),
-            voiceChannelId: String(channel?.id),
-            textChannelId: interaction.channel?.id,
-            selfDeaf: true
-        });
 
+    const guildMember = interaction.guild!.members.cache.get(interaction.user.id);
+    const { channel } = guildMember!.voice;
+    // Creates the audio player
+    const player = client.lavashark.createPlayer({
+        guildId: String(interaction.guild?.id),
+        voiceChannelId: String(channel?.id),
+        textChannelId: interaction.channel?.id,
+        selfDeaf: true
+    });
+
+    try {
         // Connects to the voice channel
         await player.connect();
         player.metadata = interaction;
 
         // Intial dashboard
-        if (!player.dashboard) await dashboard.initial(client, interaction, player);
+        if (!player.dashboard) {
+            await dashboard.initial(client, interaction, player);
+        }
     } catch (error) {
         console.log(error);
+        await dashboard.destroy(player, client.config.embedsColor);
         return interaction.editReply({ content: `❌ | I can't join voice channel.`, allowedMentions: { repliedUser: false } });
     }
 
@@ -121,12 +127,16 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
         player.addTracks(track, interaction.user);
     }
 
-    if (!player.playing) await player.play()
-        .catch((error) => {
-            console.log(error);
-            return interaction.editReply({ content: `❌ | I can't play this track.`, allowedMentions: { repliedUser: false } });
-        });
+    if (!player.playing) {
+        await player.play()
+            .catch(async (error) => {
+                console.log(error);
+                await interaction.editReply({ content: `❌ | The service is experiencing some problems, please try again.`, allowedMentions: { repliedUser: false } });
+                return await player.destroy();
+            });
 
-    player.filters.setVolume(client.config.defaultVolume);
+        player.filters.setVolume(client.config.defaultVolume);
+    }
+
     return interaction.editReply({ content: "✅ | Music added.", allowedMentions: { repliedUser: false } });
 }
