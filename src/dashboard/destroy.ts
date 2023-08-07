@@ -1,6 +1,4 @@
-import { Client } from "discord.js";
 import { Player } from "lavashark";
-
 import { embeds } from "../embeds";
 
 
@@ -13,9 +11,9 @@ async function destroy(player: Player, embedsColor: string | number) {
     } catch (error) {
         console.log('Dashboard error:', error);
     }
-
-    player.dashboard = null;
-    return;
+    finally {
+        player.dashboard = null;
+    }
 }
 
 export { destroy };
