@@ -1,4 +1,5 @@
 import { ChatInputCommandInteraction, Client, Message } from "discord.js";
+import { dashboard } from "../dashboard";
 
 
 export const name = 'volume';
@@ -40,12 +41,14 @@ export const execute = async (client: Client, message: Message, args: string[]) 
         return message.reply({ content: `❌ | **Type a number from \`1\` to \`${maxVolume}\` to change the volume .**`, allowedMentions: { repliedUser: false } });
     }
 
+    
     player.filters.setVolume(vol);
+    await dashboard.update(client, player, player.current!);
     return message.reply({ content: `🔊 **${vol}**/**${maxVolume}**%`, allowedMentions: { repliedUser: false } });
 }
 
-export const slashExecute = async (client: Client, interaction: ChatInputCommandInteraction) => { 
-    
+export const slashExecute = async (client: Client, interaction: ChatInputCommandInteraction) => {
+
     const maxVolume = client.config.maxVolume;
     const player = client.lavashark.getPlayer(interaction.guild!.id);
 
@@ -66,5 +69,6 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
     }
 
     player.filters.setVolume(vol);
+    await dashboard.update(client, player, player.current!);
     return interaction.editReply({ content: `🔊 **${vol}**/**${maxVolume}**%`, allowedMentions: { repliedUser: false } });
 }

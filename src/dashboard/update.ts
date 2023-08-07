@@ -12,7 +12,12 @@ import { embeds } from "../embeds";
 
 async function update(client: Client, player: Player, track: Track): Promise<void> {
     const playing = !(player.paused);
-    const subtitle = `Author : **${track?.author}**\nDuration **${track?.duration.label}**\n`;
+    const methods = ['Off', 'Single', 'All'];
+    const repeatMode = player.repeatMode;
+    const volume = player.volume;
+    const subtitle = `Author : **${track?.author}**\nDuration **${track?.duration.label}**\n`
+                    + `────────────────────\n`
+                    + `Volume: \`${volume}%\` | Loop: \`${methods[repeatMode]}\``;
 
     const playPauseButton = new ButtonBuilder().setCustomId('Dashboard-PlayPause').setEmoji(playing ? cst.button.pause : cst.button.play).setStyle(playing ? ButtonStyle.Secondary : ButtonStyle.Success);
     const skipButton = new ButtonBuilder().setCustomId('Dashboard-Skip').setEmoji(cst.button.skip).setStyle(ButtonStyle.Secondary);
