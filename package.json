@@ -20,10 +20,10 @@
     "homepage": "https://github.com/hmes98318/Music-Disc#readme",
     "dependencies": {
         "console-stamp": "^3.1.1",
-        "discord.js": "^14.11.0",
-        "dotenv": "^16.0.3",
+        "discord.js": "^14.12.1",
+        "dotenv": "^16.3.1",
         "express": "^4.18.2",
-        "lavashark": "^1.2.1"
+        "lavashark": "^1.2.2"
     },
     "devDependencies": {
         "@types/node": "^20.4.5",
