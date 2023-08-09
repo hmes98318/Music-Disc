@@ -1,8 +1,10 @@
 import {
     ActionRowBuilder,
     ButtonBuilder,
+    ButtonInteraction,
     ButtonStyle,
     Client,
+    Collection,
     Interaction,
     StringSelectMenuBuilder,
     StringSelectMenuInteraction
@@ -102,7 +104,7 @@ export default async (client: Client, interaction: Interaction) => {
                 const methods = ['Off', 'Single', 'All'];
 
                 const select = new StringSelectMenuBuilder()
-                    .setCustomId("Playing-Loop Select")
+                    .setCustomId("Dashboard-Loop-Select")
                     .setPlaceholder("Select the loop mode")
                     .setOptions(methods.map(x => {
                         return {
@@ -115,13 +117,14 @@ export default async (client: Client, interaction: Interaction) => {
                 const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(select);
                 let msg = await interaction.reply({ content: `Select a song loop mode.`, ephemeral: true, components: [row] });
 
-                const collector = msg.createMessageComponentCollector({
+                const collector = interaction.channel!.createMessageComponentCollector({
                     time: 20000, // 20s
                     filter: i => i.user.id === interaction.user.id
                 });
 
                 collector.on("collect", async (i: StringSelectMenuInteraction) => {
-                    if (i.customId != "Playing-Loop Select") return;
+                    if (i.customId !== "Dashboard-Loop-Select") return;
+
                     console.log('mode:', i.values[0]);
                     switch (i.values[0]) {
                         case 'Off': {
@@ -146,6 +149,12 @@ export default async (client: Client, interaction: Interaction) => {
                     interaction.ephemeral = true;
                     await interaction.editReply({ content: `✅ | Set loop to \`${methods[mode]}\`.`, components: [] });
                 })
+
+                collector.on("end", async (collected: Collection<string, ButtonInteraction>, reason: string) => {
+                    if (reason === "time" && collected.size === 0) {
+                        await msg.edit({ content: "❌ | Time expired.", components: [], allowedMentions: { repliedUser: false } });
+                    }
+                });
                 break;
             }
 
