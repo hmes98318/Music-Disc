@@ -19,7 +19,7 @@ If you encounter any issues or would like to contribute to the community, please
 
 ### Clone the latest version of the repository
 ```
-git clone -b v2.0.0 https://github.com/hmes98318/Music-Disc.git
+git clone -b v2.0.1 https://github.com/hmes98318/Music-Disc.git
 ```
 or [**click here**](https://github.com/hmes98318/Music-Disc/releases) to download  
 
@@ -100,7 +100,7 @@ docker run -d \
   -v ./node-list.json:/bot/node-list.json \
   -v ./blacklist.json:/bot/blacklist.json \
   -p 33333:33333 \
-  hmes98318/music-disc:2.0.0
+  hmes98318/music-disc:2.0.1
 ```
 
 ### Start with Docker-Compose
@@ -109,7 +109,7 @@ Please put your **token** into the `TOKEN` variable.
 version: '3.8'
 services:
   music-disc:
-    image: hmes98318/music-disc:2.0.0
+    image: hmes98318/music-disc:2.0.1
     container_name: music-disc
     restart: always
     environment:
