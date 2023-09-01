@@ -10,6 +10,9 @@ import {
 } from "discord.js";
 import { dashboard } from "../dashboard";
 
+import { embeds } from "../embeds";
+import { isUserInBlacklist } from "../utils/functions/isUserInBlacklist";
+
 
 export const name = 'search';
 export const aliases = ['find'];
@@ -42,6 +45,15 @@ export const execute = async (client: Client, message: Message, args: string[]) 
     }
     else if (res.loadType === "NO_MATCHES") {
         return message.reply({ content: `❌ | No matches.`, allowedMentions: { repliedUser: false } });
+    }
+
+
+    const validBlackist = isUserInBlacklist(message.member?.voice.channel, client.config.blacklist);
+    if (validBlackist.length > 0) {
+        return message.reply({
+            embeds: [embeds.blacklist(client.config.embedsColor, validBlackist)],
+            allowedMentions: { repliedUser: false }
+        });
     }
 
 
@@ -165,6 +177,16 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
 
     const guildMember = interaction.guild!.members.cache.get(interaction.user.id);
     const { channel } = guildMember!.voice;
+
+    const validBlackist = isUserInBlacklist(channel, client.config.blacklist);
+    if (validBlackist.length > 0) {
+        return interaction.editReply({
+            embeds: [embeds.blacklist(client.config.embedsColor, validBlackist)],
+            allowedMentions: { repliedUser: false }
+        });
+    }
+
+
     // Creates the audio player
     const player = client.lavashark.createPlayer({
         guildId: String(interaction.guild?.id),
