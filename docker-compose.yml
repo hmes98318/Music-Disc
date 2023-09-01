@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   music-disc:
-    image: hmes98318/music-disc:2.0.1
+    image: hmes98318/music-disc:2.0.2
     container_name: music-disc
     restart: always
     environment:
