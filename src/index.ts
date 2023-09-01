@@ -9,6 +9,7 @@ import {
     Message
 } from 'discord.js';
 import { LavaShark } from "lavashark";
+import express from 'express';
 import consoleStamp from 'console-stamp';
 
 import { cst } from "./utils/constants";
@@ -75,6 +76,23 @@ const setEnvironment = () => {
         resolve();
     });
 };
+
+const loadExpressFramework = () => {
+    console.log(`-> loading Web Framework ......`);
+    return new Promise<void>((resolve, _reject) => {
+        const app = express();
+        const port = client.config.port || 33333;
+
+        app.get('/', function (req, res) {
+            res.send('200 ok.')
+        });
+
+        app.listen(port, function () {
+            console.log(`Server start listening port on ${port}`);
+            resolve();
+        });
+    })
+}
 
 const loadEvents = () => {
     console.log(`-> loading Events ......`);
@@ -190,6 +208,7 @@ const loadBlacklist = async () => {
 
 Promise.resolve()
     .then(() => setEnvironment())
+    .then(() => loadExpressFramework())
     .then(() => loadEvents())
     .then(() => loadLavaSharkEvents())
     .then(() => loadCommands())
