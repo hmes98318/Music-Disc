@@ -16,7 +16,7 @@ import { cst } from "./utils/constants";
 import nodeList from "../node-list.json";
 
 import type { Node } from "lavashark";
-import type { Config, Info } from "./@types";
+import type { Config, SystemInfo } from "./@types";
 import type { EventListeners } from 'lavashark/typings/src/@types';
 
 
@@ -25,7 +25,7 @@ declare module 'discord.js' {
         commands: Collection<unknown, any>,
         lavashark: LavaShark,
         config: Config,
-        info: Info
+        info: SystemInfo
     }
 };
 

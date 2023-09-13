@@ -15,7 +15,7 @@ export interface Config {
     blacklist: string[];
 }
 
-export interface Info {
+export interface SystemInfo {
     uptime: Date;
     os_version: string;
     bot_version: string;
@@ -44,4 +44,8 @@ export interface SystemStatus {
         api: number;
     };
     serverCount: number;
+}
+
+export interface NodeStats {
+
 }
