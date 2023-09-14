@@ -1,5 +1,5 @@
 import { ChatInputCommandInteraction, Client, Message } from "discord.js";
-import { timeToSeconds } from "../utils/functions/timeToSeconds";
+import { timeToSeconds } from "../utils/functions/unitConverter";
 
 
 export const name = 'seek';
