@@ -6,7 +6,7 @@ import { embeds } from "../embeds";
 export const name = 'nodestatus';
 export const aliases = ['node', 'nodes', 'nodesstatus'];
 export const description = 'Show nodes active status';
-export const usage = 'nodestatus';
+export const usage = 'node [node name]';
 export const voiceChannel = false;
 export const showHelp = true;
 export const sendTyping = true;
