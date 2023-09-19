@@ -33,5 +33,8 @@ export const cst = {
         stop        : '<:w_stop:1106272001909346386>',
         loop        : '<:w_loop:1106270705575792681>',
         shuffle     : '<:w_shuffle:1106270712542531624>',
+        prev        : '<:w_prev:1153665768093921280>',
+        next        : '<:w_next:1153665809990815874>',
+        delete      : 'Delete'
     }
 };

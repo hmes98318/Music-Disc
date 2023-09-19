@@ -16,8 +16,8 @@ import { cst } from "./utils/constants";
 import nodeList from "../node-list.json";
 
 import type { Node } from "lavashark";
-import type { Config, SystemInfo } from "./@types";
 import type { EventListeners } from 'lavashark/typings/src/@types';
+import type { Config, QueuePage, SystemInfo } from "./@types";
 
 
 declare module 'discord.js' {
@@ -32,7 +32,8 @@ declare module 'discord.js' {
 declare module 'lavashark' {
     export interface Player {
         dashboard: Message<boolean> | null,
-        metadata: Message<boolean> | ChatInputCommandInteraction | null
+        metadata: Message<boolean> | ChatInputCommandInteraction | null,
+        queuePage: QueuePage
     }
 };
 

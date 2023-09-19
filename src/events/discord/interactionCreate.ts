@@ -38,22 +38,6 @@ export default async (client: Client, interaction: Interaction) => {
         }
 
         switch (interaction.customId) {
-            case 'musicSave': {
-                const track = player.current;
-                const subtitle = `Author : **${track?.author}**\nDuration **${track?.duration.label}**\n`;
-
-                guildMember?.send({ embeds: [embeds.save(client.config.embedsColor, track!.title, subtitle, track!.uri, track!.thumbnail!)] })
-                    .then(() => {
-                        return interaction.reply({ content: `✅ | I sent you the name of the music in a private message.`, ephemeral: true, components: [] });
-                    })
-                    .catch((error) => {
-                        console.log('error:', error);
-                        return interaction.reply({ content: `❌ | I can't send you a private message.`, ephemeral: true, components: [] });
-                    });
-
-                break;
-            }
-
             case 'Dashboard-PlayPause': {
                 const playing = !(player.paused);
 
@@ -176,6 +160,130 @@ export default async (client: Client, interaction: Interaction) => {
                 player.queue.shuffle();
 
                 await interaction.reply({ content: '✅ | Music shuffled.', ephemeral: true, components: [] });
+                break;
+            }
+
+            case 'musicSave': {
+                const track = player.current;
+                const subtitle = `Author : **${track?.author}**\nDuration **${track?.duration.label}**\n`;
+
+                guildMember?.send({ embeds: [embeds.save(client.config.embedsColor, track!.title, subtitle, track!.uri, track!.thumbnail!)] })
+                    .then(() => {
+                        return interaction.reply({ content: `✅ | I sent you the name of the music in a private message.`, ephemeral: true, components: [] });
+                    })
+                    .catch((error) => {
+                        console.log('error:', error);
+                        return interaction.reply({ content: `❌ | I can't send you a private message.`, ephemeral: true, components: [] });
+                    });
+
+                break;
+            }
+
+            case 'queuelist-prev': {
+                if (!player.queuePage) return;
+
+                if (player.queuePage.curPage <= 1) {
+                    player.queuePage.curPage = 1;
+                }
+                else {
+                    player.queuePage.curPage--;
+                }
+
+                const page = player.queuePage.curPage;
+                const startIdx = (page - 1) * 10;
+                const endIdx = page * 10;
+
+                const nowplaying = `Now Playing: ${player.current?.title}\n\n`;
+                let tracksQueue = '';
+                const tracks = player.queue.tracks.slice(startIdx, endIdx)
+                    .map((track, index) => {
+                        return `${startIdx + index + 1}. \`${track.title}\``;
+                    });
+
+                if (tracks.length < 1) {
+                    tracksQueue = '------------------------------';
+                }
+                else if (tracks.length === player.queue.tracks.length) {
+                    tracksQueue = tracks.join('\n');
+                }
+                else {
+                    tracksQueue = tracks.join('\n');
+                    tracksQueue += `\n\n----- Page ${page}/${player.queuePage.maxPage} -----`;
+                }
+
+                const methods = ['Off', 'Single', 'All'];
+                const repeatMode = player.repeatMode;
+
+                const prevButton = new ButtonBuilder().setCustomId('queuelist-prev').setEmoji(cst.button.prev).setStyle(ButtonStyle.Secondary);
+                const nextButton = new ButtonBuilder().setCustomId('queuelist-next').setEmoji(cst.button.next).setStyle(ButtonStyle.Secondary);
+                const delButton = new ButtonBuilder().setCustomId('queuelist-delete').setLabel(cst.button.delete).setStyle(ButtonStyle.Danger);
+                const row = new ActionRowBuilder<ButtonBuilder>().addComponents(prevButton, nextButton, delButton)
+
+                await player.queuePage.msg?.edit({
+                    embeds: [embeds.queue(client.config.embedsColor, nowplaying, tracksQueue, methods[repeatMode])],
+                    components: [row],
+                    allowedMentions: { repliedUser: false },
+                });
+
+                await interaction.deferUpdate();
+                break;
+            }
+
+            case 'queuelist-next': {
+                if (!player.queuePage) return;
+
+                if (player.queuePage.curPage >= player.queuePage.maxPage) {
+                    player.queuePage.curPage = player.queuePage.maxPage;
+                }
+                else {
+                    player.queuePage.curPage++;
+                }
+
+                const page = player.queuePage.curPage;
+                const startIdx = (page - 1) * 10;
+                const endIdx = page * 10;
+
+                const nowplaying = `Now Playing: ${player.current?.title}\n\n`;
+                let tracksQueue = '';
+                const tracks = player.queue.tracks.slice(startIdx, endIdx)
+                    .map((track, index) => {
+                        return `${startIdx + index + 1}. \`${track.title}\``;
+                    });
+
+                if (tracks.length < 1) {
+                    tracksQueue = '------------------------------';
+                }
+                else if (tracks.length === player.queue.tracks.length) {
+                    tracksQueue = tracks.join('\n');
+                }
+                else {
+                    tracksQueue = tracks.join('\n');
+                    tracksQueue += `\n\n----- Page ${page}/${player.queuePage.maxPage} -----`;
+                }
+
+                const methods = ['Off', 'Single', 'All'];
+                const repeatMode = player.repeatMode;
+
+                const prevButton = new ButtonBuilder().setCustomId('queuelist-prev').setEmoji(cst.button.prev).setStyle(ButtonStyle.Secondary);
+                const nextButton = new ButtonBuilder().setCustomId('queuelist-next').setEmoji(cst.button.next).setStyle(ButtonStyle.Secondary);
+                const delButton = new ButtonBuilder().setCustomId('queuelist-delete').setLabel(cst.button.delete).setStyle(ButtonStyle.Danger);
+                const row = new ActionRowBuilder<ButtonBuilder>().addComponents(prevButton, nextButton, delButton)
+
+                await player.queuePage.msg?.edit({
+                    embeds: [embeds.queue(client.config.embedsColor, nowplaying, tracksQueue, methods[repeatMode])],
+                    components: [row],
+                    allowedMentions: { repliedUser: false },
+                });
+
+                await interaction.deferUpdate();
+                break;
+            }
+
+            case 'queuelist-delete': {
+                await player.queuePage.msg?.delete();
+                player.queuePage.msg = null;
+
+                await interaction.deferUpdate();
                 break;
             }
         }

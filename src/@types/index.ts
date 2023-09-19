@@ -1,4 +1,4 @@
-import { HexColorString } from "discord.js";
+import { HexColorString, Message } from "discord.js";
 
 
 export interface Config {
@@ -46,6 +46,8 @@ export interface SystemStatus {
     serverCount: number;
 }
 
-export interface NodeStats {
-
+export interface QueuePage {
+    maxPage: number;
+    curPage: number;
+    msg: Message<boolean> | null;
 }

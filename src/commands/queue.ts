@@ -1,5 +1,6 @@
-import { ChatInputCommandInteraction, Client, Message } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, Client, Message } from "discord.js";
 import { embeds } from "../embeds";
+import { cst } from "../utils/constants";
 
 
 export const name = 'queue';
@@ -19,29 +20,55 @@ export const execute = async (client: Client, message: Message) => {
         return message.reply({ content: '❌ | There is no music currently playing.', allowedMentions: { repliedUser: false } });
     }
 
-    let nowplaying = `Now Playing : ${player.current?.title}\n\n`;
+
+    if (!player.queuePage) {
+        player.queuePage = {
+            maxPage: Math.ceil(player.queue.tracks.length / 10),
+            curPage: 1,
+            msg: null
+        };
+    }
+
+    const page = player.queuePage.curPage;
+    const startIdx = (page - 1) * 10;
+    const endIdx = page * 10;
+
+    const nowplaying = `Now Playing: ${player.current?.title}\n\n`;
     let tracksQueue = '';
-    const tracks = player.queue.tracks.map((track, index) => { return `${++index}. \`${track.title}\`` });
+    const tracks = player.queue.tracks.slice(startIdx, endIdx)
+        .map((track, index) => {
+            return `${startIdx + index + 1}. \`${track.title}\``;
+        });
 
     if (tracks.length < 1) {
         tracksQueue = '------------------------------';
     }
-    else if (tracks.length > 9) {
-        tracksQueue = tracks.slice(0, 10).join('\n');
-        tracksQueue += `\nand ${tracks.length - 10} other songs`;
+    else if (tracks.length === player.queue.tracks.length) {
+        tracksQueue = tracks.join('\n');
     }
     else {
         tracksQueue = tracks.join('\n');
+        tracksQueue += `\n\n----- Page ${page}/${player.queuePage.maxPage} -----`;
     }
+
 
     const methods = ['Off', 'Single', 'All'];
     const repeatMode = player.repeatMode;
 
-    return message.reply({
+    const prevButton = new ButtonBuilder().setCustomId('queuelist-prev').setEmoji(cst.button.prev).setStyle(ButtonStyle.Secondary);
+    const nextButton = new ButtonBuilder().setCustomId('queuelist-next').setEmoji(cst.button.next).setStyle(ButtonStyle.Secondary);
+    const delButton = new ButtonBuilder().setCustomId('queuelist-delete').setLabel(cst.button.delete).setStyle(ButtonStyle.Danger);
+    const row = new ActionRowBuilder<ButtonBuilder>().addComponents(prevButton, nextButton, delButton)
+
+    player.queuePage.msg = await message.reply({
         embeds: [embeds.queue(client.config.embedsColor, nowplaying, tracksQueue, methods[repeatMode])],
-        allowedMentions: { repliedUser: false }
+        components: [row],
+        allowedMentions: { repliedUser: false },
     });
-}
+
+    return message.react('👍');
+};
+
 
 export const slashExecute = async (client: Client, interaction: ChatInputCommandInteraction) => {
     const player = client.lavashark.getPlayer(interaction.guild!.id);
@@ -50,26 +77,49 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
         return interaction.editReply({ content: '❌ | There is no music currently playing.', allowedMentions: { repliedUser: false } });
     }
 
-    let nowplaying = `Now Playing : ${player.current?.title}\n\n`;
+
+    if (!player.queuePage) {
+        player.queuePage = {
+            maxPage: Math.ceil(player.queue.tracks.length / 10),
+            curPage: 1,
+            msg: null
+        };
+    }
+
+    const page = player.queuePage.curPage;
+    const startIdx = (page - 1) * 10;
+    const endIdx = page * 10;
+
+    const nowplaying = `Now Playing: ${player.current?.title}\n\n`;
     let tracksQueue = '';
-    const tracks = player.queue.tracks.map((track, index) => { return `${++index}. \`${track.title}\`` });
+    const tracks = player.queue.tracks.slice(startIdx, endIdx)
+        .map((track, index) => {
+            return `${startIdx + index + 1}. \`${track.title}\``;
+        });
 
     if (tracks.length < 1) {
         tracksQueue = '------------------------------';
     }
-    else if (tracks.length > 9) {
-        tracksQueue = tracks.slice(0, 10).join('\n');
-        tracksQueue += `\nand ${tracks.length - 10} other songs`;
+    else if (tracks.length === player.queue.tracks.length) {
+        tracksQueue = tracks.join('\n');
     }
     else {
         tracksQueue = tracks.join('\n');
+        tracksQueue += `\n\n----- Page ${page}/${player.queuePage.maxPage} -----`;
     }
+
 
     const methods = ['Off', 'Single', 'All'];
     const repeatMode = player.repeatMode;
 
-    return interaction.editReply({
+    const prevButton = new ButtonBuilder().setCustomId('queuelist-prev').setEmoji(cst.button.prev).setStyle(ButtonStyle.Secondary);
+    const nextButton = new ButtonBuilder().setCustomId('queuelist-next').setEmoji(cst.button.next).setStyle(ButtonStyle.Secondary);
+    const delButton = new ButtonBuilder().setCustomId('queuelist-delete').setLabel(cst.button.delete).setStyle(ButtonStyle.Danger);
+    const row = new ActionRowBuilder<ButtonBuilder>().addComponents(prevButton, nextButton, delButton)
+
+    player.queuePage.msg = await interaction.editReply({
         embeds: [embeds.queue(client.config.embedsColor, nowplaying, tracksQueue, methods[repeatMode])],
-        allowedMentions: { repliedUser: false }
+        components: [row],
+        allowedMentions: { repliedUser: false },
     });
 }
