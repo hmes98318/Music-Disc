@@ -216,8 +216,9 @@ export default async (client: Client, interaction: Interaction) => {
 
                 const prevButton = new ButtonBuilder().setCustomId('queuelist-prev').setEmoji(cst.button.prev).setStyle(ButtonStyle.Secondary);
                 const nextButton = new ButtonBuilder().setCustomId('queuelist-next').setEmoji(cst.button.next).setStyle(ButtonStyle.Secondary);
-                const delButton = new ButtonBuilder().setCustomId('queuelist-delete').setLabel(cst.button.delete).setStyle(ButtonStyle.Danger);
-                const row = new ActionRowBuilder<ButtonBuilder>().addComponents(prevButton, nextButton, delButton)
+                const delButton = new ButtonBuilder().setCustomId('queuelist-delete').setLabel(cst.button.delete).setStyle(ButtonStyle.Primary);
+                const clsButton = new ButtonBuilder().setCustomId('queuelist-clear').setLabel(cst.button.clear).setStyle(ButtonStyle.Danger);
+                const row = new ActionRowBuilder<ButtonBuilder>().addComponents(prevButton, nextButton, delButton, clsButton);
 
                 await player.queuePage.msg?.edit({
                     embeds: [embeds.queue(client.config.embedsColor, nowplaying, tracksQueue, methods[repeatMode])],
@@ -266,8 +267,9 @@ export default async (client: Client, interaction: Interaction) => {
 
                 const prevButton = new ButtonBuilder().setCustomId('queuelist-prev').setEmoji(cst.button.prev).setStyle(ButtonStyle.Secondary);
                 const nextButton = new ButtonBuilder().setCustomId('queuelist-next').setEmoji(cst.button.next).setStyle(ButtonStyle.Secondary);
-                const delButton = new ButtonBuilder().setCustomId('queuelist-delete').setLabel(cst.button.delete).setStyle(ButtonStyle.Danger);
-                const row = new ActionRowBuilder<ButtonBuilder>().addComponents(prevButton, nextButton, delButton)
+                const delButton = new ButtonBuilder().setCustomId('queuelist-delete').setLabel(cst.button.delete).setStyle(ButtonStyle.Primary);
+                const clsButton = new ButtonBuilder().setCustomId('queuelist-clear').setLabel(cst.button.clear).setStyle(ButtonStyle.Danger);
+                const row = new ActionRowBuilder<ButtonBuilder>().addComponents(prevButton, nextButton, delButton, clsButton);
 
                 await player.queuePage.msg?.edit({
                     embeds: [embeds.queue(client.config.embedsColor, nowplaying, tracksQueue, methods[repeatMode])],
@@ -282,6 +284,53 @@ export default async (client: Client, interaction: Interaction) => {
             case 'queuelist-delete': {
                 await player.queuePage.msg?.delete();
                 player.queuePage.msg = null;
+
+                await interaction.deferUpdate();
+                break;
+            }
+
+            case 'queuelist-clear': {
+                player.queue.clear();
+
+                if (!player.queuePage) return;
+
+                player.queuePage.maxPage = Math.ceil(player.queue.tracks.length / 10);
+                player.queuePage.curPage = 1;
+
+
+                const page = player.queuePage.curPage;
+                const startIdx = (page - 1) * 10;
+                const endIdx = page * 10;
+
+                const nowplaying = `Now Playing: ${player.current?.title}\n\n`;
+                let tracksQueue = '';
+                const tracks = player.queue.tracks.slice(startIdx, endIdx)
+                    .map((track, index) => {
+                        return `${startIdx + index + 1}. \`${track.title}\``;
+                    });
+
+                if (tracks.length < 1) {
+                    tracksQueue = '------------------------------';
+                }
+                else if (tracks.length === player.queue.tracks.length) {
+                    tracksQueue = tracks.join('\n');
+                }
+                else {
+                    tracksQueue = tracks.join('\n');
+                    tracksQueue += `\n\n----- Page ${page}/${player.queuePage.maxPage} -----`;
+                }
+
+                const methods = ['Off', 'Single', 'All'];
+                const repeatMode = player.repeatMode;
+
+                const delButton = new ButtonBuilder().setCustomId('queuelist-delete').setLabel(cst.button.delete).setStyle(ButtonStyle.Primary);
+                const row = new ActionRowBuilder<ButtonBuilder>().addComponents(delButton);
+
+                await player.queuePage.msg?.edit({
+                    embeds: [embeds.queue(client.config.embedsColor, nowplaying, tracksQueue, methods[repeatMode])],
+                    components: [row],
+                    allowedMentions: { repliedUser: false },
+                });
 
                 await interaction.deferUpdate();
                 break;

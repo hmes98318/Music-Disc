@@ -9,7 +9,7 @@ export const description = 'Show currnet playlist';
 export const usage = 'queue';
 export const voiceChannel = true;
 export const showHelp = true;
-export const sendTyping = true;
+export const sendTyping = false;
 export const options = [];
 
 
@@ -57,8 +57,9 @@ export const execute = async (client: Client, message: Message) => {
 
     const prevButton = new ButtonBuilder().setCustomId('queuelist-prev').setEmoji(cst.button.prev).setStyle(ButtonStyle.Secondary);
     const nextButton = new ButtonBuilder().setCustomId('queuelist-next').setEmoji(cst.button.next).setStyle(ButtonStyle.Secondary);
-    const delButton = new ButtonBuilder().setCustomId('queuelist-delete').setLabel(cst.button.delete).setStyle(ButtonStyle.Danger);
-    const row = new ActionRowBuilder<ButtonBuilder>().addComponents(prevButton, nextButton, delButton)
+    const delButton = new ButtonBuilder().setCustomId('queuelist-delete').setLabel(cst.button.delete).setStyle(ButtonStyle.Primary);
+    const clsButton = new ButtonBuilder().setCustomId('queuelist-clear').setLabel(cst.button.clear).setStyle(ButtonStyle.Danger);
+    const row = new ActionRowBuilder<ButtonBuilder>().addComponents(prevButton, nextButton, delButton, clsButton);
 
     player.queuePage.msg = await message.reply({
         embeds: [embeds.queue(client.config.embedsColor, nowplaying, tracksQueue, methods[repeatMode])],
@@ -114,8 +115,9 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
 
     const prevButton = new ButtonBuilder().setCustomId('queuelist-prev').setEmoji(cst.button.prev).setStyle(ButtonStyle.Secondary);
     const nextButton = new ButtonBuilder().setCustomId('queuelist-next').setEmoji(cst.button.next).setStyle(ButtonStyle.Secondary);
-    const delButton = new ButtonBuilder().setCustomId('queuelist-delete').setLabel(cst.button.delete).setStyle(ButtonStyle.Danger);
-    const row = new ActionRowBuilder<ButtonBuilder>().addComponents(prevButton, nextButton, delButton)
+    const delButton = new ButtonBuilder().setCustomId('queuelist-delete').setLabel(cst.button.delete).setStyle(ButtonStyle.Primary);
+    const clsButton = new ButtonBuilder().setCustomId('queuelist-clear').setLabel(cst.button.clear).setStyle(ButtonStyle.Danger);
+    const row = new ActionRowBuilder<ButtonBuilder>().addComponents(prevButton, nextButton, delButton, clsButton);
 
     player.queuePage.msg = await interaction.editReply({
         embeds: [embeds.queue(client.config.embedsColor, nowplaying, tracksQueue, methods[repeatMode])],
