@@ -63,16 +63,27 @@ client.config = cst.config;
 
 const setEnvironment = () => {
     return new Promise<void>((resolve, _reject) => {
-        client.config.admin = process.env.BOT_ADMIN ?? client.config.admin;
-        client.config.name = process.env.BOT_NAME ?? client.config.name;
-        client.config.prefix = process.env.PREFIX ?? client.config.prefix;
-        client.config.playing = process.env.PLAYING ?? client.config.playing;
-        client.config.defaultVolume = Number(process.env.DEFAULT_VOLUME) ?? client.config.defaultVolume;
-        client.config.maxVolume = Number(process.env.MAX_VOLUME) ?? client.config.maxVolume;
-        client.config.autoLeave = process.env.AUTO_LEAVE === 'true' ?? client.config.autoLeave;
-        client.config.autoLeaveCooldown = Number(process.env.AUTO_LEAVE_COOLDOWN) ?? client.config.autoLeaveCooldown;
-        client.config.displayVoiceState = process.env.DISPLAY_VOICE_STATE === 'true' ?? client.config.displayVoiceState;
-        client.config.port = Number(process.env.PORT) ?? client.config.port;
+        // Admin of the bot
+        client.config.admin = process.env.BOT_ADMIN || client.config.admin;
+
+        // Bot settings
+        client.config.name = process.env.BOT_NAME || client.config.name;
+        client.config.prefix = process.env.BOT_PREFIX || client.config.prefix;
+        client.config.playing = process.env.BOT_PLAYING || client.config.playing;
+        client.config.embedsColor = process.env.BOT_EMBEDS_COLOR || client.config.embedsColor;
+
+        // Volume settings
+        client.config.defaultVolume = (typeof process.env.DEFAULT_VOLUME !== 'undefined' && !isNaN(Number(process.env.DEFAULT_VOLUME)) && Number(process.env.DEFAULT_VOLUME) !== 0) ? Number(process.env.DEFAULT_VOLUME) : client.config.defaultVolume;
+        client.config.maxVolume = (typeof process.env.MAX_VOLUME !== 'undefined' && !isNaN(Number(process.env.MAX_VOLUME)) && Number(process.env.MAX_VOLUME) !== 0) ? Number(process.env.MAX_VOLUME) : client.config.maxVolume;
+
+        // Auto leave channel settings
+        client.config.autoLeave = (process.env.AUTO_LEAVE === 'true') ? true : ((process.env.AUTO_LEAVE === 'false') ? false : client.config.autoLeave);
+        client.config.autoLeaveCooldown = (typeof (process.env.AUTO_LEAVE_COOLDOWN !== 'undefined') && !isNaN(Number(process.env.AUTO_LEAVE_COOLDOWN))) ? Number(process.env.AUTO_LEAVE_COOLDOWN) : client.config.autoLeaveCooldown;
+
+        // Show voice channel updates
+        client.config.displayVoiceState = (process.env.DISPLAY_VOICE_STATE === 'true') ? true : ((process.env.DISPLAY_VOICE_STATE === 'false') ? false : client.config.displayVoiceState);
+
+        client.config.port = (typeof (process.env.PORT !== 'undefined') && !isNaN(Number(process.env.PORT))) ? Number(process.env.PORT) : client.config.port;
 
         // console.log('setEnvironment: ', client.config);
         resolve();
@@ -218,7 +229,7 @@ Promise.resolve()
     .then(() => loadBlacklist())
     .then(() => {
         console.log(`${cst.color.green}*** All loaded successfully ***${cst.color.white}`);
-        client.login(process.env.TOKEN);
+        client.login(process.env.BOT_TOKEN);
     });
 
 
