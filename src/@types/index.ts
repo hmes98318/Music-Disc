@@ -2,6 +2,7 @@ import { HexColorString, Message } from "discord.js";
 
 
 export interface Config {
+    admin: string | null;
     name: string;
     prefix: string;
     playing: string;

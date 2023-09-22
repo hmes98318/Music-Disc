@@ -63,6 +63,7 @@ client.config = cst.config;
 
 const setEnvironment = () => {
     return new Promise<void>((resolve, _reject) => {
+        client.config.admin = process.env.BOT_ADMIN ?? client.config.admin;
         client.config.name = process.env.BOT_NAME ?? client.config.name;
         client.config.prefix = process.env.PREFIX ?? client.config.prefix;
         client.config.playing = process.env.PLAYING ?? client.config.playing;

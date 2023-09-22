@@ -14,7 +14,14 @@ export default async (client: Client, message: Message) => {
     const command = String(args.shift()).toLowerCase();
     const cmd = client.commands.get(command) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(command));
 
-    if (cmd && cmd.voiceChannel) {
+    if (!cmd) return;
+
+    if(cmd.requireAdmin && client.config.admin){
+        if(message.author.id !== client.config.admin)
+            return message.reply({ content: `❌ | This command requires administrator privileges.`, allowedMentions: { repliedUser: false } });
+    }
+
+    if (cmd.voiceChannel) {
         if (!message.member?.voice.channel)
             return message.reply({ content: `❌ | You are not connected to an audio channel.`, allowedMentions: { repliedUser: false } });
 
@@ -22,10 +29,10 @@ export default async (client: Client, message: Message) => {
             return message.reply({ content: `❌ | You are not on the same audio channel as me.`, allowedMentions: { repliedUser: false } });
     }
 
-    if (cmd) {
-        console.log(`(${cst.color.grey}${message.guild?.name}${cst.color.white}) ${message.author.username} : ${message.content}`);
 
-        if (cmd.sendTyping) message.channel.sendTyping();
-        cmd.execute(client, message, args);
-    }
+    console.log(`(${cst.color.grey}${message.guild?.name}${cst.color.white}) ${message.author.username} : ${message.content}`);
+
+    if (cmd.sendTyping) message.channel.sendTyping();
+    cmd.execute(client, message, args);
+
 };

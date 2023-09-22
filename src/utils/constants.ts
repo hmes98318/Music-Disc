@@ -4,6 +4,7 @@
 export const cst = {
     // Default config
     config: {
+        admin               : null, // It must be the user ID (string)
         name                : 'Music Disc',
         prefix              : '+',
         playing             : '+help | music',
@@ -14,7 +15,7 @@ export const cst = {
         autoLeaveCooldown   : 5000,
         displayVoiceState   : true,
         port                : 33333,
-        blacklist           : []    // It must be the user ID
+        blacklist           : []    // It must be the user ID (string[])
     },
     // Console color
     color: {

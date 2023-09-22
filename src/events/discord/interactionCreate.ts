@@ -343,7 +343,14 @@ export default async (client: Client, interaction: Interaction) => {
 
         const cmd = client.commands.get(interaction.commandName);
 
-        if (cmd && cmd.voiceChannel) {
+        if (!cmd) return;
+
+        if (cmd.requireAdmin && client.config.admin) {
+            if (interaction.user.id !== client.config.admin)
+                return interaction.editReply({ content: `❌ | This command requires administrator privileges.`, allowedMentions: { repliedUser: false } });
+        }
+
+        if (cmd.voiceChannel) {
             if (!voiceChannel) {
                 return interaction.reply({ content: `❌ | You are not connected to an audio channel.`, allowedMentions: { repliedUser: false } });
             }
@@ -352,10 +359,10 @@ export default async (client: Client, interaction: Interaction) => {
             }
         }
 
-        if (cmd) {
-            console.log(`(${cst.color.grey}${guildMember?.guild.name}${cst.color.white}) ${interaction.user.username} : /${interaction.commandName}`);
-            await interaction.deferReply();
-            cmd.slashExecute(client, interaction);
-        }
+
+        console.log(`(${cst.color.grey}${guildMember?.guild.name}${cst.color.white}) ${interaction.user.username} : /${interaction.commandName}`);
+
+        await interaction.deferReply();
+        cmd.slashExecute(client, interaction);
     }
 };

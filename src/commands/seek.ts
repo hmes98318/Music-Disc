@@ -9,6 +9,7 @@ export const usage = 'seek <[hh]mm]ss/[hh:mm]:ss> (ex: 3m20s, 1:20:55)';
 export const voiceChannel = true;
 export const showHelp = true;
 export const sendTyping = true;
+export const requireAdmin = false;
 export const options = [
     {
         name: "seek",

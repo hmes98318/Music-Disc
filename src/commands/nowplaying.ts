@@ -16,6 +16,7 @@ export const usage = 'nowplaying';
 export const voiceChannel = false;
 export const showHelp = true;
 export const sendTyping = true;
+export const requireAdmin = false;
 export const options = [];
 
 

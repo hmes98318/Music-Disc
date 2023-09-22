@@ -9,6 +9,7 @@ export const usage = 'server';
 export const voiceChannel = false;
 export const showHelp = true;
 export const sendTyping = false;
+export const requireAdmin = true;
 export const options = [];
 
 

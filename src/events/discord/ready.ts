@@ -45,5 +45,7 @@ module.exports = async (client: Client) => {
 
     client.lavashark.start(String(client.user?.id));
     client.user?.setActivity(client.config.playing);
+
+    if (client.config.admin) console.log(`Set admin as user ID : ${client.config.admin}`);
     console.log(`>>> Logged in as ${client.user?.username}`);
 };
