@@ -70,6 +70,7 @@ export const execute = async (client: Client, message: Message, args: string[]) 
         // Connects to the voice channel
         await player.connect();
         player.metadata = message;
+        player.filters.setVolume(client.config.defaultVolume);
 
         // Intial dashboard
         if (!player.dashboard) await dashboard.initial(client, message, player);
@@ -92,8 +93,6 @@ export const execute = async (client: Client, message: Message, args: string[]) 
                     await message.reply({ content: `❌ | The service is experiencing some problems, please try again.`, allowedMentions: { repliedUser: false } });
                     return await player.destroy();
                 });
-
-            player.filters.setVolume(client.config.defaultVolume);
         }
 
         return message.reply({ content: "✅ | Music added.", allowedMentions: { repliedUser: false } });
@@ -200,6 +199,7 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
         // Connects to the voice channel
         await player.connect();
         player.metadata = interaction;
+        player.filters.setVolume(client.config.defaultVolume);
 
         // Intial dashboard
         if (!player.dashboard) await dashboard.initial(client, interaction, player);
@@ -220,8 +220,6 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
                     await interaction.reply({ content: `❌ | The service is experiencing some problems, please try again.`, allowedMentions: { repliedUser: false } });
                     return await player.destroy();
                 });
-
-            player.filters.setVolume(client.config.defaultVolume);
         }
 
         return interaction.editReply({ content: "✅ | Music added.", allowedMentions: { repliedUser: false } });
