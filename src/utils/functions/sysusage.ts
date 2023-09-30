@@ -33,7 +33,6 @@ const sysusage = {
             cpuPercent = await getCpuPercentage() + '%';
         }
 
-        console.log(`CPU: ${cpuPercent}  ${strLoad}`);
         return {
             percent: cpuPercent,
             detail: strLoad
@@ -46,7 +45,6 @@ const sysusage = {
         const totalMb = (totalRam / (1024 * 1024)).toFixed(0);
         const usedMb = (usedRam / (1024 * 1024)).toFixed(0);
 
-        console.log(`Ram: ${usedRatio}%  (${usedMb} / ${totalMb} MB)`);
         return {
             percent: `${usedRatio}%`,
             detail: `(${usedMb} / ${totalMb} MB)`
@@ -59,7 +57,6 @@ const sysusage = {
         const totalMb = (totalHeap / (1024 * 1024)).toFixed(0);
         const usedMb = (usedHeap / (1024 * 1024)).toFixed(0);
 
-        console.log(`Heap: ${usedRatio}%  (${usedMb} / ${totalMb} MB)`);
         return {
             percent: `${usedRatio}%`,
             detail: `(${usedMb} / ${totalMb} MB)`

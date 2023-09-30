@@ -9,7 +9,7 @@ const formatBytes = (bytes: number) => {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
 
-const formatTime = (ms: number) => {
+const msToTime = (ms: number) => {
     const seconds = Math.floor(ms / 1000);
     const minutes = Math.floor(seconds / 60);
     const hours = Math.floor(minutes / 60);
@@ -29,7 +29,7 @@ const formatTime = (ms: number) => {
     }
 }
 
-const timestampToDate = (timestamp: number) => {
+const timestampToTime = (timestamp: number) => {
     const date = new Date(timestamp);
 
     // Get date
@@ -109,4 +109,4 @@ const timeToSeconds = (time: string) => {
 }
 
 
-export { formatBytes, formatTime, timestampToDate, timeToSeconds };
+export { formatBytes, msToTime, timestampToTime, timeToSeconds };

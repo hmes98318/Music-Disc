@@ -17,7 +17,7 @@ export interface Config {
 }
 
 export interface SystemInfo {
-    uptime: Date;
+    startupTime: Date;
     os_version: string;
     bot_version: string;
     node_version: string;

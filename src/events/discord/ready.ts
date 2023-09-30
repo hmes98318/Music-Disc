@@ -10,7 +10,7 @@ import { cst } from '../../utils/constants';
 
 module.exports = async (client: Client) => {
     client.info = {
-        uptime: new Date(),
+        startupTime: new Date(),
         os_version: await getOSVersion(),
         bot_version: `v${botVersion}`,
         node_version: process.version,
