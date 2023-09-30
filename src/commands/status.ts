@@ -24,12 +24,13 @@ export const execute = async (client: Client, message: Message) => {
         load: sysload,
         memory: sysusage.ram(),
         heap: sysusage.heap(),
-        uptime: uptime(client.info.uptime),
+        uptime: uptime(client.info.startupTime),
         ping: {
             bot: botPing,
             api: client.ws.ping
         },
-        serverCount: client.guilds.cache.size
+        serverCount: client.guilds.cache.size,
+        playing: client.lavashark.players.size
     }
 
     const nodes = client.lavashark.nodes;
@@ -71,12 +72,13 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
         load: sysload,
         memory: sysusage.ram(),
         heap: sysusage.heap(),
-        uptime: uptime(client.info.uptime),
+        uptime: uptime(client.info.startupTime),
         ping: {
             bot: botPing,
             api: client.ws.ping
         },
-        serverCount: client.guilds.cache.size
+        serverCount: client.guilds.cache.size,
+        playing: client.lavashark.players.size
     }
 
     const nodes = client.lavashark.nodes;

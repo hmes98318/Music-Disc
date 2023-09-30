@@ -45,6 +45,7 @@ export interface SystemStatus {
         api: number;
     };
     serverCount: number;
+    playing: number;
 }
 
 export interface QueuePage {
