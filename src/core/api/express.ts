@@ -5,7 +5,7 @@ import type { Client } from 'discord.js';
 
 
 const registerExpressEvents = (client: Client, app: Express) => {
-    const views = `${__dirname}/views/`;
+    const views = `./views`;
 
     app.use(express.static(views));
 
