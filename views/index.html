@@ -316,7 +316,7 @@
             nodesArray.forEach((node) => {
                 const nodeContainer = document.createElement("div");
                 nodeContainer.className = "node-container";
-                nodeContainer.textContent = `${node.id} [${node.state === 1 ? "CONNECTED" : node.state === 2 ? "DISCONNECTED" : "CONNECTING"}] - Ping: ${node.ping}ms`;
+                nodeContainer.textContent = `${node.id} [${node.state === 1 ? "CONNECTED" : node.state === 2 ? "DISCONNECTED" : "CONNECTING"}] - ${node.ping}ms`;
 
                 // 根據節點狀態設置樣式
                 if (node.state === 0) { // CONNECTING
