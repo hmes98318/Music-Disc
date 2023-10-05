@@ -18,7 +18,7 @@ import {
     setEnvironment
 } from './core/loader';
 import { cst } from './utils/constants';
-import nodeList from '../node-list.json';
+import nodeList from '../nodelist.json';
 
 import type { Config, QueuePage, SystemInfo } from './@types';
 
