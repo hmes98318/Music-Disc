@@ -10,10 +10,10 @@ import consoleStamp from 'console-stamp';
 
 import {
     checkNodesStats,
+    loadAPI,
     loadBlacklist,
     loadCommands,
     loadDiscordEvents,
-    loadExpressFramework,
     loadLavaSharkEvents,
     setEnvironment
 } from './core/loader';
@@ -68,9 +68,9 @@ Promise.resolve()
     .then(() => loadDiscordEvents(client))
     .then(() => loadLavaSharkEvents(client))
     .then(() => loadCommands(client))
-    .then(() => checkNodesStats(client))
     .then(() => loadBlacklist(client))
-    .then(() => { if (client.config.loadAPI) loadExpressFramework(client) })
+    .then(() => { if (client.config.loadAPI) loadAPI(client) })
+    .then(() => checkNodesStats(client))
     .then(() => {
         console.log(`${cst.color.green}*** All loaded successfully ***${cst.color.white}`);
         client.login(process.env.BOT_TOKEN);

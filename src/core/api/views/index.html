@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bot Status</title>
+    <link rel="icon" type="image/x-icon" href="https://raw.githubusercontent.com/hmes98318/Music-Disc/main/public/imgs/favicon.ico">
+</head>
+
+<body>
+    <div class="navbar">
+        <a href="/">
+            <img src="https://raw.githubusercontent.com/hmes98318/Music-Disc/main/public/imgs/logo2.svg" alt="Logo"
+                width="75" height="75">
+        </a>
+        <a class="dashboard-button" href="/">Dashboard</a>
+    </div>
+
+    <div class="botdetails" style="margin-bottom: 200px;">
+        <h2>System Information</h2>
+        <ul>
+            <li>Music Disc: <span id="info_bot_version"></span></li>
+            <li>Node.js: <span id="info_node_version"></span></li>
+            <li>Discord.js: <span id="info_dc_version"></span></li>
+            <li>LavaShark: <span id="info_shark_version"></span></li>
+            <li>OS: <span id="info_os_version"></span></li>
+            <li>CPU: <span id="info_cpu"></span></li>
+            <li>Startup time: <span id="info_startupTime"></span></li>
+        </ul>
+
+        <h2>Statistics</h2>
+        <ul>
+            <li>Server: <span id="stat_server"></span></li>
+            <li>Playing: <span id="stat_playing"></span></li>
+        </ul>
+
+        <h2>Status</h2>
+        <ul>
+            <li>Uptime: <span id="status_uptime"></span></li>
+            <li>CPU: <span id="status_load_percent"></span><span id="status_load_detail"></span></li>
+            <li>RAM: <span id="status_memory_percent"></span><span id="status_memory_detail"></span></li>
+            <li>HEAP: <span id="status_heap_percent"></span><span id="status_heap_detail"></span></li>
+            <li>Ping: <span id="status_ping_api"></span></li>
+        </ul>
+
+        <div class="divider"></div>
+
+        <h2>Node Status</h2>
+        <div id="nodes-refresh-timer">Refreshing in: 10 seconds</div>
+        <div class="node-status-wrapper">
+            <ul id="nodeStatusList"></ul>
+        </div>
+    </div>
+
+    <footer id="footer" style="text-align: center; padding: 10px;">
+        <p id="copyright" style="margin: 0;"></p>
+    </footer>
+</body>
+
+</html>
+
+
+<style type="text/css">
+    /****************************************************/
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+
+    /*----- Navbar -----*/
+    .navbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #5b6eae;
+        padding: 0px 15px;
+        z-index: 1000;
+    }
+
+    .navbar a {
+        color: white;
+        text-decoration: none;
+    }
+
+    .navbar img {
+        /* 懸停時放大 logo 速度 */
+        transition: transform 0.6s ease;
+        margin-top: 5px;
+        margin-bottom: -5px;
+    }
+
+    .navbar img:hover {
+        /* 懸停時放大 logo */
+        transform: scale(1.1);
+    }
+
+    .dashboard-button {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #5b6eae;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        text-decoration: none;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        margin-right: 25px;
+    }
+
+    .dashboard-button:hover {
+        /* 懸停時背景顏色 */
+        background-color: #475b99;
+    }
+
+    /*----- END Navbar -----*/
+
+    /*----- Bot info -----*/
+
+    .botdetails {
+        margin-top: 10%;
+        padding-left: 10%;
+        padding-right: 10%;
+    }
+
+    li {
+        margin-bottom: 10px;
+    }
+
+    span {
+        font-weight: bold;
+        margin-right: 10px;
+    }
+
+    #status_load_detail,
+    #status_memory_detail,
+    #status_heap_detail {
+        background-color: #f0f0f0;
+        font-weight: normal;
+    }
+
+    /*----- END Bot info -----*/
+
+    /* 分隔線 */
+    .divider {
+        border-top: 2px solid #707070;
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+
+    /*----- Node Status -----*/
+    .node-info-and-stats {
+        display: flex;
+        justify-content: space-between;
+        /* 間隔 */
+        margin-bottom: 10px;
+    }
+
+    .info,
+    .stats,
+    .cpu,
+    .memory {
+        flex: 1;
+        padding: 10px;
+        background-color: #f5f5f5;
+    }
+
+    .node-cpu-and-memory {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .cpu,
+    .memory {
+        flex: 1;
+        padding: 10px;
+        background-color: #f5f5f5;
+    }
+
+    /*----- Node Status 懸停效果 -----*/
+    .node-container {
+        margin-top: 20px;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background-color: #f5f5f5;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .node-container:hover {
+        background-color: #e0e0e0;
+    }
+
+    .node-content {
+        display: none;
+    }
+
+    .node-info-and-stats {
+        display: flex;
+        justify-content: space-between;
+        /* 間隔 */
+        margin-bottom: 10px;
+    }
+
+    .info,
+    .stats,
+    .cpu,
+    .memory {
+        flex: 1;
+        padding: 10px;
+        background-color: #f5f5f5;
+        /* 添加顏色過度效果 */
+        transition: background-color 0.3s;
+    }
+
+    /* 增加懸停樣式 */
+    .node-container:hover .info,
+    .node-container:hover .stats,
+    .node-container:hover .cpu,
+    .node-container:hover .memory {
+        /* 懸停時背景顏色 */
+        background-color: #e0e0e0;
+    }
+
+    .node-cpu-and-memory {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .cpu,
+    .memory {
+        flex: 1;
+        padding: 10px;
+        background-color: #f5f5f5;
+        /* 添加顏色過度效果 */
+        transition: background-color 0.3s;
+    }
+
+    /* 添加悬停样式 */
+    .node-container:hover .cpu,
+    .node-container:hover .memory {
+        /* 懸停時背景顏色 */
+        background-color: #e0e0e0;
+    }
+
+    /*----- END Node Status 懸停效果 -----*/
+    /*----- END Node Status -----*/
+</style>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+<script>
+    $(function () {
+        // 初始化 HTML
+        setFooter();
+
+        // ------------------------------------------------- //
+
+        const statusRefreshInterval = 1000;     // 'api_bot_status' 刷新時間 5s
+        const nodesRefreshInterval = 10000;     // 'api_nodes_status' 刷新時間 10s
+
+        const nodeCollapseState = {};           // 節點清單的折疊狀態
+
+
+        // Get bot info
+        $.get('/api/info', (data) => {
+            document.getElementById("info_startupTime").textContent = timestampToTime(data.startupTime);
+            document.getElementById("info_os_version").textContent = data.os_version;
+            document.getElementById("info_bot_version").textContent = data.bot_version;
+            document.getElementById("info_node_version").textContent = data.node_version;
+            document.getElementById("info_dc_version").textContent = data.dc_version;
+            document.getElementById("info_shark_version").textContent = data.shark_version;
+            document.getElementById("info_cpu").textContent = data.cpu;
+        });
+
+
+        const socket = io();
+
+        // Get bot status
+        console.log('[emit] bot_status');
+        socket.emit("bot_status");
+
+        // Get nodes status
+        console.log('[emit] nodes_status');
+        socket.emit("nodes_status");
+
+
+        socket.on('api_bot_status', (data) => {
+            document.getElementById("stat_server").textContent = data.serverCount;
+            document.getElementById("stat_playing").textContent = data.playing;
+            document.getElementById("status_uptime").textContent = data.uptime;
+            document.getElementById("status_load_percent").textContent = data.load.percent;
+            document.getElementById("status_load_detail").textContent = data.load.detail;
+            document.getElementById("status_memory_percent").textContent = data.memory.percent;
+            document.getElementById("status_memory_detail").textContent = data.memory.detail;
+            document.getElementById("status_heap_percent").textContent = data.heap.percent;
+            document.getElementById("status_heap_detail").textContent = data.heap.detail;
+            document.getElementById("status_ping_api").textContent = data.ping.api + 'ms';
+        });
+
+        socket.on('api_nodes_status', (data) => {
+            console.log('api_nodes_status', data);
+
+            const nodesArray = data;
+            const nodeStatusList = document.getElementById("nodeStatusList");
+
+            // 清空現有的節點狀態列表
+            nodeStatusList.innerHTML = "";
+
+            nodesArray.forEach((node) => {
+                const nodeContainer = document.createElement("div");
+                nodeContainer.className = "node-container";
+                nodeContainer.textContent = `${node.id} [${node.state === 1 ? "CONNECTED" : node.state === 2 ? "DISCONNECTED" : "CONNECTING"}] - Ping: ${node.ping}ms`;
+
+                // 根據節點狀態設置樣式
+                if (node.state === 0) { // CONNECTING
+                    nodeContainer.style.color = "blue";
+                }
+                else if (node.state === 2) { // DISCONNECTED
+                    nodeContainer.style.color = "red";
+                }
+                else if (node.state === 1) { // CONNECTED
+                    nodeContainer.style.color = "green";
+
+                    const nodeContent = document.createElement("div");
+                    nodeContent.className = "node-content";
+                    nodeContent.innerHTML = `
+                    <div class="node-info-and-stats" style="color: black;">
+                        <div class="info">
+                            <h3>Info</h3>
+                            <p>Version: <strong>${node.info.version.semver}</strong></p>
+                            <p>JVM: <strong>${node.info.jvm}</strong></p>
+                            <p>Lavaplayer: <strong>${node.info.lavaplayer}</strong></p>
+                            <p>Git: <strong>${node.info.git.commit}</strong></p>
+                            <p>Build time: <strong>${timestampToTime(node.info.buildTime)}</strong></p>
+                        </div>
+                        <div class="stats">
+                            <h3>Stats</h3>
+                            <p>Uptime: <strong>${msToTime(node.stats.uptime)}</strong></p>
+                            <p>Player: <strong>${node.stats.players}</strong></p>
+                            <p>Playing: <strong>${node.stats.playingPlayers}</strong></p>
+                        </div>
+                    </div>
+                    <div class="node-cpu-and-memory" style="color: black;">
+                        <div class="cpu">
+                            <h3>CPU</h3>
+                            <p>Cores: <strong>${node.stats.cpu.cores}</strong></p>
+                            <p>System Load: <strong>${node.stats.cpu.systemLoad.toFixed(6)}</strong></p>
+                            <p>Lavalink Load: <strong>${node.stats.cpu.lavalinkLoad.toFixed(6)}</strong></p>
+                        </div>
+                        <div class="memory">
+                            <h3>Memory</h3>
+                            <p>Used: <strong>${formatBytes(node.stats.memory.used)}</strong></p>
+                            <p>Free: <strong>${formatBytes(node.stats.memory.free)}</strong></p>
+                            <p>Allocated: <strong>${formatBytes(node.stats.memory.allocated)}</strong></p>
+                            <p>Reservable: <strong>${formatBytes(node.stats.memory.reservable)}</strong></p>
+                        </div>
+                    </div>
+                    `;
+
+                    // 初始化摺疊狀態
+                    if (nodeCollapseState[node.id] === undefined) {
+                        nodeContent.style.display = "none";
+                        nodeCollapseState[node.id] = "none";
+                    }
+                    nodeContent.style.display = nodeCollapseState[node.id];
+
+                    // 添加摺疊狀態點擊事件
+                    nodeContainer.addEventListener("click", () => {
+                        if (nodeContent.style.display === "none") {
+                            nodeContent.style.display = "block";
+                            nodeCollapseState[node.id] = "block";
+                        }
+                        else {
+                            nodeContent.style.display = "none";
+                            nodeCollapseState[node.id] = "none";
+                        }
+                    });
+
+                    // 將節點內容加入節點區塊中
+                    nodeContainer.appendChild(nodeContent);
+                }
+
+                // 將節點區塊添加到列表中
+                nodeStatusList.appendChild(nodeContainer);
+            });
+        });
+
+
+        /**
+         * bot_status 刷新計時器
+         */
+        setInterval(async () => {
+            console.log('[emit] bot_status');
+            socket.emit("bot_status");
+        }, statusRefreshInterval);
+
+        /**
+         * nodes_status 刷新計時器
+         */
+        // ------------------------------------------------- //
+
+        let nodesTimeLeft = nodesRefreshInterval / 1000;    // 計時器初始時間 (s)
+        let countdownElement = document.getElementById("nodes-refresh-timer");
+
+        const nodesRefreshTimer = () => {
+            countdownElement.innerHTML = `<span style="opacity: 0.3;"> refreshing in ${nodesTimeLeft} s </span>`;
+
+            if (nodesTimeLeft === 0) {
+                nodesTimeLeft = nodesRefreshInterval / 1000;
+                socket.emit("nodes_status");
+                console.log('[emit] nodes_status');
+            }
+            else {
+                nodesTimeLeft--;
+            }
+            setTimeout(nodesRefreshTimer, 1000);
+        };
+        nodesRefreshTimer();
+
+        // ------------------------------------------------- //
+    });
+
+
+    const setFooter = () => {
+        const githubLink = document.createElement("a");
+        githubLink.href = "https://github.com/hmes98318/Music-Disc";
+        githubLink.innerHTML = `Copyright &copy; 2022-${new Date().getFullYear()} Music-Disc`;
+        githubLink.style.textDecoration = "none";
+        githubLink.style.color = "inherit";
+        githubLink.target = "_blank";
+
+        githubLink.addEventListener("mouseover", () => {
+            githubLink.style.color = "#0056b3"; // 设置悬停颜色
+        });
+
+        githubLink.addEventListener("mouseout", () => {
+            githubLink.style.color = "inherit"; // 恢复原始颜色
+        });
+
+        const copyrightText = document.getElementById("copyright");
+        copyrightText.appendChild(githubLink);
+    }
+
+
+    const formatBytes = (bytes) => {
+        if (bytes === 0) return '0 Bytes';
+
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+
+    /**
+     * 
+     * @param {timestamp} - timestamp or Date
+     * @returns {string} - YYYY-MM-DD HH:MM:SS
+     */
+    const timestampToTime = (timestamp) => {
+        const date = new Date(timestamp);
+
+        // Get date
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1;
+        const day = date.getDate();
+
+        // Get time
+        const hours = date.getHours();
+        const minutes = date.getMinutes();
+        const seconds = date.getSeconds();
+
+        // Format date & time
+        const formattedDate = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+        const formattedTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+        return `${formattedDate} ${formattedTime}`;
+    }
+
+    const msToTime = (ms) => {
+        const seconds = Math.floor(ms / 1000);
+        const minutes = Math.floor(seconds / 60);
+        const hours = Math.floor(minutes / 60);
+        const days = Math.floor(hours / 24);
+
+        if (days > 0) {
+            return `${days} day${days > 1 ? 's' : ''} ${hours % 24} hour${hours % 24 > 1 ? 's' : ''}`;
+        }
+        else if (hours > 0) {
+            return `${hours} hour${hours > 1 ? 's' : ''} ${minutes % 60} minute${minutes % 60 > 1 ? 's' : ''}`;
+        }
+        else if (minutes > 0) {
+            return `${minutes} minute${minutes > 1 ? 's' : ''} ${seconds % 60} second${seconds % 60 > 1 ? 's' : ''}`;
+        }
+        else {
+            return `${seconds % 60} second${seconds % 60 > 1 ? 's' : ''}`;
+        }
+    }
+</script>
