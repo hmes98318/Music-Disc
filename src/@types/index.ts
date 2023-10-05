@@ -1,10 +1,15 @@
-import { HexColorString, Message } from "discord.js";
+import type {
+    ClientPresenceStatus,
+    HexColorString,
+    Message
+} from "discord.js";
 
 
 export interface Config {
     admin: string | null;
     name: string;
     prefix: string;
+    status: ClientPresenceStatus | string;
     playing: string;
     embedsColor: HexColorString | string | number;
     defaultVolume: number;
@@ -12,6 +17,7 @@ export interface Config {
     autoLeave: boolean;
     autoLeaveCooldown: number;
     displayVoiceState: boolean;
+    loadAPI: boolean;
     port: number;
     blacklist: string[];
 }

@@ -1,6 +1,10 @@
 import os from 'os';
 
-import { Client, version as dcVersion } from 'discord.js';
+import {
+    Client,
+    ClientPresenceStatus,
+    version as dcVersion
+} from 'discord.js';
 import { VERSION as sharkVersion } from 'lavashark';
 
 import { version as botVersion } from '../../../package.json';
@@ -45,6 +49,7 @@ module.exports = async (client: Client) => {
 
     client.lavashark.start(String(client.user?.id));
     client.user?.setActivity(client.config.playing);
+    client.user?.setStatus(client.config.status as ClientPresenceStatus);
 
     if (client.config.admin) console.log(`Set admin as user ID : ${client.config.admin}`);
     console.log(`>>> Logged in as ${client.user?.username}`);
