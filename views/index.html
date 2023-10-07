@@ -56,10 +56,11 @@
 
     <footer id="footer" style="text-align: center; padding: 10px;">
         <p id="copyright" style="margin: 0;"></p>
+        <script src="/static/js/setFooter.js"></script>
     </footer>
 </body>
 
-</html>
+
 
 
 <style type="text/css">
@@ -254,15 +255,16 @@
     /*----- END Node Status -----*/
 </style>
 
+
+
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+<script src="/static/js/formatBytes.js"></script>
+<script src="/static/js/msToTime.js"></script>
+<script src="/static/js/timestampToTime.js"></script>
 <script>
     $(function () {
-        // 初始化 HTML
-        setFooter();
-
-        // ------------------------------------------------- //
-
         const statusRefreshInterval = 1000;     // 'api_bot_status' 刷新時間 5s
         const nodesRefreshInterval = 10000;     // 'api_nodes_status' 刷新時間 10s
 
@@ -427,82 +429,6 @@
 
         // ------------------------------------------------- //
     });
-
-
-    const setFooter = () => {
-        const githubLink = document.createElement("a");
-        githubLink.href = "https://github.com/hmes98318/Music-Disc";
-        githubLink.innerHTML = `Copyright &copy; 2022-${new Date().getFullYear()} Music-Disc`;
-        githubLink.style.textDecoration = "none";
-        githubLink.style.color = "inherit";
-        githubLink.target = "_blank";
-
-        githubLink.addEventListener("mouseover", () => {
-            githubLink.style.color = "#0056b3"; // 设置悬停颜色
-        });
-
-        githubLink.addEventListener("mouseout", () => {
-            githubLink.style.color = "inherit"; // 恢复原始颜色
-        });
-
-        const copyrightText = document.getElementById("copyright");
-        copyrightText.appendChild(githubLink);
-    }
-
-
-    const formatBytes = (bytes) => {
-        if (bytes === 0) return '0 Bytes';
-
-        const k = 1024;
-        const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-    }
-
-    /**
-     * 
-     * @param {timestamp} - timestamp or Date
-     * @returns {string} - YYYY-MM-DD HH:MM:SS
-     */
-    const timestampToTime = (timestamp) => {
-        const date = new Date(timestamp);
-
-        // Get date
-        const year = date.getFullYear();
-        const month = date.getMonth() + 1;
-        const day = date.getDate();
-
-        // Get time
-        const hours = date.getHours();
-        const minutes = date.getMinutes();
-        const seconds = date.getSeconds();
-
-        // Format date & time
-        const formattedDate = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
-        const formattedTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-
-        return `${formattedDate} ${formattedTime}`;
-    }
-
-    const msToTime = (ms) => {
-        const seconds = Math.floor(ms / 1000);
-        const minutes = Math.floor(seconds / 60);
-        const hours = Math.floor(minutes / 60);
-        const days = Math.floor(hours / 24);
-
-        if (days > 0) {
-            return `${days} day${days > 1 ? 's' : ''} ${hours % 24} hour${hours % 24 > 1 ? 's' : ''}`;
-        }
-        else if (hours > 0) {
-            return `${hours} hour${hours > 1 ? 's' : ''} ${minutes % 60} minute${minutes % 60 > 1 ? 's' : ''}`;
-        }
-        else if (minutes > 0) {
-            return `${minutes} minute${minutes > 1 ? 's' : ''} ${seconds % 60} second${seconds % 60 > 1 ? 's' : ''}`;
-        }
-        else {
-            return `${seconds % 60} second${seconds % 60 > 1 ? 's' : ''}`;
-        }
-    }
 </script>
+
+</html>
