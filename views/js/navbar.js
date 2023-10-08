@@ -1,9 +1,6 @@
 const navbarHTML = `
     <div class="navbar">
-        <a href="/">
-            <img src="https://raw.githubusercontent.com/hmes98318/Music-Disc/main/public/imgs/logo/logo2.svg" alt="Logo"
-                width="75" height="75">
-        </a>
+        <img src="https://raw.githubusercontent.com/hmes98318/Music-Disc/main/public/imgs/logo/logo2.svg" alt="Logo">
         <a class="dashboard-button" href="/dashboard">Dashboard</a>
     </div>
 `;
@@ -15,7 +12,7 @@ const navbarCSS = `
         position: fixed;
         top: 0;
         left: 0;
-        height: 10vh;
+        height: 8vh;
         width: 100%;
         display: flex;
         justify-content: space-between;
@@ -33,6 +30,9 @@ const navbarCSS = `
     .navbar img {
         /* 懸停時放大 logo 速度 */
         transition: transform 0.6s ease;
+        cursor: pointer;
+        height: 90%;
+        width: 4%;
         margin-top: 5px;
         margin-bottom: -5px;
     }
@@ -72,4 +72,12 @@ document.addEventListener("DOMContentLoaded", function () {
     const style = document.createElement("style");
     style.textContent = navbarCSS;
     document.head.appendChild(style);
+
+    // Logo 點擊事件處理
+    const logo = document.querySelector('.navbar img');
+
+    logo.addEventListener('click', function (event) {
+        event.preventDefault();
+        window.location.href = '/';
+    });
 });

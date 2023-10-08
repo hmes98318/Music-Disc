@@ -1,119 +1,143 @@
-    body {
-        font-family: Arial, Helvetica, sans-serif;
-        background-color: #36393f;
-        color: #ffffff;
-        margin: 0;
-        padding: 0;
-    }
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #36393f;
+    color: #ffffff;
+    margin: 0;
+    padding: 0;
+}
 
-    /*----- 滑鼠選取時的效果 -----*/
+/*----- 滑鼠選取時的效果 -----*/
 
-    ::selection {
-        background-color: #7289da;
-        color: #ffffff;
-    }
+::selection {
+    background-color: #7289da;
+    color: #ffffff;
+}
 
-    ::-moz-selection {
-        background-color: #7289da;
-        color: #ffffff;
-    }
+::-moz-selection {
+    background-color: #7289da;
+    color: #ffffff;
+}
 
-    /*----- END 滑鼠選取時的效果 -----*/
+/*----- END 滑鼠選取時的效果 -----*/
 
-    /*----- Bot info -----*/
+/*----- Bot info -----*/
 
-    .botdetails {
-        margin-top: 10%;
-        margin-bottom: 200px;
-        padding-left: 10%;
-        padding-right: 10%;
-    }
+.botdetails {
+    margin-top: 10%;
+    margin-bottom: 200px;
+    padding-left: 10%;
+    padding-right: 10%;
+}
 
-    li {
-        margin-bottom: 10px;
-    }
+li {
+    margin-bottom: 10px;
+}
 
-    span {
-        font-weight: bold;
-        margin-right: 10px;
-        color: #7289da;
-    }
+span {
+    font-weight: bold;
+    margin-right: 10px;
+    color: #7289da;
+}
 
-    #status_load_detail,
-    #status_memory_detail,
-    #status_heap_detail {
-        opacity: 0.7;
-        color: #7289da;
-        font-weight: normal;
-    }
+#status_load_detail,
+#status_memory_detail,
+#status_heap_detail {
+    opacity: 0.7;
+    color: #7289da;
+    font-weight: normal;
+}
 
-    /*----- END Bot info -----*/
+/*----- END Bot info -----*/
 
-    /* 分隔線 */
-    .divider {
-        border-top: 2px solid #707070;
-        margin-top: 10px;
-        margin-bottom: 10px;
-    }
+/* 分隔線 */
+.divider {
+    border-top: 2px solid #707070;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
 
-    /*----- Node Status -----*/
+/*----- Node Status -----*/
 
-    .node-info-and-stats {
-        display: flex;
-        justify-content: space-between;
-        /* 間隔 */
-        margin-bottom: 10px;
-    }
+.node-info-and-stats {
+    display: flex;
+    justify-content: space-between;
+    /* 間隔 */
+    margin-bottom: 10px;
+}
 
-    .node-cpu-and-memory {
-        display: flex;
-        justify-content: space-between;
-    }
+.node-cpu-and-memory {
+    display: flex;
+    justify-content: space-between;
+}
 
-    .info,
-    .stats,
-    .cpu,
-    .memory {
-        flex: 1;
-        padding: 10px;
-        color: #ffffff;
-        background-color: #2f3136;
-        /* 添加顏色過度效果 */
-        transition: background-color 0.3s;
-    }
+.info,
+.stats,
+.cpu,
+.memory {
+    flex: 1;
+    padding: 10px;
+    color: #ffffff;
+    background-color: #2f3136;
+    /* 添加顏色過度效果 */
+    transition: background-color 0.3s;
+}
 
-    .node-container {
-        margin-top: 20px;
-        padding: 15px;
-        border-radius: 5px;
-        background-color: #2f3136;
-        box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-        cursor: pointer;
-        transition: background-color 0.3s;
-    }
+.node-container {
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 5px;
+    background-color: #2f3136;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
 
-    .node-content {
-        display: none;
-    }
+.node-content {
+    display: none;
+}
 
-    .node-content strong {
-        color: #7289da;
-    }
+.node-content strong {
+    color: #7289da;
+}
 
-    /*----- Node Status 懸停效果 -----*/
+/*----- Node Status 懸停效果 -----*/
 
-    .node-container:hover {
-        background-color: #4f545c;
-    }
+.node-container:hover {
+    background-color: #4f545c;
+}
 
-    /* 增加懸停樣式 */
-    .node-container:hover .info,
-    .node-container:hover .stats,
-    .node-container:hover .cpu,
-    .node-container:hover .memory {
-        /* 懸停時背景顏色 */
-        background-color: #4f545c;
-    }
+/* 增加懸停樣式 */
+.node-container:hover .info,
+.node-container:hover .stats,
+.node-container:hover .cpu,
+.node-container:hover .memory {
+    /* 懸停時背景顏色 */
+    background-color: #4f545c;
+}
 
-    /*----- END Node Status 懸停效果 -----*/
-    /*----- END Node Status -----*/
+/*----- END Node Status 懸停效果 -----*/
+/*----- END Node Status -----*/
+
+/*----- 滾動條處理 -----*/
+
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+/* 軌道樣式 */
+::-webkit-scrollbar-track {
+    background: #36393f;
+}
+
+/* 滾動條滑塊 */
+::-webkit-scrollbar-thumb {
+    background: #7289da;
+    border-radius: 6px;
+}
+
+/* 滾動條懸停 */
+::-webkit-scrollbar-thumb:hover {
+    background: #677bc4;
+}
+
+/*----- END 滾動條處理 -----*/
