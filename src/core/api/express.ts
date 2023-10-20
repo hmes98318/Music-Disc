@@ -6,8 +6,8 @@ import type { Client } from 'discord.js';
 
 const registerExpressEvents = (client: Client, app: Express) => {
     const views = `${process.cwd()}/views`;
-    const js = `${process.cwd()}/views/js`
-    const css = `${process.cwd()}/views/css`
+    const js = `${process.cwd()}/views/js`;
+    const css = `${process.cwd()}/views/css`;
 
     // app.use(express.static(views));
     app.use('/static/js', express.static(js));
@@ -17,27 +17,24 @@ const registerExpressEvents = (client: Client, app: Express) => {
     /**
      * ---------- Site ----------
      */
-    app.get('/', function (req, res) {
-        res.sendFile(`${views}/index.html`);
-    });
 
-    app.get('/dashboard', function (req, res) {
+    app.get('/dashboard', (req, res) => {
         res.sendFile(`${views}/dashboard.html`);
     });
 
-    app.get('/dashboard/serverlist', function (req, res) {
-        res.sendFile(`${views}/dashboard/serverlist.html`);
+    app.get('/nodeslist', (req, res) => {
+        res.sendFile(`${views}/nodeslist.html`);
     });
 
-    app.get('/dashboard/nodeslist', function (req, res) {
-        res.sendFile(`${views}/dashboard/nodeslist.html`);
+    app.get('/serverlist', (req, res) => {
+        res.sendFile(`${views}/serverlist.html`);
     });
 
-    app.get('/servers/:id', function (req, res) {
+    app.get('/servers/:id', (req, res) => {
         const server = client.guilds.cache.find((x) => x.id === req.params.id);
 
         if (!server) {
-            res.redirect('/dashboard/serverlist');
+            res.redirect('/serverlist');
         }
         else {
             res.sendFile(`${views}/server.html`);
@@ -48,20 +45,31 @@ const registerExpressEvents = (client: Client, app: Express) => {
     /**
      * ---------- API ----------
      */
+
     app.get('/api/info', (req, res) => {
-        console.log('[api] /api/info', req.ip);
+        // console.log('[api] /api/info', req.ip);
+
         const info = client.info
         res.json(info);
     });
 
     app.get('/api/serverlist', (req, res) => {
-        console.log('[api] /api/serverlist', req.ip);
-        const serverlist = client.guilds.cache
+        // console.log('[api] /api/serverlist', req.ip);
+
+        const allServer = client.guilds.cache;
+        const playingServers = new Set(client.lavashark.players.keys());
+
+        const serverlist = allServer.map((guild) => ({
+            data: guild,
+            active: playingServers.has(guild.id),
+        }));
+
         res.send(serverlist);
     });
 
     app.get('/api/server/info/:guildID', async (req, res) => {
-        console.log(`[api] /api/server/info/${req.params.guildID}`, req.ip);
+        // console.log(`[api] /api/server/info/${req.params.guildID}`, req.ip);
+
         const guild = client.guilds.cache.get(req.params.guildID);
 
         await guild!.members.fetch()
@@ -77,21 +85,9 @@ const registerExpressEvents = (client: Client, app: Express) => {
 
     app.get('/api/user/:userID', (req, res) => {
         // console.log(`[api] /api/user/avatar/${req.params.id}`, req.ip);
+
         const user = client.users.cache.get(req.params.userID);
-
         res.send(user);
-    });
-
-    app.get('/api/lavashark/nowPlaying/:guildID', (req, res) => {
-        // console.log(`[api] /api/lavashark/getPlayer/${req.params.guildID}`, req.ip);
-        const player = client.lavashark.getPlayer(req.params.guildID);
-
-        if (!player) {
-            res.send('NOT_FOUND');
-        }
-        else {
-            res.send('EXIST');
-        }
     });
 
     app.get('/api/lavashark/getThumbnail/:source/:id', (req, res) => {
@@ -103,6 +99,13 @@ const registerExpressEvents = (client: Client, app: Express) => {
         else {
             res.send('NOT_FOUND');
         }
+    });
+
+
+
+
+    app.use('*', (req, res) => {
+        res.redirect('/dashboard');
     });
 };
 
