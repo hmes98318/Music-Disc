@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="icon" type="image/x-icon"
+        href="https://raw.githubusercontent.com/hmes98318/Music-Disc/main/public/imgs/html/favicon.ico">
+
+    <link rel="stylesheet" type="text/css" href="/static/css/components/container.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/components/scrollbar.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/nodeslist.page.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="sidebar-left">
+            <a href="/dashboard">Dashboard</a>
+            <a href="/nodeslist" class="current-page">Nodes List</a>
+            <a href="/serverlist">Servers List</a>
+        </div>
+
+        <div class="content">
+            <h2>Nodes Status</h2>
+            <div id="nodes-refresh-timer"></div>
+            <div class="node-status-wrapper">
+                <div id="nodes-container" class="nodes-list-container">
+                    <ul id="nodeStatusList"></ul>
+                    <div class="spacing"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+
+<script src="/static/js/utils/formatBytes.js"></script>
+<script src="/static/js/utils/msToTime.js"></script>
+<script src="/static/js/utils/timestampToTime.js"></script>
+
+<script src="/static/js/components/navbar.js"></script>
+<script src="/static/js/components/footer.js"></script>
+<script src="/static/js/nodeslist.page.js"></script>
+
+</html>

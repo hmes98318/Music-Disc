@@ -1,0 +1,78 @@
+/*----- Node Status -----*/
+
+.node-info-and-stats {
+    display: flex;
+    justify-content: space-between;
+    /* 間隔 */
+    margin-bottom: 10px;
+}
+
+.node-cpu-and-memory {
+    display: flex;
+    justify-content: space-between;
+}
+
+.info,
+.stats,
+.cpu,
+.memory {
+    flex: 1;
+    padding: 10px;
+    color: #ffffff;
+    background-color: #2f3136;
+    /* 添加顏色過度效果 */
+    transition: background-color 0.3s;
+}
+
+.node-container {
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 5px;
+    background-color: #2f3136;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.node-content {
+    display: none;
+}
+
+.node-content strong {
+    color: #7289da;
+}
+
+/*----- Node Status 懸停效果 -----*/
+
+.node-container:hover {
+    background-color: #4f545c;
+}
+
+/* 增加懸停樣式 */
+.node-container:hover .info,
+.node-container:hover .stats,
+.node-container:hover .cpu,
+.node-container:hover .memory {
+    /* 懸停時背景顏色 */
+    background-color: #4f545c;
+}
+
+/*----- END Node Status 懸停效果 -----*/
+/*----- END Node Status -----*/
+
+
+/* 節點清單滾動條處理 */
+.nodes-list-container {
+    margin-top: 2%;
+    flex-basis: 85%;
+    max-height: 80vh;
+    overflow-y: auto;
+    display: block;
+    flex-wrap: wrap;
+    justify-content: start;
+}
+
+/* 刷新計時器與節點清單間距調整 */
+.spacing {
+    margin-bottom: 10%;
+}
