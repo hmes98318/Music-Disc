@@ -2,19 +2,20 @@ import { sysusage } from '../../utils/functions/sysusage';
 import { uptime } from '../../utils/functions/uptime';
 
 import type { Server } from 'socket.io';
-import type { Client } from 'discord.js';
+import type { Client, VoiceChannel } from 'discord.js';
 
 
 const registerSocketioEvents = (client: Client, io: Server) => {
 
     io.on('connection', (socket) => {
-        console.log('[socketio] a user connected');
+        // console.log('[socketio] a user connected');
 
         /**
          * bot_status
+         * @emits api_bot_status
          */
         socket.on("bot_status", async () => {
-            console.log('[api] emit bot_status');
+            // console.log('[api] emit bot_status');
 
             const systemStatus = {
                 load: await sysusage.cpu(),
@@ -34,9 +35,10 @@ const registerSocketioEvents = (client: Client, io: Server) => {
 
         /**
          * nodes_status
+         * @emits api_nodes_status
          */
         socket.on("nodes_status", async () => {
-            console.log('[api] emit nodes_status');
+            // console.log('[api] emit nodes_status');
 
             let nodesStatus = [];
             for (const node of client.lavashark.nodes) {
@@ -72,11 +74,37 @@ const registerSocketioEvents = (client: Client, io: Server) => {
 
             socket.emit('api_nodes_status', nodesStatus);
         });
+
+        /**
+         * lavashark_nowPlaying
+         * @emits api_lavashark_nowPlaying
+         */
+        socket.on("lavashark_nowPlaying", async (guildID: string) => {
+            const player = client.lavashark.getPlayer(guildID);
+
+            if (!player) {
+                socket.emit('api_lavashark_nowPlaying', 'NOT_FOUND');
+            }
+            else {
+                const voiceChannel = client.channels.cache.get(player.voiceChannelId) as VoiceChannel;
+                const playingData = {
+                    voiceChannel: voiceChannel,
+                    members: voiceChannel.members,
+                    current: player.current,
+                    isPaused: player.paused,
+                    repeatMode: player.repeatMode,
+                    volume: player.volume,
+                    maxVolume: client.config.maxVolume
+                };
+
+                socket.emit('api_lavashark_nowPlaying', playingData);
+            }
+        });
     });
 
 
     io.on('disconnect', (socket) => {
-        console.log('[socketio] a user disconnected');
+        // console.log('[socketio] a user disconnected');
     });
 };
 
