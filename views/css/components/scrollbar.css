@@ -1,0 +1,26 @@
+/*----- 滾動條處理 -----*/
+
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+/* 軌道樣式 */
+::-webkit-scrollbar-track {
+    background: #36393f;
+    /* Discord主題的滾動條軌道背景顏色 */
+}
+
+/* 滾動條滑塊 */
+::-webkit-scrollbar-thumb {
+    background: #7289da;
+    /* Discord主題的滾動條滑塊顏色 */
+    border-radius: 6px;
+}
+
+/* 滾動條懸停 */
+::-webkit-scrollbar-thumb:hover {
+    background: #677bc4;
+    /* Discord主題的滾動條滑塊懸停顏色 */
+}
+
+/*----- END 滾動條處理 -----*/

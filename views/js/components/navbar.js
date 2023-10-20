@@ -1,7 +1,6 @@
 const navbarHTML = `
     <div class="navbar">
         <img src="https://raw.githubusercontent.com/hmes98318/Music-Disc/main/public/imgs/logo/logo2.svg" alt="Logo">
-        <a class="dashboard-button" href="/dashboard">Dashboard</a>
     </div>
 `;
 
@@ -20,11 +19,6 @@ const navbarCSS = `
         background-color: #5b6eae;
         padding: 0px 15px;
         z-index: 1000;
-    }
-
-    .navbar a {
-        color: white;
-        text-decoration: none;
     }
 
     .navbar img {

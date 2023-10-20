@@ -1,0 +1,81 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #36393f;
+    color: #ffffff;
+    overflow: hidden;
+}
+
+/* 圖片轉換成圓形 */
+.rounded-image {
+    border-radius: 50%;
+}
+
+.container {
+    display: flex;
+    margin-top: 8vh;
+}
+
+/*----- 左側邊欄 -----*/
+
+.sidebar-left {
+    /* 佔可用空間 15% */
+    flex-basis: 15%;
+    background-color: #2f3136;
+    border-right: 1px solid #444749;
+    overflow-y: auto;
+    height: 100vh;
+}
+
+.sidebar-left a {
+    text-decoration: none;
+    display: block;
+    padding: 10px;
+    color: #ffffff;
+    font-weight: bold;
+}
+
+/* 左側邊欄懸停效果 */
+.sidebar-left a:hover {
+    background-color: #4f545c;
+    cursor: pointer;
+}
+
+/* 當前頁面標籤上色 */
+.sidebar-left a.current-page {
+    background-color: #4f545c;
+    font-weight: bold;
+}
+
+/*----- END 左側邊欄 -----*/
+
+
+/*----- 中間內容 -----*/
+
+.content {
+    flex-grow: 1;
+    padding: 20px;
+    /* 貼齊左側邊欄 */
+    justify-content: flex-end;
+    width: 80%;
+    background-color: #36393f;
+    color: #ffffff;
+}
+
+/*----- END 中間內容 -----*/
+
+
+/*----- 滑鼠選取時的效果 -----*/
+
+::selection {
+    background-color: #7289da;
+    color: #ffffff;
+}
+
+::-moz-selection {
+    background-color: #7289da;
+    color: #ffffff;
+}
+
+/*----- END 滑鼠選取時的效果 -----*/
