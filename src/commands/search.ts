@@ -71,13 +71,16 @@ export const execute = async (client: Client, message: Message, args: string[]) 
         await player.connect();
         player.metadata = message;
         player.filters.setVolume(client.config.defaultVolume);
+    } catch (error) {
+        console.log(error);
+        return message.reply({ content: `❌ | I can't join voice channel.`, allowedMentions: { repliedUser: false } });
+    }
 
+    try {
         // Intial dashboard
         if (!player.dashboard) await dashboard.initial(client, message, player);
     } catch (error) {
-        console.log(error);
         await dashboard.destroy(player, client.config.embedsColor);
-        return message.reply({ content: `❌ | I can't join voice channel.`, allowedMentions: { repliedUser: false } });
     }
 
     await message.react('👍');
@@ -200,13 +203,16 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
         await player.connect();
         player.metadata = interaction;
         player.filters.setVolume(client.config.defaultVolume);
+    } catch (error) {
+        console.log(error);
+        return interaction.editReply({ content: `❌ | I can't join voice channel.`, allowedMentions: { repliedUser: false } });
+    }
 
+    try {
         // Intial dashboard
         if (!player.dashboard) await dashboard.initial(client, interaction, player);
     } catch (error) {
-        console.log(error);
         await dashboard.destroy(player, client.config.embedsColor);
-        return interaction.editReply({ content: `❌ | I can't join voice channel.`, allowedMentions: { repliedUser: false } });
     }
 
 
