@@ -9,11 +9,11 @@ import { registerSocketioEvents } from '../api/socketio';
 import type { Client } from 'discord.js';
 
 
-const loadAPI = (client: Client) => {
+const loadSite = (client: Client) => {
     return new Promise<void>((resolve, reject) => {
         console.log(`-> loading Web Framework ......`);
 
-        const port = client.config.port || 33333;
+        const port = client.config.site.port || 33333;
         const app = express();
         const server = createServer(app);
         const io = new Server(server);
@@ -29,4 +29,4 @@ const loadAPI = (client: Client) => {
     });
 };
 
-export { loadAPI };
+export { loadSite };

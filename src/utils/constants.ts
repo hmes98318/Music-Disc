@@ -15,9 +15,14 @@ export const cst = {
         autoLeave           : true,
         autoLeaveCooldown   : 5000,
         displayVoiceState   : true,
-        loadAPI             : true,
-        port                : 33333,
-        blacklist           : []            // It must be the user ID (string[])
+        blacklist           : [],           // It must be the user ID (string[])
+        enableSite          : true,
+        site: {
+            port            : 33333,
+            username        : 'admin',
+            password        : 'password',
+            sessionSecret   : 'This is just between you and me',
+        },
     },
     // Console color
     color: {

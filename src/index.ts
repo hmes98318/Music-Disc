@@ -10,7 +10,7 @@ import consoleStamp from 'console-stamp';
 
 import {
     checkNodesStats,
-    loadAPI,
+    loadSite,
     loadBlacklist,
     loadCommands,
     loadDiscordEvents,
@@ -69,7 +69,7 @@ Promise.resolve()
     .then(() => loadLavaSharkEvents(client))
     .then(() => loadCommands(client))
     .then(() => loadBlacklist(client))
-    .then(() => { if (client.config.loadAPI) loadAPI(client) })
+    .then(() => { if (client.config.enableSite) loadSite(client) })
     .then(() => checkNodesStats(client))
     .then(() => {
         console.log(`${cst.color.green}*** All loaded successfully ***${cst.color.white}`);

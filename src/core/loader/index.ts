@@ -1,5 +1,5 @@
 export * from './checkNodesStats';
-export * from './loadAPI';
+export * from './loadSite';
 export * from './loadBlacklist';
 export * from './loadCommands';
 export * from './loadDiscordEvents';

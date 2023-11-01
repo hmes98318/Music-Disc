@@ -17,9 +17,16 @@ export interface Config {
     autoLeave: boolean;
     autoLeaveCooldown: number;
     displayVoiceState: boolean;
-    loadAPI: boolean;
-    port: number;
+    enableSite: boolean;
+    site: SiteConfig;
     blacklist: string[];
+}
+
+interface SiteConfig {
+    port: number;
+    username: string;
+    password: string;
+    sessionSecret: string;
 }
 
 export interface SystemInfo {
