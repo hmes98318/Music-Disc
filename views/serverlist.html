@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="icon" type="image/x-icon"
+        href="https://raw.githubusercontent.com/hmes98318/Music-Disc/main/public/imgs/html/favicon.ico">
+
+    <link rel="stylesheet" type="text/css" href="/static/css/components/container.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/components/scrollbar.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/serverlist.page.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="sidebar-left">
+            <a href="/dashboard">Dashboard</a>
+            <a href="/nodeslist">Nodes List</a>
+            <a href="/serverlist" class="current-page">Servers List</a>
+        </div>
+
+        <div class="content">
+            <h2>Select a server to manage</h2>
+            <div id="servers-container" class="server-list-container">
+                <div id="servers" class="server-list"></div>
+            </div>
+        </div>
+    </div>
+</body>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+
+<script src="/static/js/components/navbar.js"></script>
+<script src="/static/js/serverlist.page.js"></script>
+
+</html>

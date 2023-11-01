@@ -1,0 +1,81 @@
+/*----- Server List -----*/
+
+.server-list-container {
+    flex-basis: 85%;
+    max-height: 80vh; 
+    /* 啟用垂直滾動停 */
+    overflow-y: auto; 
+    display: block;
+    flex-wrap: wrap;
+    justify-content: start;
+}
+
+.server-list {
+    flex-basis: 85%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: start;
+}
+
+.server-list>* {
+    /* server圖像間距 */
+    margin: 5px;
+    position: relative;
+    /* 添加過渡效果 */
+    transition: transform 0.3s;
+}
+
+.server-list>*:hover {
+    /* 懸停放大server圖像 */
+    transform: scale(1.05);
+}
+
+.server-list>*:hover .img-label {
+    opacity: 1;
+}
+
+/* server圖像變成圓形 */
+img {
+    border-radius: 50%;
+    transition: transform 0.3s, box-shadow 0.3s;
+    cursor: pointer;
+}
+
+/* server名稱的樣式 */
+.img-label {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    font-size: 12px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    text-align: center;
+    /* 最大寬度，防止文字溢出 */
+    max-width: 100%;
+    /* 如果server名稱太長，添加省略號 */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    /* 提高顯示server名稱的權重，避免被蓋住 */
+    z-index: 1;
+}
+
+/*----- END Server List -----*/
+
+/* 在線綠點 */
+.active-dot {
+    width: 16px;
+    height: 16px;
+    background-color: #43b581;
+    box-shadow:0 0 0 3px #36393f;
+    border-radius: 50%;
+    position: absolute;
+    /* 將綠點放在server圖像的右下方 */
+    bottom: 5px; 
+    right: 5px; 
+}
