@@ -1,0 +1,276 @@
+/*----- Server Page -----*/
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 0;
+    /* 隱藏頁面的滾動條 */
+    overflow: hidden;
+    background-color: #36393f;
+    color: #ffffff;
+}
+
+/* 圖片轉成圓形 */
+.rounded-image {
+    height: 60px;
+    width: 60px;
+    border-radius: 50%;
+}
+
+.container {
+    display: flex;
+    margin-top: 8vh;
+}
+
+/*----- Back to Dashboard 按鈕 -----*/
+
+.back-button {
+    display: block;
+    border: none;
+    padding: 10px 10px;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: bold;
+    width: 100%;
+    background-color: #444749;
+    color: #ffffff;
+}
+
+.back-button:hover {
+    background-color: #677bc4;
+}
+
+/*----- END Back to Dashboard 按鈕 -----*/
+
+/*----- 左側邊欄 -----*/
+
+.sidebar-left {
+    flex-basis: 15%;
+    background-color: #2f3136;
+    border-right: 1px solid #444749;
+    overflow-y: auto;
+    height: 100vh;
+}
+
+.sidebar-left a {
+    text-decoration: none;
+    display: block;
+}
+
+.sidebar-left h2 {
+    margin-left: 10px;
+    color: #ffffff;
+}
+
+.scrollable-sidebar {
+    overflow-y: auto;
+    /* 60px 是上面 Back to Dashboard 連結的高度 */
+    height: calc(100vh - 60px);
+}
+
+#server-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+#server-list li {
+    display: flex;
+    align-items: center;
+}
+
+#server-list li span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #ffffff;
+}
+
+#server-list li img {
+    width: 40px;
+    height: 40px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-left: 10px;
+    margin-right: 10px;
+    border-radius: 50%;
+}
+
+#server-list li a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #ffffff;
+    font-weight: bold;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#server-list li.active {
+    background-color: #4f545c;
+}
+
+/* 懸停效果 */
+#server-list li:hover {
+    background-color: #4f545c;
+    cursor: pointer;
+}
+
+.image-container {
+    position: relative;
+}
+
+/*----- END 左側邊欄 -----*/
+
+/*----- 中間內容 -----*/
+
+.content {
+    flex-grow: 1;
+    overflow-y: auto;
+    /* 佔滿整個視窗高度 */
+    height: 100vh;
+    background-color: #36393f;
+    color: #ffffff;
+}
+
+.server-info {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 10px;
+}
+
+.server-info img {
+    width: 60px;
+    height: 60px;
+    margin-right: 10px;
+    border-radius: 50%;
+}
+
+/*----- END 中間內容 -----*/
+
+/*----- 右側邊欄 -----*/
+
+.sidebar-right {
+    flex-basis: 15%;
+    background-color: #2f3136;
+    border-left: 1px solid #444749;
+    overflow-y: auto;
+    /* 佔滿整個視窗高度 */
+    height: 100vh;
+}
+
+.sidebar-right h3 {
+    margin-left: 10%;
+    color: #ffffff;
+}
+
+.members-list {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.member {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.member img {
+    width: 40px;
+    height: 40px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-left: 10px;
+    margin-right: 10px;
+    border-radius: 50%;
+}
+
+.member h4 {
+    font-size: 14px;
+    margin: 0;
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #ffffff;
+}
+
+/* 懸停效果 */
+.member:hover {
+    background-color: #4f545c;
+    cursor: pointer;
+}
+
+/*----- END 右側邊欄 -----*/
+
+/*----- now-playing 訊息 -----*/
+
+.now-playing {
+    background-color: #2f3136;
+    padding-top: 4%;
+    padding-bottom: 4%;
+    padding-left: 5%;
+    padding-right: 5%;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    border: 1px solid #444749;
+    border-radius: 5px;
+    display: none;
+}
+
+.now-playing h2 {
+    margin: 0;
+    font-size: 18px;
+    color: #ffffff;
+    margin-bottom: 20px;
+}
+
+.now-playing p {
+    margin: 10px 0;
+    font-size: 16px;
+    color: #b9bbbe;
+}
+
+.now-playing a {
+    font-size: 18px;
+    text-decoration: none;
+    color: #7289da;
+}
+
+.now-playing a:hover {
+    text-decoration: underline;
+}
+
+.now-playing img {
+    display: none;
+    /* margin: 0 auto; */
+    max-width: 30%;
+    margin-bottom: 20px;
+}
+
+/* 滑鼠懸浮在圖片上時出現可以點擊的滑鼠指示圖案 */
+.now-playing img:hover {
+    cursor: pointer;
+}
+
+.server-info img {
+    display: none;
+}
+
+/*----- END now-playing 訊息 -----*/
+
+
+/* 在線綠點 */
+.active-dot {
+    width: 10px;
+    height: 10px;
+    background-color: #43b581;
+    box-shadow: 0 0 0 3px #36393f;
+    border-radius: 50%;
+    position: absolute;
+    /* 將綠點放在server圖像的右下方 */
+    bottom: 11px;
+    right: 11px;
+}

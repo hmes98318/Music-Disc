@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Server management</title>
+    <link rel="icon" type="image/x-icon"
+        href="https://raw.githubusercontent.com/hmes98318/Music-Disc/main/public/imgs/html/favicon.ico">
+
+    <link rel="stylesheet" type="text/css" href="/static/css/server.page.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="sidebar-left">
+            <div class="back-button-container" onclick="window.location.href='/serverlist'">
+                <button class="back-button">Back to Server List</button>
+            </div>
+            <h2>Servers</h2>
+            <ul id="server-list">
+            </ul>
+        </div>
+
+        <div class="content">
+            <div id="server-info" class="server-info">
+                <img id="server_image" alt="server images" width="100" height="100">
+                <h2 id="server_name"></h2>
+            </div>
+            <div id="now-playing" class="now-playing">
+                <div class="not-playing-content">
+                    <p id="not_playing_text"></p>
+                </div>
+                <div class="playing-content">
+                    <h2 id="playing_h2"></h2>
+                    <img id="playing_thumbnail" src="" alt="thumbnail">
+                    <a id="playing_title" target="_blank"></a>
+                    <p id="playing_author"></p>
+                    <p id="playing_duration"></p>
+                    <p id="playing_volume"></p>
+                    <p id="playing_loop"></p>
+                </div>
+            </div>
+            <div id="server-refresh-timer">Refreshing in: 10 seconds</div>
+        </div>
+
+        <div class="sidebar-right">
+            <div class="voice-channel-members"></div>
+            <h3>Server members</h3>
+            <div id="members-list">
+            </div>
+        </div>
+    </div>
+</body>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+
+<script src="/static/js/components/navbar.js"></script>
+<script src="/static/js/components/footer.js"></script>
+<script src="/static/js/server.page.js"></script>
+
+</html>
