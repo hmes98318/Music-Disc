@@ -32,7 +32,6 @@ const setEnvironment = (client: Client) => {
         client.config.site.port = isNumber(process.env.PORT) ? Number(process.env.PORT) : client.config.site.port;
         client.config.site.username = process.env.SITE_USERNAME || client.config.site.username;
         client.config.site.password = process.env.SITE_PASSWORD || client.config.site.password;
-        client.config.site.sessionSecret = process.env.SITE_SESSION_SECRET || client.config.site.sessionSecret;
 
         // console.log('setEnvironment: ', client.config);
         resolve();

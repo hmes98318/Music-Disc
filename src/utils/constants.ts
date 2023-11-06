@@ -20,8 +20,7 @@ export const cst = {
         site: {
             port            : 33333,
             username        : 'admin',
-            password        : 'password',
-            sessionSecret   : 'This is just between you and me',
+            password        : 'password'
         },
     },
     // Console color

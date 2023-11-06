@@ -26,7 +26,6 @@ interface SiteConfig {
     port: number;
     username: string;
     password: string;
-    sessionSecret: string;
 }
 
 export interface SystemInfo {
