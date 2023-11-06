@@ -5,29 +5,30 @@ import type { Client } from 'discord.js';
 
 
 const registerExpressEvents = (client: Client, app: Express) => {
-    const views = `${process.cwd()}/views`;
-    const js = `${process.cwd()}/views/js`;
-    const css = `${process.cwd()}/views/css`;
+    
+    const cssPath = `${process.cwd()}/views/css`;
+    const jsPath = `${process.cwd()}/views/js`;
+    const libPath = `${process.cwd()}/js/lib`;
+    const viewsPath = `${process.cwd()}/views`;
 
-    // app.use(express.static(views));
-    app.use('/static/js', express.static(js));
-    app.use('/static/css', express.static(css));
-
+    app.use('/static/css', express.static(cssPath));
+    app.use('/static/js', express.static(jsPath));
+    app.use('/static/js/lib', express.static(libPath));
 
     /**
      * ---------- Site ----------
      */
 
     app.get('/dashboard', (req, res) => {
-        res.sendFile(`${views}/dashboard.html`);
+        res.sendFile(`${viewsPath}/dashboard.html`);
     });
 
     app.get('/nodeslist', (req, res) => {
-        res.sendFile(`${views}/nodeslist.html`);
+        res.sendFile(`${viewsPath}/nodeslist.html`);
     });
 
     app.get('/serverlist', (req, res) => {
-        res.sendFile(`${views}/serverlist.html`);
+        res.sendFile(`${viewsPath}/serverlist.html`);
     });
 
     app.get('/servers/:id', (req, res) => {
@@ -37,7 +38,7 @@ const registerExpressEvents = (client: Client, app: Express) => {
             res.redirect('/serverlist');
         }
         else {
-            res.sendFile(`${views}/server.html`);
+            res.sendFile(`${viewsPath}/server.html`);
         }
     });
 
