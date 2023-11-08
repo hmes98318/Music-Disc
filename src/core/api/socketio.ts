@@ -1,22 +1,38 @@
+import cookie from "cookie";
+import { NodeState } from 'lavashark';
+
 import { sysusage } from '../../utils/functions/sysusage';
 import { uptime } from '../../utils/functions/uptime';
 
-import type { Server } from 'socket.io';
 import type { Client, VoiceChannel } from 'discord.js';
-import { NodeState } from 'lavashark';
+import type { Server } from 'socket.io';
+import type { SessionManager } from '../lib/SessionManager';
 
 
-const registerSocketioEvents = (client: Client, io: Server) => {
+const registerSocketioEvents = (client: Client, io: Server, sessionManager: SessionManager) => {
 
     io.on('connection', (socket) => {
         // console.log('[socketio] a user connected');
-        //console.log('socket.cookie', socket.request.headers.cookie);
+
+
+        /**
+         * Check for a valid session using the sessionID stored in the client's cookie.
+         */
+        const sessionCheck = () => {
+            const cookies = cookie.parse(socket.request.headers.cookie as string || '');
+            const sessionId = cookies.sessionID;
+            const session = sessionManager.getSession(sessionId)
+
+            if (!session) return io.disconnectSockets();
+        }
+
 
         /**
          * bot_status
          * @emits api_bot_status
          */
         socket.on("bot_status", async () => {
+            sessionCheck();
             // console.log('[api] emit bot_status');
 
             const systemStatus = {
@@ -40,6 +56,7 @@ const registerSocketioEvents = (client: Client, io: Server) => {
          * @emits api_nodes_status
          */
         socket.on("nodes_status", async () => {
+            sessionCheck();
             // console.log('[api] emit nodes_status');
 
             const nodePromises = client.lavashark.nodes.map(async (node) => {
@@ -97,6 +114,9 @@ const registerSocketioEvents = (client: Client, io: Server) => {
          * @emits api_lavashark_nowPlaying
          */
         socket.on("lavashark_nowPlaying", async (guildID: string) => {
+            sessionCheck();
+            // console.log('[api] emit lavashark_nowPlaying');
+
             const player = client.lavashark.getPlayer(guildID);
 
             if (!player) {
