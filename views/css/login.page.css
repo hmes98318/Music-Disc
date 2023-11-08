@@ -1,0 +1,113 @@
+/*----- Login Page -----*/
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #36393f;
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.login-container {
+    background-color: #2f3136;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    max-width: 300px;
+    width: 100%;
+}
+
+/*----- Logo -----*/
+
+.logo-container img {
+    transition: transform 0.6s ease;
+}
+
+.logo-container img:hover {
+    transform: scale(1.1);
+}
+
+/*----- END Logo -----*/
+
+/*----- 輸入框 -----*/
+
+label {
+    display: block;
+    margin-top: 10px;
+    color: #ffffff;
+    text-align: left;
+}
+
+input {
+    width: calc(100% - 22px);
+    padding: 10px;
+    margin-top: 5px;
+    background-color: #2f3136;
+    border: none;
+    border-bottom: 1px solid #7289da;
+    color: #ffffff;
+    /* Space between input and container */
+    margin-right: 10px;
+}
+
+/*----- END 輸入框 -----*/
+
+/*----- Login 按鈕 -----*/
+
+button {
+    display: block;
+    width: 100%;
+    padding: 8px;
+    margin-top: 10px;
+    font-size: 1.3em;
+    background-color: #7289da;
+    border: none;
+    color: #ffffff;
+    cursor: pointer;
+    /* 顏色過度效果 */
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #677bc4;
+}
+
+button:active {
+    background-color: #546fcd;
+}
+
+/*----- END Login 按鈕 -----*/
+
+/*----- Login 錯誤訊息 -----*/
+
+.forgot-password {
+    float: right;
+    cursor: pointer;
+    color: #7289da;
+    font-size: 0.8em;
+    /* 取消底線 */
+    text-decoration: none;
+}
+
+.forgot-password:hover {
+    /* 添加底線 */
+    text-decoration: underline;
+    color: #677bc4;
+}
+
+#login-failure-message {
+    color: red;
+    /* Use visibility instead of display */
+    visibility: hidden;
+    text-align: left;
+    font-size: 0.8em;
+    margin-top: 10px;
+    margin-bottom: 0px;
+}
+
+/*----- END Login 錯誤訊息 -----*/
