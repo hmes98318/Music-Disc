@@ -1,4 +1,6 @@
 import * as dotenv from 'dotenv';
+import { hashGenerator } from '../lib/hashGenerator';
+
 import type { Client } from 'discord.js';
 
 
@@ -31,7 +33,7 @@ const setEnvironment = (client: Client) => {
         client.config.enableSite = isTrueOrFalse(process.env.LOAD_API) ?? client.config.enableSite;
         client.config.site.port = isNumber(process.env.PORT) ? Number(process.env.PORT) : client.config.site.port;
         client.config.site.username = process.env.SITE_USERNAME || client.config.site.username;
-        client.config.site.password = process.env.SITE_PASSWORD || client.config.site.password;
+        client.config.site.password = hashGenerator.generateHash(process.env.SITE_PASSWORD || client.config.site.password);
 
         // console.log('setEnvironment: ', client.config);
         resolve();
