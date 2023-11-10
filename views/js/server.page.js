@@ -38,7 +38,7 @@ $(async function () {
         // li 添加點擊事件
         const serverListItems = $('#server-list li');
 
-        serverListItems.on('click', () => {
+        serverListItems.on('click', function () {
             const targetURL = $(this).find('a').attr('href');
             window.location.href = targetURL;
         });
@@ -162,7 +162,7 @@ $(async function () {
 
     const serverListItems = $('#sidebar-left back-button');
 
-    serverListItems.on('click', () => {
+    serverListItems.on('click', function () {
         const targetURL = $(this).find('a').attr('href');
         window.location.href = targetURL;
     });
