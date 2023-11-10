@@ -25,11 +25,12 @@ export const cst = {
     },
     // Console color
     color: {
-        white   : '\x1B[0m',
-        grey    : '\x1B[2m',
-        green   : '\x1B[32m',
         cyan    : '\x1B[36m',
-        red     : '\x1B[31m'
+        green   : '\x1B[32m',
+        grey    : '\x1B[2m',
+        red     : '\x1B[31m',
+        white   : '\x1B[0m',
+        yellow  : '\x1B[33m'
     },
     // Dashboard button icon
     button: {
