@@ -1,42 +1,57 @@
 /**
  * Required
- * <script src="/static/js/lib/jquery-3.7.1.min.js"></script>
+ * <script src="/static/js/lib/socket.io-4.7.2.min.js"></script>
  */
 
 
-$(function () {
-    const loginForm = $("#login-form");
-    const loginFailureMessage = $("#login-failure-message");
-    const forgotPassword = $("#forgot-password");
+document.addEventListener("DOMContentLoaded", () => {
+    const loginForm = document.getElementById("login-form");
+    const loginFailureMessage = document.getElementById("login-failure-message");
+    const forgotPassword = document.getElementById("forgot-password");
 
 
-    loginForm.submit((event) => {
+    loginForm.addEventListener("submit", (event) => {
         event.preventDefault();
 
-        const username = $("#username").val();
-        const password = $("#password").val();
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
         const data = {
             username: username,
             password: password
         };
 
-        $.post("/api/login", data, (data) => {
-            if (data === "SUCCEED") {
-                window.location.href = "/dashboard";
-            }
-            else if (data === "FAILED") {
-                loginFailureMessage.text("Username or password is incorrect");
-                loginFailureMessage.css("visibility", "visible");
-            }
-            else if (data === "BLOCKED_5") {
-                loginFailureMessage.text("Too many login attempts, locked for 5 minutes.");
-                loginFailureMessage.css("visibility", "visible");
-            }
-        });
+        fetch("/api/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                return response.text();
+            })
+            .then((data) => {
+                if (data === "SUCCEED") {
+                    window.location.href = "/dashboard";
+                }
+                else if (data === "FAILED") {
+                    loginFailureMessage.textContent = "Username or password is incorrect";
+                    loginFailureMessage.style.visibility = "visible";
+                }
+                else if (data === "BLOCKED_5") {
+                    loginFailureMessage.textContent = "Too many login attempts, locked for 5 minutes.";
+                    loginFailureMessage.style.visibility = "visible";
+                }
+            })
+            .catch((error) => console.error("Error:", error));
     });
 
 
-    forgotPassword.click(() => {
+    forgotPassword.addEventListener("click", function () {
         alert("The password is set in the SITE_PASSWORD value of the .env file.");
     });
 });

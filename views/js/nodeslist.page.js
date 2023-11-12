@@ -1,11 +1,10 @@
 /**
  * Required
- * <script src="/static/js/lib/jquery-3.7.1.min.js"></script>
  * <script src="/static/js/lib/socket.io-4.7.2.min.js"></script>
  */
 
 
-$(function () {
+document.addEventListener("DOMContentLoaded", () => {
     const nodesRefreshInterval = 10000;     // 'api_nodes_status' 刷新時間 10s
     const nodeCollapseState = {};           // 節點清單的折疊狀態
 
@@ -85,7 +84,7 @@ $(function () {
                 nodeContent.style.display = nodeCollapseState[node.id];
 
                 // 添加摺疊狀態點擊事件
-                nodeContainer.addEventListener("click", () => {
+                nodeContainer.addEventListener("click", function () {
                     if (nodeContent.style.display === "none") {
                         nodeContent.style.display = "block";
                         nodeCollapseState[node.id] = "block";
