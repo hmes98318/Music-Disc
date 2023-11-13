@@ -1,4 +1,5 @@
 import { Client, VoiceBasedChannel, VoiceState } from "discord.js";
+import { cst } from "../../utils/constants";
 
 
 let pool = new Map();
@@ -16,7 +17,7 @@ export default async (client: Client, oldState: VoiceState, newState: VoiceState
     const blacklist = client.config.blacklist || [];
 
     if (newState.channelId === null) {
-        if (display) console.log(`-- ${newState.member?.user.username} left channel`);
+        if (display) console.log(cst.color.grey + `-- (${newState.member?.guild.name}) ${newState.member?.user.username} left channel` + cst.color.white);
 
         // If the member who left the channel is not bot, check if the channel still has members
         if (!oldState.member?.user.bot) {
@@ -52,7 +53,7 @@ export default async (client: Client, oldState: VoiceState, newState: VoiceState
         }
     }
     else if (oldState.channelId === null) {
-        if (display) console.log(`-- ${newState.member?.user.username} joined channel ${newState.channel?.name}`);
+        if (display) console.log(cst.color.grey + `-- (${newState.member?.guild.name}) ${newState.member?.user.username} joined channel ${newState.channel?.name}` + cst.color.white);
 
         // If the member who left the channel is not bot, check if the channel still has members
         if (!oldState.member?.user.bot) {
@@ -90,7 +91,7 @@ export default async (client: Client, oldState: VoiceState, newState: VoiceState
         }
     }
     else {
-        if (display) console.log(`-- ${newState.member?.user.username} moved channel ${oldState.channel?.name} to ${newState.channel?.name}`);
+        if (display) console.log(cst.color.grey + `-- (${newState.member?.guild.name}) ${newState.member?.user.username} moved channel ${oldState.channel?.name} to ${newState.channel?.name}` + cst.color.white);
 
 
         // If the member who left the channel is not bot, check if the channel still has members
