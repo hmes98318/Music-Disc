@@ -22,6 +22,7 @@ export const cst = {
             username        : 'admin',
             password        : 'password'
         },
+        enableLocalNode     : false,
     },
     // Console color
     color: {

@@ -17,9 +17,10 @@ export interface Config {
     autoLeave: boolean;
     autoLeaveCooldown: number;
     displayVoiceState: boolean;
+    blacklist: string[];
     enableSite: boolean;
     site: SiteConfig;
-    blacklist: string[];
+    enableLocalNode: boolean;
 }
 
 interface SiteConfig {

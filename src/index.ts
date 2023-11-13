@@ -15,6 +15,7 @@ import {
     loadCommands,
     loadDiscordEvents,
     loadLavaSharkEvents,
+    loadLocalNode,
     setEnvironment
 } from './core/loader';
 import { cst } from './utils/constants';
@@ -65,11 +66,12 @@ client.config = cst.config;
 
 Promise.resolve()
     .then(() => setEnvironment(client))
+    .then(async () => { if (client.config.enableLocalNode) await loadLocalNode(client) })
     .then(() => loadDiscordEvents(client))
     .then(() => loadLavaSharkEvents(client))
     .then(() => loadCommands(client))
     .then(() => loadBlacklist(client))
-    .then(() => { if (client.config.enableSite) loadSite(client) })
+    .then(async () => { if (client.config.enableSite) await loadSite(client) })
     .then(() => checkNodesStats(client))
     .then(() => {
         console.log(`${cst.color.green}*** All loaded successfully ***${cst.color.white}`);

@@ -35,6 +35,9 @@ const setEnvironment = (client: Client) => {
         client.config.site.username = process.env.SITE_USERNAME || client.config.site.username;
         client.config.site.password = hashGenerator.generateHash(process.env.SITE_PASSWORD || client.config.site.password);
 
+        // Local Lavalink node
+        client.config.enableLocalNode = isTrueOrFalse(process.env.ENABLE_LOCAL_NODE) ?? client.config.enableLocalNode;
+
         // console.log('setEnvironment: ', client.config);
         resolve();
     });
