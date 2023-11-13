@@ -2,7 +2,7 @@ import child_process from 'child_process';
 import path from 'path';
 
 
-class lavalinkProcessController {
+class LavalinkProcessController {
     public lavalinkJarPath: string;
     #lavalinkProcess: child_process.ChildProcessWithoutNullStreams;
 
@@ -87,5 +87,5 @@ class lavalinkProcessController {
 process.once('message', (message) => {
     // Wait for the .jar path to be received before running local node
     const lavalinkJarPath = String(message);
-    new lavalinkProcessController(lavalinkJarPath);
+    new LavalinkProcessController(lavalinkJarPath);
 });
