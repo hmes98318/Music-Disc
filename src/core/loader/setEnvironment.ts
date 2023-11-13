@@ -30,8 +30,8 @@ const setEnvironment = (client: Client) => {
         client.config.displayVoiceState = isTrueOrFalse(process.env.DISPLAY_VOICE_STATE) ?? client.config.displayVoiceState;
 
         // Web dashboard settings
-        client.config.enableSite = isTrueOrFalse(process.env.LOAD_API) ?? client.config.enableSite;
-        client.config.site.port = isNumber(process.env.PORT) ? Number(process.env.PORT) : client.config.site.port;
+        client.config.enableSite = isTrueOrFalse(process.env.ENABLE_SITE) ?? client.config.enableSite;
+        client.config.site.port = isNumber(process.env.SITE_PORT) ? Number(process.env.SITE_PORT) : client.config.site.port;
         client.config.site.username = process.env.SITE_USERNAME || client.config.site.username;
         client.config.site.password = hashGenerator.generateHash(process.env.SITE_PASSWORD || client.config.site.password);
 
