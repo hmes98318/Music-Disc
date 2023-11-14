@@ -22,13 +22,17 @@ export const execute = async (client: Client, message: Message) => {
     }
 
 
-    if (!player.queuePage) {
-        player.queuePage = {
-            maxPage: Math.ceil(player.queue.tracks.length / 10),
-            curPage: 1,
-            msg: null
-        };
+    if (player.queuePage) {
+        try {
+            await player.queuePage.msg?.delete();
+        } catch (_) { }
     }
+
+    player.queuePage = {
+        maxPage: Math.ceil(player.queue.tracks.length / 10),
+        curPage: 1,
+        msg: null
+    };
 
     const page = player.queuePage.curPage;
     const startIdx = (page - 1) * 10;
@@ -80,13 +84,17 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
     }
 
 
-    if (!player.queuePage) {
-        player.queuePage = {
-            maxPage: Math.ceil(player.queue.tracks.length / 10),
-            curPage: 1,
-            msg: null
-        };
+    if (player.queuePage) {
+        try {
+            await player.queuePage.msg?.delete();
+        } catch (_) { }
     }
+
+    player.queuePage = {
+        maxPage: Math.ceil(player.queue.tracks.length / 10),
+        curPage: 1,
+        msg: null
+    };
 
     const page = player.queuePage.curPage;
     const startIdx = (page - 1) * 10;
