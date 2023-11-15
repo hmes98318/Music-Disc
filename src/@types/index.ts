@@ -1,9 +1,13 @@
-import type {
-    ClientPresenceStatus,
-    HexColorString,
-    Message
-} from "discord.js";
+import type { ClientPresenceStatus, HexColorString, Message } from "discord.js";
+import type { Logger } from "../core/lib/Logger";
 
+
+export interface Bot {
+    blacklist: string[];
+    config: Config;
+    logger: Logger;
+    sysInfo: SystemInfo;
+}
 
 export interface Config {
     admin: string | null;
@@ -17,16 +21,20 @@ export interface Config {
     autoLeave: boolean;
     autoLeaveCooldown: number;
     displayVoiceState: boolean;
-    blacklist: string[];
     enableSite: boolean;
     site: SiteConfig;
     enableLocalNode: boolean;
+    localNode: LocalNode;
 }
 
 interface SiteConfig {
     port: number;
     username: string;
     password: string;
+}
+
+interface LocalNode {
+    autoRestart: boolean;
 }
 
 export interface SystemInfo {

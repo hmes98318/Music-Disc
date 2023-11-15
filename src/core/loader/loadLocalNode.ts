@@ -1,36 +1,35 @@
 import { cst } from '../../utils/constants';
-import { LocalNodeController } from '../lib/LocalNodeController';
 
-import type { Client } from 'discord.js';
+import type { LocalNodeController } from '../lib/LocalNodeController';
+import type { Bot } from '../../@types';
 
 
-const loadLocalNode = (_client: Client) => {
+const loadLocalNode = (bot: Bot, localNodeController: LocalNodeController) => {
     return new Promise<void>(async (resolve, reject) => {
-        console.log(`-> loading local Lavalink node ......`);
+        bot.logger.emit('log', `-> loading local Lavalink node ......`);
 
-        const nodeController = new LocalNodeController();
-        const hasJava = await nodeController.checkJavaVersion(true);
+        const hasJava = await localNodeController.checkJavaVersion(true);
 
         if (!hasJava) {
-            console.error(cst.color.yellow + '[LocalNode] *** Java is not installed. Please install Java to run local Lavalink node. ***' + cst.color.white);
-            console.log('[LocalNode] Local Lavalink node failed to start.');
+            bot.logger.emit('localNode', cst.color.yellow + '*** Java is not installed. Please install Java to run local Lavalink node. ***' + cst.color.white);
+            bot.logger.emit('localNode', 'Local Lavalink node failed to start.');
             return resolve();
         }
 
-        await nodeController.initialize()
+        await localNodeController.initialize()
             .catch((error) => reject(error));
 
         const nodeInfo = {
-            version: `LavaLink: ${('v' + nodeController.lavalinkVersion).padStart(8, ' ')}`,
-            port: `Port:   ${nodeController.port.toString().padStart(10, ' ')}`
+            version: `LavaLink: ${('v' + localNodeController.lavalinkVersion).padStart(8, ' ')}`,
+            port: `Port:   ${localNodeController.port.toString().padStart(10, ' ')}`
         };
 
-        console.log(`+--------------------+`);
-        console.log(`| ${nodeInfo.version.padEnd(15, ' ')} |`);
-        console.log(`| ${nodeInfo.port.padEnd(15, ' ')} |`);
-        console.log(`+--------------------+`);
+        bot.logger.emit('log', `+--------------------+`);
+        bot.logger.emit('log', `| ${nodeInfo.version.padEnd(15, ' ')} |`);
+        bot.logger.emit('log', `| ${nodeInfo.port.padEnd(15, ' ')} |`);
+        bot.logger.emit('log', `+--------------------+`);
 
-        console.log(cst.color.grey + '-- loading local Lavalink node finished --' + cst.color.white);
+        bot.logger.emit('log', cst.color.grey + '-- loading local Lavalink node finished --' + cst.color.white);
         resolve();
     });
 };

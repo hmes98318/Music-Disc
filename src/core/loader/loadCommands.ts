@@ -2,28 +2,29 @@ import * as fs from 'fs';
 import { cst } from '../../utils/constants';
 
 import type { Client } from 'discord.js';
+import type { Bot } from '../../@types';
 
 
-const loadCommands = (client: Client) => {
+const loadCommands = (bot: Bot, client: Client) => {
     return new Promise<void>(async (resolve, reject) => {
-        console.log(`-> loading Commands ......`);
+        bot.logger.emit('log', `-> loading Commands ......`);
 
         const files = fs.readdirSync(`${__dirname}/../../commands/`);
 
-        console.log(`+--------------------------------+`);
+        bot.logger.emit('log', `+--------------------------------+`);
         for (const file of files) {
             try {
                 const command = await import(`${__dirname}/../../commands/${file}`);
                 const commandName = command.name.toLowerCase();
 
                 client.commands.set(commandName, command);
-                console.log(`| Loaded Command ${commandName.padEnd(15, ' ')} |`);
+                bot.logger.emit('log', `| Loaded Command ${commandName.padEnd(15, ' ')} |`);
             } catch (error) {
                 reject(error);
             }
         }
-        console.log(`+--------------------------------+`);
-        console.log(`${cst.color.grey}-- loading Commands finished --${cst.color.white}`);
+        bot.logger.emit('log', `+--------------------------------+`);
+        bot.logger.emit('log', `${cst.color.grey}-- loading Commands finished --${cst.color.white}`);
 
         resolve();
     });
