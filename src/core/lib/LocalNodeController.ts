@@ -6,6 +6,8 @@ import readline from 'readline';
 import { cst } from '../../utils/constants';
 import { formatBytes } from '../../utils/functions/unitConverter';
 
+import type { Logger } from './Logger';
+
 
 export class LocalNodeController {
     /** Local node version */
@@ -14,14 +16,17 @@ export class LocalNodeController {
     /** Local node download link */
     public downloadLink: string;
 
-    /** Local node logs */
-    public logs: string[];
+    /** Local node lavalinkLogs */
+    public lavalinkLogs: string[];
 
     /** Local node listenong port */
     public port: number;
 
     /** Automatically restart when node crashes (default: true) */
     public autoRestart: boolean;
+
+    /** @inner Manually set up the logger */
+    public logger: Logger;
 
     #lavalinkProcessController: ChildProcess | null;
     #lavalinkProcessFileName: string
@@ -30,11 +35,11 @@ export class LocalNodeController {
     constructor() {
         this.lavalinkVersion = '3.7.9';
         this.downloadLink = `https://github.com/lavalink-devs/Lavalink/releases/download/${this.lavalinkVersion}/Lavalink.jar`;
-        this.logs = [];
+        this.lavalinkLogs = [];
         this.autoRestart = true;
 
         this.#lavalinkProcessController = null;
-        this.#lavalinkProcessFileName = (path.extname(__filename) === '.ts') ? 'lavalinkProcessController.ts' : 'lavalinkProcessController.js';
+        this.#lavalinkProcessFileName = (path.extname(__filename) === '.ts') ? 'LavalinkProcess.ts' : 'LavalinkProcess.js';
         this.#manualRestart = false;
     }
 
@@ -43,8 +48,8 @@ export class LocalNodeController {
         return new Promise<boolean>((resolve, _reject) => {
             child_process.exec('java -version', (error, stdout, stderr) => {
                 if (output) {
-                    console.log(stdout);
-                    console.log(stderr);
+                    this.logger.emit('localNode', stdout);
+                    this.logger.emit('localNode', stderr);
                 }
 
                 if (error) {
@@ -75,11 +80,11 @@ export class LocalNodeController {
             this.#lavalinkProcessController.kill('SIGINT');
             this.#lavalinkProcessController = null;
 
-            console.log('[LocalNode] Local Lavalink node stopped.');
+            this.logger.emit('localNode', 'Local Lavalink node stopped.');
             return true;
         }
 
-        console.log('[LocalNode] Local Lavalink node does not exist.');
+        this.logger.emit('localNode', 'Local Lavalink node does not exist.');
         return false;
     }
 
@@ -97,17 +102,17 @@ export class LocalNodeController {
 
             this.#lavalinkProcessController.on('message', (message: string) => {
                 // Lavalink log records
-                this.logs.push(message);
+                this.lavalinkLogs.push(message);
 
                 /**
                  * Status code handling
                  */
                 if (message.includes('LAVALINK_')) {
                     if (message === 'LAVALINK_STARTED') {
-                        console.log('[LocalNode] The local node is starting ...');
+                        this.logger.emit('localNode', 'The local node is starting ...');
                     }
                     else if (message === 'LAVALINK_READY') {
-                        console.log('[LocalNode] The local node started successfully.');
+                        this.logger.emit('localNode', 'The local node started successfully.');
                         this.#manualRestart = false;
                         return resolve();
                     }
@@ -116,19 +121,19 @@ export class LocalNodeController {
                         const portMatch = message.match(portRegex);
                         this.port = Number(portMatch![1]);
 
-                        console.log('[LocalNode] The local node listening on port', this.port);
+                        this.logger.emit('localNode', 'The local node listening on port', this.port);
                     }
                 }
             });
 
             this.#lavalinkProcessController.on('exit', (code, signal) => {
-                console.log(cst.color.yellow + `[LocalNode] Local Lavalink node exited with code ${code ?? signal}` + cst.color.white);
+                this.logger.emit('localNode', cst.color.yellow + `Local Lavalink node exited with code ${code ?? signal}` + cst.color.white);
 
                 this.#lavalinkProcessController = null;
 
                 // Try to restart automatically
                 if (this.autoRestart && !this.#manualRestart) {
-                    console.log('[LocalNode] Try to restart automatically.');
+                    this.logger.emit('localNode', 'Try to restart automatically.');
                     this.initialize();
                 }
             });
@@ -147,7 +152,7 @@ export class LocalNodeController {
 
         const response = await fetch(url);
         if (!response.ok) {
-            throw new Error(`[LocalNode] Failed to fetch the file: ${response.statusText}`);
+            throw new Error(`[localNode] Failed to fetch the file: ${response.statusText}`);
         }
 
 
@@ -158,7 +163,7 @@ export class LocalNodeController {
             const existingFileSize = fs.statSync(destination).size;
 
             if (existingFileSize === contentLength) {
-                console.log('[LocalNode] File already exists. Skipping download.');
+                this.logger.emit('localNode', 'File already exists. Skipping download.');
                 return;
             }
             else {
@@ -170,6 +175,8 @@ export class LocalNodeController {
         const fileStream = fs.createWriteStream(destination, { flags: 'wx' });
         const reader = response.body!.getReader();
         let downloadedBytes = 0;
+
+        this.logger.emit('localNode', 'Start downloading file ...');
 
         while (true) {
             const { done, value } = await reader.read();
@@ -193,13 +200,13 @@ export class LocalNodeController {
 
         fileStream.end();
 
-        // Clean up after finishing the download
+
         fileStream.on('close', () => {
-            console.log('[LocalNode] File downloaded successfully.');
+            this.logger.emit('localNode', 'File downloaded successfully.');
         });
 
         fileStream.on('error', (err) => {
-            console.error('[LocalNode] Error writing the file:', err);
+            console.error('[localNode] Error writing the file:', err);
         });
     }
 }
