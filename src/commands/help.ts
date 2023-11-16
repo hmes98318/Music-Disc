@@ -10,6 +10,8 @@ import {
 } from "discord.js";
 import { embeds } from "../embeds";
 
+import type { Bot } from "../@types";
+
 
 export const name = 'help';
 export const aliases = ['h'];
@@ -29,8 +31,8 @@ export const options = [
 ];
 
 
-export const execute = async (client: Client, message: Message, args: string[]) => {
-    const prefix = client.config.prefix;
+export const execute = async (bot: Bot, client: Client, message: Message, args: string[]) => {
+    const prefix = bot.config.prefix;
 
     if (!args[0]) {
         let title = client.user?.username;
@@ -66,7 +68,7 @@ export const execute = async (client: Client, message: Message, args: string[]) 
 
             i.deferUpdate();
             await msg.edit({
-                embeds: [embeds.help(client.config.embedsColor, title!, usage)],
+                embeds: [embeds.help(bot.config.embedsColor, title!, usage)],
                 components: [],
                 allowedMentions: { repliedUser: false }
             });
@@ -89,7 +91,7 @@ export const execute = async (client: Client, message: Message, args: string[]) 
                 let description = `${x.description}\n\`\`\`${prefix}${x.usage}\`\`\``;
 
                 message.reply({
-                    embeds: [embeds.help(client.config.embedsColor, command, description)],
+                    embeds: [embeds.help(bot.config.embedsColor, command, description)],
                     allowedMentions: { repliedUser: false }
                 });
                 return true;
@@ -100,8 +102,8 @@ export const execute = async (client: Client, message: Message, args: string[]) 
     }
 }
 
-export const slashExecute = async (client: Client, interaction: ChatInputCommandInteraction) => {
-    const prefix = client.config.prefix;
+export const slashExecute = async (bot: Bot, client: Client, interaction: ChatInputCommandInteraction) => {
+    const prefix = bot.config.prefix;
     const command = interaction.options.getString("command");
 
     if (!command) {
@@ -138,7 +140,7 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
 
             i.deferUpdate();
             await msg.edit({
-                embeds: [embeds.help(client.config.embedsColor, title!, usage)],
+                embeds: [embeds.help(bot.config.embedsColor, title!, usage)],
                 components: [],
                 allowedMentions: { repliedUser: false }
             });
@@ -161,7 +163,7 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
                 let description = `${x.description}\n\`\`\`${prefix}${x.usage}\`\`\``;
 
                 interaction.editReply({
-                    embeds: [embeds.help(client.config.embedsColor, command, description)],
+                    embeds: [embeds.help(bot.config.embedsColor, command, description)],
                     allowedMentions: { repliedUser: false }
                 });
                 return true;

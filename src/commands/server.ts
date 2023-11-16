@@ -1,5 +1,7 @@
-import { ChatInputCommandInteraction, Client, Message } from "discord.js";
 import { embeds } from "../embeds";
+
+import type { ChatInputCommandInteraction, Client, Message } from "discord.js";
+import type { Bot } from "../@types";
 
 
 export const name = 'server';
@@ -13,24 +15,24 @@ export const requireAdmin = true;
 export const options = [];
 
 
-export const execute = async (client: Client, message: Message) => {
+export const execute = async (bot: Bot, client: Client, message: Message) => {
     const serverlist = client.guilds.cache
         .map(g => `Guild ID: ${g.id}\n Guild: ${g.name}\n Members: ${g.memberCount}`)
         .join('\n\n');
 
     return message.reply({
-        embeds: [embeds.server(client.config, serverlist)],
+        embeds: [embeds.server(bot.config, serverlist)],
         allowedMentions: { repliedUser: false }
     });
 }
 
-export const slashExecute = async (client: Client, interaction: ChatInputCommandInteraction) => {
+export const slashExecute = async (bot: Bot, client: Client, interaction: ChatInputCommandInteraction) => {
     const serverlist = client.guilds.cache
         .map(g => `Guild ID: ${g.id}\n Guild: ${g.name}\n Members: ${g.memberCount}`)
         .join('\n\n');
 
     return interaction.editReply({
-        embeds: [embeds.server(client.config, serverlist)],
+        embeds: [embeds.server(bot.config, serverlist)],
         allowedMentions: { repliedUser: false }
     });
 }

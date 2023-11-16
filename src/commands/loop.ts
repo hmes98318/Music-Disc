@@ -1,5 +1,7 @@
-import { Client, Message, ChatInputCommandInteraction } from "discord.js";
 import { RepeatMode } from "lavashark";
+
+import type { Client, Message, ChatInputCommandInteraction } from "discord.js";
+import type { Bot } from "../@types";
 
 
 export const name = 'loop';
@@ -34,7 +36,7 @@ export const options = [
 ];
 
 
-export const execute = async (client: Client, message: Message, args: string[]) => {
+export const execute = async (bot: Bot, client: Client, message: Message, args: string[]) => {
     const player = client.lavashark.getPlayer(message.guild!.id);
 
     if (!player) {
@@ -44,7 +46,7 @@ export const execute = async (client: Client, message: Message, args: string[]) 
     let mode = null;
     const methods = ['Off', 'Single', 'All'];
 
-    if (!args[0]) return message.reply({ content: `❌ | ${client.config.prefix}${usage}`, allowedMentions: { repliedUser: false } });
+    if (!args[0]) return message.reply({ content: `❌ | ${bot.config.prefix}${usage}`, allowedMentions: { repliedUser: false } });
 
     switch (args[0].toLowerCase()) {
         case 'off': {
@@ -63,7 +65,7 @@ export const execute = async (client: Client, message: Message, args: string[]) 
             break;
         }
         default: {
-            return message.reply({ content: `❌ | ${client.config.prefix}${usage}`, allowedMentions: { repliedUser: false } });
+            return message.reply({ content: `❌ | ${bot.config.prefix}${usage}`, allowedMentions: { repliedUser: false } });
         }
     }
 
@@ -72,7 +74,7 @@ export const execute = async (client: Client, message: Message, args: string[]) 
 }
 
 
-export const slashExecute = async (client: Client, interaction: ChatInputCommandInteraction) => {
+export const slashExecute = async (bot: Bot, client: Client, interaction: ChatInputCommandInteraction) => {
     const player = client.lavashark.getPlayer(interaction.guild!.id);
 
     if (!player) {
@@ -99,7 +101,7 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
             break;
         }
         default: {
-            return interaction.editReply({ content: `❌ | ${client.config.prefix}${usage}`, allowedMentions: { repliedUser: false } });
+            return interaction.editReply({ content: `❌ | ${bot.config.prefix}${usage}`, allowedMentions: { repliedUser: false } });
         }
     }
 

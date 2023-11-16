@@ -1,6 +1,15 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, Client, Message } from "discord.js";
+import {
+    ActionRowBuilder,
+    ButtonBuilder,
+    ButtonStyle,
+    ChatInputCommandInteraction,
+    Client,
+    Message
+} from "discord.js";
 import { embeds } from "../embeds";
 import { cst } from "../utils/constants";
+
+import type { Bot } from "../@types";
 
 
 export const name = 'queue';
@@ -14,7 +23,7 @@ export const requireAdmin = false;
 export const options = [];
 
 
-export const execute = async (client: Client, message: Message) => {
+export const execute = async (bot: Bot, client: Client, message: Message) => {
     const player = client.lavashark.getPlayer(message.guild!.id);
 
     if (!player) {
@@ -67,7 +76,7 @@ export const execute = async (client: Client, message: Message) => {
     const row = new ActionRowBuilder<ButtonBuilder>().addComponents(prevButton, nextButton, delButton, clsButton);
 
     player.queuePage.msg = await message.reply({
-        embeds: [embeds.queue(client.config.embedsColor, nowplaying, tracksQueue, methods[repeatMode])],
+        embeds: [embeds.queue(bot.config.embedsColor, nowplaying, tracksQueue, methods[repeatMode])],
         components: [row],
         allowedMentions: { repliedUser: false },
     });
@@ -76,7 +85,7 @@ export const execute = async (client: Client, message: Message) => {
 };
 
 
-export const slashExecute = async (client: Client, interaction: ChatInputCommandInteraction) => {
+export const slashExecute = async (bot: Bot, client: Client, interaction: ChatInputCommandInteraction) => {
     const player = client.lavashark.getPlayer(interaction.guild!.id);
 
     if (!player) {
@@ -129,7 +138,7 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
     const row = new ActionRowBuilder<ButtonBuilder>().addComponents(prevButton, nextButton, delButton, clsButton);
 
     player.queuePage.msg = await interaction.editReply({
-        embeds: [embeds.queue(client.config.embedsColor, nowplaying, tracksQueue, methods[repeatMode])],
+        embeds: [embeds.queue(bot.config.embedsColor, nowplaying, tracksQueue, methods[repeatMode])],
         components: [row],
         allowedMentions: { repliedUser: false },
     });

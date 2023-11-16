@@ -1,5 +1,7 @@
-import { ChatInputCommandInteraction, Client, Message } from "discord.js";
 import { dashboard } from "../dashboard";
+
+import type { ChatInputCommandInteraction, Client, Message } from "discord.js";
+import type { Bot } from "../@types";
 
 
 export const name = 'volume';
@@ -21,8 +23,8 @@ export const options = [
 ];
 
 
-export const execute = async (client: Client, message: Message, args: string[]) => {
-    const maxVolume = client.config.maxVolume;
+export const execute = async (bot: Bot, client: Client, message: Message, args: string[]) => {
+    const maxVolume = bot.config.maxVolume;
     const player = client.lavashark.getPlayer(message.guild!.id);
 
     if (!player) {
@@ -42,15 +44,15 @@ export const execute = async (client: Client, message: Message, args: string[]) 
         return message.reply({ content: `❌ | **Type a number from \`1\` to \`${maxVolume}\` to change the volume .**`, allowedMentions: { repliedUser: false } });
     }
 
-    
+
     player.filters.setVolume(vol);
-    await dashboard.update(client, player, player.current!);
+    await dashboard.update(bot, player, player.current!);
     return message.reply({ content: `🔊 **${vol}**/**${maxVolume}**%`, allowedMentions: { repliedUser: false } });
 }
 
-export const slashExecute = async (client: Client, interaction: ChatInputCommandInteraction) => {
+export const slashExecute = async (bot: Bot, client: Client, interaction: ChatInputCommandInteraction) => {
 
-    const maxVolume = client.config.maxVolume;
+    const maxVolume = bot.config.maxVolume;
     const player = client.lavashark.getPlayer(interaction.guild!.id);
 
     if (!player) {
@@ -70,6 +72,6 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
     }
 
     player.filters.setVolume(vol);
-    await dashboard.update(client, player, player.current!);
+    await dashboard.update(bot, player, player.current!);
     return interaction.editReply({ content: `🔊 **${vol}**/**${maxVolume}**%`, allowedMentions: { repliedUser: false } });
 }

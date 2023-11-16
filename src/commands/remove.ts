@@ -1,5 +1,12 @@
-import { ChatInputCommandInteraction, Client, Collection, Message } from "discord.js";
 import { embeds } from "../embeds";
+
+import type {
+    ChatInputCommandInteraction,
+    Client,
+    Collection,
+    Message
+} from "discord.js";
+import type { Bot } from "../@types";
 
 
 export const name = 'remove';
@@ -26,7 +33,7 @@ export const options = [
 ];
 
 
-export const execute = async (client: Client, message: Message, args: string[]) => {
+export const execute = async (bot: Bot, client: Client, message: Message, args: string[]) => {
     const player = client.lavashark.getPlayer(message.guild!.id);
 
     if (!player) {
@@ -51,7 +58,7 @@ export const execute = async (client: Client, message: Message, args: string[]) 
         else {
             await message.react('👍');
             return message.reply({
-                embeds: [embeds.removeTrack(client.config.embedsColor, tracks[index - 1])],
+                embeds: [embeds.removeTrack(bot.config.embedsColor, tracks[index - 1])],
                 allowedMentions: { repliedUser: false }
             });
         }
@@ -68,7 +75,7 @@ export const execute = async (client: Client, message: Message, args: string[]) 
             const musicTitle = tracks.slice(index1 - 1, index2).join('\n');
             await message.react('👍');
             return message.reply({
-                embeds: [embeds.removeTrack(client.config.embedsColor, musicTitle)],
+                embeds: [embeds.removeTrack(bot.config.embedsColor, musicTitle)],
                 allowedMentions: { repliedUser: false }
             });
         }
@@ -95,7 +102,7 @@ export const execute = async (client: Client, message: Message, args: string[]) 
         await message.react('👍');
         await message.reply({
             content: instruction,
-            embeds: [embeds.removeList(client.config.embedsColor, nowplaying, tracksQueue, methods[repeatMode])],
+            embeds: [embeds.removeList(bot.config.embedsColor, nowplaying, tracksQueue, methods[repeatMode])],
             allowedMentions: { repliedUser: false }
         });
 
@@ -118,7 +125,7 @@ export const execute = async (client: Client, message: Message, args: string[]) 
             player.queue.remove(index - 1);
 
             await query.reply({
-                embeds: [embeds.removeTrack(client.config.embedsColor, tracks[index - 1])],
+                embeds: [embeds.removeTrack(bot.config.embedsColor, tracks[index - 1])],
                 allowedMentions: { repliedUser: false }
             });
             return collector.stop();
@@ -132,7 +139,7 @@ export const execute = async (client: Client, message: Message, args: string[]) 
     }
 }
 
-export const slashExecute = async (client: Client, interaction: ChatInputCommandInteraction) => {
+export const slashExecute = async (bot: Bot, client: Client, interaction: ChatInputCommandInteraction) => {
     const player = client.lavashark.getPlayer(interaction.guild!.id);
 
     if (!player) {
@@ -158,7 +165,7 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
         }
         else {
             return interaction.editReply({
-                embeds: [embeds.removeTrack(client.config.embedsColor, tracks[index! - 1])],
+                embeds: [embeds.removeTrack(bot.config.embedsColor, tracks[index! - 1])],
                 allowedMentions: { repliedUser: false }
             });
         }
@@ -172,7 +179,7 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
         else {
             const musicTitle = tracks.slice(index1 - 1, index2).join('\n');
             return interaction.editReply({
-                embeds: [embeds.removeTrack(client.config.embedsColor, musicTitle)],
+                embeds: [embeds.removeTrack(bot.config.embedsColor, musicTitle)],
                 allowedMentions: { repliedUser: false }
             });
         }
@@ -198,7 +205,7 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
 
         await interaction.editReply({
             content: instruction,
-            embeds: [embeds.removeList(client.config.embedsColor, nowplaying, tracksQueue, methods[repeatMode])],
+            embeds: [embeds.removeList(bot.config.embedsColor, nowplaying, tracksQueue, methods[repeatMode])],
             allowedMentions: { repliedUser: false }
         });
 
@@ -221,7 +228,7 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
             player.queue.remove(index - 1);
 
             await query.reply({
-                embeds: [embeds.removeTrack(client.config.embedsColor, tracks[index - 1])],
+                embeds: [embeds.removeTrack(bot.config.embedsColor, tracks[index - 1])],
                 allowedMentions: { repliedUser: false }
             });
             return collector.stop();
