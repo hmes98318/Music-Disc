@@ -7,12 +7,13 @@ import { uptime } from '../../utils/functions/uptime';
 import type { Client, VoiceChannel } from 'discord.js';
 import type { Server } from 'socket.io';
 import type { SessionManager } from '../lib/SessionManager';
+import type { Bot } from "../../@types";
 
 
-const registerSocketioEvents = (client: Client, io: Server, sessionManager: SessionManager) => {
+const registerSocketioEvents = (bot: Bot, client: Client, io: Server, sessionManager: SessionManager) => {
 
     io.on('connection', (socket) => {
-        // console.log('[socketio] a user connected');
+        // bot.logger.emit('api', '[socketio] a user connected');
 
 
         /**
@@ -33,13 +34,13 @@ const registerSocketioEvents = (client: Client, io: Server, sessionManager: Sess
          */
         socket.on("bot_status", async () => {
             sessionCheck();
-            // console.log('[api] emit bot_status');
+            // bot.logger.emit('api', '[api] emit bot_status');
 
             const systemStatus = {
                 load: await sysusage.cpu(),
                 memory: sysusage.ram(),
                 heap: sysusage.heap(),
-                uptime: uptime(client.info.startupTime),
+                uptime: uptime(bot.sysInfo.startupTime),
                 ping: {
                     bot: -1,
                     api: client.ws.ping
@@ -57,7 +58,7 @@ const registerSocketioEvents = (client: Client, io: Server, sessionManager: Sess
          */
         socket.on("nodes_status", async () => {
             sessionCheck();
-            // console.log('[api] emit nodes_status');
+            // bot.logger.emit('api', '[api] emit nodes_status');
 
             const nodePromises = client.lavashark.nodes.map(async (node) => {
                 if (node.state === NodeState.CONNECTED) {
@@ -115,7 +116,7 @@ const registerSocketioEvents = (client: Client, io: Server, sessionManager: Sess
          */
         socket.on("lavashark_nowPlaying", async (guildID: string) => {
             sessionCheck();
-            // console.log('[api] emit lavashark_nowPlaying');
+            // bot.logger.emit('api', '[api] emit lavashark_nowPlaying');
 
             const player = client.lavashark.getPlayer(guildID);
 
@@ -131,7 +132,7 @@ const registerSocketioEvents = (client: Client, io: Server, sessionManager: Sess
                     isPaused: player.paused,
                     repeatMode: player.repeatMode,
                     volume: player.volume,
-                    maxVolume: client.config.maxVolume
+                    maxVolume: bot.config.maxVolume
                 };
 
                 socket.emit('api_lavashark_nowPlaying', playingData);
@@ -141,7 +142,7 @@ const registerSocketioEvents = (client: Client, io: Server, sessionManager: Sess
 
 
     io.on('disconnect', (socket) => {
-        // console.log('[socketio] a user disconnected');
+        // bot.logger.emit('api', '[socketio] a user disconnected');
     });
 };
 

@@ -7,6 +7,7 @@ import { hashGenerator } from '../lib/hashGenerator';
 import type { Client } from 'discord.js';
 import type { Express } from 'express';
 import type { SessionManager } from '../lib/SessionManager';
+import type { Bot } from '../../@types';
 
 
 interface IPInfo {
@@ -17,8 +18,8 @@ interface IPInfo {
 const blockedIP = new Map<string, IPInfo>();
 
 
-const registerExpressEvents = (client: Client, app: Express, sessionManager: SessionManager) => {
-    const siteConfig = client.config.site;
+const registerExpressEvents = (bot: Bot, client: Client, app: Express, sessionManager: SessionManager) => {
+    const siteConfig = bot.config.site;
 
     const cssPath = `${process.cwd()}/views/css`;
     const jsPath = `${process.cwd()}/views/js`;
@@ -97,7 +98,7 @@ const registerExpressEvents = (client: Client, app: Express, sessionManager: Ses
      */
 
     app.post('/api/login', (req, res) => {
-        // console.log(req.body);
+        // bot.logger.emit('api', '[POST] ' + req.body);
 
         const admin = {
             username: siteConfig.username,
@@ -110,11 +111,11 @@ const registerExpressEvents = (client: Client, app: Express, sessionManager: Ses
 
         if (ipInfo) {
             if (ipInfo.block) {
-                console.log(`Blocked IP: ${userIP}, attempts to log in.`);
+                bot.logger.emit('api', `Blocked IP: ${userIP}, attempts to log in.`);
                 return res.send('BLOCKED_5');
             }
             else if (!ipInfo.block && ipInfo.retry > 5) {
-                console.log(`IP: ${userIP}, failed to log in too many times, blocked for 5 minutes`);
+                bot.logger.emit('api', `IP: ${userIP}, failed to log in too many times, blocked for 5 minutes`);
                 ipInfo.block = true
 
                 setTimeout(() => {
@@ -164,14 +165,14 @@ const registerExpressEvents = (client: Client, app: Express, sessionManager: Ses
     });
 
     app.get('/api/info', verifyLogin, (req, res) => {
-        // console.log('[api] /api/info', req.ip);
+        // bot.logger.emit('api', '[GET] /api/info ' + req.ip);
 
-        const info = client.info
+        const info = bot.sysInfo
         res.json(info);
     });
 
     app.get('/api/serverlist', verifyLogin, (req, res) => {
-        // console.log('[api] /api/serverlist', req.ip);
+        // bot.logger.emit('api', '[GET] /api/serverlist ' + req.ip);
 
         const allServer = client.guilds.cache;
         const playingServers = new Set(client.lavashark.players.keys());
@@ -185,12 +186,12 @@ const registerExpressEvents = (client: Client, app: Express, sessionManager: Ses
     });
 
     app.get('/api/server/info/:guildID', verifyLogin, async (req, res) => {
-        // console.log(`[api] /api/server/info/${req.params.guildID}`, req.ip);
+        // bot.logger.emit('api', `[GET] /api/server/info/${req.params.guildID} ` + req.ip);
 
         const guild = client.guilds.cache.get(req.params.guildID);
 
         await guild!.members.fetch()
-            .catch((_) => console.log(`Cache guild:${req.params.guildID} members list failed`));
+            .catch((_) => bot.logger.emit('api', `Cache guild:${req.params.guildID} members list failed`));
 
         if (!guild) {
             res.send({});
@@ -201,14 +202,14 @@ const registerExpressEvents = (client: Client, app: Express, sessionManager: Ses
     });
 
     app.get('/api/user/:userID', verifyLogin, (req, res) => {
-        // console.log(`[api] /api/user/avatar/${req.params.id}`, req.ip);
+        // bot.logger.emit('api', `[GET] /api/user/avatar/${req.params.id} ` + req.ip);
 
         const user = client.users.cache.get(req.params.userID);
         res.send(user);
     });
 
     app.get('/api/lavashark/getThumbnail/:source/:id', verifyLogin, (req, res) => {
-        // console.log(`[api] /api/lavashark/getThumbnail/${req.params.source}/${req.params.id}`, req.ip);
+        // bot.logger.emit('api', `[GET] /api/lavashark/getThumbnail/${req.params.source}/${req.params.id} ` + req.ip);
 
         if (req.params.source === 'youtube') {
             res.send(`https://img.youtube.com/vi/${req.params.id}/sddefault.jpg`);
