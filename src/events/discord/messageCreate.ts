@@ -1,12 +1,14 @@
 import { Client, Message, ChannelType } from "discord.js";
 import { cst } from "../../utils/constants";
 
+import type { Bot } from "../../@types";
 
-export default async (client: Client, message: Message) => {
-    const prefix = client.config.prefix;
 
+export default async (bot: Bot, client: Client, message: Message) => {
+    const prefix = bot.config.prefix;
+
+    if (bot.blacklist && bot.blacklist.includes(message.author.id)) return;
     if (message.author.bot || message.channel.type !== ChannelType.GuildText) return;
-    if (client.config.blacklist && client.config.blacklist.includes(message.author.id)) return;
     if (message.content.indexOf(prefix) !== 0) return;
 
 
@@ -16,8 +18,8 @@ export default async (client: Client, message: Message) => {
 
     if (!cmd) return;
 
-    if(cmd.requireAdmin && client.config.admin){
-        if(message.author.id !== client.config.admin)
+    if (cmd.requireAdmin) {
+        if (message.author.id !== bot.config.admin)
             return message.reply({ content: `❌ | This command requires administrator privileges.`, allowedMentions: { repliedUser: false } });
     }
 
@@ -30,9 +32,8 @@ export default async (client: Client, message: Message) => {
     }
 
 
-    console.log(`(${cst.color.grey}${message.guild?.name}${cst.color.white}) ${message.author.username} : ${message.content}`);
+    bot.logger.emit('discord', `[messageCreate] (${cst.color.grey}${message.guild?.name}${cst.color.white}) ${message.author.username} : ${message.content}`);
 
     if (cmd.sendTyping) message.channel.sendTyping();
-    cmd.execute(client, message, args);
-
+    cmd.execute(bot, client, message, args);
 };

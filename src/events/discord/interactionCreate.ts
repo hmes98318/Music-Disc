@@ -15,9 +15,11 @@ import { cst } from "../../utils/constants";
 import { embeds } from "../../embeds";
 import { dashboard } from "../../dashboard";
 
+import type { Bot } from "../../@types";
 
-export default async (client: Client, interaction: Interaction) => {
-    if (client.config.blacklist && client.config.blacklist.includes(interaction.user.id)) return;
+
+export default async (bot: Bot, client: Client, interaction: Interaction) => {
+    if (bot.blacklist && bot.blacklist.includes(interaction.user.id)) return;
 
     const guildMember = interaction.guild!.members.cache.get(interaction.user.id);
     const voiceChannel = guildMember!.voice.channel;
@@ -109,7 +111,7 @@ export default async (client: Client, interaction: Interaction) => {
                 collector.on("collect", async (i: StringSelectMenuInteraction) => {
                     if (i.customId !== "Dashboard-Loop-Select") return;
 
-                    console.log('mode:', i.values[0]);
+                    bot.logger.emit('discord', 'loop mode:' + i.values[0]);
                     switch (i.values[0]) {
                         case 'Off': {
                             mode = 0;
@@ -127,7 +129,7 @@ export default async (client: Client, interaction: Interaction) => {
                             break;
                         }
                     }
-                    await dashboard.update(client, player, player.current!);
+                    await dashboard.update(bot, player, player.current!);
 
                     await i.deferUpdate();
                     interaction.ephemeral = true;
@@ -143,13 +145,13 @@ export default async (client: Client, interaction: Interaction) => {
             }
 
             case 'Dashboard-Stop': {
-                if (client.config.autoLeave) {
+                if (bot.config.autoLeave) {
                     await player.destroy();
                 }
                 else {
                     player.queue.clear();
                     await player.skip();
-                    await dashboard.destroy(player, client.config.embedsColor);
+                    await dashboard.destroy(bot, player, bot.config.embedsColor);
                 }
 
                 await interaction.reply({ content: '✅ | Bot leave.', ephemeral: true, components: [] });
@@ -167,12 +169,12 @@ export default async (client: Client, interaction: Interaction) => {
                 const track = player.current;
                 const subtitle = `Author : **${track?.author}**\nDuration **${track?.duration.label}**\n`;
 
-                guildMember?.send({ embeds: [embeds.save(client.config.embedsColor, track!.title, subtitle, track!.uri, track!.thumbnail!)] })
+                guildMember?.send({ embeds: [embeds.save(bot.config.embedsColor, track!.title, subtitle, track!.uri, track!.thumbnail!)] })
                     .then(() => {
                         return interaction.reply({ content: `✅ | I sent you the name of the music in a private message.`, ephemeral: true, components: [] });
                     })
                     .catch((error) => {
-                        console.log('error:', error);
+                        bot.logger.emit('error', 'Error musicSave:', error);
                         return interaction.reply({ content: `❌ | I can't send you a private message.`, ephemeral: true, components: [] });
                     });
 
@@ -221,7 +223,7 @@ export default async (client: Client, interaction: Interaction) => {
                 const row = new ActionRowBuilder<ButtonBuilder>().addComponents(prevButton, nextButton, delButton, clsButton);
 
                 await player.queuePage.msg?.edit({
-                    embeds: [embeds.queue(client.config.embedsColor, nowplaying, tracksQueue, methods[repeatMode])],
+                    embeds: [embeds.queue(bot.config.embedsColor, nowplaying, tracksQueue, methods[repeatMode])],
                     components: [row],
                     allowedMentions: { repliedUser: false },
                 });
@@ -272,7 +274,7 @@ export default async (client: Client, interaction: Interaction) => {
                 const row = new ActionRowBuilder<ButtonBuilder>().addComponents(prevButton, nextButton, delButton, clsButton);
 
                 await player.queuePage.msg?.edit({
-                    embeds: [embeds.queue(client.config.embedsColor, nowplaying, tracksQueue, methods[repeatMode])],
+                    embeds: [embeds.queue(bot.config.embedsColor, nowplaying, tracksQueue, methods[repeatMode])],
                     components: [row],
                     allowedMentions: { repliedUser: false },
                 });
@@ -327,7 +329,7 @@ export default async (client: Client, interaction: Interaction) => {
                 const row = new ActionRowBuilder<ButtonBuilder>().addComponents(delButton);
 
                 await player.queuePage.msg?.edit({
-                    embeds: [embeds.queue(client.config.embedsColor, nowplaying, tracksQueue, methods[repeatMode])],
+                    embeds: [embeds.queue(bot.config.embedsColor, nowplaying, tracksQueue, methods[repeatMode])],
                     components: [row],
                     allowedMentions: { repliedUser: false },
                 });
@@ -345,8 +347,8 @@ export default async (client: Client, interaction: Interaction) => {
 
         if (!cmd) return;
 
-        if (cmd.requireAdmin && client.config.admin) {
-            if (interaction.user.id !== client.config.admin)
+        if (cmd.requireAdmin && bot.config.admin) {
+            if (interaction.user.id !== bot.config.admin)
                 return interaction.editReply({ content: `❌ | This command requires administrator privileges.`, allowedMentions: { repliedUser: false } });
         }
 
@@ -360,9 +362,9 @@ export default async (client: Client, interaction: Interaction) => {
         }
 
 
-        console.log(`(${cst.color.grey}${guildMember?.guild.name}${cst.color.white}) ${interaction.user.username} : /${interaction.commandName}`);
+        bot.logger.emit('discord', `[interactionCreate] (${cst.color.grey}${guildMember?.guild.name}${cst.color.white}) ${interaction.user.username} : /${interaction.commandName}`);
 
         await interaction.deferReply();
-        cmd.slashExecute(client, interaction);
+        cmd.slashExecute(bot, client, interaction);
     }
 };

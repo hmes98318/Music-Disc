@@ -1,4 +1,8 @@
-import { Client } from "discord.js";
-import { IncomingDiscordPayload } from "lavashark/typings/src/@types";
+import type { Client } from "discord.js";
+import type { IncomingDiscordPayload } from "lavashark/typings/src/@types";
+import type { Bot } from "../../@types";
 
-export default async (client: Client, packet: unknown) => client.lavashark.handleVoiceUpdate(packet as IncomingDiscordPayload);
+
+export default async (_bot: Bot, client: Client, packet: unknown) => {
+    client.lavashark.handleVoiceUpdate(packet as IncomingDiscordPayload);
+}

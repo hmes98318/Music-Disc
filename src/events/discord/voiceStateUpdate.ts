@@ -1,5 +1,7 @@
-import { Client, VoiceBasedChannel, VoiceState } from "discord.js";
 import { cst } from "../../utils/constants";
+
+import type { Client, VoiceBasedChannel, VoiceState } from "discord.js";
+import type { Bot } from "../../@types";
 
 
 let pool = new Map();
@@ -12,12 +14,12 @@ const checkBlacklistUsers = (channel: VoiceBasedChannel | null, blacklist: strin
 };
 
 
-export default async (client: Client, oldState: VoiceState, newState: VoiceState) => {
-    const display = client.config.displayVoiceState ?? true;
-    const blacklist = client.config.blacklist || [];
+export default async (bot: Bot, client: Client, oldState: VoiceState, newState: VoiceState) => {
+    const display = bot.config.displayVoiceState ?? true;
+    const blacklist = bot.blacklist || [];
 
     if (newState.channelId === null) {
-        if (display) console.log(cst.color.grey + `-- (${newState.member?.guild.name}) ${newState.member?.user.username} left channel` + cst.color.white);
+        if (display) bot.logger.emit('discord', '[voiceStateUpdate]' + cst.color.grey + ` (${newState.member?.guild.name}) ${newState.member?.user.username} left channel` + cst.color.white);
 
         // If the member who left the channel is not bot, check if the channel still has members
         if (!oldState.member?.user.bot) {
@@ -33,7 +35,7 @@ export default async (client: Client, oldState: VoiceState, newState: VoiceState
                     for (let [key, value] of pool.entries()) {
 
                         if (key === oldState.guild.id) {
-                            // console.log('checkBlacklistUsers.del', pool);
+                            // bot.logger.emit('discord', '[voiceStateUpdate] checkBlacklistUsers.del', pool);
                             clearTimeout(value);
                             pool.delete(value);
                             break;
@@ -44,16 +46,16 @@ export default async (client: Client, oldState: VoiceState, newState: VoiceState
                     let timeoutID = setTimeout(() => {
                         player.destroy();
 
-                    }, client.config.autoLeaveCooldown);
+                    }, bot.config.autoLeaveCooldown);
 
                     pool.set(oldState.guild.id, timeoutID);
-                    // console.log('pool.add', pool);
+                    // bot.logger.emit('discord', '[voiceStateUpdate] pool.add', pool);
                 }
             }
         }
     }
     else if (oldState.channelId === null) {
-        if (display) console.log(cst.color.grey + `-- (${newState.member?.guild.name}) ${newState.member?.user.username} joined channel ${newState.channel?.name}` + cst.color.white);
+        if (display) bot.logger.emit('discord', '[voiceStateUpdate]' + cst.color.grey + ` (${newState.member?.guild.name}) ${newState.member?.user.username} joined channel ${newState.channel?.name}` + cst.color.white);
 
         // If the member who left the channel is not bot, check if the channel still has members
         if (!oldState.member?.user.bot) {
@@ -70,17 +72,17 @@ export default async (client: Client, oldState: VoiceState, newState: VoiceState
                     let timeoutID = setTimeout(() => {
                         player.destroy();
 
-                    }, client.config.autoLeaveCooldown);
+                    }, bot.config.autoLeaveCooldown);
 
                     pool.set(newState.guild.id, timeoutID);
-                    // console.log('checkBlacklistUsers.add', pool);
+                    // bot.logger.emit('discord', '[voiceStateUpdate] checkBlacklistUsers.add', pool);
                 }
                 if (newState.channel!.members.size >= 2 && !checkBlacklistUsers(newState.channel, blacklist)) {
                     // If member join bot channel, then find current channel's timeoutID to clear
                     for (let [key, value] of pool.entries()) {
 
                         if (key === newState.guild.id) {
-                            // console.log('pool.del', pool);
+                            // bot.logger.emit('discord', '[voiceStateUpdate] pool.del', pool);
                             clearTimeout(value);
                             pool.delete(value);
                             break;
@@ -91,7 +93,7 @@ export default async (client: Client, oldState: VoiceState, newState: VoiceState
         }
     }
     else {
-        if (display) console.log(cst.color.grey + `-- (${newState.member?.guild.name}) ${newState.member?.user.username} moved channel ${oldState.channel?.name} to ${newState.channel?.name}` + cst.color.white);
+        if (display) bot.logger.emit('discord', '[voiceStateUpdate]' + cst.color.grey + ` (${newState.member?.guild.name}) ${newState.member?.user.username} moved channel ${oldState.channel?.name} to ${newState.channel?.name}` + cst.color.white);
 
 
         // If the member who left the channel is not bot, check if the channel still has members
@@ -109,7 +111,7 @@ export default async (client: Client, oldState: VoiceState, newState: VoiceState
                     for (let [key, value] of pool.entries()) {
 
                         if (key === oldState.guild.id) {
-                            // console.log('checkBlacklistUsers.del', pool);
+                            // bot.logger.emit('discord', '[voiceStateUpdate] checkBlacklistUsers.del', pool);
                             clearTimeout(value);
                             pool.delete(value);
                             break;
@@ -120,10 +122,10 @@ export default async (client: Client, oldState: VoiceState, newState: VoiceState
                     let timeoutID = setTimeout(() => {
                         player.destroy();
 
-                    }, client.config.autoLeaveCooldown);
+                    }, bot.config.autoLeaveCooldown);
 
                     pool.set(oldState.guild.id, timeoutID);
-                    // console.log('pool.add', pool);
+                    // bot.logger.emit('discord', '[voiceStateUpdate] pool.add', pool);
                 }
             }
             else if (botChannelId === newChannelId) {
@@ -133,17 +135,17 @@ export default async (client: Client, oldState: VoiceState, newState: VoiceState
                     let timeoutID = setTimeout(() => {
                         player.destroy();
 
-                    }, client.config.autoLeaveCooldown);
+                    }, bot.config.autoLeaveCooldown);
 
                     pool.set(newState.guild.id, timeoutID);
-                    // console.log('checkBlacklistUsers.add', pool);
+                    // bot.logger.emit('discord', '[voiceStateUpdate] checkBlacklistUsers.add', pool);
                 }
                 if (newState.channel!.members.size >= 2 && !checkBlacklistUsers(newState.channel, blacklist)) {
                     // If member join bot channel, then find current channel's timeoutID to clear
                     for (let [key, value] of pool.entries()) {
 
                         if (key === newState.guild.id) {
-                            // console.log('pool.del', pool);
+                            // bot.logger.emit('discord', '[voiceStateUpdate] pool.del', pool);
                             clearTimeout(value);
                             pool.delete(value);
                             break;
