@@ -2,15 +2,16 @@ import {
     ActionRowBuilder,
     ButtonBuilder,
     ButtonStyle,
-    Client,
 } from "discord.js";
-import { Player, Track } from "lavashark";
 
 import { cst } from "../utils/constants";
 import { embeds } from "../embeds";
 
+import type { Player, Track } from "lavashark";
+import type { Bot } from "../@types";
 
-async function update(client: Client, player: Player, track: Track): Promise<void> {
+
+async function update(bot: Bot, player: Player, track: Track): Promise<void> {
     const playing = !(player.paused);
     const methods = ['Off', 'Single', 'All'];
     const repeatMode = player.repeatMode;
@@ -27,7 +28,7 @@ async function update(client: Client, player: Player, track: Track): Promise<voi
     const row = new ActionRowBuilder<ButtonBuilder>().addComponents(playPauseButton, skipButton, stopButton, loopButton, shuffleButton);
 
     await player.dashboard!.edit({
-        embeds: [embeds.dashboard(client.config.embedsColor, 'Dashboard', track!.title, subtitle, track!.uri, track!.thumbnail!)],
+        embeds: [embeds.dashboard(bot.config.embedsColor, 'Dashboard', track!.title, subtitle, track!.uri, track!.thumbnail!)],
         components: [row]
     });
 }
