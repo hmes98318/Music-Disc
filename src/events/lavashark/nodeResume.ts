@@ -1,7 +1,8 @@
 import type { Client } from "discord.js";
 import type { Node } from "lavashark";
+import type { Bot } from "../../@types";
 
 
-export default async (_client: Client, node: Node) => {
-    console.log(`[nodeResume]`, `"${node.identifier}" session has been restored`);
+export default async (bot: Bot, _client: Client, node: Node) => {
+    bot.logger.emit('lavashark', `[nodeResume] "${node.identifier}" session has been restored`);
 };

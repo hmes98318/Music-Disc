@@ -1,7 +1,8 @@
-import { Client } from "discord.js";
-import { Node } from "lavashark";
+import type { Client } from "discord.js";
+import type { Node } from "lavashark";
+import type { Bot } from "../../@types";
 
 
-export default async (_client:Client, node: Node, error: any) => {
-    console.error(`[LavaShark] Error on node "${node.identifier}":`, error.message);
+export default async (bot: Bot, _client: Client, node: Node, error: any) => {
+    bot.logger.emit('lavashark', `[error] Error on node "${node.identifier}": ` + error.message);
 };
