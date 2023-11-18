@@ -3,7 +3,9 @@ import path from 'path';
 
 
 class LavalinkProcess {
+    public pid: number;
     public lavalinkJarPath: string;
+
     #lavalinkProcess: child_process.ChildProcessWithoutNullStreams;
 
     constructor(lavalinkJarPath: any) {
@@ -19,6 +21,7 @@ class LavalinkProcess {
         process.chdir(lavalinkDir);
 
         this.#lavalinkProcess = child_process.spawn('java', ['-jar', lavalinkJar]);
+        this.pid = this.#lavalinkProcess.pid!;
 
         this.#eventHandle();
         this.#sendStatusCode('LAVALINK_STARTED');
@@ -37,15 +40,16 @@ class LavalinkProcess {
 
             // Deserialization
             data = Buffer.from(data).toString('utf-8');
-
             process.send!(data);
 
             if (data.includes('Lavalink is ready to accept connections.')) {
                 this.#sendStatusCode('LAVALINK_READY');
+                this.#sendStatusCode(`LAVALINK_PID_${this.pid}`);
             }
             else if (data.includes('Undertow started on port(s)')) {
                 const match = data.match(/port\(s\) (\d+)/);
                 const port = match && match[1];
+
                 this.#sendStatusCode(`LAVALINK_PORT_${port}`);
             }
         });
@@ -55,7 +59,6 @@ class LavalinkProcess {
 
             // Deserialization
             data = Buffer.from(data).toString('utf-8');
-
             process.send!(data);
         });
     }
@@ -65,15 +68,14 @@ class LavalinkProcess {
      * Send status code
      */
     #sendStatusCode(status: string) {
-        const validStatusCodes = ['LAVALINK_STARTED', 'LAVALINK_READY'];
-        const portRegex = /^LAVALINK_PORT_(\d+)$/;
-
-        if (validStatusCodes.includes(status) || portRegex.test(status)) {
-            process.send!(status);
-        }
-        else {
-            console.error(`Invalid status: ${status}`);
-        }
+        /**
+         * Valid status code
+         * LAVALINK_STARTED
+         * LAVALINK_READY
+         * LAVALINK_PORT_${number}
+         * LAVALINK_PID_${number}
+         */
+        process.send!(status);
     }
 }
 
