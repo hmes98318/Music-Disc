@@ -6,11 +6,12 @@ import { uptime } from '../../utils/functions/uptime';
 
 import type { Client, VoiceChannel } from 'discord.js';
 import type { Server } from 'socket.io';
-import type { SessionManager } from '../lib/SessionManager';
 import type { Bot } from "../../@types";
+import type { SessionManager } from '../lib/SessionManager';
+import type { LocalNodeController } from "../lib/LocalNodeController";
 
 
-const registerSocketioEvents = (bot: Bot, client: Client, io: Server, sessionManager: SessionManager) => {
+const registerSocketioEvents = (bot: Bot, client: Client, localNodeController: LocalNodeController, io: Server, sessionManager: SessionManager) => {
 
     io.on('connection', (socket) => {
         // bot.logger.emit('api', '[socketio] a user connected');
@@ -136,6 +137,27 @@ const registerSocketioEvents = (bot: Bot, client: Client, io: Server, sessionMan
                 };
 
                 socket.emit('api_lavashark_nowPlaying', playingData);
+            }
+        });
+
+        /**
+         * localnode_update
+         * @emits api_localnode_update
+         */
+        socket.on('localnode_update', (currLogLength: number) => {
+            sessionCheck();
+            // bot.logger.emit('api', '[api] emit localnode_update');
+
+            const lavalinkLogsLength = localNodeController.lavalinkLogs.length;
+
+            if (currLogLength === lavalinkLogsLength) {
+                // No new logs
+                socket.emit('api_localnode_update', 'SAME_LENGTH');
+            }
+            else {
+                // Send the new logs since the last update
+                const newLogs = localNodeController.lavalinkLogs.slice(currLogLength);
+                socket.emit('api_localnode_update', newLogs);
             }
         });
     });

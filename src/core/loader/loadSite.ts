@@ -9,9 +9,10 @@ import { SessionManager } from '../lib/SessionManager';
 
 import type { Client } from 'discord.js';
 import type { Bot } from '../../@types';
+import type { LocalNodeController } from '../lib/LocalNodeController';
 
 
-const loadSite = (bot: Bot, client: Client) => {
+const loadSite = (bot: Bot, client: Client, localNodeController: LocalNodeController) => {
     return new Promise<void>((resolve, _reject) => {
         bot.logger.emit('api', `-> loading Web Framework ......`);
 
@@ -22,8 +23,8 @@ const loadSite = (bot: Bot, client: Client) => {
         const sessionManager = new SessionManager();
 
 
-        registerExpressEvents(bot, client, app, sessionManager);
-        registerSocketioEvents(bot, client, io, sessionManager);
+        registerExpressEvents(bot, client, localNodeController, app, sessionManager);
+        registerSocketioEvents(bot, client, localNodeController, io, sessionManager);
 
 
         server.listen(port, function () {

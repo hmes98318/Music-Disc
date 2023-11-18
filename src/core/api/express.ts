@@ -6,8 +6,9 @@ import { hashGenerator } from '../lib/hashGenerator';
 
 import type { Client } from 'discord.js';
 import type { Express } from 'express';
-import type { SessionManager } from '../lib/SessionManager';
 import type { Bot } from '../../@types';
+import type { SessionManager } from '../lib/SessionManager';
+import type { LocalNodeController } from '../lib/LocalNodeController';
 
 
 interface IPInfo {
@@ -18,7 +19,7 @@ interface IPInfo {
 const blockedIP = new Map<string, IPInfo>();
 
 
-const registerExpressEvents = (bot: Bot, client: Client, app: Express, sessionManager: SessionManager) => {
+const registerExpressEvents = (bot: Bot, client: Client, localNodeController: LocalNodeController, app: Express, sessionManager: SessionManager) => {
     const siteConfig = bot.config.site;
 
     const cssPath = `${process.cwd()}/views/css`;
@@ -90,6 +91,10 @@ const registerExpressEvents = (bot: Bot, client: Client, app: Express, sessionMa
         else {
             res.sendFile(`${viewsPath}/server.html`);
         }
+    });
+
+    app.get('/localnode', verifyLogin, (req, res) => {
+        res.sendFile(`${viewsPath}/localnode.html`);
     });
 
 
@@ -219,7 +224,27 @@ const registerExpressEvents = (bot: Bot, client: Client, app: Express, sessionMa
         }
     });
 
+    app.get('/api/localnode/getLogs', verifyLogin, (req, res) => {
+        res.json(localNodeController.lavalinkLogs);
+    });
 
+    app.post('/api/localnode/controller', async (req, res) => {
+        const { type } = req.body;
+        let result;
+
+
+        if (type === 'RESTART') {
+            result = await localNodeController.restart() ? 'SUCCEED' : 'FAILED';
+        }
+        else if (type === 'STOP') {
+            result = await localNodeController.stop() ? 'SUCCEED' : 'FAILED';
+        }
+        else {
+            result = 'FAILED';
+        }
+
+        res.json({ type, result });
+    });
 
 
     app.use('*', (req, res) => {

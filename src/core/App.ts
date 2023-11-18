@@ -47,7 +47,7 @@ export class App {
             .then(() => loadDiscordEvents(this.bot, this.#client))
             .then(() => loadLavaSharkEvents(this.bot, this.#client))
             .then(() => loadCommands(this.bot, this.#client))
-            .then(async () => { if (this.bot.config.enableSite) await loadSite(this.bot, this.#client) })
+            .then(async () => { if (this.bot.config.enableSite) await loadSite(this.bot, this.#client, this.#localNodeController) })
             .then(() => checkNodesStats(this.bot, this.#client.lavashark))
             .then(() => {
                 this.bot.logger.emit('log', cst.color.green + '*** All loaded successfully ***' + cst.color.white);
