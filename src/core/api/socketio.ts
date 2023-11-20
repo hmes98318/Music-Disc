@@ -141,6 +141,15 @@ const registerSocketioEvents = (bot: Bot, client: Client, localNodeController: L
         });
 
         /**
+         * localnode_active
+         * @emits api_localnode_active
+         */
+        socket.on('localnode_active', () => {
+            const isActive = localNodeController.lavalinkPid !== null ? 'ACTIVE' : 'INACTIVE';
+            socket.emit('api_localnode_active', isActive);
+        });
+
+        /**
          * localnode_update
          * @emits api_localnode_update
          */

@@ -224,6 +224,10 @@ const registerExpressEvents = (bot: Bot, client: Client, localNodeController: Lo
         }
     });
 
+    app.get('/api/localnode/hasEnable', verifyLogin, (req, res) => {
+        res.json({ enable: bot.config.enableLocalNode });
+    });
+
     app.get('/api/localnode/getLogs', verifyLogin, (req, res) => {
         res.json(localNodeController.lavalinkLogs);
     });
@@ -231,7 +235,6 @@ const registerExpressEvents = (bot: Bot, client: Client, localNodeController: Lo
     app.post('/api/localnode/controller', async (req, res) => {
         const { type } = req.body;
         let result;
-
 
         if (type === 'RESTART') {
             result = await localNodeController.restart() ? 'SUCCEED' : 'FAILED';
@@ -245,6 +248,8 @@ const registerExpressEvents = (bot: Bot, client: Client, localNodeController: Lo
 
         res.json({ type, result });
     });
+
+
 
 
     app.use('*', (req, res) => {
