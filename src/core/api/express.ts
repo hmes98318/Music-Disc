@@ -229,7 +229,7 @@ const registerExpressEvents = (bot: Bot, client: Client, localNodeController: Lo
     });
 
     app.get('/api/localnode/getLogs', verifyLogin, (req, res) => {
-        res.json(localNodeController.lavalinkLogs);
+        res.json({ logs: localNodeController.lavalinkLogs });
     });
 
     app.post('/api/localnode/controller', async (req, res) => {
