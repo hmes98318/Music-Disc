@@ -349,7 +349,7 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
 
         if (cmd.requireAdmin && bot.config.admin) {
             if (interaction.user.id !== bot.config.admin)
-                return interaction.editReply({ content: `❌ | This command requires administrator privileges.`, allowedMentions: { repliedUser: false } });
+                return interaction.reply({ content: `❌ | This command requires administrator privileges.`, allowedMentions: { repliedUser: false } });
         }
 
         if (cmd.voiceChannel) {
