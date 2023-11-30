@@ -1,0 +1,15 @@
+/*----- Logs Page -----*/
+
+/* Log 區域 */
+#logs-container {
+    max-height: 60vh;
+    overflow-y: auto;
+    background-color: #2a2d31;
+    padding: 10px;
+    padding-bottom: 20px;
+    border-radius: 5px;
+    font-size: 14px;
+    margin-bottom: 40px;
+}
+
+/*----- END Logs Page -----*/
