@@ -1,5 +1,28 @@
-import type { ClientPresenceStatus, HexColorString, Message } from "discord.js";
+import type {
+    ChatInputCommandInteraction,
+    ClientPresenceStatus,
+    Collection,
+    HexColorString,
+    Message
+} from "discord.js";
+import type { LavaShark } from "lavashark";
 import type { Logger } from "../core/lib/Logger";
+
+
+declare module 'discord.js' {
+    export interface Client {
+        commands: Collection<unknown, any>,
+        lavashark: LavaShark
+    }
+};
+
+declare module 'lavashark' {
+    export interface Player {
+        dashboard: Message<boolean> | null,
+        metadata: Message<boolean> | ChatInputCommandInteraction | null,
+        queuePage: QueuePage
+    }
+};
 
 
 export interface Bot {
