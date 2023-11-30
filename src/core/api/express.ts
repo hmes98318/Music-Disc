@@ -197,10 +197,7 @@ const registerExpressEvents = (bot: Bot, client: Client, localNodeController: Lo
     app.get('/api/server/info/:guildID', verifyLogin, async (req, res) => {
         // bot.logger.emit('api', `[GET] /api/server/info/${req.params.guildID} ` + req.ip);
 
-        const guild = client.guilds.cache.get(req.params.guildID);
-
-        await guild!.members.fetch()
-            .catch((_) => bot.logger.emit('api', `Cache guild:${req.params.guildID} members list failed`));
+        const guild = await client.guilds.fetch(req.params.guildID);
 
         if (!guild) {
             res.send({});

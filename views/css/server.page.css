@@ -165,13 +165,6 @@ body {
     color: #ffffff;
 }
 
-.members-list {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-}
-
 .member {
     display: flex;
     align-items: center;

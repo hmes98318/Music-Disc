@@ -8,9 +8,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const serverRefreshInterval = 10000;     // 'lavashark_nowPlaying' 刷新時間 10s
 
     let guildID = location.pathname.replace('/servers/', '');
-
     const serverListContainer = document.getElementById('server-list');
-    const membersListContainer = document.getElementById('members-list');
 
 
     // Get server list in the left sidebar
@@ -82,33 +80,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             document.getElementById("server_image").src = guildIcon;
             document.getElementById("server_image").style.display = "block";
             document.getElementById("server_name").textContent = data.name;
-
-            // Members list
-            membersListContainer.innerHTML = '';
-
-            for (const memberID of data.members) {
-                try {
-                    const memberDataResponse = await fetch(`/api/user/${memberID}`);
-                    if (!memberDataResponse.ok) {
-                        throw new Error(`HTTP error! Status: ${memberDataResponse.status}`);
-                    }
-
-                    const memberData = await memberDataResponse.json();
-
-                    if (!memberData.displayAvatarURL) memberData.displayAvatarURL = "https://raw.githubusercontent.com/hmes98318/Music-Disc/main/public/imgs/html/server.png";
-
-                    const memberDiv = document.createElement("div");
-                    memberDiv.className = "member";
-                    memberDiv.innerHTML = `
-                        <img class="rounded-image" src="${memberData.displayAvatarURL}" alt="${memberData.username}" width="40" height="40">
-                        <h4>${memberData.username}</h4>
-                    `;
-
-                    membersListContainer.appendChild(memberDiv);
-                } catch (error) {
-                    console.error("Error:", error);
-                }
-            }
         } catch (error) {
             console.error("Error:", error);
         }
