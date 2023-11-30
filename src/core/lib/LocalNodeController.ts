@@ -91,6 +91,7 @@ export class LocalNodeController {
                     return resolve(true);
                 });
 
+                this.#manualRestart = true;
                 this.#lavalinkProcessController.kill('SIGINT');
             }
             else {
