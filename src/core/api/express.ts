@@ -97,6 +97,10 @@ const registerExpressEvents = (bot: Bot, client: Client, localNodeController: Lo
         res.sendFile(`${viewsPath}/localnode.html`);
     });
 
+    app.get('/logs', verifyLogin, (req, res) => {
+        res.sendFile(`${viewsPath}/logs.html`);
+    });
+
 
     /**
      * ---------- API ----------
@@ -247,6 +251,10 @@ const registerExpressEvents = (bot: Bot, client: Client, localNodeController: Lo
         }
 
         res.json({ type, result });
+    });
+
+    app.get('/api/logger/getLogs', verifyLogin, (req, res) => {
+        res.json({ logs: bot.logger.logs });
     });
 
 

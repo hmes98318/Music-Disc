@@ -169,6 +169,25 @@ const registerSocketioEvents = (bot: Bot, client: Client, localNodeController: L
                 socket.emit('api_localnode_update', newLogs);
             }
         });
+
+        /**
+         * logger_update
+         * @emits api_logger_update
+         */
+        socket.on('logger_update', (currLogLength: number) => {
+            sessionCheck();
+            // bot.logger.emit('api', '[api] emit logger_update');
+
+            const botLogsLength = bot.logger.logs.length;
+
+            if (currLogLength === botLogsLength) {
+                socket.emit('api_logger_update', 'SAME_LENGTH');
+            }
+            else {
+                const newLogs = bot.logger.logs.slice(currLogLength);
+                socket.emit('api_logger_update', newLogs);
+            }
+        });
     });
 
 
