@@ -66,7 +66,7 @@ export class LocalNodeController {
     }
 
     public async restart() {
-        if (!this.#manualRestart) {
+        if (!this.#manualRestart || !this.#lavalinkProcessController) {
             this.#manualRestart = true;
             await this.stop();
             await this.initialize();
