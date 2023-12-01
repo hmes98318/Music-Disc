@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const updateLogContainer = (logs) => {
         logsContainer.innerHTML += '<br>';
-        logsContainer.innerHTML += convertAnsiToHtml(logs.join('<br>'));
+        logsContainer.innerHTML += convertAnsiToHtml(logs.join('<br>')).replaceAll('<span style="color: white;">', '</span>');
         scrollToBottom();
     };
 

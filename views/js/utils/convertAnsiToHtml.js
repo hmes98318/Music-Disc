@@ -10,7 +10,7 @@ const convertAnsiToHtml = (text) => {
         green   : '[32m',
         grey    : '[2m',
         red     : '[31m',
-        // white   : '[0m',
+        white   : '[0m',
         yellow  : '[33m'
     };
 
@@ -27,8 +27,6 @@ const convertAnsiToHtml = (text) => {
         const regex = new RegExp(escapedCode, 'g');
         htmlText = htmlText.replace(regex, `<span style="${style}">`);
     });
-
-    htmlText = htmlText.replace(/\x1b\[0m/g, '</span>');
 
     return htmlText;
 };
