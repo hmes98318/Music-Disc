@@ -27,10 +27,14 @@ async function update(bot: Bot, player: Player, track: Track): Promise<void> {
     const shuffleButton = new ButtonBuilder().setCustomId('Dashboard-Shuffle').setEmoji(cst.button.shuffle).setStyle(ButtonStyle.Secondary);
     const row = new ActionRowBuilder<ButtonBuilder>().addComponents(playPauseButton, skipButton, stopButton, loopButton, shuffleButton);
 
-    await player.dashboard!.edit({
-        embeds: [embeds.dashboard(bot.config.embedsColor, 'Dashboard', track!.title, subtitle, track!.uri, track!.thumbnail!)],
-        components: [row]
-    });
+    try {
+        await player.dashboard!.edit({
+            embeds: [embeds.dashboard(bot.config.embedsColor, 'Dashboard', track!.title, subtitle, track!.uri, track!.thumbnail!)],
+            components: [row]
+        });
+    } catch (error) {
+        bot.logger.emit('error', 'Dashboard error: ' + error);
+    }
 }
 
 export { update };
