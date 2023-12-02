@@ -347,7 +347,7 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
 
         if (!cmd) return;
 
-        if (cmd.requireAdmin && bot.config.admin) {
+        if (cmd.requireAdmin) {
             if (interaction.user.id !== bot.config.admin)
                 return interaction.reply({ content: `❌ | This command requires administrator privileges.`, allowedMentions: { repliedUser: false } });
         }
