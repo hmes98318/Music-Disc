@@ -69,6 +69,6 @@ export class SessionManager {
                     sessionMap.delete(sessionId);
                 }
             });
-        }, 30 * 10 * 1000); // 30 minutes
+        }, 5 * 60 * 1000); // 5 minutes
     }
 }
