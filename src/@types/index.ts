@@ -58,6 +58,7 @@ interface SiteConfig {
 
 interface LocalNode {
     autoRestart: boolean;
+    downloadLink: string;
 }
 
 export interface SystemInfo {

@@ -20,12 +20,12 @@ const loadLocalNode = (bot: Bot, localNodeController: LocalNodeController) => {
             .catch((error) => reject(error));
 
         const nodeInfo = {
-            version: `LavaLink: ${('v' + localNodeController.lavalinkVersion).padStart(8, ' ')}`,
+            active: `LavaLink: ${(localNodeController.lavalinkPid !== null ? 'ACTIVE' : 'INACTIVE').padStart(8, ' ')}`,
             port: `Port:   ${localNodeController.port.toString().padStart(10, ' ')}`
         };
 
         bot.logger.emit('log', `+--------------------+`);
-        bot.logger.emit('log', `| ${nodeInfo.version.padEnd(15, ' ')} |`);
+        bot.logger.emit('log', `| ${nodeInfo.active.padEnd(15, ' ')} |`);
         bot.logger.emit('log', `| ${nodeInfo.port.padEnd(15, ' ')} |`);
         bot.logger.emit('log', `+--------------------+`);
 

@@ -37,6 +37,7 @@ const setEnvironment = (bot: Bot) => {
     // Local Lavalink node
     bot.config.enableLocalNode = isTrueOrFalse(process.env.ENABLE_LOCAL_NODE) ?? bot.config.enableLocalNode;
     bot.config.localNode.autoRestart = isTrueOrFalse(process.env.LOCAL_NODE_AUTO_RESTART) ?? bot.config.localNode.autoRestart;
+    bot.config.localNode.downloadLink = process.env.LOCAL_NODE_DOWNLOAD_LINK || bot.config.localNode.downloadLink;
 
     // console.log('setEnvironment: ', config);
     bot.logger.emit('log', 'Set environment variables.');

@@ -38,6 +38,7 @@ export class App {
         this.#localNodeController = new LocalNodeController();
         this.#localNodeController.logger = this.bot.logger;
         this.#localNodeController.autoRestart = this.bot.config.localNode.autoRestart;
+        this.#localNodeController.downloadLink = this.bot.config.localNode.downloadLink;
     }
 
 

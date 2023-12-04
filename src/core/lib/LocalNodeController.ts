@@ -10,9 +10,6 @@ import type { Logger } from './Logger';
 
 
 export class LocalNodeController {
-    /** Local node version */
-    public lavalinkVersion: string;
-
     /** Local node download link */
     public downloadLink: string;
 
@@ -36,8 +33,7 @@ export class LocalNodeController {
     #manualRestart: boolean;
 
     constructor() {
-        this.lavalinkVersion = '3.7.9';
-        this.downloadLink = `https://github.com/lavalink-devs/Lavalink/releases/download/${this.lavalinkVersion}/Lavalink.jar`;
+        this.downloadLink = 'https://github.com/lavalink-devs/Lavalink/releases/download/3.7.9/Lavalink.jar';
         this.lavalinkLogs = [];
         this.autoRestart = true;
 
@@ -102,7 +98,7 @@ export class LocalNodeController {
     }
 
     public async initialize() {
-        const filename = `Lavalink_${this.lavalinkVersion.replaceAll('.', '_')}.jar`
+        const filename = 'Lavalink.jar';
         await this.#downloadFile(this.downloadLink, filename);
 
         return new Promise<void>((resolve, _reject) => {
@@ -139,7 +135,7 @@ export class LocalNodeController {
                         const portMatch = message.match(portRegex);
                         this.port = Number(portMatch![1]);
 
-                        this.logger.emit('localNode', 'The local node listening on port', this.port);
+                        this.logger.emit('localNode', `The local node listening on port ${this.port}`);
                     }
                     else if (/^LAVALINK_PID_(\d+)$/.test(message)) {
                         const pidRegex = /^LAVALINK_PID_(\d+)$/;
@@ -204,6 +200,7 @@ export class LocalNodeController {
         const reader = response.body!.getReader();
         let downloadedBytes = 0;
 
+        this.logger.emit('localNode', `Download Lavalink from: ${this.downloadLink}`);
         this.logger.emit('localNode', 'Start downloading file ...');
 
         while (true) {

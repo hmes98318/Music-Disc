@@ -23,7 +23,8 @@ export const cst = {
         },
         enableLocalNode     : false,
         localNode:{
-            autoRestart     : true
+            autoRestart     : true,
+            downloadLink    : 'https://github.com/lavalink-devs/Lavalink/releases/download/3.7.9/Lavalink.jar'
         }
     },
     blacklist               : [],           // It must be the user ID (string[])
