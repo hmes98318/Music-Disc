@@ -50,8 +50,13 @@ export default async (bot: Bot, client: Client) => {
     }));
 
     client.lavashark.start(String(client.user?.id));
-    client.user?.setActivity(bot.config.playing);
     client.user?.setStatus(bot.config.status as ClientPresenceStatus);
+    client.user?.setActivity(bot.config.playing);
+    // Prevent the disappearance of the activity status
+    setInterval(() => {
+        client.user?.setActivity(bot.config.playing);
+    }, 10 * 60 * 1000); // 10 minutes
+
 
     if (bot.config.admin) bot.logger.emit('log', `Set admin as user ID : ${bot.config.admin}`);
     bot.logger.emit('discord', `>>> Logged in as ${client.user?.username}`);
