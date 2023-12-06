@@ -7,7 +7,7 @@ import nodeList from '../nodelist.json';
 
 
 
-let client = new Client({
+const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
         GatewayIntentBits.GuildMessages,
@@ -25,7 +25,7 @@ client.lavashark = new LavaShark({
 const main = async () => {
     const app = new App(client);
     app.initialize();
-}
+};
 main();
 
 

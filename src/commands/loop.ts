@@ -71,7 +71,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
 
     await message.react('👍');
     return message.reply({ content: `Set loop to \`${methods[mode]}\``, allowedMentions: { repliedUser: false } });
-}
+};
 
 
 export const slashExecute = async (bot: Bot, client: Client, interaction: ChatInputCommandInteraction) => {
@@ -106,4 +106,4 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
     }
 
     return interaction.editReply({ content: `Set loop to \`${methods[mode!]}\``, allowedMentions: { repliedUser: false } });
-}
+};

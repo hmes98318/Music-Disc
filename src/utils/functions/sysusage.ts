@@ -74,7 +74,7 @@ const getCpuLoad = () => {
         totalTick = 0;
 
     cpus.forEach(cpu => {
-        for (let type in cpu.times) {
+        for (const type in cpu.times) {
             totalTick += cpu.times[type as keyof CpuInfo["times"]];
         }
         totalIdle += cpu.times.idle;
@@ -84,7 +84,7 @@ const getCpuLoad = () => {
         idle: totalIdle / cpus.length,
         total: totalTick / cpus.length
     };
-}
+};
 
 const getCpuPercentage = () => {
     const firstLoad = getCpuLoad();
@@ -100,4 +100,4 @@ const getCpuPercentage = () => {
             resolve(avgLoad);
         }, 1000);
     });
-}
+};

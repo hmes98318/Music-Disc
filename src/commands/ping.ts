@@ -25,7 +25,7 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
         embeds: [embeds.ping(bot.config.embedsColor, botPing, apiPing)],
         allowedMentions: { repliedUser: false }
     });
-}
+};
 
 export const slashExecute = async (bot: Bot, client: Client, interaction: ChatInputCommandInteraction) => {
     const botPing = `${Date.now() - interaction.createdTimestamp}ms`;
@@ -35,4 +35,4 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
         embeds: [embeds.ping(bot.config.embedsColor, botPing, apiPing)],
         allowedMentions: { repliedUser: false }
     });
-}
+};

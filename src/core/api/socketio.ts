@@ -23,10 +23,10 @@ const registerSocketioEvents = (bot: Bot, client: Client, localNodeController: L
         const sessionCheck = () => {
             const cookies = cookie.parse(socket.request.headers.cookie as string || '');
             const sessionId = cookies.sessionID;
-            const session = sessionManager.getSession(sessionId)
+            const session = sessionManager.getSession(sessionId);
 
             if (!session) return io.disconnectSockets();
-        }
+        };
 
 
         /**
@@ -191,7 +191,7 @@ const registerSocketioEvents = (bot: Bot, client: Client, localNodeController: L
     });
 
 
-    io.on('disconnect', (socket) => {
+    io.on('disconnect', (_socket) => {
         // bot.logger.emit('api', '[socketio] a user disconnected');
     });
 };

@@ -90,7 +90,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
             allowedMentions: { repliedUser: false }
         });
     }
-}
+};
 
 export const slashExecute = async (bot: Bot, client: Client, interaction: ChatInputCommandInteraction) => {
     const nodeName = interaction.options.getString('nodename');
@@ -158,4 +158,4 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
             allowedMentions: { repliedUser: false }
         });
     }
-}
+};

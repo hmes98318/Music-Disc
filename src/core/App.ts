@@ -44,11 +44,11 @@ export class App {
 
     public async initialize() {
         return Promise.resolve()
-            .then(async () => { if (this.bot.config.enableLocalNode) await loadLocalNode(this.bot, this.#localNodeController) })
+            .then(async () => { if (this.bot.config.enableLocalNode) await loadLocalNode(this.bot, this.#localNodeController); })
             .then(() => loadDiscordEvents(this.bot, this.#client))
             .then(() => loadLavaSharkEvents(this.bot, this.#client))
             .then(() => loadCommands(this.bot, this.#client))
-            .then(async () => { if (this.bot.config.enableSite) await loadSite(this.bot, this.#client, this.#localNodeController) })
+            .then(async () => { if (this.bot.config.enableSite) await loadSite(this.bot, this.#client, this.#localNodeController); })
             .then(() => checkNodesStats(this.bot, this.#client.lavashark))
             .then(() => {
                 this.bot.logger.emit('log', cst.color.green + '*** All loaded successfully ***' + cst.color.white);

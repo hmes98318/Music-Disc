@@ -5,4 +5,4 @@ import type { Bot } from "../../@types";
 
 export default async (_bot: Bot, client: Client, packet: unknown) => {
     client.lavashark.handleVoiceUpdate(packet as IncomingDiscordPayload);
-}
+};

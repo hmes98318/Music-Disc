@@ -44,7 +44,7 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
         components: [row],
         allowedMentions: { repliedUser: false }
     });
-}
+};
 
 export const slashExecute = async (bot: Bot, client: Client, interaction: ChatInputCommandInteraction) => {
     const player = client.lavashark.getPlayer(interaction.guild!.id);
@@ -68,4 +68,4 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
         components: [row],
         allowedMentions: { repliedUser: false }
     });
-}
+};

@@ -40,7 +40,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
         return message.reply({ content: '❌ | There is no music currently playing.', allowedMentions: { repliedUser: false } });
     }
 
-    const tracks = player.queue.tracks.map((track, index) => { return `${++index}. \`${track.title}\`` });
+    const tracks = player.queue.tracks.map((track, index) => { return `${++index}. \`${track.title}\``; });
 
     if (tracks.length < 1) {
         return message.reply({ content: `❌ | No music in queue after current.`, allowedMentions: { repliedUser: false } });
@@ -49,7 +49,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
     let SUCCESS = false;
 
     if (args.length === 1) { // +rm 1
-        let index = parseInt(args[0]);
+        const index = parseInt(args[0]);
         SUCCESS = player.queue.remove(index - 1);
 
         if (!SUCCESS) {
@@ -64,7 +64,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
         }
     }
     else if (args.length === 2) { // +rm 3 4
-        let index1 = parseInt(args[0]),
+        const index1 = parseInt(args[0]),
             index2 = parseInt(args[1]);
         SUCCESS = player.queue.remove(index1 - 1, index2 - index1 + 1);
 
@@ -81,7 +81,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
         }
     }
     else if (args.length < 1) { // +rm
-        let nowplaying = `Now Playing : ${player.current?.title}\n\n`;
+        const nowplaying = `Now Playing : ${player.current?.title}\n\n`;
         let tracksQueue = '';
 
         if (tracks.length < 1) {
@@ -137,7 +137,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
             }
         });
     }
-}
+};
 
 export const slashExecute = async (bot: Bot, client: Client, interaction: ChatInputCommandInteraction) => {
     const player = client.lavashark.getPlayer(interaction.guild!.id);
@@ -146,7 +146,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
         return interaction.editReply({ content: '❌ | There is no music currently playing.', allowedMentions: { repliedUser: false } });
     }
 
-    const tracks = player.queue.tracks.map((track, index) => { return `${++index}. \`${track.title}\`` });
+    const tracks = player.queue.tracks.map((track, index) => { return `${++index}. \`${track.title}\``; });
 
     if (tracks.length < 1) {
         return interaction.editReply({ content: `❌ | No music in queue after current.`, allowedMentions: { repliedUser: false } });
@@ -157,7 +157,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
     let SUCCESS = false;
 
     if ((index1 === null && index2 !== null) || (index1 !== null && index2 === null)) { // +rm 1
-        let index = index1 || index2;
+        const index = index1 || index2;
         SUCCESS = player.queue.remove(index! - 1);
 
         if (!SUCCESS) {
@@ -185,7 +185,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
         }
     }
     else if (index1 === null && index2 === null) { // +rm
-        let nowplaying = `Now Playing : ${player.current?.title}\n\n`;
+        const nowplaying = `Now Playing : ${player.current?.title}\n\n`;
         let tracksQueue = '';
 
         if (tracks.length < 1) {
@@ -241,4 +241,4 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
         });
     }
 
-}
+};

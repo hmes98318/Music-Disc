@@ -31,7 +31,7 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
     await dashboard.initial(bot, message, player);
     await dashboard.update(bot, player, player.current!);
     return message.react('👍');
-}
+};
 
 export const slashExecute = async (bot: Bot, client: Client, interaction: ChatInputCommandInteraction) => {
     const player = client.lavashark.getPlayer(interaction.guild!.id);
@@ -49,4 +49,4 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
     await dashboard.initial(bot, interaction, player);
     await dashboard.update(bot, player, player.current!);
     return interaction.editReply("✅ | Dashboard updated.");
-}
+};

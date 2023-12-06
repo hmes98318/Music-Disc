@@ -46,7 +46,7 @@ export default async (bot: Bot, client: Client) => {
             name: cmd.name,
             description: cmd.description,
             options: cmd.options
-        }
+        };
     }));
 
     client.lavashark.start(String(client.user?.id));

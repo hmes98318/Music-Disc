@@ -10,12 +10,12 @@ export type EventListeners<T> = {
     (event: 'discord', listener: (message: string) => void): T;
 };
 
-export interface Logger {
+export interface LoggerEvents {
     once: EventListeners<this>;
     on: EventListeners<this>;
 }
 
-export class Logger extends EventEmitter {
+export class Logger extends EventEmitter implements LoggerEvents {
     public logs: string[];
     public format: string;
 

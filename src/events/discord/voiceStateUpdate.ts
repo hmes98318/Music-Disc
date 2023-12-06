@@ -4,7 +4,7 @@ import type { Client, VoiceBasedChannel, VoiceState } from "discord.js";
 import type { Bot } from "../../@types";
 
 
-let pool = new Map();
+const pool = new Map();
 
 // channel doesn't have anyone in blacklist => true
 const checkBlacklistUsers = (channel: VoiceBasedChannel | null, blacklist: string[]) => {
@@ -32,7 +32,7 @@ export default async (bot: Bot, client: Client, oldState: VoiceState, newState: 
             if (botChannelId === oldChannelId) {
                 // If the channel only has the bot or users in the blacklist, then start counting timeout until leave
                 if (!checkBlacklistUsers(oldState.channel, blacklist)) {
-                    for (let [key, value] of pool.entries()) {
+                    for (const [key, value] of pool.entries()) {
 
                         if (key === oldState.guild.id) {
                             // bot.logger.emit('discord', '[voiceStateUpdate] checkBlacklistUsers.del', pool);
@@ -43,7 +43,7 @@ export default async (bot: Bot, client: Client, oldState: VoiceState, newState: 
                     }
                 }
                 if (oldState.channel!.members.size <= 1 || checkBlacklistUsers(oldState.channel, blacklist)) {
-                    let timeoutID = setTimeout(() => {
+                    const timeoutID = setTimeout(() => {
                         player.destroy();
 
                     }, bot.config.autoLeaveCooldown);
@@ -69,7 +69,7 @@ export default async (bot: Bot, client: Client, oldState: VoiceState, newState: 
                 // When bot is in the target channel and only one member joined
                 // If there are two members or more (include bot) in the channel, it will not trigger
                 if (checkBlacklistUsers(newState.channel, blacklist)) {
-                    let timeoutID = setTimeout(() => {
+                    const timeoutID = setTimeout(() => {
                         player.destroy();
 
                     }, bot.config.autoLeaveCooldown);
@@ -79,7 +79,7 @@ export default async (bot: Bot, client: Client, oldState: VoiceState, newState: 
                 }
                 if (newState.channel!.members.size >= 2 && !checkBlacklistUsers(newState.channel, blacklist)) {
                     // If member join bot channel, then find current channel's timeoutID to clear
-                    for (let [key, value] of pool.entries()) {
+                    for (const [key, value] of pool.entries()) {
 
                         if (key === newState.guild.id) {
                             // bot.logger.emit('discord', '[voiceStateUpdate] pool.del', pool);
@@ -108,7 +108,7 @@ export default async (bot: Bot, client: Client, oldState: VoiceState, newState: 
             if (botChannelId === oldChannelId) {
                 // If the channel only has the bot or users in the blacklist, then start counting timeout until leave
                 if (!checkBlacklistUsers(oldState.channel, blacklist)) {
-                    for (let [key, value] of pool.entries()) {
+                    for (const [key, value] of pool.entries()) {
 
                         if (key === oldState.guild.id) {
                             // bot.logger.emit('discord', '[voiceStateUpdate] checkBlacklistUsers.del', pool);
@@ -119,7 +119,7 @@ export default async (bot: Bot, client: Client, oldState: VoiceState, newState: 
                     }
                 }
                 if (oldState.channel!.members.size <= 1 || checkBlacklistUsers(oldState.channel, blacklist)) {
-                    let timeoutID = setTimeout(() => {
+                    const timeoutID = setTimeout(() => {
                         player.destroy();
 
                     }, bot.config.autoLeaveCooldown);
@@ -132,7 +132,7 @@ export default async (bot: Bot, client: Client, oldState: VoiceState, newState: 
                 // When bot is in the target channel and only one member joined
                 // If there are two members or more (include bot) in the channel, it will not trigger
                 if (checkBlacklistUsers(newState.channel, blacklist)) {
-                    let timeoutID = setTimeout(() => {
+                    const timeoutID = setTimeout(() => {
                         player.destroy();
 
                     }, bot.config.autoLeaveCooldown);
@@ -142,7 +142,7 @@ export default async (bot: Bot, client: Client, oldState: VoiceState, newState: 
                 }
                 if (newState.channel!.members.size >= 2 && !checkBlacklistUsers(newState.channel, blacklist)) {
                     // If member join bot channel, then find current channel's timeoutID to clear
-                    for (let [key, value] of pool.entries()) {
+                    for (const [key, value] of pool.entries()) {
 
                         if (key === newState.guild.id) {
                             // bot.logger.emit('discord', '[voiceStateUpdate] pool.del', pool);

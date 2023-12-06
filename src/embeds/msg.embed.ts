@@ -10,6 +10,6 @@ const blacklist = (embedsColor: HexColorString | string | number, userList: { na
         .setTimestamp();
 
     return embed_;
-}
+};
 
 export { blacklist };

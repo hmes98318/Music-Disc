@@ -120,7 +120,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
         return message.reply({ content: "✅ | Music added.", allowedMentions: { repliedUser: false } });
     }
     else {
-        let select = new StringSelectMenuBuilder()
+        const select = new StringSelectMenuBuilder()
             .setCustomId("musicSelect")
             .setPlaceholder("Select the music")
             .setOptions(res.tracks.map(x => {
@@ -128,10 +128,10 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
                     label: x.title.length >= 25 ? x.title.substring(0, 22) + "..." : x.title,
                     description: `Duration: ${x.duration.label}`,
                     value: x.uri
-                }
+                };
             }));
-        let row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(select);
-        let msg = await message.reply({ components: [row.toJSON()] });
+        const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(select);
+        const msg = await message.reply({ components: [row.toJSON()] });
 
         const collector = msg.createMessageComponentCollector({
             time: 20000, // 20s
@@ -165,7 +165,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
             }
         });
     }
-}
+};
 
 export const slashExecute = async (bot: Bot, client: Client, interaction: ChatInputCommandInteraction) => {
     const str = interaction.options.getString("search");
@@ -250,7 +250,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
         return interaction.editReply({ content: "✅ | Music added.", allowedMentions: { repliedUser: false } });
     }
     else {
-        let select = new StringSelectMenuBuilder()
+        const select = new StringSelectMenuBuilder()
             .setCustomId("musicSelect")
             .setPlaceholder("Select the music")
             .setOptions(res.tracks.map(x => {
@@ -258,10 +258,10 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
                     label: x.title.length >= 25 ? x.title.substring(0, 22) + "..." : x.title,
                     description: `Duration: ${x.duration.label}`,
                     value: x.uri
-                }
+                };
             }));
-        let row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(select);
-        let msg = await interaction.editReply({ components: [row.toJSON()] });
+        const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(select);
+        const msg = await interaction.editReply({ components: [row.toJSON()] });
 
         const collector = msg.createMessageComponentCollector({
             time: 20000, // 20s
@@ -295,4 +295,4 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
             }
         });
     }
-}
+};

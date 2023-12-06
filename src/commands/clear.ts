@@ -22,7 +22,7 @@ export const execute = async (_bot: Bot, client: Client, message: Message) => {
 
     player.queue.clear();
     return message.react('👍');
-}
+};
 
 export const slashExecute = async (client: Client, interaction: ChatInputCommandInteraction) => {
     const player = client.lavashark.getPlayer(interaction.guild!.id);
@@ -33,4 +33,4 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
 
     player.queue.clear();
     return interaction.editReply("✅ | Queue cleared.");
-}
+};

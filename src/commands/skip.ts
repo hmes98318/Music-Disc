@@ -22,7 +22,7 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
 
     const SUCCESS = await player.skip();
     return SUCCESS ? message.react('👍') : message.react('❌');
-}
+};
 
 export const slashExecute = async (bot: Bot, client: Client, interaction: ChatInputCommandInteraction) => {
     const player = client.lavashark.getPlayer(interaction.guild!.id);
@@ -33,4 +33,4 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
 
     const SUCCESS = await player.skip();
     return SUCCESS ? interaction.editReply('✅ | Music skipped.') : interaction.editReply('❌ | Music skip failed.');
-}
+};

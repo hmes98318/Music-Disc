@@ -29,7 +29,7 @@ export class LocalNodeController {
     public logger: Logger;
 
     #lavalinkProcessController: ChildProcess | null;
-    #lavalinkProcessFileName: string
+    #lavalinkProcessFileName: string;
     #manualRestart: boolean;
 
     constructor() {
@@ -71,13 +71,13 @@ export class LocalNodeController {
         }
 
         // If the node is restarting, return false
-        return false
+        return false;
     }
 
     public async stop() {
         return new Promise<boolean>((resolve, _reject) => {
             if (this.#lavalinkProcessController) {
-                this.#lavalinkProcessController.once('exit', (code, signal) => {
+                this.#lavalinkProcessController.once('exit', (_code, _signal) => {
                     this.logger.emit('localNode', 'Local Lavalink node stopped.');
 
                     this.#lavalinkProcessController = null;

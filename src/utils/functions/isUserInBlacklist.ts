@@ -15,6 +15,6 @@ const isUserInBlacklist = (voiceChannel: VoiceBasedChannel | null | undefined, b
     }
 
     return blacklistedUsers;
-}
+};
 
 export { isUserInBlacklist };

@@ -14,7 +14,7 @@ import type { LocalNodeController } from '../lib/LocalNodeController';
 interface IPInfo {
     retry: number;
     block: boolean;
-};
+}
 
 const blockedIP = new Map<string, IPInfo>();
 
@@ -41,7 +41,7 @@ const registerExpressEvents = (bot: Bot, client: Client, localNodeController: Lo
      */
     const verifyLogin = (req: any, res: any, next: any) => {
         const cookies = cookie.parse(req.headers.cookie as string || '');
-        let sessionId = cookies.sessionID;
+        const sessionId = cookies.sessionID;
         const session = sessionManager.getSession(sessionId);
 
         if (session) {
@@ -60,8 +60,8 @@ const registerExpressEvents = (bot: Bot, client: Client, localNodeController: Lo
 
     app.get('/login', (req, res) => {
         const cookies = cookie.parse(req.headers.cookie as string || '');
-        let sessionId = cookies.sessionID;
-        const session = sessionManager.getSession(sessionId)
+        const sessionId = cookies.sessionID;
+        const session = sessionManager.getSession(sessionId);
 
         if (session) {
             res.redirect('/dashboard');
@@ -125,7 +125,7 @@ const registerExpressEvents = (bot: Bot, client: Client, localNodeController: Lo
             }
             else if (!ipInfo.block && ipInfo.retry > 5) {
                 bot.logger.emit('api', `IP: ${userIP}, failed to log in too many times, blocked for 5 minutes`);
-                ipInfo.block = true
+                ipInfo.block = true;
 
                 setTimeout(() => {
                     blockedIP.delete(userIP);
@@ -176,7 +176,7 @@ const registerExpressEvents = (bot: Bot, client: Client, localNodeController: Lo
     app.get('/api/info', verifyLogin, (req, res) => {
         // bot.logger.emit('api', '[GET] /api/info ' + req.ip);
 
-        const info = bot.sysInfo
+        const info = bot.sysInfo;
         res.json(info);
     });
 

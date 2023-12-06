@@ -97,11 +97,11 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
                             label: x,
                             description: x,
                             value: x
-                        }
+                        };
                     }));
 
                 const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(select);
-                let msg = await interaction.reply({ content: `Select a song loop mode.`, ephemeral: true, components: [row] });
+                const msg = await interaction.reply({ content: `Select a song loop mode.`, ephemeral: true, components: [row] });
 
                 const collector = interaction.channel!.createMessageComponentCollector({
                     time: 20000, // 20s
@@ -134,7 +134,7 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
                     await i.deferUpdate();
                     interaction.ephemeral = true;
                     await interaction.editReply({ content: `✅ | Set loop to \`${methods[mode]}\`.`, components: [] });
-                })
+                });
 
                 collector.on("end", async (collected: Collection<string, ButtonInteraction>, reason: string) => {
                     if (reason === "time" && collected.size === 0) {

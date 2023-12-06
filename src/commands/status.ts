@@ -33,7 +33,7 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
         },
         serverCount: client.guilds.cache.size,
         playing: client.lavashark.players.size
-    }
+    };
 
     const nodes = client.lavashark.nodes;
     const nodesStatus = [];
@@ -63,7 +63,7 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
         ],
         allowedMentions: { repliedUser: false }
     });
-}
+};
 
 export const slashExecute = async (bot: Bot, client: Client, interaction: ChatInputCommandInteraction) => {
     const botPing = `${Date.now() - interaction.createdTimestamp}ms`;
@@ -81,7 +81,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
         },
         serverCount: client.guilds.cache.size,
         playing: client.lavashark.players.size
-    }
+    };
 
     const nodes = client.lavashark.nodes;
     const nodesStatus = [];
@@ -111,4 +111,4 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
         ],
         allowedMentions: { repliedUser: false }
     });
-}
+};

@@ -35,10 +35,10 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
     const prefix = bot.config.prefix;
 
     if (!args[0]) {
-        let title = client.user?.username;
+        const title = client.user?.username;
         const commands = client.commands.filter(x => x.showHelp !== false);
 
-        let select = new StringSelectMenuBuilder()
+        const select = new StringSelectMenuBuilder()
             .setCustomId("helpSelect")
             .setPlaceholder("Select the help")
             .setOptions(commands.map(x => {
@@ -46,10 +46,10 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
                     label: x.name,
                     description: `Aliases: ${x.aliases[0] ? x.aliases.map((y: string) => y).join(', ') : x.name}`,
                     value: x.name
-                }
+                };
             }));
-        let row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(select);
-        let msg = await message.reply({
+        const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(select);
+        const msg = await message.reply({
             content: 'Choose a command to get help. ⬇️',
             components: [row.toJSON()],
             allowedMentions: { repliedUser: false }
@@ -87,8 +87,8 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
         let found = false;
         found = commands.find(x => {
             if (helpCmd === x.name || x.aliases.includes(helpCmd)) {
-                let command = x.name
-                let description = `${x.description}\n\`\`\`${prefix}${x.usage}\`\`\``;
+                const command = x.name;
+                const description = `${x.description}\n\`\`\`${prefix}${x.usage}\`\`\``;
 
                 message.reply({
                     embeds: [embeds.help(bot.config.embedsColor, command, description)],
@@ -98,19 +98,19 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
             }
         });
 
-        if (!Boolean(found)) return message.reply({ content: '❌ | The command not found.', allowedMentions: { repliedUser: false } });
+        if (!found) return message.reply({ content: '❌ | The command not found.', allowedMentions: { repliedUser: false } });
     }
-}
+};
 
 export const slashExecute = async (bot: Bot, client: Client, interaction: ChatInputCommandInteraction) => {
     const prefix = bot.config.prefix;
     const command = interaction.options.getString("command");
 
     if (!command) {
-        let title = client.user?.username;
+        const title = client.user?.username;
         const commands = client.commands.filter(x => x.showHelp !== false);
 
-        let select = new StringSelectMenuBuilder()
+        const select = new StringSelectMenuBuilder()
             .setCustomId("helpSelect")
             .setPlaceholder("Select the help")
             .setOptions(commands.map(x => {
@@ -118,10 +118,10 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
                     label: x.name,
                     description: `Aliases: ${x.aliases[0] ? x.aliases.map((y: string) => y).join(', ') : x.name}`,
                     value: x.name
-                }
+                };
             }));
-        let row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(select);
-        let msg = await interaction.editReply({
+        const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(select);
+        const msg = await interaction.editReply({
             content: 'Choose a command to get help. ⬇️',
             components: [row.toJSON()],
             allowedMentions: { repliedUser: false }
@@ -159,8 +159,8 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
         let found = false;
         found = commands.find(x => {
             if (helpCmd === x.name || x.aliases.includes(helpCmd)) {
-                let command = x.name
-                let description = `${x.description}\n\`\`\`${prefix}${x.usage}\`\`\``;
+                const command = x.name;
+                const description = `${x.description}\n\`\`\`${prefix}${x.usage}\`\`\``;
 
                 interaction.editReply({
                     embeds: [embeds.help(bot.config.embedsColor, command, description)],
@@ -170,6 +170,6 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
             }
         });
 
-        if (!Boolean(found)) return interaction.editReply({ content: '❌ | The command not found.', allowedMentions: { repliedUser: false } });
+        if (!found) return interaction.editReply({ content: '❌ | The command not found.', allowedMentions: { repliedUser: false } });
     }
-}
+};

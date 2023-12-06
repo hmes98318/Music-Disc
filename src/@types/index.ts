@@ -14,7 +14,7 @@ declare module 'discord.js' {
         commands: Collection<unknown, any>,
         lavashark: LavaShark
     }
-};
+}
 
 declare module 'lavashark' {
     export interface Player {
@@ -22,7 +22,7 @@ declare module 'lavashark' {
         metadata: Message<boolean> | ChatInputCommandInteraction | null,
         queuePage: QueuePage
     }
-};
+}
 
 
 export interface Bot {

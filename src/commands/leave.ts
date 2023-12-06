@@ -32,7 +32,7 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
     }
 
     return message.react('👍');
-}
+};
 
 export const slashExecute = async (bot: Bot, client: Client, interaction: ChatInputCommandInteraction) => {
     const player = client.lavashark.getPlayer(interaction.guild!.id);
@@ -51,4 +51,4 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
     }
 
     return interaction.editReply('✅ | Bot leave.');
-}
+};

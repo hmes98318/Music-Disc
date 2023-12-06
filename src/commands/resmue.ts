@@ -26,7 +26,7 @@ export const execute = async (_bot: Bot, client: Client, message: Message) => {
 
     const SUCCESS = await player.resume();
     return SUCCESS ? message.react('▶️') : message.react('❌');
-}
+};
 
 export const slashExecute = async (_bot: Bot, client: Client, interaction: ChatInputCommandInteraction) => {
     const player = client.lavashark.getPlayer(interaction.guild!.id);
@@ -41,4 +41,4 @@ export const slashExecute = async (_bot: Bot, client: Client, interaction: ChatI
 
     const SUCCESS = await player.resume();
     return SUCCESS ? interaction.editReply("▶️ | Music resumed.") : interaction.editReply('❌ | Music pause failed.');
-}
+};

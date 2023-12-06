@@ -24,7 +24,7 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
         embeds: [embeds.server(bot.config, serverlist)],
         allowedMentions: { repliedUser: false }
     });
-}
+};
 
 export const slashExecute = async (bot: Bot, client: Client, interaction: ChatInputCommandInteraction) => {
     const serverlist = client.guilds.cache
@@ -35,4 +35,4 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
         embeds: [embeds.server(bot.config, serverlist)],
         allowedMentions: { repliedUser: false }
     });
-}
+};

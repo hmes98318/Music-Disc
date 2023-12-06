@@ -5,9 +5,9 @@ const ping = (embedsColor: HexColorString | string | number, botPing: string, ap
     const embed_ = new EmbedBuilder()
         .setColor(embedsColor as HexColorString | number)
         .setTitle('🛰️ LATENCY')
-        .setDescription(`Bot : **${botPing}**\nAPI : **${apiPing}ms**`)
+        .setDescription(`Bot : **${botPing}**\nAPI : **${apiPing}ms**`);
 
     return embed_;
-}
+};
 
 export { ping };

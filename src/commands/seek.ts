@@ -47,7 +47,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
     else {
         return message.reply({ content: `✅ | Music has been seeked to \`${str}\`.`, allowedMentions: { repliedUser: false } });
     }
-}
+};
 
 export const slashExecute = async (bot: Bot, client: Client, interaction: ChatInputCommandInteraction) => {
     const player = client.lavashark.getPlayer(interaction.guild!.id);
@@ -74,4 +74,4 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
         return interaction.editReply({ content: `✅ | Music has been seeked to \`${str}\`.`, allowedMentions: { repliedUser: false } });
     }
 
-}
+};

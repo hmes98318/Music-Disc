@@ -142,4 +142,4 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
         components: [row],
         allowedMentions: { repliedUser: false },
     });
-}
+};

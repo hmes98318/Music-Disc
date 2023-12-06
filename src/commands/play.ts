@@ -94,7 +94,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
     }
 
     return message.react('👍');
-}
+};
 
 export const slashExecute = async (bot: Bot, client: Client, interaction: ChatInputCommandInteraction) => {
     const str = interaction.options.getString("play");
@@ -165,4 +165,4 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
     }
 
     return interaction.editReply({ content: "✅ | Music added.", allowedMentions: { repliedUser: false } });
-}
+};

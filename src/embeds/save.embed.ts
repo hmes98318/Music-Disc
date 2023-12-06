@@ -8,9 +8,9 @@ const save = (embedsColor: HexColorString | string | number, title: string, subt
         .setURL(url)
         .setThumbnail(thumbnail)
         .setDescription(subtitle)
-        .setTimestamp()
+        .setTimestamp();
 
     return embed_;
-}
+};
 
 export { save };

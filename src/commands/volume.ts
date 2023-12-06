@@ -48,7 +48,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
     player.filters.setVolume(vol);
     await dashboard.update(bot, player, player.current!);
     return message.reply({ content: `🔊 **${vol}**/**${maxVolume}**%`, allowedMentions: { repliedUser: false } });
-}
+};
 
 export const slashExecute = async (bot: Bot, client: Client, interaction: ChatInputCommandInteraction) => {
 
@@ -74,4 +74,4 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
     player.filters.setVolume(vol);
     await dashboard.update(bot, player, player.current!);
     return interaction.editReply({ content: `🔊 **${vol}**/**${maxVolume}**%`, allowedMentions: { repliedUser: false } });
-}
+};
