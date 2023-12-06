@@ -33,7 +33,7 @@ export class LocalNodeController {
     #manualRestart: boolean;
 
     constructor() {
-        this.downloadLink = 'https://github.com/lavalink-devs/Lavalink/releases/download/3.7.9/Lavalink.jar';
+        this.downloadLink = 'https://github.com/lavalink-devs/Lavalink/releases/download/3.7.10/Lavalink.jar';
         this.lavalinkLogs = [];
         this.autoRestart = true;
 
