@@ -1,21 +1,29 @@
 version: '3.8'
 services:
   music-disc:
-    image: hmes98318/music-disc:2.0.2
+    image: hmes98318/music-disc:2.1.0
     container_name: music-disc
     restart: always
     environment:
-      TOKEN: "your_token"
-      PREFIX: "+"
-      PLAYING: "+help | music"
-      EMBEDS_COLOR: "#FFFFFF"
+      TZ: "Asia/Taipei"
+      BOT_TOKEN: "your_token"
+      BOT_NAME: "Music Disc"
+      BOT_PREFIX: "+"
+      BOT_PLAYING: "+help | music"
+      BOT_EMBEDS_COLOR: "#FFFFFF"
       DEFAULT_VOLUME: 50
       MAX_VOLUME: 100
       AUTO_LEAVE: "true"
       AUTO_LEAVE_COOLDOWN: 5000
       DISPLAY_VOICE_STATE: "true"
+      ENABLE_SITE: true
+      SITE_PORT: 33333
+      SITE_USERNAME: "admin"
+      SITE_PASSWORD: "password"
+      ENABLE_LOCAL_NODE: false
+      LOCAL_NODE_AUTO_RESTART: true
     volumes:
-      - ./node-list.json:/bot/node-list.json
+      - ./nodelist.json:/bot/nodelist.json
       - ./blacklist.json:/bot/blacklist.json
     ports:
       - 33333:33333
