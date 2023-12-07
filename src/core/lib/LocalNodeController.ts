@@ -236,19 +236,68 @@ export class LocalNodeController {
     }
 
     /**
+     * Oracle JDK for windows platform
+     * @private
+     */
+    async #winGetPid(port: number): Promise<number[]> {
+        return new Promise((resolve, _reject) => {
+            child_process.exec(`netstat -ano | findstr :${port}`, (error, stdout, stderr) => {
+                if (error) {
+                    this.logger.emit('localNode', `[error] winGetPid error executing command: ${error.message}`);
+                    return resolve([]);
+                }
+
+                if (stderr) {
+                    this.logger.emit('localNode', `[error] winGetPid stderr: ${stderr}`);
+                    return resolve([]);
+                }
+
+                const lines = stdout.trim().split('\n');
+                const pidSet: Set<number> = new Set();
+
+                lines.forEach((line) => {
+                    const parts = line.trim().split(/\s+/);
+                    const pid = parseInt(parts[parts.length - 1], 10);
+
+                    if (!isNaN(pid) && pid !== 0) { // Pid 0 is the parent process
+                        pidSet.add(pid);
+                    }
+                });
+
+                const pidList = Array.from(pidSet);
+                return resolve(pidList);
+            });
+        });
+    }
+
+    /**
      * @private
      */
     async #killProcess(pid: number) {
-        /**
-         * In Windows, you can terminate a child process and release the port directly 
-         * by using `ChildProcess.kill('SIGINT')`, without the need for `process.kill(pid)`.
-         */
-
-        if (process.platform === 'win32') {
-            return true;
-        }
-
         try {
+            /**
+             * In Windows, you can terminate a child process and release the port directly 
+             * by using `ChildProcess.kill('SIGINT')`, without the need for `process.kill(pid)`.
+             * 
+             * OpenJDK normal.
+             * However, Oracle JDK will open two processes, 
+             * making it impossible to completely shut down the child process. 
+             * It is necessary to scan all pid occupying the port to forcefully terminate all pid.
+             */
+            if (process.platform === 'win32') {
+                const winPidList = await this.#winGetPid(this.port);
+
+                for (const winPid of winPidList) {
+                    process.kill(winPid, 'SIGINT');
+                }
+
+                return true;
+            }
+
+
+            /**
+             * MacOS, Linux need to kill pid to release port
+             */
             process.kill(pid, 'SIGINT');
             return true;
         } catch (_) {
