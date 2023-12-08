@@ -1,8 +1,8 @@
 {
     "name": "music-disc",
-    "version": "2.0.2",
+    "version": "2.1.0",
     "description": "Discord Music Bot",
-    "main": "/src/index.ts",
+    "main": "./src/index.ts",
     "scripts": {
         "start": "npm run build && node ./dist/src/index.js",
         "build": "tsc",
