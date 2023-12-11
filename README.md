@@ -17,7 +17,7 @@ Developed based on [**discord.js v14**](https://discord.js.org/#/), [**LavaShark
 * Local node
 * Docker images
 
-If you need the version of [**discord-player**](https://github.com/Androz2091/discord-player), please refer to this [**branch**](https://github.com/hmes98318/Music-Disc/tree/discord-player).  
+If you need the version of [**discord-player**](https://github.com/Androz2091/discord-player), please refer to this [**branch**](https://github.com/hmes98318/Music-Disc-discord-player).  
 
 If you encounter any issues or would like to contribute to the community, please join our [Discord server](https://discord.gg/7rQEx7SPGr).  
 
