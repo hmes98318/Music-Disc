@@ -259,7 +259,11 @@ export class LocalNodeController {
                     const parts = line.trim().split(/\s+/);
                     const pid = parseInt(parts[parts.length - 1], 10);
 
-                    if (!isNaN(pid) && pid !== 0) { // Pid 0 is the parent process
+                    /**
+                     * process.pid is the main process
+                     * Pid 0 is the parent process
+                     */
+                    if (!isNaN(pid) && pid !== process.pid && pid !== 0) {
                         pidSet.add(pid);
                     }
                 });
