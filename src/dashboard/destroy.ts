@@ -1,15 +1,17 @@
-import { Player } from "lavashark";
 import { embeds } from "../embeds";
 
+import type { Player } from "lavashark";
+import type { Bot } from "../@types";
 
-async function destroy(player: Player, embedsColor: string | number) {
+
+async function destroy(bot: Bot, player: Player, embedsColor: string | number) {
     try {
         await player.dashboard!.edit({
             embeds: [embeds.disconnect(embedsColor)],
             components: []
         });
     } catch (error) {
-        console.log('Dashboard error:', error);
+        bot.logger.emit('error', 'Dashboard error: ' + error);
     }
     finally {
         player.dashboard = null;

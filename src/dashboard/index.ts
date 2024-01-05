@@ -7,6 +7,6 @@ const dashboard = {
     initial,
     update,
     destroy
-}
+};
 
 export { dashboard };

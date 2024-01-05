@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Local Node controller</title>
+    <link rel="icon" type="image/x-icon"
+        href="https://raw.githubusercontent.com/hmes98318/Music-Disc/main/public/imgs/html/favicon.ico">
+
+    <link rel="stylesheet" type="text/css" href="/static/css/components/container.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/components/scrollbar.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/localnode.page.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="sidebar-left">
+            <a href="/dashboard">Dashboard</a>
+            <a href="/localnode" class="current-page">Local Node</a>
+            <a href="/logs">Logs</a>
+            <a href="/nodeslist">Nodes List</a>
+            <a href="/serverlist">Servers List</a>
+        </div>
+
+        <div class="content" id="content">
+            <h2>Local Node Controller</h2>
+            <div id="localnode-status"></div>
+
+            <h2>Logs</h2>
+            <pre id="logs-container" class="language-java">
+                <div id="logs-container" class="language-java"></div>
+            </pre>
+
+            <div id="control-buttons">
+                <button id="restart-btn" onclick="sendControlRequest('RESTART')">Restart</button>
+                <button id="stop-btn" onclick="sendControlRequest('STOP')">Stop</button>
+            </div>
+
+            <div id="status-message"></div>
+            <div id="empty-container"></div>
+        </div>
+    </div>
+</body>
+
+
+<script src="/static/js/lib/socket.io-4.7.2.min.js"></script>
+
+<script src="/static/js/utils/convertAnsiToHtml.js"></script>
+<script src="/static/js/utils/sendControlRequest.js"></script>
+
+<script src="/static/js/components/navbar.js"></script>
+<script src="/static/js/components/footer.js"></script>
+<script src="/static/js/localnode.page.js"></script>
+
+</html>

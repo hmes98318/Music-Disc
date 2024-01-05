@@ -10,6 +10,8 @@ import {
 } from "discord.js";
 import { embeds } from "../embeds";
 
+import type { Bot } from "../@types";
+
 
 export const name = 'help';
 export const aliases = ['h'];
@@ -29,14 +31,14 @@ export const options = [
 ];
 
 
-export const execute = async (client: Client, message: Message, args: string[]) => {
-    const prefix = client.config.prefix;
+export const execute = async (bot: Bot, client: Client, message: Message, args: string[]) => {
+    const prefix = bot.config.prefix;
 
     if (!args[0]) {
-        let title = client.user?.username;
+        const title = client.user?.username;
         const commands = client.commands.filter(x => x.showHelp !== false);
 
-        let select = new StringSelectMenuBuilder()
+        const select = new StringSelectMenuBuilder()
             .setCustomId("helpSelect")
             .setPlaceholder("Select the help")
             .setOptions(commands.map(x => {
@@ -44,10 +46,10 @@ export const execute = async (client: Client, message: Message, args: string[]) 
                     label: x.name,
                     description: `Aliases: ${x.aliases[0] ? x.aliases.map((y: string) => y).join(', ') : x.name}`,
                     value: x.name
-                }
+                };
             }));
-        let row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(select);
-        let msg = await message.reply({
+        const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(select);
+        const msg = await message.reply({
             content: 'Choose a command to get help. ⬇️',
             components: [row.toJSON()],
             allowedMentions: { repliedUser: false }
@@ -66,7 +68,7 @@ export const execute = async (client: Client, message: Message, args: string[]) 
 
             i.deferUpdate();
             await msg.edit({
-                embeds: [embeds.help(client.config.embedsColor, title!, usage)],
+                embeds: [embeds.help(bot.config.embedsColor, title!, usage)],
                 components: [],
                 allowedMentions: { repliedUser: false }
             });
@@ -85,30 +87,30 @@ export const execute = async (client: Client, message: Message, args: string[]) 
         let found = false;
         found = commands.find(x => {
             if (helpCmd === x.name || x.aliases.includes(helpCmd)) {
-                let command = x.name
-                let description = `${x.description}\n\`\`\`${prefix}${x.usage}\`\`\``;
+                const command = x.name;
+                const description = `${x.description}\n\`\`\`${prefix}${x.usage}\`\`\``;
 
                 message.reply({
-                    embeds: [embeds.help(client.config.embedsColor, command, description)],
+                    embeds: [embeds.help(bot.config.embedsColor, command, description)],
                     allowedMentions: { repliedUser: false }
                 });
                 return true;
             }
         });
 
-        if (!Boolean(found)) return message.reply({ content: '❌ | The command not found.', allowedMentions: { repliedUser: false } });
+        if (!found) return message.reply({ content: '❌ | The command not found.', allowedMentions: { repliedUser: false } });
     }
-}
+};
 
-export const slashExecute = async (client: Client, interaction: ChatInputCommandInteraction) => {
-    const prefix = client.config.prefix;
+export const slashExecute = async (bot: Bot, client: Client, interaction: ChatInputCommandInteraction) => {
+    const prefix = bot.config.prefix;
     const command = interaction.options.getString("command");
 
     if (!command) {
-        let title = client.user?.username;
+        const title = client.user?.username;
         const commands = client.commands.filter(x => x.showHelp !== false);
 
-        let select = new StringSelectMenuBuilder()
+        const select = new StringSelectMenuBuilder()
             .setCustomId("helpSelect")
             .setPlaceholder("Select the help")
             .setOptions(commands.map(x => {
@@ -116,10 +118,10 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
                     label: x.name,
                     description: `Aliases: ${x.aliases[0] ? x.aliases.map((y: string) => y).join(', ') : x.name}`,
                     value: x.name
-                }
+                };
             }));
-        let row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(select);
-        let msg = await interaction.editReply({
+        const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(select);
+        const msg = await interaction.editReply({
             content: 'Choose a command to get help. ⬇️',
             components: [row.toJSON()],
             allowedMentions: { repliedUser: false }
@@ -138,7 +140,7 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
 
             i.deferUpdate();
             await msg.edit({
-                embeds: [embeds.help(client.config.embedsColor, title!, usage)],
+                embeds: [embeds.help(bot.config.embedsColor, title!, usage)],
                 components: [],
                 allowedMentions: { repliedUser: false }
             });
@@ -157,17 +159,17 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
         let found = false;
         found = commands.find(x => {
             if (helpCmd === x.name || x.aliases.includes(helpCmd)) {
-                let command = x.name
-                let description = `${x.description}\n\`\`\`${prefix}${x.usage}\`\`\``;
+                const command = x.name;
+                const description = `${x.description}\n\`\`\`${prefix}${x.usage}\`\`\``;
 
                 interaction.editReply({
-                    embeds: [embeds.help(client.config.embedsColor, command, description)],
+                    embeds: [embeds.help(bot.config.embedsColor, command, description)],
                     allowedMentions: { repliedUser: false }
                 });
                 return true;
             }
         });
 
-        if (!Boolean(found)) return interaction.editReply({ content: '❌ | The command not found.', allowedMentions: { repliedUser: false } });
+        if (!found) return interaction.editReply({ content: '❌ | The command not found.', allowedMentions: { repliedUser: false } });
     }
-}
+};

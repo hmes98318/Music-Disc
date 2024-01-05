@@ -1,4 +1,5 @@
-import { ChatInputCommandInteraction, Client, Message } from "discord.js";
+import type { ChatInputCommandInteraction, Client, Message } from "discord.js";
+import type { Bot } from "../@types";
 
 
 export const name = 'clear';
@@ -12,7 +13,7 @@ export const requireAdmin = false;
 export const options = [];
 
 
-export const execute = async (client: Client, message: Message) => {
+export const execute = async (_bot: Bot, client: Client, message: Message) => {
     const player = client.lavashark.getPlayer(message.guild!.id);
 
     if (!player) {
@@ -21,7 +22,7 @@ export const execute = async (client: Client, message: Message) => {
 
     player.queue.clear();
     return message.react('👍');
-}
+};
 
 export const slashExecute = async (client: Client, interaction: ChatInputCommandInteraction) => {
     const player = client.lavashark.getPlayer(interaction.guild!.id);
@@ -32,4 +33,4 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
 
     player.queue.clear();
     return interaction.editReply("✅ | Queue cleared.");
-}
+};

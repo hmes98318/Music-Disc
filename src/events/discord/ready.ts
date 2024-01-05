@@ -11,9 +11,11 @@ import { version as botVersion } from '../../../package.json';
 import { getOSVersion } from '../../utils/functions/getOSVersion';
 import { cst } from '../../utils/constants';
 
+import type { Bot } from "../../@types";
 
-module.exports = async (client: Client) => {
-    client.info = {
+
+export default async (bot: Bot, client: Client) => {
+    bot.sysInfo = {
         startupTime: new Date(),
         os_version: await getOSVersion(),
         bot_version: `v${botVersion}`,
@@ -25,18 +27,18 @@ module.exports = async (client: Client) => {
 
 
     const release = {
-        bot: `${client.config.name}: ${cst.color.cyan}${client.info.bot_version}${cst.color.white}`,
-        nodejs: `Node.js:    ${cst.color.cyan}${client.info.node_version}${cst.color.white}`,
-        djs: `Discord.js: ${cst.color.cyan}${client.info.dc_version}${cst.color.white}`,
-        shark: `LavaShark:  ${cst.color.cyan}${client.info.shark_version}${cst.color.white}`,
-    }
+        bot: `${bot.config.name}: ${cst.color.cyan}${bot.sysInfo.bot_version}${cst.color.white}`,
+        nodejs: `Node.js:    ${cst.color.cyan}${bot.sysInfo.node_version}${cst.color.white}`,
+        djs: `Discord.js: ${cst.color.cyan}${bot.sysInfo.dc_version}${cst.color.white}`,
+        shark: `LavaShark:  ${cst.color.cyan}${bot.sysInfo.shark_version}${cst.color.white}`,
+    };
 
-    console.log(`+-----------------------+`);
-    console.log(`| ${release.bot.padEnd(30, ' ')} |`);
-    console.log(`| ${release.nodejs.padEnd(30, ' ')} |`);
-    console.log(`| ${release.djs.padEnd(30, ' ')} |`);
-    console.log(`| ${release.shark.padEnd(30, ' ')} |`);
-    console.log(`+-----------------------+`);
+    bot.logger.emit('log', `+-----------------------+`);
+    bot.logger.emit('log', `| ${release.bot.padEnd(30, ' ')} |`);
+    bot.logger.emit('log', `| ${release.nodejs.padEnd(30, ' ')} |`);
+    bot.logger.emit('log', `| ${release.djs.padEnd(30, ' ')} |`);
+    bot.logger.emit('log', `| ${release.shark.padEnd(30, ' ')} |`);
+    bot.logger.emit('log', `+-----------------------+`);
 
 
     client.application?.commands.set(client.commands.map(cmd => {
@@ -44,13 +46,18 @@ module.exports = async (client: Client) => {
             name: cmd.name,
             description: cmd.description,
             options: cmd.options
-        }
+        };
     }));
 
     client.lavashark.start(String(client.user?.id));
-    client.user?.setActivity(client.config.playing);
-    client.user?.setStatus(client.config.status as ClientPresenceStatus);
+    client.user?.setStatus(bot.config.status as ClientPresenceStatus);
+    client.user?.setActivity(bot.config.playing);
+    // Prevent the disappearance of the activity status
+    setInterval(() => {
+        client.user?.setActivity(bot.config.playing);
+    }, 10 * 60 * 1000); // 10 minutes
 
-    if (client.config.admin) console.log(`Set admin as user ID : ${client.config.admin}`);
-    console.log(`>>> Logged in as ${client.user?.username}`);
+
+    if (bot.config.admin) bot.logger.emit('log', `Set admin as user ID : ${bot.config.admin}`);
+    bot.logger.emit('discord', `>>> Logged in as ${client.user?.username}`);
 };

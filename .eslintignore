@@ -1,0 +1,8 @@
+.github/
+dist/
+node_modules/
+public/
+server/
+views/
+
+*.d.ts

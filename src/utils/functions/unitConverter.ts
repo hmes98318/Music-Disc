@@ -7,7 +7,7 @@ const formatBytes = (bytes: number) => {
     const i = Math.floor(Math.log(bytes) / Math.log(k));
 
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-}
+};
 
 const msToTime = (ms: number) => {
     const seconds = Math.floor(ms / 1000);
@@ -27,7 +27,7 @@ const msToTime = (ms: number) => {
     else {
         return `${seconds % 60} second${seconds % 60 > 1 ? 's' : ''}`;
     }
-}
+};
 
 const timestampToTime = (timestamp: number) => {
     const date = new Date(timestamp);
@@ -47,7 +47,7 @@ const timestampToTime = (timestamp: number) => {
     const formattedTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 
     return `${formattedDate} ${formattedTime}`;
-}
+};
 
 const timeToSeconds = (time: string) => {
     const timeString = time.toLowerCase();
@@ -106,7 +106,7 @@ const timeToSeconds = (time: string) => {
 
     const totalSeconds = hours * 3600 + minutes * 60 + seconds;
     return totalSeconds;
-}
+};
 
 
 export { formatBytes, msToTime, timestampToTime, timeToSeconds };

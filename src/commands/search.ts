@@ -8,10 +8,12 @@ import {
     StringSelectMenuBuilder,
     StringSelectMenuInteraction,
 } from "discord.js";
-import { dashboard } from "../dashboard";
 
+import { dashboard } from "../dashboard";
 import { embeds } from "../embeds";
 import { isUserInBlacklist } from "../utils/functions/isUserInBlacklist";
+
+import type { Bot } from "../@types";
 
 
 export const name = 'search';
@@ -32,7 +34,7 @@ export const options = [
 ];
 
 
-export const execute = async (client: Client, message: Message, args: string[]) => {
+export const execute = async (bot: Bot, client: Client, message: Message, args: string[]) => {
     if (!args[0]) {
         return message.reply({ content: `❌ | Write the name of the music you want to search.`, allowedMentions: { repliedUser: false } });
     }
@@ -41,7 +43,7 @@ export const execute = async (client: Client, message: Message, args: string[]) 
     const res = await client.lavashark.search(str);
 
     if (res.loadType === "LOAD_FAILED") {
-        console.log(`Search Error: ${res.exception?.message}`);
+        bot.logger.emit('error', `Search Error: ${res.exception?.message}`);
         return message.reply({ content: `❌ | No results found.`, allowedMentions: { repliedUser: false } });
     }
     else if (res.loadType === "NO_MATCHES") {
@@ -49,10 +51,10 @@ export const execute = async (client: Client, message: Message, args: string[]) 
     }
 
 
-    const validBlackist = isUserInBlacklist(message.member?.voice.channel, client.config.blacklist);
+    const validBlackist = isUserInBlacklist(message.member?.voice.channel, bot.blacklist);
     if (validBlackist.length > 0) {
         return message.reply({
-            embeds: [embeds.blacklist(client.config.embedsColor, validBlackist)],
+            embeds: [embeds.blacklist(bot.config.embedsColor, validBlackist)],
             allowedMentions: { repliedUser: false }
         });
     }
@@ -70,17 +72,17 @@ export const execute = async (client: Client, message: Message, args: string[]) 
         // Connects to the voice channel
         await player.connect();
         player.metadata = message;
-        player.filters.setVolume(client.config.defaultVolume);
+        player.filters.setVolume(bot.config.defaultVolume);
     } catch (error) {
-        console.log(error);
+        bot.logger.emit('error', 'Error joining channel: ' + error);
         return message.reply({ content: `❌ | I can't join voice channel.`, allowedMentions: { repliedUser: false } });
     }
 
     try {
         // Intial dashboard
-        if (!player.dashboard) await dashboard.initial(client, message, player);
+        if (!player.dashboard) await dashboard.initial(bot, message, player);
     } catch (error) {
-        await dashboard.destroy(player, client.config.embedsColor);
+        await dashboard.destroy(bot, player, bot.config.embedsColor);
     }
 
     await message.react('👍');
@@ -92,7 +94,7 @@ export const execute = async (client: Client, message: Message, args: string[]) 
         if (!player.playing) {
             await player.play()
                 .catch(async (error) => {
-                    console.log(error);
+                    bot.logger.emit('error', 'Error playing track: ' + error);
                     await message.reply({ content: `❌ | The service is experiencing some problems, please try again.`, allowedMentions: { repliedUser: false } });
                     return await player.destroy();
                 });
@@ -107,18 +109,18 @@ export const execute = async (client: Client, message: Message, args: string[]) 
         if (!player.playing) {
             await player.play()
                 .catch(async (error) => {
-                    console.log(error);
+                    bot.logger.emit('error', 'Error playing track: ' + error);
                     await message.reply({ content: `❌ | The service is experiencing some problems, please try again.`, allowedMentions: { repliedUser: false } });
                     return await player.destroy();
                 });
 
-            player.filters.setVolume(client.config.defaultVolume);
+            player.filters.setVolume(bot.config.defaultVolume);
         }
 
         return message.reply({ content: "✅ | Music added.", allowedMentions: { repliedUser: false } });
     }
     else {
-        let select = new StringSelectMenuBuilder()
+        const select = new StringSelectMenuBuilder()
             .setCustomId("musicSelect")
             .setPlaceholder("Select the music")
             .setOptions(res.tracks.map(x => {
@@ -126,10 +128,10 @@ export const execute = async (client: Client, message: Message, args: string[]) 
                     label: x.title.length >= 25 ? x.title.substring(0, 22) + "..." : x.title,
                     description: `Duration: ${x.duration.label}`,
                     value: x.uri
-                }
+                };
             }));
-        let row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(select);
-        let msg = await message.reply({ components: [row.toJSON()] });
+        const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(select);
+        const msg = await message.reply({ components: [row.toJSON()] });
 
         const collector = msg.createMessageComponentCollector({
             time: 20000, // 20s
@@ -144,12 +146,12 @@ export const execute = async (client: Client, message: Message, args: string[]) 
             if (!player.playing) {
                 await player.play()
                     .catch(async (error) => {
-                        console.log(error);
+                        bot.logger.emit('error', 'Error playing track: ' + error);
                         await message.reply({ content: `❌ | The service is experiencing some problems, please try again.`, allowedMentions: { repliedUser: false } });
                         return await player.destroy();
                     });
 
-                player.filters.setVolume(client.config.defaultVolume);
+                player.filters.setVolume(bot.config.defaultVolume);
             }
 
             i.deferUpdate();
@@ -163,14 +165,14 @@ export const execute = async (client: Client, message: Message, args: string[]) 
             }
         });
     }
-}
+};
 
-export const slashExecute = async (client: Client, interaction: ChatInputCommandInteraction) => {
+export const slashExecute = async (bot: Bot, client: Client, interaction: ChatInputCommandInteraction) => {
     const str = interaction.options.getString("search");
     const res = await client.lavashark.search(str!);
 
     if (res.loadType === "LOAD_FAILED") {
-        console.log(`Search Error: ${res.exception?.message}`);
+        bot.logger.emit('error', `Search Error: ${res.exception?.message}`);
         return interaction.editReply({ content: `❌ | No results found.`, allowedMentions: { repliedUser: false } });
     }
     else if (res.loadType === "NO_MATCHES") {
@@ -181,10 +183,10 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
     const guildMember = interaction.guild!.members.cache.get(interaction.user.id);
     const { channel } = guildMember!.voice;
 
-    const validBlackist = isUserInBlacklist(channel, client.config.blacklist);
+    const validBlackist = isUserInBlacklist(channel, bot.blacklist);
     if (validBlackist.length > 0) {
         return interaction.editReply({
-            embeds: [embeds.blacklist(client.config.embedsColor, validBlackist)],
+            embeds: [embeds.blacklist(bot.config.embedsColor, validBlackist)],
             allowedMentions: { repliedUser: false }
         });
     }
@@ -202,17 +204,17 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
         // Connects to the voice channel
         await player.connect();
         player.metadata = interaction;
-        player.filters.setVolume(client.config.defaultVolume);
+        player.filters.setVolume(bot.config.defaultVolume);
     } catch (error) {
-        console.log(error);
+        bot.logger.emit('error', 'Error joining channel: ' + error);
         return interaction.editReply({ content: `❌ | I can't join voice channel.`, allowedMentions: { repliedUser: false } });
     }
 
     try {
         // Intial dashboard
-        if (!player.dashboard) await dashboard.initial(client, interaction, player);
+        if (!player.dashboard) await dashboard.initial(bot, interaction, player);
     } catch (error) {
-        await dashboard.destroy(player, client.config.embedsColor);
+        await dashboard.destroy(bot, player, bot.config.embedsColor);
     }
 
 
@@ -222,7 +224,7 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
         if (!player.playing) {
             await player.play()
                 .catch(async (error) => {
-                    console.log(error);
+                    bot.logger.emit('error', 'Error playing track: ' + error);
                     await interaction.reply({ content: `❌ | The service is experiencing some problems, please try again.`, allowedMentions: { repliedUser: false } });
                     return await player.destroy();
                 });
@@ -237,18 +239,18 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
         if (!player.playing) {
             await player.play()
                 .catch(async (error) => {
-                    console.log(error);
+                    bot.logger.emit('error', 'Error playing track: ' + error);
                     await interaction.reply({ content: `❌ | The service is experiencing some problems, please try again.`, allowedMentions: { repliedUser: false } });
                     return await player.destroy();
                 });
 
-            player.filters.setVolume(client.config.defaultVolume);
+            player.filters.setVolume(bot.config.defaultVolume);
         }
 
         return interaction.editReply({ content: "✅ | Music added.", allowedMentions: { repliedUser: false } });
     }
     else {
-        let select = new StringSelectMenuBuilder()
+        const select = new StringSelectMenuBuilder()
             .setCustomId("musicSelect")
             .setPlaceholder("Select the music")
             .setOptions(res.tracks.map(x => {
@@ -256,10 +258,10 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
                     label: x.title.length >= 25 ? x.title.substring(0, 22) + "..." : x.title,
                     description: `Duration: ${x.duration.label}`,
                     value: x.uri
-                }
+                };
             }));
-        let row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(select);
-        let msg = await interaction.editReply({ components: [row.toJSON()] });
+        const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(select);
+        const msg = await interaction.editReply({ components: [row.toJSON()] });
 
         const collector = msg.createMessageComponentCollector({
             time: 20000, // 20s
@@ -274,12 +276,12 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
             if (!player.playing) {
                 await player.play()
                     .catch(async (error) => {
-                        console.log(error);
+                        bot.logger.emit('error', 'Error playing track: ' + error);
                         await interaction.editReply({ content: `❌ | The service is experiencing some problems, please try again.`, allowedMentions: { repliedUser: false } });
                         return await player.destroy();
                     });
 
-                player.filters.setVolume(client.config.defaultVolume);
+                player.filters.setVolume(bot.config.defaultVolume);
             }
 
             i.deferUpdate();
@@ -293,4 +295,4 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
             }
         });
     }
-}
+};

@@ -1,3 +1,15 @@
+/*----- Dashboard -----*/
+
+/* 覆蓋掉 container.css 的 content */
+.content {
+    flex: 1;
+    /* Allow vertical scrolling */
+    overflow-y: auto;
+    max-height: 100vh;
+    background-color: #36393f;
+    color: #ffffff;
+}
+
 /*----- Bot info -----*/
 
 .botdetails {
@@ -25,3 +37,5 @@ span {
 }
 
 /*----- END Bot info -----*/
+
+/*----- END Dashboard -----*/

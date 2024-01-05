@@ -1,5 +1,7 @@
-import { ChatInputCommandInteraction, Client, Message } from "discord.js";
 import { dashboard } from "../dashboard";
+
+import type { ChatInputCommandInteraction, Client, Message } from "discord.js";
+import type { Bot } from "../@types";
 
 
 export const name = 'leave';
@@ -13,40 +15,40 @@ export const requireAdmin = false;
 export const options = [];
 
 
-export const execute = async (client: Client, message: Message) => {
+export const execute = async (bot: Bot, client: Client, message: Message) => {
     const player = client.lavashark.getPlayer(message.guild!.id);
 
     if (!player) {
         return message.reply({ content: '❌ | There is no music currently playing.', allowedMentions: { repliedUser: false } });
     }
 
-    if (client.config.autoLeave) {
+    if (bot.config.autoLeave) {
         await player.destroy();
     }
     else {
         player.queue.clear();
         await player.skip();
-        await dashboard.destroy(player, client.config.embedsColor);
+        await dashboard.destroy(bot, player, bot.config.embedsColor);
     }
 
     return message.react('👍');
-}
+};
 
-export const slashExecute = async (client: Client, interaction: ChatInputCommandInteraction) => {
+export const slashExecute = async (bot: Bot, client: Client, interaction: ChatInputCommandInteraction) => {
     const player = client.lavashark.getPlayer(interaction.guild!.id);
 
     if (!player) {
         return interaction.editReply({ content: '❌ | There is no music currently playing.', allowedMentions: { repliedUser: false } });
     }
 
-    if (client.config.autoLeave) {
+    if (bot.config.autoLeave) {
         await player.destroy();
     }
     else {
         player.queue.clear();
         await player.skip();
-        await dashboard.destroy(player, client.config.embedsColor);
+        await dashboard.destroy(bot, player, bot.config.embedsColor);
     }
 
     return interaction.editReply('✅ | Bot leave.');
-}
+};

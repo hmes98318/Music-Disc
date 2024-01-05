@@ -1,7 +1,8 @@
-import { Client } from "discord.js";
-import { Player, Track } from "lavashark";
+import type { Client } from "discord.js";
+import type { Player, Track } from "lavashark";
+import type { Bot } from "../../@types";
 
 
-export default async (client: Client, player: Player, track: Track, reason: any) => {
-    // console.log('// -------- track end -------- //');
+export default async (_bot: Bot, _client: Client, _player: Player, _track: Track, _reason: any) => {
+    // bot.logger.emit('lavashark', '// -------- track end -------- //');
 };

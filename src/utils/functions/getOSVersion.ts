@@ -3,7 +3,7 @@ import { exec } from 'child_process';
 
 
 const getOSVersion = (): Promise<string> => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, _reject) => {
         const platform = process.platform;
 
         if (platform === "win32") {
@@ -11,7 +11,7 @@ const getOSVersion = (): Promise<string> => {
         }
         else if (platform === "linux" || platform === "freebsd") {
             exec('cat /etc/*release | grep -E ^PRETTY_NAME',
-                (error, stdout, stderr) => {
+                (error, stdout, _stderr) => {
                     if (error) {
                         resolve(os.type());
                     }
@@ -23,7 +23,7 @@ const getOSVersion = (): Promise<string> => {
         }
         else if (platform === "darwin") {
             exec('system_profiler SPSoftwareDataType',
-                (error, stdout, stderr) => {
+                (error, stdout, _stderr) => {
                     if (error) {
                         resolve(os.type());
                     }
@@ -37,6 +37,6 @@ const getOSVersion = (): Promise<string> => {
             resolve(os.type());
         }
     });
-}
+};
 
 export { getOSVersion };

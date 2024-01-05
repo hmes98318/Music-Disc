@@ -23,7 +23,7 @@ const botStatus = (config: Config, systemInfo: SystemInfo, systemStatus: SystemS
         .setTimestamp();
 
     return embed_;
-}
+};
 
 const nodesStatus = (embedsColor: HexColorString | string | number, nodeHealth: string, nodesStatus: { name: string; value: string; }[]) => {
     const embed_ = new EmbedBuilder()
@@ -34,7 +34,7 @@ const nodesStatus = (embedsColor: HexColorString | string | number, nodeHealth: 
         .setTimestamp();
 
     return embed_;
-}
+};
 
 const nodeStatus = (embedsColor: HexColorString | string | number, nodeName: string, nodeInfo: Info, nodeStats: NodeStats, nodePing: number) => {
     const embed_ = new EmbedBuilder()
@@ -49,7 +49,7 @@ const nodeStatus = (embedsColor: HexColorString | string | number, nodeName: str
         .setTimestamp();
 
     return embed_;
-}
+};
 
 const nodeDisconnected = (embedsColor: HexColorString | string | number, nodeName: string) => {
     const embed_ = new EmbedBuilder()
@@ -59,7 +59,7 @@ const nodeDisconnected = (embedsColor: HexColorString | string | number, nodeNam
         .setTimestamp();
 
     return embed_;
-}
+};
 
 const validNodeName = (embedsColor: HexColorString | string | number, nodesName: string) => {
     const embed_ = new EmbedBuilder()
@@ -69,6 +69,6 @@ const validNodeName = (embedsColor: HexColorString | string | number, nodesName:
         .setTimestamp();
 
     return embed_;
-}
+};
 
 export { botStatus, nodeDisconnected, nodesStatus, nodeStatus, validNodeName };

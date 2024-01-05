@@ -1,9 +1,36 @@
 import type {
+    ChatInputCommandInteraction,
     ClientPresenceStatus,
+    Collection,
     HexColorString,
     Message
 } from "discord.js";
+import type { LavaShark } from "lavashark";
+import type { Logger } from "../core/lib/Logger";
 
+
+declare module 'discord.js' {
+    export interface Client {
+        commands: Collection<unknown, any>,
+        lavashark: LavaShark
+    }
+}
+
+declare module 'lavashark' {
+    export interface Player {
+        dashboard: Message<boolean> | null,
+        metadata: Message<boolean> | ChatInputCommandInteraction | null,
+        queuePage: QueuePage
+    }
+}
+
+
+export interface Bot {
+    blacklist: string[];
+    config: Config;
+    logger: Logger;
+    sysInfo: SystemInfo;
+}
 
 export interface Config {
     admin: string | null;
@@ -19,13 +46,19 @@ export interface Config {
     displayVoiceState: boolean;
     enableSite: boolean;
     site: SiteConfig;
-    blacklist: string[];
+    enableLocalNode: boolean;
+    localNode: LocalNode;
 }
 
 interface SiteConfig {
     port: number;
     username: string;
     password: string;
+}
+
+interface LocalNode {
+    autoRestart: boolean;
+    downloadLink: string;
 }
 
 export interface SystemInfo {

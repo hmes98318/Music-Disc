@@ -1,6 +1,8 @@
-import { ChatInputCommandInteraction, Client, Message } from "discord.js";
 import { NodeState } from "lavashark";
 import { embeds } from "../embeds";
+
+import type { ChatInputCommandInteraction, Client, Message } from "discord.js";
+import type { Bot } from "../@types";
 
 
 export const name = 'nodestatus';
@@ -21,7 +23,7 @@ export const options = [
 ];
 
 
-export const execute = async (client: Client, message: Message, args: string[]) => {
+export const execute = async (bot: Bot, client: Client, message: Message, args: string[]) => {
     const nodes = client.lavashark.nodes;
 
     if (!args[0]) { // +node 
@@ -41,12 +43,12 @@ export const execute = async (client: Client, message: Message, args: string[]) 
                 nodesStatus.push({ name: `✅ ${node.identifier}`, value: `ping: **${ping}ms**` });
             }
         }
-        console.log('nodesStatus', nodesStatus);
+        bot.logger.emit('log', 'nodesStatus: ' + JSON.stringify(nodesStatus));
 
         const nodeHealth = healthValue === 0 ? 'All nodes are active' : `⚠️ There are ${healthValue} nodes disconnected`;
 
         return message.reply({
-            embeds: [embeds.nodesStatus(client.config.embedsColor, nodeHealth, nodesStatus)],
+            embeds: [embeds.nodesStatus(bot.config.embedsColor, nodeHealth, nodesStatus)],
             allowedMentions: { repliedUser: false }
         });
     }
@@ -57,7 +59,7 @@ export const execute = async (client: Client, message: Message, args: string[]) 
             if (node.identifier === nodeName) {
                 if (node.state !== NodeState.CONNECTED) {
                     return message.reply({
-                        embeds: [embeds.nodeDisconnected(client.config.embedsColor, nodeName)],
+                        embeds: [embeds.nodeDisconnected(bot.config.embedsColor, nodeName)],
                         allowedMentions: { repliedUser: false }
                     });
                 }
@@ -67,12 +69,12 @@ export const execute = async (client: Client, message: Message, args: string[]) 
                 const nodePingPromise = client.lavashark.nodePing(node);
                 const [nodeInfo, nodeStats, nodePing] = await Promise.all([nodeInfoPromise, nodeStatsPromise, nodePingPromise]);
 
-                console.log('nodeInfo:', nodeInfo);
-                console.log('nodeStats:', nodeStats);
-                console.log('nodePing:', nodePing, 'ms');
+                bot.logger.emit('log', 'nodeInfo: ' + JSON.stringify(nodeInfo));
+                bot.logger.emit('log', 'nodeStats: ' + JSON.stringify(nodeStats));
+                bot.logger.emit('log', 'nodePing: ' + nodePing + 'ms');
 
                 return message.reply({
-                    embeds: [embeds.nodeStatus(client.config.embedsColor, nodeName, nodeInfo, nodeStats, nodePing)],
+                    embeds: [embeds.nodeStatus(bot.config.embedsColor, nodeName, nodeInfo, nodeStats, nodePing)],
                     allowedMentions: { repliedUser: false }
                 });
             }
@@ -84,13 +86,13 @@ export const execute = async (client: Client, message: Message, args: string[]) 
         }
 
         return message.reply({
-            embeds: [embeds.validNodeName(client.config.embedsColor, nodesName)],
+            embeds: [embeds.validNodeName(bot.config.embedsColor, nodesName)],
             allowedMentions: { repliedUser: false }
         });
     }
-}
+};
 
-export const slashExecute = async (client: Client, interaction: ChatInputCommandInteraction) => {
+export const slashExecute = async (bot: Bot, client: Client, interaction: ChatInputCommandInteraction) => {
     const nodeName = interaction.options.getString('nodename');
     const nodes = client.lavashark.nodes;
 
@@ -111,12 +113,12 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
                 nodesStatus.push({ name: `✅ ${node.identifier}`, value: `ping: ${ping}ms` });
             }
         }
-        console.log('nodesStatus', nodesStatus);
+        bot.logger.emit('log', 'nodesStatus: ' + JSON.stringify(nodesStatus));
 
         const nodeHealth = healthValue === 0 ? '✅ All nodes are active' : `⚠️ There are ${healthValue} nodes disconnected`;
 
         return interaction.editReply({
-            embeds: [embeds.nodesStatus(client.config.embedsColor, nodeHealth, nodesStatus)],
+            embeds: [embeds.nodesStatus(bot.config.embedsColor, nodeHealth, nodesStatus)],
             allowedMentions: { repliedUser: false }
         });
     }
@@ -125,7 +127,7 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
             if (node.identifier === nodeName) {
                 if (node.state !== NodeState.CONNECTED) {
                     return interaction.editReply({
-                        embeds: [embeds.nodeDisconnected(client.config.embedsColor, nodeName)],
+                        embeds: [embeds.nodeDisconnected(bot.config.embedsColor, nodeName)],
                         allowedMentions: { repliedUser: false }
                     });
                 }
@@ -135,12 +137,12 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
                 const nodePingPromise = client.lavashark.nodePing(node);
                 const [nodeInfo, nodeStats, nodePing] = await Promise.all([nodeInfoPromise, nodeStatsPromise, nodePingPromise]);
 
-                console.log('nodeInfo:', nodeInfo);
-                console.log('nodeStats:', nodeStats);
-                console.log('nodePing:', nodePing, 'ms');
+                bot.logger.emit('log', 'nodeInfo: ' + JSON.stringify(nodeInfo));
+                bot.logger.emit('log', 'nodeStats: ' + JSON.stringify(nodeStats));
+                bot.logger.emit('log', 'nodePing: ' + nodePing + 'ms');
 
                 return interaction.editReply({
-                    embeds: [embeds.nodeStatus(client.config.embedsColor, nodeName, nodeInfo, nodeStats, nodePing)],
+                    embeds: [embeds.nodeStatus(bot.config.embedsColor, nodeName, nodeInfo, nodeStats, nodePing)],
                     allowedMentions: { repliedUser: false }
                 });
             }
@@ -152,8 +154,8 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
         }
 
         return interaction.editReply({
-            embeds: [embeds.validNodeName(client.config.embedsColor, nodesName)],
+            embeds: [embeds.validNodeName(bot.config.embedsColor, nodesName)],
             allowedMentions: { repliedUser: false }
         });
     }
-}
+};

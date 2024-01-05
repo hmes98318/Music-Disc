@@ -1,12 +1,13 @@
-import { ChatInputCommandInteraction, Client, Message } from "discord.js";
-import { Player } from "lavashark";
-
+import { ChatInputCommandInteraction, Message } from "discord.js";
 import { embeds } from "../embeds";
 
+import type { Player } from "lavashark";
+import type { Bot } from "../@types";
 
-async function initial(client: Client, message: Message, player: Player): Promise<void>;
-async function initial(client: Client, interaction: ChatInputCommandInteraction, player: Player): Promise<void>;
-async function initial(client: Client, interactionOrMessage: ChatInputCommandInteraction | Message, player: Player): Promise<void> {
+
+async function initial(bot: Bot, message: Message, player: Player): Promise<void>;
+async function initial(bot: Bot, interaction: ChatInputCommandInteraction, player: Player): Promise<void>;
+async function initial(bot: Bot, interactionOrMessage: ChatInputCommandInteraction | Message, player: Player): Promise<void> {
     let channel;
 
     if (interactionOrMessage instanceof Message) {
@@ -20,7 +21,7 @@ async function initial(client: Client, interactionOrMessage: ChatInputCommandInt
     }
 
     player.dashboard = await channel!.send({
-        embeds: [embeds.connected(client.config.embedsColor)],
+        embeds: [embeds.connected(bot.config.embedsColor)],
         components: []
     });
 }

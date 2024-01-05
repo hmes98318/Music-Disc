@@ -15,14 +15,19 @@ export const cst = {
         autoLeave           : true,
         autoLeaveCooldown   : 5000,
         displayVoiceState   : true,
-        blacklist           : [],           // It must be the user ID (string[])
         enableSite          : true,
         site: {
             port            : 33333,
             username        : 'admin',
             password        : 'password'
         },
+        enableLocalNode     : false,
+        localNode:{
+            autoRestart     : true,
+            downloadLink    : 'https://github.com/lavalink-devs/Lavalink/releases/download/3.7.10/Lavalink.jar'
+        }
     },
+    blacklist               : [],           // It must be the user ID (string[])
     // Console color
     color: {
         cyan    : '\x1B[36m',
@@ -43,7 +48,7 @@ export const cst = {
         shuffle     : '<:w_shuffle:1106270712542531624>',
         prev        : '<:w_prev:1153665768093921280>',
         next        : '<:w_next:1153665809990815874>',
-        delete      : 'Delete',
+        delete      : 'Delete Message',
         clear       : 'Clear Queue'
     }
 };

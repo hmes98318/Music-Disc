@@ -1,6 +1,5 @@
 /**
  * Required
- * <script src="/static/js/lib/jquery-3.7.1.min.js"></script>
  * <script src="/static/js/lib/socket.io-4.7.2.min.js"></script>
  * 
  * <script src="/static/js/utils/formatBytes.js"></script>
@@ -9,12 +8,14 @@
  */
 
 
-$(function () {
+document.addEventListener("DOMContentLoaded", async () => {
     const statusRefreshInterval = 1000;     // 'api_bot_status' 刷新時間 1s
 
 
     // Get bot info
-    $.get('/api/info', (data) => {
+    try {
+        const data = await (await fetch('/api/info')).json();
+
         document.getElementById("info_startupTime").textContent = timestampToTime(data.startupTime);
         document.getElementById("info_os_version").textContent = data.os_version;
         document.getElementById("info_bot_version").textContent = data.bot_version;
@@ -22,15 +23,17 @@ $(function () {
         document.getElementById("info_dc_version").textContent = data.dc_version;
         document.getElementById("info_shark_version").textContent = data.shark_version;
         document.getElementById("info_cpu").textContent = data.cpu;
-    });
+    } catch (error) {
+        console.error("Error fetching bot info:", error);
+    }
 
 
+    // Initialize WebSocket connection
     const socket = io();
 
     // Get bot status
     // console.log('[emit] bot_status');
     socket.emit("bot_status");
-
 
     socket.on('api_bot_status', (data) => {
         document.getElementById("stat_server").textContent = data.serverCount;
@@ -49,7 +52,9 @@ $(function () {
     /**
      * bot_status 刷新計時器
      */
-    setInterval(async () => {
+    // ------------------------------------------------- //
+
+    setInterval(() => {
         // console.log('[emit] bot_status');
         socket.emit("bot_status");
     }, statusRefreshInterval);

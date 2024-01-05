@@ -9,6 +9,6 @@ const server = (config: Config, serverlist: string) => {
         .setDescription(serverlist);
 
     return embed_;
-}
+};
 
 export { server };

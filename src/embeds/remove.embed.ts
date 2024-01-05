@@ -10,7 +10,7 @@ const removeList = (embedsColor: HexColorString | string | number, nowPlaying: s
         .setFooter({ text: `Loop: ${repeatMode}` });
 
     return embed_;
-}
+};
 
 const removeTrack = (embedsColor: HexColorString | string | number, musicTitle: string) => {
     const embed_ = new EmbedBuilder()
@@ -20,6 +20,6 @@ const removeTrack = (embedsColor: HexColorString | string | number, musicTitle: 
         .setTimestamp();
 
     return embed_;
-}
+};
 
 export { removeList, removeTrack };

@@ -5,9 +5,9 @@ const help = (embedsColor: HexColorString | string | number, command: string, de
     const embed_ = new EmbedBuilder()
         .setColor(embedsColor as HexColorString | number)
         .setTitle(`Command **${command}**`)
-        .setDescription(description)
+        .setDescription(description);
 
     return embed_;
-}
+};
 
 export { help };

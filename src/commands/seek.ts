@@ -1,5 +1,7 @@
-import { ChatInputCommandInteraction, Client, Message } from "discord.js";
 import { timeToSeconds } from "../utils/functions/unitConverter";
+
+import type { ChatInputCommandInteraction, Client, Message } from "discord.js";
+import type { Bot } from "../@types";
 
 
 export const name = 'seek';
@@ -20,7 +22,7 @@ export const options = [
 ];
 
 
-export const execute = async (client: Client, message: Message, args: string[]) => {
+export const execute = async (bot: Bot, client: Client, message: Message, args: string[]) => {
     const player = client.lavashark.getPlayer(message.guild!.id);
 
     if (!player) {
@@ -39,15 +41,15 @@ export const execute = async (client: Client, message: Message, args: string[]) 
     await message.react('👍');
     await player.seek(tragetTimeMs);
 
-    if(tragetTimeMs >= player.current!.duration.value){
+    if (tragetTimeMs >= player.current!.duration.value) {
         return message.reply({ content: `✅ | The seek position is beyond the duration of this track. (\`${player.current!.duration.label}\`)\nSkipping to the next song.`, allowedMentions: { repliedUser: false } });
     }
-    else{
+    else {
         return message.reply({ content: `✅ | Music has been seeked to \`${str}\`.`, allowedMentions: { repliedUser: false } });
     }
-}
+};
 
-export const slashExecute = async (client: Client, interaction: ChatInputCommandInteraction) => {
+export const slashExecute = async (bot: Bot, client: Client, interaction: ChatInputCommandInteraction) => {
     const player = client.lavashark.getPlayer(interaction.guild!.id);
 
     if (!player) {
@@ -65,11 +67,11 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
 
     await player.seek(tragetTimeMs);
 
-    if(tragetTimeMs >= player.current!.duration.value){
+    if (tragetTimeMs >= player.current!.duration.value) {
         return interaction.editReply({ content: `✅ | The seek position is beyond the duration of this track. (\`${player.current!.duration.label}\`)\nSkipping to the next song.`, allowedMentions: { repliedUser: false } });
     }
-    else{
+    else {
         return interaction.editReply({ content: `✅ | Music has been seeked to \`${str}\`.`, allowedMentions: { repliedUser: false } });
     }
 
-}
+};

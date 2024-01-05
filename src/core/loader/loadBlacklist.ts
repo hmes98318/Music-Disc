@@ -1,21 +1,21 @@
 import * as fs from 'fs';
-import type { Client } from 'discord.js';
+import type { Bot } from '../../@types';
 
 
-const loadBlacklist = async (client: Client) => {
+const loadBlacklist = async (bot: Bot) => {
     try {
         const jsonString = fs.readFileSync(`blacklist.json`, 'utf-8');
         const blacklistArray = JSON.parse(jsonString);
 
         if (Array.isArray(blacklistArray) && blacklistArray.length > 0) {
-            client.config.blacklist = blacklistArray;
-            console.log('Blacklist loaded:', client.config.blacklist.length, 'users');
+            bot.blacklist = blacklistArray;
+            bot.logger.emit('log', 'Blacklist loaded: ' + bot.blacklist.length + ' users');
         }
         else {
-            console.log('No blacklist entries found.');
+            bot.logger.emit('log', 'No blacklist entries found.');
         }
     } catch (error) {
-        console.error('Error loading blacklist:', error);
+        bot.logger.emit('error', 'Error loading blacklist:' + error);
     }
 };
 

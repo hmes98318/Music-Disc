@@ -8,10 +8,10 @@ const addTrack = (embedsColor: HexColorString | string | number, title: string, 
         .setURL(url)
         .setThumbnail(thumbnail)
         .addFields({ name: 'Added Track', value: subtitle, inline: true })
-        .setTimestamp()
+        .setTimestamp();
 
     return embed_;
-}
+};
 
 const addPlaylist = (embedsColor: HexColorString | string | number, title: string, subtitle: string, url: string, thumbnail: string) => {
     const embed_ = new EmbedBuilder()
@@ -20,10 +20,10 @@ const addPlaylist = (embedsColor: HexColorString | string | number, title: strin
         .setURL(url)
         .setThumbnail(thumbnail)
         .addFields({ name: 'Added Playlist', value: subtitle, inline: true })
-        .setTimestamp()
+        .setTimestamp();
 
     return embed_;
-}
+};
 
 const queue = (embedsColor: HexColorString | string | number, nowPlaying: string, queueList: string, repeatMode: string) => {
     const embed_ = new EmbedBuilder()
@@ -34,6 +34,6 @@ const queue = (embedsColor: HexColorString | string | number, nowPlaying: string
         .setFooter({ text: `Loop: ${repeatMode}` });
 
     return embed_;
-}
+};
 
 export { addTrack, addPlaylist, queue };

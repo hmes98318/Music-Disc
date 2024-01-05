@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bot Logs</title>
+    <link rel="icon" type="image/x-icon"
+        href="https://raw.githubusercontent.com/hmes98318/Music-Disc/main/public/imgs/html/favicon.ico">
+
+    <link rel="stylesheet" type="text/css" href="/static/css/components/container.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/components/scrollbar.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/logs.page.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="sidebar-left">
+            <a href="/dashboard">Dashboard</a>
+            <a href="/localnode">Local Node</a>
+            <a href="/logs" class="current-page">Logs</a>
+            <a href="/nodeslist">Nodes List</a>
+            <a href="/serverlist">Servers List</a>
+        </div>
+
+        <div class="content" id="content">
+            <h2>Bot Logs</h2>
+            <pre id="logs-container" class="language-javascript">
+                <div id="logs-container" class="language-javascript"></div>
+            </pre>
+
+            <div id="empty-container"></div>
+        </div>
+    </div>
+</body>
+
+
+<script src="/static/js/lib/socket.io-4.7.2.min.js"></script>
+
+<script src="/static/js/utils/convertAnsiToHtml.js"></script>
+
+<script src="/static/js/components/navbar.js"></script>
+<script src="/static/js/components/footer.js"></script>
+<script src="/static/js/logs.page.js"></script>
+
+</html>

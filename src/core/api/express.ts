@@ -6,19 +6,21 @@ import { hashGenerator } from '../lib/hashGenerator';
 
 import type { Client } from 'discord.js';
 import type { Express } from 'express';
+import type { Bot } from '../../@types';
 import type { SessionManager } from '../lib/SessionManager';
+import type { LocalNodeController } from '../lib/LocalNodeController';
 
 
 interface IPInfo {
     retry: number;
     block: boolean;
-};
+}
 
 const blockedIP = new Map<string, IPInfo>();
 
 
-const registerExpressEvents = (client: Client, app: Express, sessionManager: SessionManager) => {
-    const siteConfig = client.config.site;
+const registerExpressEvents = (bot: Bot, client: Client, localNodeController: LocalNodeController, app: Express, sessionManager: SessionManager) => {
+    const siteConfig = bot.config.site;
 
     const cssPath = `${process.cwd()}/views/css`;
     const jsPath = `${process.cwd()}/views/js`;
@@ -39,7 +41,7 @@ const registerExpressEvents = (client: Client, app: Express, sessionManager: Ses
      */
     const verifyLogin = (req: any, res: any, next: any) => {
         const cookies = cookie.parse(req.headers.cookie as string || '');
-        let sessionId = cookies.sessionID;
+        const sessionId = cookies.sessionID;
         const session = sessionManager.getSession(sessionId);
 
         if (session) {
@@ -58,8 +60,8 @@ const registerExpressEvents = (client: Client, app: Express, sessionManager: Ses
 
     app.get('/login', (req, res) => {
         const cookies = cookie.parse(req.headers.cookie as string || '');
-        let sessionId = cookies.sessionID;
-        const session = sessionManager.getSession(sessionId)
+        const sessionId = cookies.sessionID;
+        const session = sessionManager.getSession(sessionId);
 
         if (session) {
             res.redirect('/dashboard');
@@ -91,13 +93,21 @@ const registerExpressEvents = (client: Client, app: Express, sessionManager: Ses
         }
     });
 
+    app.get('/localnode', verifyLogin, (req, res) => {
+        res.sendFile(`${viewsPath}/localnode.html`);
+    });
+
+    app.get('/logs', verifyLogin, (req, res) => {
+        res.sendFile(`${viewsPath}/logs.html`);
+    });
+
 
     /**
      * ---------- API ----------
      */
 
     app.post('/api/login', (req, res) => {
-        // console.log(req.body);
+        // bot.logger.emit('api', '[POST] ' + req.body);
 
         const admin = {
             username: siteConfig.username,
@@ -110,12 +120,12 @@ const registerExpressEvents = (client: Client, app: Express, sessionManager: Ses
 
         if (ipInfo) {
             if (ipInfo.block) {
-                console.log(`Blocked IP: ${userIP}, attempts to log in.`);
+                bot.logger.emit('api', `Blocked IP: ${userIP}, attempts to log in.`);
                 return res.send('BLOCKED_5');
             }
             else if (!ipInfo.block && ipInfo.retry > 5) {
-                console.log(`IP: ${userIP}, failed to log in too many times, blocked for 5 minutes`);
-                ipInfo.block = true
+                bot.logger.emit('api', `IP: ${userIP}, failed to log in too many times, blocked for 5 minutes`);
+                ipInfo.block = true;
 
                 setTimeout(() => {
                     blockedIP.delete(userIP);
@@ -164,14 +174,14 @@ const registerExpressEvents = (client: Client, app: Express, sessionManager: Ses
     });
 
     app.get('/api/info', verifyLogin, (req, res) => {
-        // console.log('[api] /api/info', req.ip);
+        // bot.logger.emit('api', '[GET] /api/info ' + req.ip);
 
-        const info = client.info
+        const info = bot.sysInfo;
         res.json(info);
     });
 
     app.get('/api/serverlist', verifyLogin, (req, res) => {
-        // console.log('[api] /api/serverlist', req.ip);
+        // bot.logger.emit('api', '[GET] /api/serverlist ' + req.ip);
 
         const allServer = client.guilds.cache;
         const playingServers = new Set(client.lavashark.players.keys());
@@ -185,12 +195,9 @@ const registerExpressEvents = (client: Client, app: Express, sessionManager: Ses
     });
 
     app.get('/api/server/info/:guildID', verifyLogin, async (req, res) => {
-        // console.log(`[api] /api/server/info/${req.params.guildID}`, req.ip);
+        // bot.logger.emit('api', `[GET] /api/server/info/${req.params.guildID} ` + req.ip);
 
-        const guild = client.guilds.cache.get(req.params.guildID);
-
-        await guild!.members.fetch()
-            .catch((_) => console.log(`Cache guild:${req.params.guildID} members list failed`));
+        const guild = await client.guilds.fetch(req.params.guildID);
 
         if (!guild) {
             res.send({});
@@ -201,14 +208,14 @@ const registerExpressEvents = (client: Client, app: Express, sessionManager: Ses
     });
 
     app.get('/api/user/:userID', verifyLogin, (req, res) => {
-        // console.log(`[api] /api/user/avatar/${req.params.id}`, req.ip);
+        // bot.logger.emit('api', `[GET] /api/user/avatar/${req.params.id} ` + req.ip);
 
         const user = client.users.cache.get(req.params.userID);
         res.send(user);
     });
 
     app.get('/api/lavashark/getThumbnail/:source/:id', verifyLogin, (req, res) => {
-        // console.log(`[api] /api/lavashark/getThumbnail/${req.params.source}/${req.params.id}`, req.ip);
+        // bot.logger.emit('api', `[GET] /api/lavashark/getThumbnail/${req.params.source}/${req.params.id} ` + req.ip);
 
         if (req.params.source === 'youtube') {
             res.send(`https://img.youtube.com/vi/${req.params.id}/sddefault.jpg`);
@@ -216,6 +223,35 @@ const registerExpressEvents = (client: Client, app: Express, sessionManager: Ses
         else {
             res.send('NOT_FOUND');
         }
+    });
+
+    app.get('/api/localnode/hasEnable', verifyLogin, (req, res) => {
+        res.json({ enable: bot.config.enableLocalNode });
+    });
+
+    app.get('/api/localnode/getLogs', verifyLogin, (req, res) => {
+        res.json({ logs: localNodeController.lavalinkLogs });
+    });
+
+    app.post('/api/localnode/controller', async (req, res) => {
+        const { type } = req.body;
+        let result;
+
+        if (type === 'RESTART') {
+            result = await localNodeController.restart() ? 'SUCCEED' : 'FAILED';
+        }
+        else if (type === 'STOP') {
+            result = await localNodeController.stop() ? 'SUCCEED' : 'FAILED';
+        }
+        else {
+            result = 'FAILED';
+        }
+
+        res.json({ type, result });
+    });
+
+    app.get('/api/logger/getLogs', verifyLogin, (req, res) => {
+        res.json({ logs: bot.logger.logs });
     });
 
 

@@ -8,25 +8,27 @@ import { registerSocketioEvents } from '../api/socketio';
 import { SessionManager } from '../lib/SessionManager';
 
 import type { Client } from 'discord.js';
+import type { Bot } from '../../@types';
+import type { LocalNodeController } from '../lib/LocalNodeController';
 
 
-const loadSite = (client: Client) => {
+const loadSite = (bot: Bot, client: Client, localNodeController: LocalNodeController) => {
     return new Promise<void>((resolve, _reject) => {
-        console.log(`-> loading Web Framework ......`);
+        bot.logger.emit('api', `-> loading Web Framework ......`);
 
-        const port = client.config.site.port || 33333;
+        const port = bot.config.site.port || 33333;
         const app = express();
         const server = createServer(app);
         const io = new Server(server);
         const sessionManager = new SessionManager();
 
 
-        registerExpressEvents(client, app, sessionManager);
-        registerSocketioEvents(client, io, sessionManager);
+        registerExpressEvents(bot, client, localNodeController, app, sessionManager);
+        registerSocketioEvents(bot, client, localNodeController, io, sessionManager);
 
 
         server.listen(port, function () {
-            console.log(`[api] Server start listening port on ${port}`);
+            bot.logger.emit('api', `Server start listening port on ${port}`);
             resolve();
         });
     });

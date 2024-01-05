@@ -8,6 +8,8 @@ import {
 } from "discord.js";
 import { embeds } from "../embeds";
 
+import type { Bot } from "../@types";
+
 
 export const name = 'nowplaying';
 export const aliases = ['np', 'save'];
@@ -20,7 +22,7 @@ export const requireAdmin = false;
 export const options = [];
 
 
-export const execute = async (client: Client, message: Message) => {
+export const execute = async (bot: Bot, client: Client, message: Message) => {
     const player = client.lavashark.getPlayer(message.guild!.id);
 
     if (!player) {
@@ -38,13 +40,13 @@ export const execute = async (client: Client, message: Message) => {
         .addComponents(saveButton);
 
     return message.channel.send({
-        embeds: [embeds.save(client.config.embedsColor, track!.title, subtitle, track!.uri, track!.thumbnail!)],
+        embeds: [embeds.save(bot.config.embedsColor, track!.title, subtitle, track!.uri, track!.thumbnail!)],
         components: [row],
         allowedMentions: { repliedUser: false }
     });
-}
+};
 
-export const slashExecute = async (client: Client, interaction: ChatInputCommandInteraction) => {
+export const slashExecute = async (bot: Bot, client: Client, interaction: ChatInputCommandInteraction) => {
     const player = client.lavashark.getPlayer(interaction.guild!.id);
 
     if (!player) {
@@ -62,8 +64,8 @@ export const slashExecute = async (client: Client, interaction: ChatInputCommand
         .addComponents(saveButton);
 
     return interaction.editReply({
-        embeds: [embeds.save(client.config.embedsColor, track!.title, subtitle, track!.uri, track!.thumbnail!)],
+        embeds: [embeds.save(bot.config.embedsColor, track!.title, subtitle, track!.uri, track!.thumbnail!)],
         components: [row],
         allowedMentions: { repliedUser: false }
     });
-}
+};
