@@ -1,8 +1,8 @@
 [
     {
         "id": "Node 1",
-        "hostname": "n1.ll.darrennathanael.com",
-        "port": 2269,
-        "password": "glasshost1984"
+        "hostname": "lavalink.oryzen.xyz",
+        "port": 80,
+        "password": "oryzen.xyz"
     }
 ]
