@@ -1,6 +1,6 @@
 const navbarHTML = `
     <div class="navbar">
-        <img src="https://raw.githubusercontent.com/hmes98318/Music-Disc/main/public/imgs/logo/logo2.svg" alt="Logo">
+        <img src="https://cdn.discordapp.com/attachments/1161511699430510672/1171800777866620938/OjDAQSGFuaEzzcg4rOgYDldC9k_A0fAwK7IQFYuqqjp_bGp3GuhnkIuwfF4i1BPujtZVscOeBAs600-c-k-c0x00ffffff-no-rj-rp-mo.png?ex=65a7d384&is=65955e84&hm=b12526d431471c7ac9c0a0716c22bc516e740ed5dee843b8a5592a475698be5e&" alt="Logo">
         <form method="GET" action="/api/logout">
             <button class="dashboard-button">Sign out</button>
         </form>
