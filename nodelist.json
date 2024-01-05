@@ -1,7 +1,7 @@
 [
     {
         "id": "Node 1",
-        "hostname": "localhost",
+        "hostname": "lavalink.jirayu.pw",
         "port": 2333,
         "password": "youshallnotpass"
     }
