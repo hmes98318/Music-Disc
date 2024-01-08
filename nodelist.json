@@ -1,8 +1,8 @@
 [
     {
         "id": "Node 1",
-        "hostname": "eu-lavalink.lexnet.cc",
-        "port": 2333,
-        "password": "lexn3tl@val!nk"
+        "hostname": "lavalink.oryzen.xyz",
+        "port": 80,
+        "password": "oryzen.xyz"
     }
 ]
