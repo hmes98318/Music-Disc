@@ -364,7 +364,11 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
 
         bot.logger.emit('discord', `[interactionCreate] (${cst.color.grey}${guildMember?.guild.name}${cst.color.white}) ${interaction.user.username} : /${interaction.commandName}`);
 
-        await interaction.deferReply();
+        await interaction.deferReply()
+            .catch((error) => {
+                bot.logger.emit('error', '[interactionCreate] Error deferReply: ' + error);
+            });
+
         cmd.slashExecute(bot, client, interaction);
     }
 };
