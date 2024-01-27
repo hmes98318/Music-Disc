@@ -1,8 +1,8 @@
 [
-    {
-        "id": "Node 1",
-        "hostname": "lavalink-v3.oryzen.xyz",
-        "port": 80,
-        "password": "oryzen.xyz"
-    }
+  {
+    "id": "Node 1",
+    "hostname": "lavalink-v3.oryzen.xyz",
+    "port": 80,
+    "password": "oryzen.xyz"
+  }
 ]
