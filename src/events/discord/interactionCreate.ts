@@ -26,17 +26,26 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
 
     if (interaction.isButton()) {
         if (!voiceChannel) {
-            return interaction.reply({ content: `❌ | You are not connected to an audio channel.`, ephemeral: true, components: [] });
+            return interaction.reply({ content: `❌ | You are not connected to an audio channel.`, ephemeral: true, components: [] })
+                .catch((error) => {
+                    bot.logger.emit('error', '[interactionCreate] Error reply: ' + error);
+                });
         }
         if (interaction.guild?.members.me?.voice.channel && voiceChannel.id !== interaction.guild.members.me.voice.channelId) {
-            return interaction.reply({ content: `❌ | You are not on the same audio channel as me.`, ephemeral: true, components: [] });
+            return interaction.reply({ content: `❌ | You are not on the same audio channel as me.`, ephemeral: true, components: [] })
+                .catch((error) => {
+                    bot.logger.emit('error', '[interactionCreate] Error reply: ' + error);
+                });
         }
 
 
         const player = client.lavashark.getPlayer(interaction.guild!.id);
 
         if (!player) {
-            return interaction.reply({ content: '❌ | There is no music currently playing.', allowedMentions: { repliedUser: false } });
+            return interaction.reply({ content: '❌ | There is no music currently playing.', allowedMentions: { repliedUser: false } })
+                .catch((error) => {
+                    bot.logger.emit('error', '[interactionCreate] Error reply: ' + error);
+                });
         }
 
         try {
@@ -354,15 +363,24 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
 
         if (cmd.requireAdmin) {
             if (interaction.user.id !== bot.config.admin)
-                return interaction.reply({ content: `❌ | This command requires administrator privileges.`, allowedMentions: { repliedUser: false } });
+                return interaction.reply({ content: `❌ | This command requires administrator privileges.`, allowedMentions: { repliedUser: false } })
+                    .catch((error) => {
+                        bot.logger.emit('error', '[interactionCreate] Error reply: ' + error);
+                    });
         }
 
         if (cmd.voiceChannel) {
             if (!voiceChannel) {
-                return interaction.reply({ content: `❌ | You are not connected to an audio channel.`, allowedMentions: { repliedUser: false } });
+                return interaction.reply({ content: `❌ | You are not connected to an audio channel.`, allowedMentions: { repliedUser: false } })
+                    .catch((error) => {
+                        bot.logger.emit('error', '[interactionCreate] Error reply: ' + error);
+                    });
             }
             if (interaction.guild?.members.me?.voice.channel && voiceChannel.id !== interaction.guild.members.me.voice.channelId) {
-                return interaction.reply({ content: `❌ | You are not on the same audio channel as me.`, allowedMentions: { repliedUser: false } });
+                return interaction.reply({ content: `❌ | You are not on the same audio channel as me.`, allowedMentions: { repliedUser: false } })
+                    .catch((error) => {
+                        bot.logger.emit('error', '[interactionCreate] Error reply: ' + error);
+                    });
             }
         }
 
