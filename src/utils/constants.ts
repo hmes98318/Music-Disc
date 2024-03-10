@@ -1,30 +1,37 @@
+import type { LoginType } from "../@types";
+
+
 /**
  * Constants variables
  */
 export const cst = {
     // Default config
     config: {
-        admin               : null,         // It must be the user ID (string)
-        name                : 'Music Disc',
-        prefix              : '+',
-        status              : 'online',     // 'online' | 'idle' | 'dnd'
-        playing             : '+help | music',
-        embedsColor         : '#FFFFFF',
-        defaultVolume       : 50,
-        maxVolume           : 100,
-        autoLeave           : true,
-        autoLeaveCooldown   : 5000,
-        displayVoiceState   : true,
-        enableSite          : true,
+        admin                   : null,                 // It must be the user ID (string)
+        clientSecret            : null,
+        name                    : 'Music Disc',
+        prefix                  : '+',
+        status                  : 'online',             // 'online' | 'idle' | 'dnd'
+        playing                 : '+help | music',
+        embedsColor             : '#FFFFFF',
+        defaultVolume           : 50,
+        maxVolume               : 100,
+        autoLeave               : true,
+        autoLeaveCooldown       : 5000,
+        displayVoiceState       : true,
+        enableSite              : true,
         site: {
-            port            : 33333,
-            username        : 'admin',
-            password        : 'password'
+            port                : 33333,
+            loginType           : 'USER' as LoginType,              // "USER" | 'OAUTH2'
+            username            : 'admin',
+            password            : 'password',
+            oauth2Link          : null,                             // OAuth2 URL
+            oauth2RedirectUri   : `http://localhost:33333/login`    // Redirect link after OAuth2 authentication is complete
         },
-        enableLocalNode     : false,
+        enableLocalNode         : false,
         localNode:{
-            autoRestart     : true,
-            downloadLink    : 'https://github.com/lavalink-devs/Lavalink/releases/download/3.7.10/Lavalink.jar'
+            autoRestart         : true,
+            downloadLink        : 'https://repo.lavalink.dev/artifacts/lavalink/219dfdd0/Lavalink.jar'
         }
     },
     blacklist               : [],           // It must be the user ID (string[])
