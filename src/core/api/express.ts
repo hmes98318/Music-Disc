@@ -1,8 +1,10 @@
 import bodyParser from 'body-parser';
 import cookie from "cookie";
 import express from 'express';
+import undici from "undici";
 
 import { hashGenerator } from '../lib/hashGenerator';
+import { LoginType } from '../../@types';
 
 import type { Client } from 'discord.js';
 import type { Express } from 'express';
@@ -58,17 +60,121 @@ const registerExpressEvents = (bot: Bot, client: Client, localNodeController: Lo
      * ---------- Site ----------
      */
 
-    app.get('/login', (req, res) => {
-        const cookies = cookie.parse(req.headers.cookie as string || '');
-        const sessionId = cookies.sessionID;
-        const session = sessionManager.getSession(sessionId);
+    if (bot.config.site.loginType === LoginType.OAUTH2) {
+        app.get('/login', async (req, res) => {
+            const cookies = cookie.parse(req.headers.cookie as string || '');
+            const sessionId = cookies.sessionID;
+            const session = sessionManager.getSession(sessionId);
 
-        if (session) {
-            res.redirect('/dashboard');
-        }
+            if (session) {
+                res.redirect('/dashboard');
+            }
 
-        res.sendFile(`${viewsPath}/login.html`);
-    });
+
+            const userIP = (req.headers['x-real-ip'] || req.headers['x-forwarded-for'] || req.ip) as string;
+            const ipInfo = blockedIP.get(userIP);
+
+            if (ipInfo) {
+                if (ipInfo.block) {
+                    bot.logger.emit('api', `Blocked IP: ${userIP}, attempts to log in.`);
+                    return res.send('Too many login attempts, locked for 5 minutes.');
+                }
+                else if (!ipInfo.block && ipInfo.retry > 5) {
+                    bot.logger.emit('api', `IP: ${userIP}, failed to log in too many times, blocked for 5 minutes`);
+                    ipInfo.block = true;
+
+                    setTimeout(() => {
+                        blockedIP.delete(userIP);
+                    }, 5 * 60 * 1000); // Block 5 minutes
+
+                    return res.send('Too many login attempts, locked for 5 minutes.');
+                }
+            }
+
+
+            const { code } = req.query;
+
+            if (code) {
+                try {
+                    const tokenResponseData = await undici.request('https://discord.com/api/oauth2/token', {
+                        method: 'POST',
+                        body: new URLSearchParams({
+                            client_id: client.user?.id,
+                            client_secret: bot.config.clientSecret,
+                            code,
+                            grant_type: 'authorization_code',
+                            redirect_uri: bot.config.site.oauth2RedirectUri,
+                            scope: 'identify',
+                        } as any).toString(),
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                    }); console.log('tokenResponseData', tokenResponseData.statusCode);
+
+                    const oauthData = await tokenResponseData.body.json() as any;
+
+                    const userResult = await undici.request('https://discord.com/api/users/@me', {
+                        headers: {
+                            authorization: `${oauthData.token_type} ${oauthData.access_token}`,
+                        },
+                    });
+
+
+                    if (userResult.statusCode === 200) {
+                        const user = await userResult.body.json() as any;
+                        console.log(user);
+
+                        if (user.id === bot.config.admin) {
+                            const cookies = cookie.parse(req.headers.cookie as string || '');
+                            let sessionId = cookies.sessionID;
+
+                            if (!sessionId) {
+                                sessionId = hashGenerator.generateRandomKey();
+                            }
+
+                            sessionManager.createSession(sessionId);
+                            res.cookie('sessionID', sessionId);
+
+                            return res.redirect('/dashboard');
+                        }
+                        else {
+                            return res.send('You are not an administrator. If there is an error, please check your BOT_ADMIN setting value.');
+                        }
+                    }
+                    else {
+                        if (!ipInfo) {
+                            blockedIP.set(userIP, { retry: 1, block: false });
+                        }
+                        else {
+                            blockedIP.set(userIP, { retry: ipInfo.retry + 1, block: false });
+                        }
+
+                        //res.send('FAILED');
+                        return res.redirect('/login');
+                    }
+                } catch (error) {
+                    console.error(error);
+                    return res.json(error);
+                }
+            }
+
+
+            res.sendFile(`${viewsPath}/login-oauth2.html`);
+        });
+    }
+    else {
+        app.get('/login', (req, res) => {
+            const cookies = cookie.parse(req.headers.cookie as string || '');
+            const sessionId = cookies.sessionID;
+            const session = sessionManager.getSession(sessionId);
+
+            if (session) {
+                res.redirect('/dashboard');
+            }
+
+            res.sendFile(`${viewsPath}/login.html`);
+        });
+    }
 
     app.get('/dashboard', verifyLogin, (req, res) => {
         res.sendFile(`${viewsPath}/dashboard.html`);
@@ -252,6 +358,10 @@ const registerExpressEvents = (bot: Bot, client: Client, localNodeController: Lo
 
     app.get('/api/logger/getLogs', verifyLogin, (req, res) => {
         res.json({ logs: bot.logger.logs });
+    });
+
+    app.get('/api/oauth2-link', (req, res) => {
+        res.json({ link: bot.config.site.oauth2Link });
     });
 
 

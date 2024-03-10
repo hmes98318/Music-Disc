@@ -1,7 +1,6 @@
 import * as dotenv from 'dotenv';
 import { hashGenerator } from '../lib/hashGenerator';
-
-import type { Bot } from '../../@types';
+import type { Bot, LoginType } from '../../@types';
 
 
 dotenv.config();
@@ -9,6 +8,7 @@ dotenv.config();
 const setEnvironment = (bot: Bot) => {
     // Admin of the bot
     bot.config.admin = process.env.BOT_ADMIN || bot.config.admin;
+    bot.config.clientSecret = process.env.BOT_CLIENT_SECRET || bot.config.clientSecret;
 
     // Bot settings
     bot.config.name = process.env.BOT_NAME || bot.config.name;
@@ -31,8 +31,11 @@ const setEnvironment = (bot: Bot) => {
     // Web dashboard settings
     bot.config.enableSite = isTrueOrFalse(process.env.ENABLE_SITE) ?? bot.config.enableSite;
     bot.config.site.port = isNumber(process.env.SITE_PORT) ? Number(process.env.SITE_PORT) : bot.config.site.port;
+    bot.config.site.loginType = (['USER', 'OAUTH2'].includes(String(process.env.SITE_LOGIN_TYPE)) ? String(process.env.SITE_LOGIN_TYPE) : bot.config.site.loginType) as LoginType;
     bot.config.site.username = process.env.SITE_USERNAME || bot.config.site.username;
     bot.config.site.password = hashGenerator.generateHash(process.env.SITE_PASSWORD || bot.config.site.password);
+    bot.config.site.oauth2Link = process.env.SITE_OAUTH2_LINK || bot.config.site.oauth2Link;
+    bot.config.site.oauth2RedirectUri = process.env.SITE_OAUTH2_REDIRECT_URI || bot.config.site.oauth2RedirectUri;
 
     // Local Lavalink node
     bot.config.enableLocalNode = isTrueOrFalse(process.env.ENABLE_LOCAL_NODE) ?? bot.config.enableLocalNode;
