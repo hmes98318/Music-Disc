@@ -81,6 +81,11 @@ button:active {
     background-color: #546fcd;
 }
 
+button:disabled {
+    background-color: #a9b7d9;
+    cursor: not-allowed;
+}
+
 /*----- END Login 按鈕 -----*/
 
 /*----- Login 錯誤訊息 -----*/
