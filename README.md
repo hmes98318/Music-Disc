@@ -28,7 +28,7 @@ If you encounter any issues or would like to contribute to the community, please
 
 ### Clone the latest version of the repository
 ```
-git clone -b v2.1.0 https://github.com/hmes98318/Music-Disc.git
+git clone -b v2.1.1 https://github.com/hmes98318/Music-Disc.git
 ```
 or [**click here**](https://github.com/hmes98318/Music-Disc/releases) to download  
 
@@ -61,13 +61,15 @@ Please refer to this [**documentation**](https://lavashark.js.org/docs/server-co
 
 
 ### Configure environment
-Edit the file [**.env**](./.env) 
+Refer to [**.env.example**](./.env.example) and edit the **.env** fileEdit the file.  
 ```env
 # Discord Bot Token
 BOT_TOKEN = "your_token"
 
 # Admin of the bot (User ID)
-BOT_ADMIN = ""
+# OAUTH2 mode requires setting BOT_ADMIN, BOT_CLIENT_SECRET value
+BOT_ADMIN = ""              
+BOT_CLIENT_SECRET = ""
 
 # Bot settings
 BOT_NAME = "Music Disc"
@@ -75,6 +77,7 @@ BOT_PREFIX = "+"
 BOT_STATUS = "online"
 BOT_PLAYING = "+help | music"
 BOT_EMBEDS_COLOR = "#FFFFFF"
+
 
 # Volume settings
 DEFAULT_VOLUME = 50
@@ -87,16 +90,25 @@ AUTO_LEAVE_COOLDOWN = 5000
 # Show voice channel updates
 DISPLAY_VOICE_STATE = true
 
+
 # Web dashboard settings
 ENABLE_SITE = true
 SITE_PORT = 33333
+SITE_LOGIN_TYPE = "USER"   # "USER" | "OAUTH2"
+
+# USER mode settings
 SITE_USERNAME = "admin"
-SITE_PASSWORD = "password"
+SITE_PASSWORD = "000"
+
+# OAUTH2 mode settings
+SITE_OAUTH2_LINK = ""   # Your OAuth2 authentication link
+SITE_OAUTH2_REDIRECT_URI = "http://localhost:33333/login"   # Redirect link after OAuth2 authentication is complete
+
 
 # Local Lavalink node
 ENABLE_LOCAL_NODE = false
 LOCAL_NODE_AUTO_RESTART = true
-# LOCAL_NODE_DOWNLOAD_LINK = 
+# LOCAL_NODE_DOWNLOAD_LINK = ""
 ```
 
 * [**Environment variables detailed description**](https://musicdisc.ggwp.tw/docs/Environment-variables-description)
@@ -115,14 +127,72 @@ npm run start
 
 If you don't have any available nodes, you need to first start the server container using [Docker Compose](server/docker-compose.yml) in the server directory.  
 
+### Start with Docker Compose
+Please put your **token** into the `BOT_TOKEN` variable.  
+```yml
+version: '3.8'
+services:
+  music-disc:
+    image: hmes98318/music-disc:2.1.1
+    container_name: music-disc
+    restart: always
+    environment:
+      TZ: "Asia/Taipei"
+      BOT_TOKEN: "your_token"
+
+      # OAUTH2 mode requires setting BOT_ADMIN, BOT_CLIENT_SECRET value
+      BOT_ADMIN: ""
+      BOT_CLIENT_SECRET: ""
+
+      BOT_NAME: "Music Disc"
+      BOT_PREFIX: "+"
+      BOT_PLAYING: "+help | music"
+      BOT_EMBEDS_COLOR: "#FFFFFF"
+      DEFAULT_VOLUME: 50
+      MAX_VOLUME: 100
+      AUTO_LEAVE: "true"
+      AUTO_LEAVE_COOLDOWN: 5000
+      DISPLAY_VOICE_STATE: "true"
+
+      # Web dashboard settings
+      ENABLE_SITE: true
+      SITE_PORT: 33333
+      SITE_LOGIN_TYPE: "USER"   # "OAUTH2" | "USER"
+      # USER mode settings
+      SITE_USERNAME: "admin"
+      SITE_PASSWORD: "password"
+      # OAUTH2 mode settings
+      SITE_OAUTH2_LINK: ""      # Your OAuth2 authentication link
+      SITE_OAUTH2_REDIRECT_URI: "http://localhost:33333/login"   # Redirect link after OAuth2 authentication is complete
+
+      # Local Lavalink node
+      ENABLE_LOCAL_NODE: false
+      LOCAL_NODE_AUTO_RESTART: true
+    volumes:
+      - ./server:/bot/server    # localnode configuration file
+      - ./nodelist.json:/bot/nodelist.json
+      - ./blacklist.json:/bot/blacklist.json
+    ports:
+      - 33333:33333
+```
+
+#### Start the container  
+```
+docker compose up -d
+```
+
+
 ### Start with Docker
 Use the following command to start the container:  
-Please put your **token** into the `TOKEN` variable.  
+Please put your **token** into the `BOT_TOKEN` variable.  
 ```
 docker run -d \
   --name music-disc \
+  --restart always \
   -e TZ="Asia/Taipei" \
   -e BOT_TOKEN="your_token" \
+  -e BOT_ADMIN="" \
+  -e BOT_CLIENT_SECRET="" \
   -e BOT_NAME="Music Disc" \
   -e BOT_PREFIX="+" \
   -e BOT_PLAYING="+help | music" \
@@ -134,52 +204,16 @@ docker run -d \
   -e DISPLAY_VOICE_STATE="true" \
   -e ENABLE_SITE=true \
   -e SITE_PORT=33333 \
+  -e SITE_LOGIN_TYPE="USER" \
   -e SITE_USERNAME="admin" \
-  -e SITE_PASSWORD="000" \
+  -e SITE_PASSWORD="password" \
+  -e SITE_OAUTH2_LINK="" \
+  -e SITE_OAUTH2_REDIRECT_URI="http://localhost:33333/login" \
   -e ENABLE_LOCAL_NODE=false \
   -e LOCAL_NODE_AUTO_RESTART=true \
-  -v ./nodelist.json:/bot/nodelist.json \
-  -v ./blacklist.json:/bot/blacklist.json \
+  -v $(pwd)/server:/bot/server \
+  -v $(pwd)/nodelist.json:/bot/nodelist.json \
+  -v $(pwd)/blacklist.json:/bot/blacklist.json \
   -p 33333:33333 \
-  hmes98318/music-disc:2.1.0
-```
-
-
-### Start with Docker-Compose
-Please put your **token** into the `TOKEN` variable.  
-```yml
-version: '3.8'
-services:
-  music-disc:
-    image: hmes98318/music-disc:2.1.0
-    container_name: music-disc
-    restart: always
-    environment:
-      TZ: "Asia/Taipei"
-      BOT_TOKEN: "your_token"
-      BOT_NAME: "Music Disc"
-      BOT_PREFIX: "+"
-      BOT_PLAYING: "+help | music"
-      BOT_EMBEDS_COLOR: "#FFFFFF"
-      DEFAULT_VOLUME: 50
-      MAX_VOLUME: 100
-      AUTO_LEAVE: "true"
-      AUTO_LEAVE_COOLDOWN: 5000
-      DISPLAY_VOICE_STATE: "true"
-      ENABLE_SITE: true
-      SITE_PORT: 33333
-      SITE_USERNAME: "admin"
-      SITE_PASSWORD: "000"
-      ENABLE_LOCAL_NODE: false
-      LOCAL_NODE_AUTO_RESTART: true
-    volumes:
-      - ./nodelist.json:/bot/nodelist.json
-      - ./blacklist.json:/bot/blacklist.json
-    ports:
-      - 33333:33333
-```
-
-#### Start the container  
-```
-docker-compose up -d
+  hmes98318/music-disc:2.1.1
 ```
