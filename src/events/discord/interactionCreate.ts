@@ -359,29 +359,27 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
 
         const cmd = client.commands.get(interaction.commandName);
 
-        if (!cmd) return;
+        try {
+            if (!cmd) return;
 
-        if (cmd.requireAdmin) {
-            if (interaction.user.id !== bot.config.admin)
-                return interaction.reply({ content: `❌ | This command requires administrator privileges.`, allowedMentions: { repliedUser: false } })
-                    .catch((error) => {
-                        bot.logger.emit('error', '[interactionCreate] Error reply: ' + error);
-                    });
-        }
+            if (cmd.requireAdmin) {
+                if (interaction.user.id !== bot.config.admin) {
+                    return interaction.reply({ content: `❌ | This command requires administrator privileges.`, allowedMentions: { repliedUser: false } });
+                }
+            }
 
-        if (cmd.voiceChannel) {
-            if (!voiceChannel) {
-                return interaction.reply({ content: `❌ | You are not connected to an audio channel.`, allowedMentions: { repliedUser: false } })
-                    .catch((error) => {
-                        bot.logger.emit('error', '[interactionCreate] Error reply: ' + error);
-                    });
+            if (cmd.voiceChannel) {
+                if (!voiceChannel) {
+                    return interaction.reply({ content: `❌ | You are not connected to an audio channel.`, allowedMentions: { repliedUser: false } });
+                }
+
+                if (interaction.guild?.members.me?.voice.channel && voiceChannel.id !== interaction.guild.members.me.voice.channelId) {
+                    return interaction.reply({ content: `❌ | You are not on the same audio channel as me.`, allowedMentions: { repliedUser: false } });
+                }
             }
-            if (interaction.guild?.members.me?.voice.channel && voiceChannel.id !== interaction.guild.members.me.voice.channelId) {
-                return interaction.reply({ content: `❌ | You are not on the same audio channel as me.`, allowedMentions: { repliedUser: false } })
-                    .catch((error) => {
-                        bot.logger.emit('error', '[interactionCreate] Error reply: ' + error);
-                    });
-            }
+        } catch (error) {
+            bot.logger.emit('error', '[interactionCreate] Error reply: ' + error);
+            return;
         }
 
 
