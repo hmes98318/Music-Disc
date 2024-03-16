@@ -28,7 +28,7 @@ If you encounter any issues or would like to contribute to the community, please
 
 ### Clone the latest version of the repository
 ```
-git clone -b v2.1.1 https://github.com/hmes98318/Music-Disc.git
+git clone -b v2.1.2 https://github.com/hmes98318/Music-Disc.git
 ```
 or [**click here**](https://github.com/hmes98318/Music-Disc/releases) to download  
 
@@ -133,7 +133,7 @@ Please put your **token** into the `BOT_TOKEN` variable.
 version: '3.8'
 services:
   music-disc:
-    image: hmes98318/music-disc:2.1.1
+    image: hmes98318/music-disc:latest
     container_name: music-disc
     restart: always
     environment:
@@ -215,5 +215,5 @@ docker run -d \
   -v $(pwd)/nodelist.json:/bot/nodelist.json \
   -v $(pwd)/blacklist.json:/bot/blacklist.json \
   -p 33333:33333 \
-  hmes98318/music-disc:2.1.1
+  hmes98318/music-disc:latest
 ```
