@@ -45,8 +45,11 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
     }
 
 
+    player.setting.volume = vol;
     player.filters.setVolume(vol);
+
     await dashboard.update(bot, player, player.current!);
+
     return message.reply({ content: `🔊 **${vol}**/**${maxVolume}**%`, allowedMentions: { repliedUser: false } });
 };
 
@@ -71,7 +74,11 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
         return interaction.editReply({ content: `❌ | **Type a number from \`1\` to \`${maxVolume}\` to change the volume .**`, allowedMentions: { repliedUser: false } });
     }
 
+
+    player.setting.volume = vol;
     player.filters.setVolume(vol);
+
     await dashboard.update(bot, player, player.current!);
+
     return interaction.editReply({ content: `🔊 **${vol}**/**${maxVolume}**%`, allowedMentions: { repliedUser: false } });
 };

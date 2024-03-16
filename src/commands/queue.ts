@@ -31,19 +31,19 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
     }
 
 
-    if (player.queuePage) {
+    if (player.setting.queuePage) {
         try {
-            await player.queuePage.msg?.delete();
+            await player.setting.queuePage.msg?.delete();
         } catch (_) { }
     }
 
-    player.queuePage = {
+    player.setting.queuePage = {
         maxPage: Math.ceil(player.queue.tracks.length / 10),
         curPage: 1,
         msg: null
     };
 
-    const page = player.queuePage.curPage;
+    const page = player.setting.queuePage.curPage;
     const startIdx = (page - 1) * 10;
     const endIdx = page * 10;
 
@@ -62,7 +62,7 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
     }
     else {
         tracksQueue = tracks.join('\n');
-        tracksQueue += `\n\n----- Page ${page}/${player.queuePage.maxPage} -----`;
+        tracksQueue += `\n\n----- Page ${page}/${player.setting.queuePage.maxPage} -----`;
     }
 
 
@@ -75,7 +75,7 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
     const clsButton = new ButtonBuilder().setCustomId('queuelist-clear').setLabel(cst.button.clear).setStyle(ButtonStyle.Danger);
     const row = new ActionRowBuilder<ButtonBuilder>().addComponents(prevButton, nextButton, delButton, clsButton);
 
-    player.queuePage.msg = await message.reply({
+    player.setting.queuePage.msg = await message.reply({
         embeds: [embeds.queue(bot.config.embedsColor, nowplaying, tracksQueue, methods[repeatMode])],
         components: [row],
         allowedMentions: { repliedUser: false },
@@ -93,19 +93,19 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
     }
 
 
-    if (player.queuePage) {
+    if (player.setting.queuePage) {
         try {
-            await player.queuePage.msg?.delete();
+            await player.setting.queuePage.msg?.delete();
         } catch (_) { }
     }
 
-    player.queuePage = {
+    player.setting.queuePage = {
         maxPage: Math.ceil(player.queue.tracks.length / 10),
         curPage: 1,
         msg: null
     };
 
-    const page = player.queuePage.curPage;
+    const page = player.setting.queuePage.curPage;
     const startIdx = (page - 1) * 10;
     const endIdx = page * 10;
 
@@ -124,7 +124,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
     }
     else {
         tracksQueue = tracks.join('\n');
-        tracksQueue += `\n\n----- Page ${page}/${player.queuePage.maxPage} -----`;
+        tracksQueue += `\n\n----- Page ${page}/${player.setting.queuePage.maxPage} -----`;
     }
 
 
@@ -137,7 +137,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
     const clsButton = new ButtonBuilder().setCustomId('queuelist-clear').setLabel(cst.button.clear).setStyle(ButtonStyle.Danger);
     const row = new ActionRowBuilder<ButtonBuilder>().addComponents(prevButton, nextButton, delButton, clsButton);
 
-    player.queuePage.msg = await interaction.editReply({
+    player.setting.queuePage.msg = await interaction.editReply({
         embeds: [embeds.queue(bot.config.embedsColor, nowplaying, tracksQueue, methods[repeatMode])],
         components: [row],
         allowedMentions: { repliedUser: false },

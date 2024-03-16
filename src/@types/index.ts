@@ -18,12 +18,28 @@ declare module 'discord.js' {
 
 declare module 'lavashark' {
     export interface Player {
-        dashboard: Message<boolean> | null,
-        metadata: Message<boolean> | ChatInputCommandInteraction | null,
-        queuePage: QueuePage
+        dashboard: Message<boolean> | null;
+        metadata: Message<boolean> | ChatInputCommandInteraction | null;
+        setting: PlayerSetting;
     }
 }
 
+export interface PlayerSetting {
+    queuePage: QueuePage | null;
+    volume: number | null;
+}
+
+export interface QueuePage {
+    maxPage: number;
+    curPage: number;
+    msg: Message<boolean> | null;
+}
+
+
+export enum LoginType {
+    USER = 'USER',
+    OAUTH2 = 'OAUTH2'
+}
 
 export interface Bot {
     blacklist: string[];
@@ -95,15 +111,4 @@ export interface SystemStatus {
     };
     serverCount: number;
     playing: number;
-}
-
-export interface QueuePage {
-    maxPage: number;
-    curPage: number;
-    msg: Message<boolean> | null;
-}
-
-export enum LoginType {
-    USER = 'USER',
-    OAUTH2 = 'OAUTH2'
 }

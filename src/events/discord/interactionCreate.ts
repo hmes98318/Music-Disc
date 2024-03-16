@@ -192,16 +192,16 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
                 }
 
                 case 'queuelist-prev': {
-                    if (!player.queuePage) return;
+                    if (!player.setting.queuePage) return;
 
-                    if (player.queuePage.curPage <= 1) {
-                        player.queuePage.curPage = 1;
+                    if (player.setting.queuePage.curPage <= 1) {
+                        player.setting.queuePage.curPage = 1;
                     }
                     else {
-                        player.queuePage.curPage--;
+                        player.setting.queuePage.curPage--;
                     }
 
-                    const page = player.queuePage.curPage;
+                    const page = player.setting.queuePage.curPage;
                     const startIdx = (page - 1) * 10;
                     const endIdx = page * 10;
 
@@ -220,7 +220,7 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
                     }
                     else {
                         tracksQueue = tracks.join('\n');
-                        tracksQueue += `\n\n----- Page ${page}/${player.queuePage.maxPage} -----`;
+                        tracksQueue += `\n\n----- Page ${page}/${player.setting.queuePage.maxPage} -----`;
                     }
 
                     const methods = ['Off', 'Single', 'All'];
@@ -232,7 +232,7 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
                     const clsButton = new ButtonBuilder().setCustomId('queuelist-clear').setLabel(cst.button.clear).setStyle(ButtonStyle.Danger);
                     const row = new ActionRowBuilder<ButtonBuilder>().addComponents(prevButton, nextButton, delButton, clsButton);
 
-                    await player.queuePage.msg?.edit({
+                    await player.setting.queuePage.msg?.edit({
                         embeds: [embeds.queue(bot.config.embedsColor, nowplaying, tracksQueue, methods[repeatMode])],
                         components: [row],
                         allowedMentions: { repliedUser: false },
@@ -243,16 +243,16 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
                 }
 
                 case 'queuelist-next': {
-                    if (!player.queuePage) return;
+                    if (!player.setting.queuePage) return;
 
-                    if (player.queuePage.curPage >= player.queuePage.maxPage) {
-                        player.queuePage.curPage = player.queuePage.maxPage;
+                    if (player.setting.queuePage.curPage >= player.setting.queuePage.maxPage) {
+                        player.setting.queuePage.curPage = player.setting.queuePage.maxPage;
                     }
                     else {
-                        player.queuePage.curPage++;
+                        player.setting.queuePage.curPage++;
                     }
 
-                    const page = player.queuePage.curPage;
+                    const page = player.setting.queuePage.curPage;
                     const startIdx = (page - 1) * 10;
                     const endIdx = page * 10;
 
@@ -271,7 +271,7 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
                     }
                     else {
                         tracksQueue = tracks.join('\n');
-                        tracksQueue += `\n\n----- Page ${page}/${player.queuePage.maxPage} -----`;
+                        tracksQueue += `\n\n----- Page ${page}/${player.setting.queuePage.maxPage} -----`;
                     }
 
                     const methods = ['Off', 'Single', 'All'];
@@ -283,7 +283,7 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
                     const clsButton = new ButtonBuilder().setCustomId('queuelist-clear').setLabel(cst.button.clear).setStyle(ButtonStyle.Danger);
                     const row = new ActionRowBuilder<ButtonBuilder>().addComponents(prevButton, nextButton, delButton, clsButton);
 
-                    await player.queuePage.msg?.edit({
+                    await player.setting.queuePage.msg?.edit({
                         embeds: [embeds.queue(bot.config.embedsColor, nowplaying, tracksQueue, methods[repeatMode])],
                         components: [row],
                         allowedMentions: { repliedUser: false },
@@ -294,8 +294,10 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
                 }
 
                 case 'queuelist-delete': {
-                    await player.queuePage.msg?.delete();
-                    player.queuePage.msg = null;
+                    if (!player.setting.queuePage) return;
+
+                    await player.setting.queuePage.msg?.delete();
+                    player.setting.queuePage.msg = null;
 
                     await interaction.deferUpdate();
                     break;
@@ -304,13 +306,13 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
                 case 'queuelist-clear': {
                     player.queue.clear();
 
-                    if (!player.queuePage) return;
+                    if (!player.setting.queuePage) return;
 
-                    player.queuePage.maxPage = Math.ceil(player.queue.tracks.length / 10);
-                    player.queuePage.curPage = 1;
+                    player.setting.queuePage.maxPage = Math.ceil(player.queue.tracks.length / 10);
+                    player.setting.queuePage.curPage = 1;
 
 
-                    const page = player.queuePage.curPage;
+                    const page = player.setting.queuePage.curPage;
                     const startIdx = (page - 1) * 10;
                     const endIdx = page * 10;
 
@@ -329,7 +331,7 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
                     }
                     else {
                         tracksQueue = tracks.join('\n');
-                        tracksQueue += `\n\n----- Page ${page}/${player.queuePage.maxPage} -----`;
+                        tracksQueue += `\n\n----- Page ${page}/${player.setting.queuePage.maxPage} -----`;
                     }
 
                     const methods = ['Off', 'Single', 'All'];
@@ -338,7 +340,7 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
                     const delButton = new ButtonBuilder().setCustomId('queuelist-delete').setLabel(cst.button.delete).setStyle(ButtonStyle.Primary);
                     const row = new ActionRowBuilder<ButtonBuilder>().addComponents(delButton);
 
-                    await player.queuePage.msg?.edit({
+                    await player.setting.queuePage.msg?.edit({
                         embeds: [embeds.queue(bot.config.embedsColor, nowplaying, tracksQueue, methods[repeatMode])],
                         components: [row],
                         allowedMentions: { repliedUser: false },
