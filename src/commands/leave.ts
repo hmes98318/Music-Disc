@@ -23,7 +23,7 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
     }
 
     if (bot.config.autoLeave) {
-        await player.destroy();
+        player.destroy();
     }
     else {
         player.queue.clear();
@@ -42,7 +42,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
     }
 
     if (bot.config.autoLeave) {
-        await player.destroy();
+        player.destroy();
     }
     else {
         player.queue.clear();

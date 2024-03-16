@@ -98,7 +98,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
             .catch(async (error) => {
                 bot.logger.emit('error', 'Error playing track: ' + error);
                 await message.reply({ content: `❌ | The service is experiencing some problems, please try again.`, allowedMentions: { repliedUser: false } });
-                return await player.destroy();
+                return player.destroy();
             });
     }
 
@@ -178,7 +178,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
             .catch(async (error) => {
                 bot.logger.emit('error', 'Error playing track: ' + error);
                 await interaction.editReply({ content: `❌ | The service is experiencing some problems, please try again.`, allowedMentions: { repliedUser: false } });
-                return await player.destroy();
+                return player.destroy();
             });
     }
 

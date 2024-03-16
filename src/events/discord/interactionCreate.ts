@@ -156,7 +156,7 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
 
                 case 'Dashboard-Stop': {
                     if (bot.config.autoLeave) {
-                        await player.destroy();
+                        player.destroy();
                     }
                     else {
                         player.queue.clear();

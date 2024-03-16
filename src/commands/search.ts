@@ -105,7 +105,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
                 .catch(async (error) => {
                     bot.logger.emit('error', 'Error playing track: ' + error);
                     await message.reply({ content: `❌ | The service is experiencing some problems, please try again.`, allowedMentions: { repliedUser: false } });
-                    return await player.destroy();
+                    return player.destroy();
                 });
         }
 
@@ -120,7 +120,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
                 .catch(async (error) => {
                     bot.logger.emit('error', 'Error playing track: ' + error);
                     await message.reply({ content: `❌ | The service is experiencing some problems, please try again.`, allowedMentions: { repliedUser: false } });
-                    return await player.destroy();
+                    return player.destroy();
                 });
 
             player.filters.setVolume(bot.config.defaultVolume);
@@ -157,7 +157,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
                     .catch(async (error) => {
                         bot.logger.emit('error', 'Error playing track: ' + error);
                         await message.reply({ content: `❌ | The service is experiencing some problems, please try again.`, allowedMentions: { repliedUser: false } });
-                        return await player.destroy();
+                        return player.destroy();
                     });
 
                 player.filters.setVolume(bot.config.defaultVolume);
@@ -169,7 +169,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
 
         collector.on("end", async (collected: Collection<string, ButtonInteraction>, reason: string) => {
             if (reason == "time" && collected.size == 0) {
-                if (!player.playing) await player.destroy();
+                if (!player.playing) player.destroy();
                 await msg.edit({ content: "❌ | Time expired.", components: [], allowedMentions: { repliedUser: false } });
             }
         });
@@ -244,7 +244,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
                 .catch(async (error) => {
                     bot.logger.emit('error', 'Error playing track: ' + error);
                     await interaction.reply({ content: `❌ | The service is experiencing some problems, please try again.`, allowedMentions: { repliedUser: false } });
-                    return await player.destroy();
+                    return player.destroy();
                 });
         }
 
@@ -259,7 +259,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
                 .catch(async (error) => {
                     bot.logger.emit('error', 'Error playing track: ' + error);
                     await interaction.reply({ content: `❌ | The service is experiencing some problems, please try again.`, allowedMentions: { repliedUser: false } });
-                    return await player.destroy();
+                    return player.destroy();
                 });
 
             player.filters.setVolume(bot.config.defaultVolume);
@@ -296,7 +296,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
                     .catch(async (error) => {
                         bot.logger.emit('error', 'Error playing track: ' + error);
                         await interaction.editReply({ content: `❌ | The service is experiencing some problems, please try again.`, allowedMentions: { repliedUser: false } });
-                        return await player.destroy();
+                        return player.destroy();
                     });
 
                 player.filters.setVolume(bot.config.defaultVolume);
@@ -308,7 +308,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
 
         collector.on("end", async (collected: Collection<string, ButtonInteraction>, reason: string) => {
             if (reason == "time" && collected.size == 0) {
-                if (!player.playing) await player.destroy();
+                if (!player.playing) player.destroy();
                 await msg.edit({ content: "❌ | Time expired.", components: [], allowedMentions: { repliedUser: false } });
             }
         });
