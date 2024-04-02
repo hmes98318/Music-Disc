@@ -20,15 +20,27 @@ export default async (bot: Bot, client: Client, message: Message) => {
 
     if (cmd.requireAdmin) {
         if (message.author.id !== bot.config.admin)
-            return message.reply({ content: `❌ | This command requires administrator privileges.`, allowedMentions: { repliedUser: false } });
+            return message.reply({ content: `❌ | This command requires administrator privileges.`, allowedMentions: { repliedUser: false } })
+                .catch((error) => {
+                    bot.logger.emit('error', `[messageCreate] Error reply: (${message.author.username} : ${message.content})` + error);
+                    return;
+                });
     }
 
     if (cmd.voiceChannel) {
         if (!message.member?.voice.channel)
-            return message.reply({ content: `❌ | You are not connected to an audio channel.`, allowedMentions: { repliedUser: false } });
+            return message.reply({ content: `❌ | You are not connected to an audio channel.`, allowedMentions: { repliedUser: false } })
+                .catch((error) => {
+                    bot.logger.emit('error', `[messageCreate] Error reply: (${message.author.username} : ${message.content})` + error);
+                    return;
+                });
 
         if (message.guild?.members.me?.voice.channel && message.member.voice.channelId !== message.guild.members.me.voice.channelId)
-            return message.reply({ content: `❌ | You are not on the same audio channel as me.`, allowedMentions: { repliedUser: false } });
+            return message.reply({ content: `❌ | You are not on the same audio channel as me.`, allowedMentions: { repliedUser: false } })
+                .catch((error) => {
+                    bot.logger.emit('error', `[messageCreate] Error reply: (${message.author.username} : ${message.content})` + error);
+                    return;
+                });
     }
 
 
