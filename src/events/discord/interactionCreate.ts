@@ -21,7 +21,10 @@ import type { Bot } from "../../@types";
 export default async (bot: Bot, client: Client, interaction: Interaction) => {
     if (bot.blacklist && bot.blacklist.includes(interaction.user.id)) return;
 
-    const guildMember = interaction.guild!.members.cache.get(interaction.user.id);
+    if (!interaction.guild || !interaction.guild.members) return;
+
+
+    const guildMember = interaction.guild.members.cache.get(interaction.user.id);
     const voiceChannel = guildMember!.voice.channel;
 
     if (interaction.isButton()) {
