@@ -99,32 +99,32 @@ img {
 }
 
 /* All */
-.filter-label {
-    color: #ffffff;
-    border-radius: 5px;
+.filter-button {
     display: inline-block;
+    border: none;
+    border-radius: 5px;
     min-width: 80px;
     min-height: 40px;
     font-size: 20px;
-    margin-left: 10px;
-    /* 預設背景色 */
+    margin-left: 20px;
     background-color: #747f8d;
+    color: #ffffff;
     /* 垂直置中文字 */
     line-height: 40px;
     text-align: center;
     cursor: pointer;
 }
 
-.filter-label:hover {
+.filter-button:hover {
     background-color: #5e6a7d;
 }
 
 /* Active */
-.filter-label.active {
+.filter-button.active {
     background-color: #43b581;
 }
 
-.filter-label.active:hover {
+.filter-button.active:hover {
     background-color: #499e78;
 }
 

@@ -25,20 +25,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 const filterButton = document.getElementById('filter-button');
-const filterLabel = document.querySelector('.filter-label');
 
 function filterServers() {
     let onlyActive = false;
 
-    if (filterLabel.textContent === 'All') {
+    if (filterButton.textContent === 'All') {
         onlyActive = true;
-        filterLabel.textContent = 'Active';
-        filterLabel.classList.add('active');
+        filterButton.textContent = 'Active';
+        filterButton.classList.add('active');
     }
     else {
         onlyActive = false;
-        filterLabel.textContent = 'All';
-        filterLabel.classList.remove('active');
+        filterButton.textContent = 'All';
+        filterButton.classList.remove('active');
     }
 
 
