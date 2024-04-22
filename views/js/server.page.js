@@ -122,6 +122,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 const maxVolume = data.maxVolume;
                 const loopMode = ['OFF', 'SINGLE', 'ALL'];
                 const songLoop = loopMode[Number(data.repeatMode)];
+                const endpoint = data.endpoint;
 
                 const thumbnailResponse = await (await fetch(`/api/lavashark/getThumbnail/${data.current.source}/${data.current.identifier}`)).text();
                 const thumbnail = thumbnailResponse !== 'NOT_FOUND' ? thumbnailResponse : '';
@@ -147,6 +148,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 document.getElementById("playing_duration").innerHTML = `Duration: <strong>${songDuration}</strong>`;
                 document.getElementById("playing_volume").innerHTML = `Volume: <strong>${volume} / ${maxVolume}</strong>`;
                 document.getElementById("playing_loop").innerHTML = `Loop: <strong>${songLoop}</strong>`;
+                document.getElementById("playing_endpoint").innerHTML = `Endpoint: <strong>${endpoint}</strong>`;
 
                 notPlayingContent.style.display = 'none';
                 playingContent.style.display = 'block';

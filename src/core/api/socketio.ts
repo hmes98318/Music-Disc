@@ -127,6 +127,7 @@ const registerSocketioEvents = (bot: Bot, client: Client, localNodeController: L
             else {
                 const voiceChannel = client.channels.cache.get(player.voiceChannelId) as VoiceChannel;
                 const playingData = {
+                    endpoint: player.voiceState.event?.endpoint ?? 'UNKNOWN',
                     voiceChannel: voiceChannel,
                     members: voiceChannel.members,
                     current: player.current,
