@@ -313,6 +313,36 @@ const registerExpressEvents = (bot: Bot, client: Client, localNodeController: Lo
         }
     });
 
+    app.post('/api/server/leave', verifyLogin, async (req, res) => {
+        const { guildID } = req.body;
+
+        if (!guildID) {
+            return res.send('PARAMETER_ERROR');
+        }
+
+        const guild = client.guilds.cache.get(guildID);
+
+        if (!guild) {
+            return res.send('PARAMETER_ERROR');
+        }
+
+
+        try {
+            const player = client.lavashark.getPlayer(guildID);
+
+            if (player) {
+                player.destroy();
+            }
+
+            await guild?.leave();
+        } catch (error) {
+            bot.logger.emit('error', `There was an error leaving the guild: \n ${error}`);
+            return res.send('FAILED');
+        }
+
+        return res.send('SUCCESS');
+    });
+
     app.get('/api/user/:userID', verifyLogin, (req, res) => {
         // bot.logger.emit('api', `[GET] /api/user/avatar/${req.params.id} ` + req.ip);
 

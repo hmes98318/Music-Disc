@@ -268,3 +268,21 @@ body {
     bottom: 11px;
     right: 11px;
 }
+
+
+/* leave server 按鈕 */
+.leave-button {
+    display: inline-block;
+    padding: 5px 10px;
+    margin-left: 40px;
+    background-color: #ff4d4d;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.leave-button:hover {
+    background-color: #e63939;
+}

@@ -221,3 +221,34 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // ------------------------------------------------- //
 });
+
+
+async function leaveServer() {
+    const confirmation = confirm("Are you sure you want to leave this server?");
+    if (confirmation) {
+        const guildID = location.pathname.replace('/servers/', '');
+
+        try {
+            const response = await fetch('/api/server/leave', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ guildID: guildID })
+            });
+
+            const data = await response.text();
+
+            if (data === 'SUCCESS') {
+                alert("You have left the server successfully.");
+                window.location.href = '/serverlist';
+            }
+            else {
+                alert("An error occurred while leaving the server. " + data);
+            }
+        } catch (error) {
+            console.error("Error:", error);
+            alert("An error occurred while leaving the server.");
+        }
+    }
+}

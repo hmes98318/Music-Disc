@@ -82,22 +82,6 @@ img {
 
 /*----- 過濾按鈕 -----*/
 
-.filter-button {
-    background-color: #43b581;
-    color: #ffffff;
-    border-radius: 5px;
-    display: inline-block;
-    min-width: 80px;
-    min-height: 40px;
-    font-size: 20px;
-    margin-left: 10px;
-}
-
-.filter-button {
-    /* 隱藏原本的 input */
-    display: none;
-}
-
 /* All */
 .filter-button {
     display: inline-block;
