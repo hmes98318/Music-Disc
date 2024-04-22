@@ -2,9 +2,9 @@
 
 .server-list-container {
     flex-basis: 85%;
-    max-height: 80vh; 
+    max-height: 80vh;
     /* 啟用垂直滾動停 */
-    overflow-y: auto; 
+    overflow-y: auto;
     display: block;
     flex-wrap: wrap;
     justify-content: start;
@@ -72,10 +72,64 @@ img {
     width: 16px;
     height: 16px;
     background-color: #43b581;
-    box-shadow:0 0 0 3px #36393f;
+    box-shadow: 0 0 0 3px #36393f;
     border-radius: 50%;
     position: absolute;
     /* 將綠點放在server圖像的右下方 */
-    bottom: 5px; 
-    right: 5px; 
+    bottom: 5px;
+    right: 5px;
 }
+
+/*----- 過濾按鈕 -----*/
+
+.filter-button {
+    background-color: #43b581;
+    color: #ffffff;
+    border-radius: 5px;
+    display: inline-block;
+    min-width: 80px;
+    min-height: 40px;
+    font-size: 20px;
+    margin-left: 10px;
+}
+
+.filter-button {
+    /* 隱藏原本的 input */
+    display: none;
+}
+
+/* All */
+.filter-label {
+    color: #ffffff;
+    border-radius: 5px;
+    display: inline-block;
+    min-width: 80px;
+    min-height: 40px;
+    font-size: 20px;
+    margin-left: 10px;
+    /* 預設背景色 */
+    background-color: #747f8d;
+    /* 垂直置中文字 */
+    line-height: 40px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.filter-label:hover {
+    background-color: #5e6a7d;
+}
+
+/* Active */
+.filter-label.active {
+    background-color: #43b581;
+}
+
+.filter-label.active:hover {
+    background-color: #499e78;
+}
+
+.no-playing-msg {
+    margin: 20px;
+}
+
+/*----- END 過濾按鈕 -----*/
