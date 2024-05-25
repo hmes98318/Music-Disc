@@ -29,9 +29,9 @@ export const cst = {
             oauth2RedirectUri   : `http://localhost:33333/login`    // Redirect link after OAuth2 authentication is complete
         },
         enableLocalNode         : false,
-        localNode:{
+        localNode: {
             autoRestart         : true,
-            downloadLink        : 'https://repo.lavalink.dev/artifacts/lavalink/8d40740b/Lavalink.jar'
+            downloadLink        : 'https://github.com/lavalink-devs/Lavalink/releases/download/3.7.12/Lavalink.jar'
         }
     },
     blacklist               : [],           // It must be the user ID (string[])
