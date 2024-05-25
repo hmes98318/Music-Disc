@@ -46,7 +46,6 @@ const registerSocketioEvents = (bot: Bot, client: Client, localNodeController: L
                     bot: -1,
                     api: client.ws.ping
                 },
-                serverCount: client.guilds.cache.size,
                 playing: client.lavashark.players.size
             };
 

@@ -281,8 +281,11 @@ const registerExpressEvents = (bot: Bot, client: Client, localNodeController: Lo
 
     app.get('/api/info', verifyLogin, (req, res) => {
         // bot.logger.emit('api', '[GET] /api/info ' + req.ip);
-
-        const info = bot.sysInfo;
+        const info = { 
+            ...bot.sysInfo, 
+            serverCount: client.guilds.cache.size,
+            totalMembers: client.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0)
+        };
         res.json(info);
     });
 

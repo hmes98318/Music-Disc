@@ -23,6 +23,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         document.getElementById("info_dc_version").textContent = data.dc_version;
         document.getElementById("info_shark_version").textContent = data.shark_version;
         document.getElementById("info_cpu").textContent = data.cpu;
+        document.getElementById("stat_server").textContent = data.serverCount;
+        document.getElementById("stat_total_members").textContent = data.totalMembers;
     } catch (error) {
         console.error("Error fetching bot info:", error);
     }
@@ -36,7 +38,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     socket.emit("bot_status");
 
     socket.on('api_bot_status', (data) => {
-        document.getElementById("stat_server").textContent = data.serverCount;
         document.getElementById("stat_playing").textContent = data.playing;
         document.getElementById("status_uptime").textContent = data.uptime;
         document.getElementById("status_load_percent").textContent = data.load.percent;
