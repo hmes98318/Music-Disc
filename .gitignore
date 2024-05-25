@@ -3,4 +3,5 @@ dist/
 .env
 
 server/logs/
+server/plugins/
 server/*.jar
