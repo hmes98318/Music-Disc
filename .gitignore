@@ -5,3 +5,5 @@ dist/
 server/logs/
 server/plugins/
 server/*.jar
+
+.DS_Store
