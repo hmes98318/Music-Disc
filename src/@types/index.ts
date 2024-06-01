@@ -110,5 +110,6 @@ export interface SystemStatus {
         api: number;
     };
     serverCount: number;
+    totalMembers: number;
     playing: number;
 }

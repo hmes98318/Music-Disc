@@ -14,7 +14,7 @@ const botStatus = (config: Config, systemInfo: SystemInfo, systemStatus: SystemS
         .setColor(config.embedsColor as HexColorString | number)
         .setTitle(`${config.name} ${systemInfo.bot_version}`)
         .setURL('https://github.com/hmes98318/Music-Disc')
-        .setDescription(`**• Serving ${systemStatus.serverCount} servers**\n**• Playing on ${systemStatus.playing} servers**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━`)
+        .setDescription(`**• Serving ${systemStatus.serverCount} servers**\n**• Total ${systemStatus.totalMembers} members**\n**• Playing on ${systemStatus.playing} servers**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━`)
         .addFields(
             { name: `⚙️ SYSTEM`, value: `OS : **${systemInfo.os_version}**\nNode.js : **${systemInfo.node_version}**\nDiscord.js : **${systemInfo.dc_version}**\nLavaShark : **${systemInfo.shark_version}**\nCPU : **${systemInfo.cpu}**\nUptime : **${systemStatus.uptime}**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━`, inline: false },
             { name: `📊 USAGE`, value: `CPU : **${cpuUsage}**\nRam : **${ramUsage}**\nHeap : **${heapUsage}**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━`, inline: false },

@@ -3,7 +3,7 @@ import { uptime } from "../utils/functions/uptime";
 import { sysusage } from "../utils/functions/sysusage";
 
 import type { ChatInputCommandInteraction, Client, Message } from "discord.js";
-import type { Bot } from "../@types";
+import type { Bot, SystemStatus } from "../@types";
 
 
 export const name = 'status';
@@ -22,7 +22,7 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
     const sysload = await sysusage.cpu();
     const pingList = await client.lavashark.nodesPing();
 
-    const systemStatus = {
+    const systemStatus: SystemStatus = {
         load: sysload,
         memory: sysusage.ram(),
         heap: sysusage.heap(),
@@ -32,6 +32,7 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
             api: client.ws.ping
         },
         serverCount: client.guilds.cache.size,
+        totalMembers: client.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0),
         playing: client.lavashark.players.size
     };
 
@@ -70,7 +71,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
     const sysload = await sysusage.cpu();
     const pingList = await client.lavashark.nodesPing();
 
-    const systemStatus = {
+    const systemStatus: SystemStatus = {
         load: sysload,
         memory: sysusage.ram(),
         heap: sysusage.heap(),
@@ -80,6 +81,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
             api: client.ws.ping
         },
         serverCount: client.guilds.cache.size,
+        totalMembers: client.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0),
         playing: client.lavashark.players.size
     };
 
