@@ -1,18 +1,15 @@
 /**
  * Required
- * <script src="/static/js/lib/socket.io-4.7.2.min.js"></script>
- * 
  * <script src="/static/js/utils/formatBytes.js"></script>
  * <script src="/static/js/utils/msToTime.js"></script>
  * <script src="/static/js/utils/timestampToTime.js"></script>
  */
 
 
-document.addEventListener("DOMContentLoaded", async () => {
-    const statusRefreshInterval = 1000;     // 'api_bot_status' 刷新時間 1s
-
-
-    // Get bot info
+/**
+ * Get bot info
+ */
+const getBotInfo = async () => {
     try {
         const data = await (await fetch('/api/info')).json();
 
@@ -28,16 +25,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     } catch (error) {
         console.error("Error fetching bot info:", error);
     }
+};
 
+/**
+ * Get bot status
+ */
+const getBotStatus = async () => {
+    try {
+        const data = await (await fetch('/api/status')).json();
 
-    // Initialize WebSocket connection
-    const socket = io();
-
-    // Get bot status
-    // console.log('[emit] bot_status');
-    socket.emit("bot_status");
-
-    socket.on('api_bot_status', (data) => {
         document.getElementById("stat_playing").textContent = data.playing;
         document.getElementById("status_uptime").textContent = data.uptime;
         document.getElementById("status_load_percent").textContent = data.load.percent;
@@ -47,7 +43,20 @@ document.addEventListener("DOMContentLoaded", async () => {
         document.getElementById("status_heap_percent").textContent = data.heap.percent;
         document.getElementById("status_heap_detail").textContent = data.heap.detail;
         document.getElementById("status_ping_api").textContent = data.ping.api + 'ms';
-    });
+    } catch (error) {
+        console.error("Error fetching bot status:", error);
+    }
+};
+
+
+document.addEventListener("DOMContentLoaded", async () => {
+    const statusRefreshInterval = 1000;     // 'api_bot_status' 刷新時間 1s
+
+
+    await Promise.allSettled([
+        getBotInfo(),
+        getBotStatus()
+    ]);
 
 
     /**
@@ -55,9 +64,9 @@ document.addEventListener("DOMContentLoaded", async () => {
      */
     // ------------------------------------------------- //
 
-    setInterval(() => {
-        // console.log('[emit] bot_status');
-        socket.emit("bot_status");
+    setInterval(async () => {
+        //console.log('[get] bot_status');
+        await getBotStatus();
     }, statusRefreshInterval);
 
     // ------------------------------------------------- //

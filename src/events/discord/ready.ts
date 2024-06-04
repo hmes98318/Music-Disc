@@ -41,17 +41,25 @@ export default async (bot: Bot, client: Client) => {
     bot.logger.emit('log', `+-----------------------+`);
 
 
-    client.application?.commands.set(client.commands.map(cmd => {
-        return {
-            name: cmd.name,
-            description: cmd.description,
-            options: cmd.options
-        };
-    }));
+    if (bot.config.slashCommand) {
+        bot.logger.emit('log', 'Enable slash command.');
+        client.application?.commands.set(client.commands.map(cmd => {
+            return {
+                name: cmd.name,
+                description: cmd.description,
+                options: cmd.options
+            };
+        }));
+    }
+    else {
+        bot.logger.emit('log', 'Disable slash command.');
+    }
+
 
     client.lavashark.start(String(client.user?.id));
     client.user?.setStatus(bot.config.status as ClientPresenceStatus);
     client.user?.setActivity(bot.config.playing);
+
     // Prevent the disappearance of the activity status
     setInterval(() => {
         client.user?.setActivity(bot.config.playing);

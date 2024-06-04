@@ -1,10 +1,6 @@
-import { createServer } from 'node:http';
-
 import express from 'express';
-import { Server } from 'socket.io';
 
 import { registerExpressEvents } from '../api/express';
-import { registerSocketioEvents } from '../api/socketio';
 import { SessionManager } from '../lib/SessionManager';
 
 import type { Client } from 'discord.js';
@@ -18,16 +14,12 @@ const loadSite = (bot: Bot, client: Client, localNodeController: LocalNodeContro
 
         const port = bot.config.site.port || 33333;
         const app = express();
-        const server = createServer(app);
-        const io = new Server(server);
         const sessionManager = new SessionManager();
 
 
         registerExpressEvents(bot, client, localNodeController, app, sessionManager);
-        registerSocketioEvents(bot, client, localNodeController, io, sessionManager);
 
-
-        server.listen(port, function () {
+        app.listen(port, () => {
             bot.logger.emit('api', `Server start listening port on ${port}`);
             resolve();
         });

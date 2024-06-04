@@ -1,23 +1,19 @@
 /**
  * Required
- * <script src="/static/js/lib/socket.io-4.7.2.min.js"></script>
+ * None
  */
 
 
-document.addEventListener("DOMContentLoaded", () => {
-    const nodesRefreshInterval = 10000;     // 'api_nodes_status' 刷新時間 10s
+document.addEventListener("DOMContentLoaded", async () => {
+    const nodesRefreshInterval = 10 * 1000; // 'api_nodes_status' 刷新時間 10s
     const nodeCollapseState = {};           // 節點清單的折疊狀態
 
 
-    const socket = io();
-
-    // Get nodes status
-    // console.log('[emit] nodes_status');
-    socket.emit("nodes_status");
-
-
-    socket.on('api_nodes_status', (data) => {
-        // console.log('api_nodes_status', data);
+    /**
+     * Get nodes status
+     */
+    const getNodesStatus = async () => {
+        const data = await (await fetch('/api/node/status')).json();
 
         const nodesArray = data;
         const nodeStatusList = document.getElementById("nodeStatusList");
@@ -102,7 +98,8 @@ document.addEventListener("DOMContentLoaded", () => {
             // 將節點區塊添加到列表中
             nodeStatusList.appendChild(nodeContainer);
         });
-    });
+    };
+    await getNodesStatus();
 
 
     /**
@@ -113,12 +110,12 @@ document.addEventListener("DOMContentLoaded", () => {
     let nodesTimeLeft = nodesRefreshInterval / 1000;    // 計時器初始時間 (s)
     let countdownElement = document.getElementById("nodes-refresh-timer");
 
-    const nodesRefreshTimer = () => {
+    const nodesRefreshTimer = async () => {
         countdownElement.innerHTML = `<span style="color: #ffffff; opacity: 0.3;"> refreshing in ${nodesTimeLeft} s </span>`;
 
         if (nodesTimeLeft === 0) {
             nodesTimeLeft = nodesRefreshInterval / 1000;
-            socket.emit("nodes_status");
+            await getNodesStatus();
             // console.log('[emit] nodes_status');
         }
         else {

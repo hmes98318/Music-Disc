@@ -2,11 +2,14 @@ import bodyParser from 'body-parser';
 import cookie from "cookie";
 import express from 'express';
 import undici from "undici";
+import { NodeState } from 'lavashark';
 
 import { hashGenerator } from '../lib/hashGenerator';
+import { sysusage } from '../../utils/functions/sysusage';
+import { uptime } from '../../utils/functions/uptime';
 import { LoginType } from '../../@types';
 
-import type { Client } from 'discord.js';
+import type { Client, VoiceChannel } from 'discord.js';
 import type { Express } from 'express';
 import type { Bot } from '../../@types';
 import type { SessionManager } from '../lib/SessionManager';
@@ -26,12 +29,10 @@ const registerExpressEvents = (bot: Bot, client: Client, localNodeController: Lo
 
     const cssPath = `${process.cwd()}/views/css`;
     const jsPath = `${process.cwd()}/views/js`;
-    const libPath = `${process.cwd()}/js/lib`;
     const viewsPath = `${process.cwd()}/views`;
 
     app.use('/static/css', express.static(cssPath));
     app.use('/static/js', express.static(jsPath));
-    app.use('/static/js/lib', express.static(libPath));
     // app.use(express.static(viewsPath));
 
     app.use(bodyParser.json());
@@ -281,12 +282,87 @@ const registerExpressEvents = (bot: Bot, client: Client, localNodeController: Lo
 
     app.get('/api/info', verifyLogin, (req, res) => {
         // bot.logger.emit('api', '[GET] /api/info ' + req.ip);
-        const info = { 
-            ...bot.sysInfo, 
+        const info = {
+            ...bot.sysInfo,
             serverCount: client.guilds.cache.size,
             totalMembers: client.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0)
         };
         res.json(info);
+    });
+
+    app.get('/api/status', verifyLogin, async (req, res) => {
+        // bot.logger.emit('api', '[GET] /api/status ' + req.ip);
+
+        const systemStatus = {
+            load: await sysusage.cpu(),
+            memory: sysusage.ram(),
+            heap: sysusage.heap(),
+            uptime: uptime(bot.sysInfo.startupTime),
+            ping: {
+                bot: -1,
+                api: client.ws.ping
+            },
+            playing: client.lavashark.players.size
+        };
+
+        res.json(systemStatus);
+    });
+
+    app.get('/api/node/status', verifyLogin, async (req, res) => {
+        // bot.logger.emit('api', '[GET] /api/info ' + req.ip);
+
+        const nodesPromises = client.lavashark.nodes.map(async (node) => {
+            if (node.state === NodeState.CONNECTED) {
+                try {
+                    const nodeInfoPromise = node.getInfo();
+                    const nodeStatsPromise = node.getStats();
+                    const nodePingPromise = client.lavashark.nodePing(node);
+                    const timeoutPromise = new Promise((_, reject) => {
+                        setTimeout(() => {
+                            reject(new Error(`nodes_status "${node.identifier}" Timeout`));
+                        }, 1500);
+                    });
+
+                    const [nodeInfo, nodeStats, nodePing] = await (Promise.race([
+                        Promise.all([nodeInfoPromise, nodeStatsPromise, nodePingPromise]),
+                        timeoutPromise
+                    ]) as Promise<[(typeof nodeInfoPromise), (typeof nodeStatsPromise), (typeof nodePingPromise)]>);
+
+                    return {
+                        id: node.identifier,
+                        state: node.state,
+                        info: nodeInfo,
+                        stats: nodeStats,
+                        ping: nodePing
+                    };
+                } catch (_) {
+                    return {
+                        id: node.identifier,
+                        state: node.state,
+                        info: {},
+                        stats: {},
+                        ping: -1
+                    };
+                }
+            }
+            else {
+                return {
+                    id: node.identifier,
+                    state: node.state,
+                    info: {},
+                    stats: {},
+                    ping: -1,
+                };
+            }
+        });
+
+        try {
+            const nodesStatusList = await Promise.all(nodesPromises);
+            res.json(nodesStatusList);
+        } catch (error) {
+            bot.logger.emit('api', 'Error while fetching node data: ' + String(error));
+            res.json([]);
+        }
     });
 
     app.get('/api/serverlist', verifyLogin, (req, res) => {
@@ -313,6 +389,37 @@ const registerExpressEvents = (bot: Bot, client: Client, localNodeController: Lo
         }
         else {
             res.send(guild);
+        }
+    });
+
+    app.get('/api/server/nowplaying/:guildID', verifyLogin, async (req, res) => {
+        const player = client.lavashark.getPlayer(req.params.guildID);
+
+        if (!player) {
+            const resData = {
+                status: 'NOT_FOUND',
+                data: {}
+            };
+
+            res.json(resData);
+        }
+        else {
+            const voiceChannel = client.channels.cache.get(player.voiceChannelId) as VoiceChannel;
+            const resData = {
+                status: 'OK',
+                data: {
+                    endpoint: player.voiceState.event?.endpoint ?? 'UNKNOWN',
+                    voiceChannel: voiceChannel,
+                    members: voiceChannel.members,
+                    current: player.current,
+                    isPaused: player.paused,
+                    repeatMode: player.repeatMode,
+                    volume: player.volume,
+                    maxVolume: bot.config.maxVolume
+                }
+            };
+
+            res.json(resData);
         }
     });
 
@@ -368,8 +475,38 @@ const registerExpressEvents = (bot: Bot, client: Client, localNodeController: Lo
         res.json({ enable: bot.config.enableLocalNode });
     });
 
+    app.get('/api/localnode/isActive', verifyLogin, (req, res) => {
+        const isActive = localNodeController.lavalinkPid !== null ? true : false;
+        res.json({ active: isActive });
+    });
+
     app.get('/api/localnode/getLogs', verifyLogin, (req, res) => {
         res.json({ logs: localNodeController.lavalinkLogs });
+    });
+
+    app.patch('/api/localnode/refreshLogs', verifyLogin, (req, res) => {
+        const { currentLogsLength } = req.body;
+        const lavalinkLogsLength = localNodeController.lavalinkLogs.length;
+
+        if (currentLogsLength === lavalinkLogsLength) {
+            // No new logs
+            const resData = {
+                status: 'SAME_LENGTH',
+                data: {}
+            };
+            res.json(resData);
+        }
+        else {
+            // Send the new logs since the last update
+            const newLogs = localNodeController.lavalinkLogs.slice(currentLogsLength);
+            const resData = {
+                status: 'NEW_LOGS',
+                data: {
+                    newLogs: newLogs
+                }
+            };
+            res.json(resData);
+        }
     });
 
     app.post('/api/localnode/controller', async (req, res) => {
@@ -391,6 +528,32 @@ const registerExpressEvents = (bot: Bot, client: Client, localNodeController: Lo
 
     app.get('/api/logger/getLogs', verifyLogin, (req, res) => {
         res.json({ logs: bot.logger.logs });
+    });
+
+    app.patch('/api/logger/refreshLogs', verifyLogin, (req, res) => {
+        const { currentLogsLength } = req.body;
+        const botLogsLength = bot.logger.logs.length;
+
+        if (currentLogsLength === botLogsLength) {
+            // No new logs
+            const resData = {
+                status: 'SAME_LENGTH',
+                data: {}
+            };
+            res.json(resData);
+        }
+        else {
+            // Send the new logs since the last update
+            const newLogs = bot.logger.logs.slice(currentLogsLength);
+            const resData = {
+                status: 'NEW_LOGS',
+                data: {
+                    newLogs: newLogs
+                }
+            };
+            res.json(resData);
+        }
+
     });
 
     app.get('/api/oauth2-link', (req, res) => {
