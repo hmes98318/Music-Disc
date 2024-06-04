@@ -14,6 +14,7 @@ export const cst = {
         status                  : 'online',             // 'online' | 'idle' | 'dnd'
         playing                 : '+help | music',
         embedsColor             : '#FFFFFF',
+        slashCommand            : true,
         defaultVolume           : 50,
         maxVolume               : 100,
         autoLeave               : true,

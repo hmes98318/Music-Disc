@@ -361,6 +361,14 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
     else {
         if (!interaction.isCommand() || !interaction.inGuild() || interaction.member.user.bot) return;
 
+        if (!bot.config.slashCommand) {
+            return interaction.reply({ content: `❌ | The slash command is not enabled.`, allowedMentions: { repliedUser: false } })
+                .catch((error) => {
+                    bot.logger.emit('error', `[interactionCreate] Error reply: (${interaction.user.username} : /${interaction.commandName})` + error);
+                    return;
+                });
+        }
+
 
         const cmd = client.commands.get(interaction.commandName);
 

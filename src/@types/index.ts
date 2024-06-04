@@ -56,6 +56,7 @@ export interface Config {
     status: ClientPresenceStatus | string;
     playing: string;
     embedsColor: HexColorString | string | number;
+    slashCommand: boolean;
     defaultVolume: number;
     maxVolume: number;
     autoLeave: boolean;

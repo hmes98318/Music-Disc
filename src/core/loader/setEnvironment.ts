@@ -16,6 +16,7 @@ const setEnvironment = (bot: Bot) => {
     bot.config.status = ['online', 'idle', 'dnd'].includes(String(process.env.BOT_STATUS)) ? String(process.env.BOT_STATUS) : bot.config.status;
     bot.config.playing = process.env.BOT_PLAYING || bot.config.playing;
     bot.config.embedsColor = process.env.BOT_EMBEDS_COLOR || bot.config.embedsColor;
+    bot.config.slashCommand = isTrueOrFalse(process.env.BOT_SLASH_COMMAND) ?? bot.config.slashCommand;
 
     // Volume settings
     bot.config.defaultVolume = (isNumber(process.env.DEFAULT_VOLUME) && Number(process.env.DEFAULT_VOLUME) !== 0) ? Number(process.env.DEFAULT_VOLUME) : bot.config.defaultVolume;
