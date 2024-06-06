@@ -13,7 +13,7 @@ import type { Client, VoiceChannel } from 'discord.js';
 import type { Express } from 'express';
 import type { Bot } from '../../@types';
 import type { SessionManager } from '../lib/SessionManager';
-import type { LocalNodeController } from '../lib/LocalNodeController';
+import type { LocalNodeController } from '../lib/localnode/LocalNodeController';
 
 
 interface IPInfo {

@@ -9,7 +9,7 @@ import {
     setEnvironment
 } from './loader';
 
-import { LocalNodeController } from './lib/LocalNodeController';
+import { LocalNodeController } from './lib/localnode/LocalNodeController';
 import { Logger } from './lib/Logger';
 import { cst } from '../utils/constants';
 

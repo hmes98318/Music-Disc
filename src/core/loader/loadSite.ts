@@ -5,7 +5,7 @@ import { SessionManager } from '../lib/SessionManager';
 
 import type { Client } from 'discord.js';
 import type { Bot } from '../../@types';
-import type { LocalNodeController } from '../lib/LocalNodeController';
+import type { LocalNodeController } from '../lib/localnode/LocalNodeController';
 
 
 const loadSite = (bot: Bot, client: Client, localNodeController: LocalNodeController) => {

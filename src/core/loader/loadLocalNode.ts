@@ -1,6 +1,6 @@
 import { cst } from '../../utils/constants';
 
-import type { LocalNodeController } from '../lib/LocalNodeController';
+import type { LocalNodeController } from '../lib/localnode/LocalNodeController';
 import type { Bot } from '../../@types';
 
 
