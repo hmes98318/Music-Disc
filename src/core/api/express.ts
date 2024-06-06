@@ -12,16 +12,8 @@ import { LoginType } from '../../@types';
 import type { Client, VoiceChannel } from 'discord.js';
 import type { Express } from 'express';
 import type { Bot } from '../../@types';
-import type { SessionManager } from '../lib/SessionManager';
+import type { SessionManager } from '../lib/session-manager/SessionManager';
 import type { LocalNodeController } from '../lib/localnode/LocalNodeController';
-
-
-interface IPInfo {
-    retry: number;
-    block: boolean;
-}
-
-const blockedIP = new Map<string, IPInfo>();
 
 
 const registerExpressEvents = (bot: Bot, client: Client, localNodeController: LocalNodeController, app: Express, sessionManager: SessionManager) => {
@@ -44,7 +36,7 @@ const registerExpressEvents = (bot: Bot, client: Client, localNodeController: Lo
      */
     const verifyLogin = (req: any, res: any, next: any) => {
         const cookies = cookie.parse(req.headers.cookie as string || '');
-        const sessionId = cookies.sessionID;
+        const sessionId = cookies.sessionId;
         const session = sessionManager.getSession(sessionId);
 
         if (session) {
@@ -63,35 +55,22 @@ const registerExpressEvents = (bot: Bot, client: Client, localNodeController: Lo
 
     if (bot.config.site.loginType === LoginType.OAUTH2) {
         app.get('/login', async (req, res) => {
-            const cookies = cookie.parse(req.headers.cookie as string || '');
-            const sessionId = cookies.sessionID;
-            const session = sessionManager.getSession(sessionId);
-
-            if (session) {
-                res.redirect('/dashboard');
-            }
-
-
             const userIP = (req.headers['x-real-ip'] || req.headers['x-forwarded-for'] || req.ip) as string;
-            const ipInfo = blockedIP.get(userIP);
 
-            if (ipInfo) {
-                if (ipInfo.block) {
-                    bot.logger.emit('api', `Blocked IP: ${userIP}, attempts to log in.`);
-                    return res.send('Too many login attempts, locked for 5 minutes.');
-                }
-                else if (!ipInfo.block && ipInfo.retry > 5) {
-                    bot.logger.emit('api', `IP: ${userIP}, failed to log in too many times, blocked for 5 minutes`);
-                    ipInfo.block = true;
-
-                    setTimeout(() => {
-                        blockedIP.delete(userIP);
-                    }, 5 * 60 * 1000); // Block 5 minutes
-
-                    return res.send('Too many login attempts, locked for 5 minutes.');
-                }
+            if (sessionManager.ipBlocker.checkBlocked(userIP)) {
+                bot.logger.emit('api', `Blocked IP: ${userIP}, attempts to log in.`);
+                return res.send('BLOCKED_5');
             }
 
+
+            const cookies = cookie.parse(req.headers.cookie as string || '');
+            const cookieSessionId = cookies.sessionId;
+
+            if (sessionManager.checkSession(cookieSessionId)) {
+                sessionManager.refreshSession(cookieSessionId);
+                return res.redirect('/dashboard');
+            }
+    
 
             const { code } = req.query;
 
@@ -110,7 +89,8 @@ const registerExpressEvents = (bot: Bot, client: Client, localNodeController: Lo
                         headers: {
                             'Content-Type': 'application/x-www-form-urlencoded',
                         },
-                    }); console.log('tokenResponseData', tokenResponseData.statusCode);
+                    });
+                    console.log('oauth2 tokenResponseData', tokenResponseData.statusCode);
 
                     const oauthData = await tokenResponseData.body.json() as any;
 
@@ -123,34 +103,26 @@ const registerExpressEvents = (bot: Bot, client: Client, localNodeController: Lo
 
                     if (userResult.statusCode === 200) {
                         const user = await userResult.body.json() as any;
-                        console.log(user);
+                        console.log('user info', user);
 
                         if (user.id === bot.config.admin) {
-                            const cookies = cookie.parse(req.headers.cookie as string || '');
-                            let sessionId = cookies.sessionID;
+                            sessionManager.ipBlocker.delete(userIP);
 
-                            if (!sessionId) {
-                                sessionId = hashGenerator.generateRandomKey();
-                            }
-
+                            const sessionId = hashGenerator.generateRandomKey();
                             sessionManager.createSession(sessionId);
-                            res.cookie('sessionID', sessionId);
+                
+                            res.cookie('sessionId', sessionId);
 
                             return res.redirect('/dashboard');
                         }
                         else {
+                            sessionManager.ipBlocker.add(userIP);
                             return res.send('You are not an administrator. If there is an error, please check your BOT_ADMIN setting value.');
                         }
                     }
                     else {
-                        if (!ipInfo) {
-                            blockedIP.set(userIP, { retry: 1, block: false });
-                        }
-                        else {
-                            blockedIP.set(userIP, { retry: ipInfo.retry + 1, block: false });
-                        }
-
-                        //res.send('FAILED');
+                        // Login failed
+                        sessionManager.ipBlocker.add(userIP);
                         return res.redirect('/login');
                     }
                 } catch (error) {
@@ -166,7 +138,7 @@ const registerExpressEvents = (bot: Bot, client: Client, localNodeController: Lo
     else {
         app.get('/login', (req, res) => {
             const cookies = cookie.parse(req.headers.cookie as string || '');
-            const sessionId = cookies.sessionID;
+            const sessionId = cookies.sessionId;
             const session = sessionManager.getSession(sessionId);
 
             if (session) {
@@ -216,65 +188,56 @@ const registerExpressEvents = (bot: Bot, client: Client, localNodeController: Lo
     app.post('/api/login', (req, res) => {
         // bot.logger.emit('api', '[POST] ' + req.body);
 
+        const userIP = (req.headers['x-real-ip'] || req.headers['x-forwarded-for'] || req.ip) as string;
+        const { username, password } = req.body;
+
         const admin = {
             username: siteConfig.username,
             password: siteConfig.password
         };
 
-        const { username, password } = req.body;
-        const userIP = (req.headers['x-real-ip'] || req.headers['x-forwarded-for'] || req.ip) as string;
-        const ipInfo = blockedIP.get(userIP);
 
-        if (ipInfo) {
-            if (ipInfo.block) {
-                bot.logger.emit('api', `Blocked IP: ${userIP}, attempts to log in.`);
-                return res.send('BLOCKED_5');
-            }
-            else if (!ipInfo.block && ipInfo.retry > 5) {
-                bot.logger.emit('api', `IP: ${userIP}, failed to log in too many times, blocked for 5 minutes`);
-                ipInfo.block = true;
-
-                setTimeout(() => {
-                    blockedIP.delete(userIP);
-                }, 5 * 60 * 1000); // Block 5 minutes
-
-                return res.send('BLOCKED_5');
-            }
+        if (sessionManager.ipBlocker.checkBlocked(userIP)) {
+            bot.logger.emit('api', `Blocked IP: ${userIP}, attempts to log in.`);
+            return res.send('BLOCKED_5');
         }
 
 
-        if (username === admin.username && hashGenerator.generateHash(password) === admin.password) {
-            if (ipInfo) {
-                blockedIP.delete(userIP);
-            }
+        const cookies = cookie.parse(req.headers.cookie as string || '');
+        const cookieSessionId = cookies.sessionId;
 
-            const cookies = cookie.parse(req.headers.cookie as string || '');
-            let sessionId = cookies.sessionID;
-
-            if (!sessionId) {
-                sessionId = hashGenerator.generateRandomKey();
-            }
-
-            sessionManager.createSession(sessionId);
-            res.cookie('sessionID', sessionId);
+        // Skip login in logged-in state (sessionId exists)
+        if (sessionManager.checkSession(cookieSessionId)) {
+            sessionManager.refreshSession(cookieSessionId);
 
             return res.send('SUCCEED');
         }
-        else {
-            if (!ipInfo) {
-                blockedIP.set(userIP, { retry: 1, block: false });
-            }
-            else {
-                blockedIP.set(userIP, { retry: ipInfo.retry + 1, block: false });
-            }
 
+
+        // Check login info
+        if (
+            username === admin.username &&
+            hashGenerator.generateHash(password) === admin.password
+        ) {
+            // Login successfully
+            sessionManager.ipBlocker.delete(userIP);
+
+            const sessionId = hashGenerator.generateRandomKey();
+            sessionManager.createSession(sessionId);
+
+            res.cookie('sessionId', sessionId);
+            return res.send('SUCCEED');
+        }
+        else {
+            // Login failed
+            sessionManager.ipBlocker.add(userIP);
             return res.send('FAILED');
         }
     });
 
     app.get('/api/logout', (req, res) => {
         const cookies = cookie.parse(req.headers.cookie as string || '');
-        const sessionId = cookies.sessionID;
+        const sessionId = cookies.sessionId;
 
         sessionManager.destroySession(sessionId);
         return res.redirect('/login');

@@ -6,7 +6,9 @@ import type {
     Message
 } from "discord.js";
 import type { LavaShark } from "lavashark";
+
 import type { Logger } from "../core/lib/Logger";
+import type { IPBlockerConfig, SessionManagerConfig } from "./SessionManager.types";
 
 
 declare module 'discord.js' {
@@ -41,6 +43,7 @@ export enum LoginType {
     OAUTH2 = 'OAUTH2'
 }
 
+
 export interface Bot {
     blacklist: string[];
     config: Config;
@@ -48,6 +51,9 @@ export interface Bot {
     sysInfo: SystemInfo;
 }
 
+/**
+ * Constants variables
+ */
 export interface Config {
     admin: string | null;
     clientSecret: string | null;
@@ -66,6 +72,8 @@ export interface Config {
     site: SiteConfig;
     enableLocalNode: boolean;
     localNode: LocalNode;
+    sessionManager: SessionManagerConfig;
+    ipBlocker: IPBlockerConfig;
 }
 
 interface SiteConfig {

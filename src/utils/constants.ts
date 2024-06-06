@@ -33,6 +33,17 @@ export const cst = {
         localNode: {
             autoRestart         : true,
             downloadLink        : 'https://github.com/lavalink-devs/Lavalink/releases/download/3.7.12/Lavalink.jar'
+        },
+        // SessionManager config
+        sessionManager: {
+            validTime: 10 * 60 * 1000,          // Session validity time (ms) (default: 10 minutes)
+            cleanupInterval: 5 * 60 * 1000      // Timing cleaner time (ms) (default: 5 minutes)
+        },
+        // IPBlocker config
+        ipBlocker: {
+            retryLimit: 5,                              // Maximum number of retries (default: 5)
+            unlockTimeoutDuration: 5 * 60 * 1000,       // Blocking time (ms) (default: 5 minutes)
+            cleanupInterval: 5 * 60 * 1000              // Timing cleaner time (ms) (default: 5 minutes)
         }
     },
     blacklist               : [],           // It must be the user ID (string[])

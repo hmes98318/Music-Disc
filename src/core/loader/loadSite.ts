@@ -1,7 +1,7 @@
 import express from 'express';
 
 import { registerExpressEvents } from '../api/express';
-import { SessionManager } from '../lib/SessionManager';
+import { SessionManager } from '../lib/session-manager/SessionManager';
 
 import type { Client } from 'discord.js';
 import type { Bot } from '../../@types';
@@ -14,7 +14,7 @@ const loadSite = (bot: Bot, client: Client, localNodeController: LocalNodeContro
 
         const port = bot.config.site.port || 33333;
         const app = express();
-        const sessionManager = new SessionManager();
+        const sessionManager = new SessionManager(bot.config.sessionManager, bot.config.ipBlocker);
 
 
         registerExpressEvents(bot, client, localNodeController, app, sessionManager);
