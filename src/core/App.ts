@@ -35,10 +35,11 @@ export class App {
         setEnvironment(this.bot);
         loadBlacklist(this.bot);
 
-        this.#localNodeController = new LocalNodeController();
-        this.#localNodeController.logger = this.bot.logger;
-        this.#localNodeController.autoRestart = this.bot.config.localNode.autoRestart;
-        this.#localNodeController.downloadLink = this.bot.config.localNode.downloadLink;
+        this.#localNodeController = new LocalNodeController(
+            this.bot.config.localNode.downloadLink,
+            this.bot.logger,
+            this.bot.config.localNode.autoRestart
+        );
     }
 
 

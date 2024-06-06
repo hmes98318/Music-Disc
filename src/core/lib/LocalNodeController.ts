@@ -11,7 +11,10 @@ import type { Logger } from './Logger';
 
 export class LocalNodeController {
     /** Local node download link */
-    public downloadLink: string;
+    public readonly downloadLink: string;
+
+    /** Automatically restart when node crashes (default: true) */
+    public readonly autoRestart: boolean;
 
     /** Local node lavalink logs */
     public lavalinkLogs: string[];
@@ -22,9 +25,6 @@ export class LocalNodeController {
     /** Local node listenong port */
     public port: number;
 
-    /** Automatically restart when node crashes (default: true) */
-    public autoRestart: boolean;
-
     /** @inner Manually set up the logger */
     public logger: Logger;
 
@@ -32,11 +32,12 @@ export class LocalNodeController {
     #lavalinkProcessFileName: string;
     #manualRestart: boolean;
 
-    constructor() {
-        this.downloadLink = 'https://github.com/lavalink-devs/Lavalink/releases/download/3.7.10/Lavalink.jar';
-        this.lavalinkLogs = [];
-        this.autoRestart = true;
+    constructor(downloadLink: string, logger: Logger, autoRestart: boolean = true) {
+        this.downloadLink = downloadLink;
+        this.autoRestart = autoRestart;
+        this.logger = logger;
 
+        this.lavalinkLogs = [];
         this.#lavalinkProcessController = null;
         this.#lavalinkProcessFileName = (path.extname(__filename) === '.ts') ? 'LavalinkProcess.ts' : 'LavalinkProcess.js';
         this.#manualRestart = false;
