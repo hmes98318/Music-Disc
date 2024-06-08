@@ -28,7 +28,7 @@ If you encounter any issues or would like to contribute to the community, please
 
 ### Clone the latest version of the repository
 ```
-git clone -b v2.1.3 https://github.com/hmes98318/Music-Disc.git
+git clone -b v2.2.0 https://github.com/hmes98318/Music-Disc.git
 ```
 or [**click here**](https://github.com/hmes98318/Music-Disc/releases) to download  
 
