@@ -42,6 +42,7 @@ npm install
 
 ### Add Lavalink node
 Edit the [`nodelist.json`](./nodelist.json) file to add a [Lavalink](https://github.com/lavalink-devs/Lavalink) node.  
+Only supports Lavalink **v3.7.x** nodes, **v3.7.12** is recommended.  
  * Use [public node](https://lavalink-list.darrennathanael.com/)  
  * or [host your own](https://blog.darrennathanael.com/post/how-to-lavalink/)  
  * or enable [local node setup](https://musicdisc.ggwp.tw/docs/Environment-variables-description#local-node)  
@@ -77,6 +78,7 @@ BOT_PREFIX = "+"
 BOT_STATUS = "online"
 BOT_PLAYING = "+help | music"
 BOT_EMBEDS_COLOR = "#FFFFFF"
+BOT_SLASH_COMMAND = true
 
 
 # Volume settings
@@ -131,6 +133,7 @@ If you don't have any available nodes, you need to first start the server contai
 Please put your **token** into the `BOT_TOKEN` variable.  
 ```yml
 version: '3.8'
+
 services:
   music-disc:
     image: hmes98318/music-disc:latest
@@ -148,8 +151,11 @@ services:
       BOT_PREFIX: "+"
       BOT_PLAYING: "+help | music"
       BOT_EMBEDS_COLOR: "#FFFFFF"
+      BOT_SLASH_COMMAND: true
+
       DEFAULT_VOLUME: 50
       MAX_VOLUME: 100
+
       AUTO_LEAVE: "true"
       AUTO_LEAVE_COOLDOWN: 5000
       DISPLAY_VOICE_STATE: "true"
@@ -197,6 +203,7 @@ docker run -d \
   -e BOT_PREFIX="+" \
   -e BOT_PLAYING="+help | music" \
   -e BOT_EMBEDS_COLOR="#FFFFFF" \
+  -e BOT_SLASH_COMMAND="#true" \
   -e DEFAULT_VOLUME=50 \
   -e MAX_VOLUME=100 \
   -e AUTO_LEAVE="true" \
