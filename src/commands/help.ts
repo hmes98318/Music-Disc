@@ -71,12 +71,20 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
                 embeds: [embeds.help(bot.config.embedsColor, title!, usage)],
                 components: [],
                 allowedMentions: { repliedUser: false }
-            });
+            })
+                .catch(() => bot.logger.emit('discord', 'Failed to edit deleted message.'));
+
+            return collector.stop();
         });
 
         collector.on("end", async (collected: Collection<string, ButtonInteraction>, reason: string) => {
             if (reason == "time" && collected.size == 0) {
-                await msg.edit({ content: "❌ | Time expired.", components: [], allowedMentions: { repliedUser: false } });
+                await msg.edit({
+                    content: "❌ | Time expired.",
+                    components: [],
+                    allowedMentions: { repliedUser: false }
+                })
+                    .catch(() => bot.logger.emit('discord', 'Failed to edit deleted message.'));
             }
         });
     }
@@ -143,12 +151,20 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
                 embeds: [embeds.help(bot.config.embedsColor, title!, usage)],
                 components: [],
                 allowedMentions: { repliedUser: false }
-            });
+            })
+                .catch(() => bot.logger.emit('discord', 'Failed to edit deleted message.'));
+
+            return collector.stop();
         });
 
         collector.on("end", async (collected: Collection<string, ButtonInteraction>, reason: string) => {
             if (reason == "time" && collected.size == 0) {
-                await msg.edit({ content: "❌ | Time expired.", components: [], allowedMentions: { repliedUser: false } });
+                await msg.edit({
+                    content: "❌ | Time expired.",
+                    components: [],
+                    allowedMentions: { repliedUser: false }
+                })
+                    .catch(() => bot.logger.emit('discord', 'Failed to edit deleted message.'));
             }
         });
     }
