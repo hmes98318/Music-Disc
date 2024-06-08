@@ -1,4 +1,5 @@
 version: '3.8'
+
 services:
   music-disc:
     image: hmes98318/music-disc:latest
@@ -16,8 +17,11 @@ services:
       BOT_PREFIX: "+"
       BOT_PLAYING: "+help | music"
       BOT_EMBEDS_COLOR: "#FFFFFF"
+      BOT_SLASH_COMMAND: true
+
       DEFAULT_VOLUME: 50
       MAX_VOLUME: 100
+
       AUTO_LEAVE: "true"
       AUTO_LEAVE_COOLDOWN: 5000
       DISPLAY_VOICE_STATE: "true"
