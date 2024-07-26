@@ -122,3 +122,12 @@ export interface SystemStatus {
     totalMembers: number;
     playing: number;
 }
+
+
+export enum LoadType {
+    TRACK = 'track',
+    PLAYLIST = 'playlist',
+    SEARCH = 'search',
+    EMPTY = 'empty',
+    ERROR = 'error'
+}

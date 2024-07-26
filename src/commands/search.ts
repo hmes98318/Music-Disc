@@ -12,6 +12,7 @@ import {
 import { dashboard } from "../dashboard";
 import { embeds } from "../embeds";
 import { isUserInBlacklist } from "../utils/functions/isUserInBlacklist";
+import { LoadType } from "../@types";
 
 import type { Bot } from "../@types";
 
@@ -42,11 +43,11 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
     const str = args.join(' ');
     const res = await client.lavashark.search(str);
 
-    if (res.loadType === "LOAD_FAILED") {
+    if (res.loadType === LoadType.ERROR) {
         bot.logger.emit('error', `Search Error: ${res.exception?.message}`);
         return message.reply({ content: `❌ | No results found.`, allowedMentions: { repliedUser: false } });
     }
-    else if (res.loadType === "NO_MATCHES") {
+    else if (res.loadType === LoadType.EMPTY) {
         return message.reply({ content: `❌ | No matches.`, allowedMentions: { repliedUser: false } });
     }
 
@@ -68,7 +69,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
         selfDeaf: true
     });
 
-    if(!player.setting){
+    if (!player.setting) {
         player.setting = {
             queuePage: null,
             volume: null
@@ -97,7 +98,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
     await message.react('👍');
 
 
-    if (res.loadType === 'PLAYLIST_LOADED') {
+    if (res.loadType === LoadType.PLAYLIST) {
         player.addTracks(res.tracks, message.author);
 
         if (!player.playing) {
@@ -180,11 +181,11 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
     const str = interaction.options.getString("search");
     const res = await client.lavashark.search(str!);
 
-    if (res.loadType === "LOAD_FAILED") {
+    if (res.loadType === LoadType.ERROR) {
         bot.logger.emit('error', `Search Error: ${res.exception?.message}`);
         return interaction.editReply({ content: `❌ | No results found.`, allowedMentions: { repliedUser: false } });
     }
-    else if (res.loadType === "NO_MATCHES") {
+    else if (res.loadType === LoadType.EMPTY) {
         return interaction.editReply({ content: `❌ | No matches.`, allowedMentions: { repliedUser: false } });
     }
 
@@ -209,7 +210,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
         selfDeaf: true
     });
 
-    if(!player.setting){
+    if (!player.setting) {
         player.setting = {
             queuePage: null,
             volume: null
@@ -236,7 +237,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
     }
 
 
-    if (res.loadType === 'PLAYLIST_LOADED') {
+    if (res.loadType === LoadType.PLAYLIST) {
         player.addTracks(res.tracks, interaction.user);
 
         if (!player.playing) {
