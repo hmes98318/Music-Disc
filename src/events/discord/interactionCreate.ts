@@ -187,7 +187,7 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
                             return interaction.reply({ content: `✅ | I sent you the name of the music in a private message.`, ephemeral: true, components: [] });
                         })
                         .catch((error) => {
-                            bot.logger.emit('error', 'Error musicSave:', error);
+                            bot.logger.emit('error', 'Error musicSave:' + error);
                             return interaction.reply({ content: `❌ | I can't send you a private message.`, ephemeral: true, components: [] });
                         });
 

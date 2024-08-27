@@ -24,7 +24,7 @@ export default async (bot: Bot, _client: Client, player: Player, tracks: Track |
         try {
             await player.dashboard?.delete();
         } catch (error) {
-            bot.logger.emit('error', 'Dashboard delete error:', error);
+            bot.logger.emit('error', 'Dashboard delete error:' + error);
         }
 
         await dashboard.initial(bot, (player.metadata as Message), player);

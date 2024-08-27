@@ -1,4 +1,4 @@
-import type { LoginType } from "../@types";
+import { LoginType } from "../@types";
 
 
 /**
@@ -23,7 +23,7 @@ export const cst = {
         enableSite              : true,
         site: {
             port                : 33333,
-            loginType           : 'USER' as LoginType,              // "USER" | 'OAUTH2'
+            loginType           : LoginType.USER,                   // "USER" | 'OAUTH2'
             username            : 'admin',
             password            : 'password',
             oauth2Link          : null,                             // OAuth2 URL
@@ -69,5 +69,10 @@ export const cst = {
         next        : '<:w_next:1153665809990815874>',
         delete      : 'Delete Message',
         clear       : 'Clear Queue'
+    },
+    // Logger
+    logger: {
+        format      : 'YYYY-MM-DD HH:mm:ss',            // Time format 'YYYY-MM-DD HH(hh):mm:ss.l'
+        logDir      : './logs'
     }
 };

@@ -70,7 +70,7 @@ const registerExpressEvents = (bot: Bot, client: Client, localNodeController: Lo
                 sessionManager.refreshSession(cookieSessionId);
                 return res.redirect('/dashboard');
             }
-    
+
 
             const { code } = req.query;
 
@@ -110,7 +110,7 @@ const registerExpressEvents = (bot: Bot, client: Client, localNodeController: Lo
 
                             const sessionId = hashGenerator.generateRandomKey();
                             sessionManager.createSession(sessionId);
-                
+
                             res.cookie('sessionId', sessionId);
 
                             return res.redirect('/dashboard');
@@ -489,34 +489,51 @@ const registerExpressEvents = (bot: Bot, client: Client, localNodeController: Lo
         res.json({ type, result });
     });
 
-    app.get('/api/logger/getLogs', verifyLogin, (req, res) => {
-        res.json({ logs: bot.logger.logs });
-    });
+    app.get('/api/logger/getLogs', verifyLogin, async (req, res) => {
+        const botLogs = await bot.logger.getAllLogs();
 
-    app.patch('/api/logger/refreshLogs', verifyLogin, (req, res) => {
-        const { currentLogsLength } = req.body;
-        const botLogsLength = bot.logger.logs.length;
-
-        if (currentLogsLength === botLogsLength) {
-            // No new logs
-            const resData = {
-                status: 'SAME_LENGTH',
-                data: {}
-            };
-            res.json(resData);
+        if (!botLogs) {
+            res.json({ logs: ['Failed to read log file'] });
         }
         else {
-            // Send the new logs since the last update
-            const newLogs = bot.logger.logs.slice(currentLogsLength);
+            res.json({ logs: botLogs });
+        }
+    });
+
+    app.patch('/api/logger/refreshLogs', verifyLogin, async (req, res) => {
+        const { currentLogsLength } = req.body;
+        const botLogs = await bot.logger.getLogsFromLine(currentLogsLength ?? 0);
+
+        if (!botLogs) {
+            // No new logs
             const resData = {
                 status: 'NEW_LOGS',
                 data: {
-                    newLogs: newLogs
+                    newLogs: ['Failed to read log file']
                 }
             };
             res.json(resData);
         }
-
+        else {
+            if (botLogs.length === 0) {
+                // No new logs
+                const resData = {
+                    status: 'SAME_LENGTH',
+                    data: {}
+                };
+                res.json(resData);
+            }
+            else {
+                // Send the new logs since the last update
+                const resData = {
+                    status: 'NEW_LOGS',
+                    data: {
+                        newLogs: botLogs
+                    }
+                };
+                res.json(resData);
+            }
+        }
     });
 
     app.get('/api/oauth2-link', (req, res) => {

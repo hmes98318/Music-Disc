@@ -1,54 +1,130 @@
-import { EventEmitter } from "events";
+import { EventEmitter } from 'events';
+import fs, { promises as fsPromises } from 'fs';
+import * as path from 'path';
+import * as zlib from 'zlib';
 
 
-export type EventListeners<T> = {
-    (event: 'api', listener: (message: string) => void): T;
-    (event: 'error', listener: (message: string) => void): T;
-    (event: 'lavashark', listener: (message: string) => void): T;
-    (event: 'localNode', listener: (message: string) => void): T;
-    (event: 'log', listener: (message: string) => void): T;
-    (event: 'discord', listener: (message: string) => void): T;
+export type LoggerEvents = {
+    'api': (message: string) => void;
+    'error': (message: string) => void;
+    'lavashark': (message: string) => void;
+    'localNode': (message: string) => void;
+    'log': (message: string) => void;
+    'discord': (message: string) => void;
 };
 
-export interface LoggerEvents {
-    once: EventListeners<this>;
-    on: EventListeners<this>;
-}
 
-export class Logger extends EventEmitter implements LoggerEvents {
-    public logs: string[];
+export class Logger extends EventEmitter {
+    public readonly logDir: string;
     public format: string;
 
+    readonly #logFilePath: string;
+    #currentLogDate: string;
     #formatTokens: string[];
+    #isWriting: boolean;
+    #logQueue: string[];
+
 
     /**
-     * @param {string} format - Time format `yyyy/mm/dd HH(hh):MM:ss.l`  
-     *                          If the format value is updated,  
-     *                          you need to call `this.parseFormatTokens()` to recalculate the time format.
+     * @param {string} format - Time format `YYYY-MM-DD HH(hh):mm:ss.l`  
+     * @param {string} logDir - Directory to store log files, default is './logs'
      */
-    constructor(format: string = 'yyyy/mm/dd HH:MM:ss.l') {
+    constructor(format: string = 'YYYY-MM-DD HH:mm:ss.l', logDir: string = './logs') {
         super();
-        this.logs = [];
+
         this.format = format;
-        this.#formatTokens = this.parseFormatTokens();
+        this.logDir = logDir;
+
+        this.#currentLogDate = this.getCurrentDate();   // 'YYYY-MM-DD'
+        this.#formatTokens = this.#parseFormatTokens();
+        this.#isWriting = false;
+        this.#logQueue = [];
+
+        console.log(this.getFormatTime(), 'Initialize Logger ......');
+
+        // Ensure the log directory exists
+        if (!fs.existsSync(this.logDir)) {
+            fs.mkdirSync(this.logDir, { recursive: true });
+        }
+
+        this.#logFilePath = path.join(this.logDir, 'bot.log');
+
+        this.#checkAndArchiveLogFile();
+
         this.#setListener();
+    }
+
+    public emit<EventName extends keyof LoggerEvents>(event: EventName, ...args: Parameters<LoggerEvents[EventName]>): boolean {
+        return super.emit(event, ...args);
+    }
+
+    public on<EventName extends keyof LoggerEvents>(event: EventName, listener: LoggerEvents[EventName]): this {
+        return super.on(event, listener);
+    }
+
+    public once<EventName extends keyof LoggerEvents>(event: EventName, listener: LoggerEvents[EventName]): this {
+        return super.once(event, listener);
     }
 
 
     /**
+     * @private
+     */
+    #setListener() {
+        this.on('api', (message: string) => {
+            const msg = `${this.getFormatTime()} [api] ${message}`;
+            this.#addLog(msg);
+        });
+
+        this.on('error', (message: string) => {
+            const msg = `${this.getFormatTime()} [error] ${message}`;
+            this.#addLog(msg);
+        });
+
+        this.on('lavashark', (message: string) => {
+            const msg = `${this.getFormatTime()} [lavashark] ${message}`;
+            this.#addLog(msg);
+        });
+
+        this.on('localNode', (message: string) => {
+            const msg = `${this.getFormatTime()} [localNode] ${message}`;
+            this.#addLog(msg);
+        });
+
+        this.on('log', (message: string) => {
+            const msg = `${this.getFormatTime()} ${message}`;
+            this.#addLog(msg);
+        });
+
+        this.on('discord', (message: string) => {
+            const msg = `${this.getFormatTime()} [discord] ${message}`;
+            this.#addLog(msg);
+        });
+    }
+
+    /**
+     * Returns the current date in 'YYYY-MM-DD' format.
+     * @returns {string} - 'YYYY-MM-DD'
+     */
+    public getCurrentDate(): string {
+        const now = new Date();
+        return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+    }
+
+    /**
      * Get the formatted current time
-     * @returns 
+     * @returns {string} - 'YYYY-MM-DD HH(hh):mm:ss.l'
      */
     public getFormatTime(): string {
         const now = new Date();
 
         const timeValues: { [token: string]: string } = {
-            'yyyy': String(now.getFullYear()),
-            'mm': String(now.getMonth() + 1).padStart(2, '0'),
-            'dd': String(now.getDate()).padStart(2, '0'),
+            'YYYY': String(now.getFullYear()),
+            'MM': String(now.getMonth() + 1).padStart(2, '0'),
+            'DD': String(now.getDate()).padStart(2, '0'),
             'HH': String(now.getHours()).padStart(2, '0'),
             'hh': String(now.getHours() % 12 || 12).padStart(2, '0'),
-            'MM': String(now.getMinutes()).padStart(2, '0'),
+            'mm': String(now.getMinutes()).padStart(2, '0'),
             'ss': String(now.getSeconds()).padStart(2, '0'),
             'l': String(now.getMilliseconds()).padStart(3, '0'),
         };
@@ -68,71 +144,147 @@ export class Logger extends EventEmitter implements LoggerEvents {
         return '[' + formattedTime + ']';
     }
 
-
     /**
      * Calculation time format  
-     * @returns 
+     * @private
      */
-    public parseFormatTokens(): string[] {
+    #parseFormatTokens(): string[] {
         // Regular expression to match time tokens in the format string
-        const timeTokenRegex = /(yyyy|mm|dd|HH|hh|MM|ss|l)/g;
+        const timeTokenRegex = /(YYYY|MM|DD|HH|hh|mm|ss|l)/g;
         const matches = this.format.match(timeTokenRegex);
 
         // If there are matches, return the array of matched tokens
         return matches ? matches : [];
     }
 
+    public async getAllLogs(): Promise<string[] | false> {
+        try {
+            const fileContent = await fsPromises.readFile(this.#logFilePath, 'utf-8');
+            return fileContent.trim().split('\n');
+        } catch (error) {
+            console.error(this.getFormatTime(), 'Failed to read log file:', error);
+            return false;
+        }
+    }
+
     /**
-     * @private
+     * Reads log content from the specified line number onward.
+     * @param {number} lineNumber - The line number to start reading from (1-based index).
+     * @returns {Promise<string[] | false>} - Returns a promise resolving to an array of log lines after the specified line number, 
+     *                                        or `false` if the line number does not exist.
      */
-    #addLog(message: string): void {
-        this.logs.push(message);
+    public async getLogsFromLine(lineNumber: number): Promise<string[] | false> {
+        if (lineNumber < 1) {
+            return false;
+        }
+
+        try {
+            const fileContent = await fsPromises.readFile(this.#logFilePath, 'utf-8');
+            const lines = fileContent.trim().split('\n');
+
+            if (lineNumber > lines.length) {
+                return false;
+            }
+
+            return lines.slice(lineNumber);
+        } catch (error) {
+            console.error('Failed to read logs:', error);
+            return false;
+        }
     }
 
     /**
      * @private
      */
-    #setListener() {
-        this.on('api', (message: string) => {
-            const msg = `${this.getFormatTime()} [api] ${message}`;
+    #addLog(message: string): void {
+        console.log(message);
 
-            this.#addLog(msg);
-            console.log(msg);
+        const currentDate = message.replace(/.*\[(\d{4}-\d{2}-\d{2}).*\].*/, '$1');  // 'YYYY-MM-DD'
+
+        if (currentDate !== this.#currentLogDate) {
+            this.#archiveLogFile();
+            this.#currentLogDate = currentDate;
+        }
+
+        this.#logQueue.push(message);
+        this.#processLogQueue();
+    }
+
+    /**
+     * Processes the log queue and writes each log message to the log file in sequence.
+     * Ensures that log messages are written in the order they are received.
+     * If a write operation is in progress, the function exits early and will be called again
+     * after the current write operation completes.
+     * @private
+     */
+    #processLogQueue(): void {
+        if (this.#isWriting || this.#logQueue.length === 0) {
+            return;
+        }
+
+        this.#isWriting = true;
+        const message = this.#logQueue.shift() + '\n';
+
+        fs.appendFile(this.#logFilePath, message, 'utf-8', (error) => {
+            if (error) {
+                console.log('Logger writing error', error);
+            }
+            this.#isWriting = false;
+            this.#processLogQueue();  // Continue processing the queue
         });
+    }
 
-        this.on('error', (message: string) => {
-            const msg = `${this.getFormatTime()} [error] ${message}`;
+    /**
+     * Archives the current log file by compressing it and appending the date to the filename.
+     * @private
+     */
+    #archiveLogFile(archiveDate: string = this.#currentLogDate): void {
+        console.log(this.getFormatTime(), `Starting to archive log file: bot.log.${archiveDate}.gz`);
 
-            this.#addLog(msg);
-            console.log(msg);
-        });
+        try {
+            const archiveName = `bot.log.${archiveDate}.gz`;
+            const archivePath = path.join(this.logDir, archiveName);
 
-        this.on('lavashark', (message: string) => {
-            const msg = `${this.getFormatTime()} [lavashark] ${message}`;
+            const fileContent = fs.readFileSync(this.#logFilePath, 'utf-8');
+            const compressedContent = zlib.gzipSync(fileContent);
 
-            this.#addLog(msg);
-            console.log(msg);
-        });
+            fs.writeFileSync(archivePath, compressedContent);
+            fs.unlinkSync(this.#logFilePath);
 
-        this.on('localNode', (message: string) => {
-            const msg = `${this.getFormatTime()} [localNode] ${message}`;
+            console.log(this.getFormatTime(), 'Log file archiving completed.');
+        } catch (error) {
+            console.error(this.getFormatTime(), 'Failed to archive log file:', error);
+        }
+    }
 
-            this.#addLog(msg);
-            console.log(msg);
-        });
+    /**
+     * Checks if the last log entry in the current log file is from today. If not, archives the log file.
+     * @private
+     */
+    #checkAndArchiveLogFile(): void {
+        if (fs.existsSync(this.#logFilePath)) {
+            const fileContent = fs.readFileSync(this.#logFilePath, 'utf-8');
 
-        this.on('log', (message: string) => {
-            const msg = `${this.getFormatTime()} ${message}`;
+            const lines = fileContent.trim().split('\n');
+            const lastLine = lines[lines.length - 1];
 
-            this.#addLog(msg);
-            console.log(msg);
-        });
+            if (lastLine) {
+                // Extract the date from the last line
+                const logDateMatch = lastLine.match(/^\[(\d{4}-\d{2}-\d{2})[^]*?\]/);  // [YYYY-MM-DD]
 
-        this.on('discord', (message: string) => {
-            const msg = `${this.getFormatTime()} [discord] ${message}`;
+                if (logDateMatch) {
+                    const logDate = lastLine.replace(/.*\[(\d{4}-\d{2}-\d{2}).*\].*/, '$1');
+                    const currentDate = this.getFormatTime().replace(/.*\[(\d{4}-\d{2}-\d{2}).*\].*/, '$1');
 
-            this.#addLog(msg);
-            console.log(msg);
-        });
+                    // Archive the log file if the date is different
+                    if (logDate !== currentDate) {
+                        this.#archiveLogFile(logDate);
+                    }
+                }
+                else {
+                    this.#archiveLogFile();
+                }
+            }
+        }
     }
 }

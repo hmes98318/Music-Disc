@@ -29,7 +29,7 @@ export class App {
         this.bot = {
             blacklist: cst.blacklist,
             config: cst.config,
-            logger: new Logger('yyyy/mm/dd HH:MM:ss'),
+            logger: new Logger(cst.logger.format, cst.logger.logDir),
             sysInfo: {} as SystemInfo
         };
         setEnvironment(this.bot);
