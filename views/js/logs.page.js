@@ -71,7 +71,7 @@ const refreshLogs = async (logsLength) => {
 
 
 document.addEventListener("DOMContentLoaded", async () => {
-    const updateRefreshInterval = 1000;     // 'api_logger_update' 刷新時間 1s
+    const updateRefreshInterval = 5 * 1000;     // 'api_logger_update' 刷新時間 5s
 
 
     await getLogs();
