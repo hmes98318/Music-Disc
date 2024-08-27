@@ -1,4 +1,4 @@
-version: '3.8'
+# version: '3.8'
 
 services:
   music-disc:
@@ -41,6 +41,7 @@ services:
       ENABLE_LOCAL_NODE: false
       LOCAL_NODE_AUTO_RESTART: true
     volumes:
+      - ./logs:/bot/logs        # Bot logs
       - ./server:/bot/server    # localnode configuration file
       - ./nodelist.json:/bot/nodelist.json
       - ./blacklist.json:/bot/blacklist.json
