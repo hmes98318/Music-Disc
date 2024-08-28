@@ -405,7 +405,26 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
 
         bot.logger.emit('discord', `[interactionCreate] (${cst.color.grey}${guildMember?.guild.name}${cst.color.white}) ${interaction.user.username} : /${interaction.commandName}`);
 
-        await interaction.deferReply()
+        let guild;
+
+        // Ensure guild data is in cache
+        try {
+            guild = await client.guilds.fetch(interaction.guildId!);
+        } catch (error) {
+            bot.logger.emit('error', `[interactionCreate] Error fetching guild: ${error}`);
+            return interaction.reply({ content: `❌ | Unable to get guild data in cache.`, allowedMentions: { repliedUser: false } });
+        }
+
+        // Ensure member is in cache
+        try {
+            await guild.members.fetch(interaction.user.id);
+        } catch (error) {
+            bot.logger.emit('error', `[interactionCreate] Error fetching member: ${error}`);
+            return interaction.reply({ content: `❌ | Unable to get member data in cache.`, allowedMentions: { repliedUser: false } });
+        }
+
+
+        interaction.deferReply()
             .catch((error) => {
                 bot.logger.emit('error', '[interactionCreate] Error deferReply: ' + error);
             });

@@ -46,6 +46,25 @@ export default async (bot: Bot, client: Client, message: Message) => {
 
     bot.logger.emit('discord', `[messageCreate] (${cst.color.grey}${message.guild?.name}${cst.color.white}) ${message.author.username} : ${message.content}`);
 
+    let guild;
+
+    // Ensure guild data is in cache
+    try {
+        guild = await client.guilds.fetch(message.guildId!);
+    } catch (error) {
+        bot.logger.emit('error', `[messageCreate] Error fetching guild (${message.guildId}): ${error}`);
+        return message.reply({ content: `❌ | Unable to get guild data in cache.`, allowedMentions: { repliedUser: false } });
+    }
+
+    // Ensure member is in cache
+    try {
+        await guild.members.fetch(message.author.id);
+    } catch (error) {
+        bot.logger.emit('error', `[messageCreate] Error fetching member (${message.author.id}): ${error}`);
+        return message.reply({ content: `❌ | Unable to get member data in cache.`, allowedMentions: { repliedUser: false } });
+    }
+
+
     if (cmd.sendTyping) message.channel.sendTyping();
     cmd.execute(bot, client, message, args);
 };
