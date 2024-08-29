@@ -199,7 +199,7 @@ export class Logger extends EventEmitter {
     #addLog(message: string): void {
         console.log(message);
 
-        const currentDate = message.replace(/.*\[(\d{4}-\d{2}-\d{2}).*\].*/, '$1');  // 'YYYY-MM-DD'
+        const currentDate = message.replace(/\r\n|\r|\n/g, ' ').replace(/.*\[(\d{4}-\d{2}-\d{2}).*\].*/, '$1');  // 'YYYY-MM-DD'
 
         if (currentDate !== this.#currentLogDate) {
             this.#archiveLogFile();
@@ -273,7 +273,7 @@ export class Logger extends EventEmitter {
                 const logDateMatch = lastLine.match(/^\[(\d{4}-\d{2}-\d{2})[^]*?\]/);  // [YYYY-MM-DD]
 
                 if (logDateMatch) {
-                    const logDate = lastLine.replace(/.*\[(\d{4}-\d{2}-\d{2}).*\].*/, '$1');
+                    const logDate = lastLine.replace(/\r\n|\r|\n/g, ' ').replace(/.*\[(\d{4}-\d{2}-\d{2}).*\].*/, '$1');
                     const currentDate = this.getFormatTime().replace(/.*\[(\d{4}-\d{2}-\d{2}).*\].*/, '$1');
 
                     // Archive the log file if the date is different
