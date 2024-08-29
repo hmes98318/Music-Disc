@@ -5,11 +5,13 @@ import path from 'path';
 class LavalinkProcess {
     public pid: number;
     public lavalinkJarPath: string;
+    public outputLog: boolean;
 
     #lavalinkProcess: child_process.ChildProcessWithoutNullStreams;
 
     constructor(lavalinkJarPath: any) {
         this.lavalinkJarPath = String(lavalinkJarPath);
+        this.outputLog = true;
         this.#startLavalink(this.lavalinkJarPath);
     }
 
@@ -36,18 +38,20 @@ class LavalinkProcess {
 
 
         this.#lavalinkProcess.stdout.on('data', (data) => {
-            //console.log(`[localNode][out] ${data}`);
+            if (this.outputLog) console.log(`[localNode][out] ${data}`);
 
             // Deserialization
             data = Buffer.from(data).toString('utf-8');
             process.send!(data);
 
             if (data.includes('Lavalink is ready to accept connections.')) {
+                this.outputLog = false;
+
                 this.#sendStatusCode('LAVALINK_READY');
                 this.#sendStatusCode(`LAVALINK_PID_${this.pid}`);
             }
-            else if (data.includes('Undertow started on port(s)')) {
-                const match = data.match(/port\(s\) (\d+)/);
+            else if (data.includes('Undertow started on port')) {
+                const match = data.match(/port (\d+)/);
                 const port = match && match[1];
 
                 this.#sendStatusCode(`LAVALINK_PORT_${port}`);
