@@ -4,6 +4,7 @@ import express from 'express';
 import undici from "undici";
 import { NodeState } from 'lavashark';
 
+import { embeds } from '../../embeds';
 import { hashGenerator } from '../lib/hashGenerator';
 import { sysusage } from '../../utils/functions/sysusage';
 import { uptime } from '../../utils/functions/uptime';
@@ -151,6 +152,10 @@ const registerExpressEvents = (bot: Bot, client: Client, localNodeController: Lo
 
     app.get('/dashboard', verifyLogin, (req, res) => {
         res.sendFile(`${viewsPath}/dashboard.html`);
+    });
+
+    app.get('/maintenance', verifyLogin, (req, res) => {
+        res.sendFile(`${viewsPath}/maintenance.html`);
     });
 
     app.get('/nodeslist', verifyLogin, (req, res) => {
@@ -534,6 +539,17 @@ const registerExpressEvents = (bot: Bot, client: Client, localNodeController: Lo
                 res.json(resData);
             }
         }
+    });
+
+    app.post('/api/maintain/send', verifyLogin, async (req, res) => {
+        client.lavashark.players.forEach(async (player) => {
+            player.metadata?.channel?.send({ embeds: [embeds.maintainNotice(bot.config.embedsColor)] })
+                .catch((error) => {
+                    bot.logger.emit('error', `[api] Fail to send maintainNotice` + error);
+                });
+        });
+
+        res.json({ type: 'SEND_MAINTAIN', result: 'SUCCEED' });
     });
 
     app.get('/api/oauth2-link', (req, res) => {

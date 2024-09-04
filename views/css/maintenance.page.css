@@ -1,0 +1,79 @@
+/*----- Maintenance -----*/
+
+/*----- 控制按鈕 -----*/
+
+#control-buttons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+#control-buttons button {
+    background-color: #7289da;
+    color: #ffffff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#control-buttons button:hover {
+    background-color: #677bc4;
+}
+
+
+#maintain-btn {
+    background-color: #7289da;
+    color: #ffffff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#maintain-btn:hover {
+    background-color: #677bc4;
+}
+
+#maintain-btn:disabled {
+    background-color: #555;
+    cursor: not-allowed;
+    transition: none;
+}
+
+#maintain-btn:disabled:hover {
+    background-color: #555;
+}
+
+/*----- 按鈕回傳狀態 -----*/
+
+.result-succeed {
+    background-color: #43b581;
+    color: #ffffff;
+    padding: 10px;
+    /* 邊框半徑 */
+    border-radius: 5px;
+    display: inline-block;
+}
+
+.result-failed {
+    background-color: #f04747;
+    color: #ffffff;
+    padding: 10px;
+    /* 邊框半徑 */
+    border-radius: 5px;
+    display: inline-block;
+}
+
+/*----- END 按鈕回傳狀態 -----*/
+
+/*----- END 控制按鈕 -----*/
+
+/*----- END Maintenance -----*/
+
+/* 留空介面 */
+#empty-container {
+    margin-bottom: 80px;
+}

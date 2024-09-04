@@ -6,7 +6,7 @@ import { addTrack, addPlaylist, queue } from "./queue.embed";
 import { removeList, removeTrack } from "./remove.embed";
 import { save } from "./save.embed";
 import { server } from "./server.embed";
-import { botStatus, nodeDisconnected, nodesStatus, nodeStatus, validNodeName } from "./status.embed";
+import { botStatus, maintainNotice, nodeDisconnected, nodesStatus, nodeStatus, validNodeName } from "./status.embed";
 
 
 const embeds = {
@@ -18,6 +18,7 @@ const embeds = {
     dashboard,
     disconnect,
     help,
+    maintainNotice,
     nodeDisconnected,
     nodesStatus,
     nodeStatus,

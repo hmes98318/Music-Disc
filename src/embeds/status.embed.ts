@@ -25,6 +25,16 @@ const botStatus = (config: Config, systemInfo: SystemInfo, systemStatus: SystemS
     return embed_;
 };
 
+const maintainNotice = (embedsColor: HexColorString | string | number) => {
+    const embed_ = new EmbedBuilder()
+        .setColor(embedsColor as HexColorString | number)
+        .setTitle(`⚠️ Maintenance Notice ⚠️`)
+        .setDescription(`The bot will begin maintenance in a few minutes. During this time, some features may be temporarily unavailable.`)
+        .setTimestamp();
+
+    return embed_;
+};
+
 const nodesStatus = (embedsColor: HexColorString | string | number, nodeHealth: string, nodesStatus: { name: string; value: string; }[]) => {
     const embed_ = new EmbedBuilder()
         .setColor(embedsColor as HexColorString | number)
@@ -71,4 +81,4 @@ const validNodeName = (embedsColor: HexColorString | string | number, nodesName:
     return embed_;
 };
 
-export { botStatus, nodeDisconnected, nodesStatus, nodeStatus, validNodeName };
+export { botStatus, maintainNotice, nodeDisconnected, nodesStatus, nodeStatus, validNodeName };
