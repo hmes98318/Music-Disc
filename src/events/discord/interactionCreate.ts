@@ -424,10 +424,12 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
         }
 
 
-        interaction.deferReply()
-            .catch((error) => {
-                bot.logger.emit('error', '[interactionCreate] Error deferReply: ' + error);
-            });
+        // Send typing
+        try {
+            await interaction.deferReply();
+        } catch (error) {
+            bot.logger.emit('error', '[interactionCreate] Error deferReply: ' + error);
+        }
 
         cmd.slashExecute(bot, client, interaction);
     }
