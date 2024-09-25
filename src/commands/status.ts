@@ -1,9 +1,9 @@
-import { embeds } from "../embeds";
-import { uptime } from "../utils/functions/uptime";
-import { sysusage } from "../utils/functions/sysusage";
+import { embeds } from '../embeds';
+import { uptime } from '../utils/functions/uptime';
+import { sysusage } from '../utils/functions/sysusage';
 
-import type { ChatInputCommandInteraction, Client, Message } from "discord.js";
-import type { Bot, SystemStatus } from "../@types";
+import type { ChatInputCommandInteraction, Client, Message } from 'discord.js';
+import type { Bot, SystemStatus } from '../@types';
 
 
 export const name = 'status';
@@ -19,8 +19,28 @@ export const options = [];
 
 export const execute = async (bot: Bot, client: Client, message: Message) => {
     const botPing = `${Date.now() - message.createdTimestamp}ms`;
-    const sysload = await sysusage.cpu();
-    const pingList = await client.lavashark.nodesPing();
+
+    const [sysloadResult, pingListResult, guildsCountResult, guildsCacheResult, playerCountResult] = await Promise.allSettled([
+        sysusage.cpu(),
+        client.lavashark.nodesPing(),
+        client.shard?.fetchClientValues('guilds.cache.size').catch(() => [-1]),
+        client.shard?.fetchClientValues('guilds.cache').catch(() => [[]]),
+        client.shard?.fetchClientValues('lavashark.players.size').catch(() => [-1])
+    ]);
+
+    const sysload = sysloadResult.status === 'fulfilled' ? sysloadResult.value : { percent: '0%', detail: '[0.00, 0.00, 0.00]' };
+    const pingList = pingListResult.status === 'fulfilled' ? pingListResult.value : [];
+    const totalGuildsCount = guildsCountResult.status === 'fulfilled' ?
+        (guildsCountResult.value as number[]).reduce((total: number, count: number) => total + count, 0) : 0;
+    const totalMembersCount = guildsCacheResult.status === 'fulfilled' ?
+        (guildsCacheResult.value as []).flat().reduce((acc, guild) => acc + (guild ? (guild as any).memberCount : 0), 0) : 0;
+    const totalPlayerCount = playerCountResult.status === 'fulfilled' ?
+        (playerCountResult.value as number[]).reduce((total: number, count: number) => total + count, 0) : 0;
+
+    console.log('guilds count: ' + totalGuildsCount, guildsCountResult.status === 'fulfilled' ? guildsCountResult.value : []);
+    console.log('members count: ' + totalMembersCount, guildsCacheResult.status === 'fulfilled' ? (guildsCacheResult.value as unknown as []).map((guilds: any) => guilds.reduce((acc: any, guild: any) => acc + (guild ? (guild as any).memberCount : 0), 0)) : []);
+    console.log('lavashark player: ' + totalPlayerCount, playerCountResult.status === 'fulfilled' ? playerCountResult.value : []);
+
 
     const systemStatus: SystemStatus = {
         load: sysload,
@@ -31,9 +51,9 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
             bot: botPing,
             api: client.ws.ping
         },
-        serverCount: client.guilds.cache.size,
-        totalMembers: client.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0),
-        playing: client.lavashark.players.size
+        serverCount: totalGuildsCount,
+        totalMembers: totalMembersCount,
+        playing: totalPlayerCount
     };
 
     const nodes = client.lavashark.nodes;
@@ -52,7 +72,7 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
             nodesStatus.push({ name: `✅ ${node.identifier}`, value: `ping: **${ping}ms**` });
         }
     }
-    bot.logger.emit('log', 'nodesStatus: ' + JSON.stringify(nodesStatus));
+    bot.logger.emit('log', bot.shardId, 'nodesStatus: ' + JSON.stringify(nodesStatus));
 
     const nodeHealth = healthValue === 0 ? 'All nodes are active' : `⚠️ There are ${healthValue} nodes disconnected`;
 
@@ -68,8 +88,28 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
 
 export const slashExecute = async (bot: Bot, client: Client, interaction: ChatInputCommandInteraction) => {
     const botPing = `${Date.now() - interaction.createdTimestamp}ms`;
-    const sysload = await sysusage.cpu();
-    const pingList = await client.lavashark.nodesPing();
+
+    const [sysloadResult, pingListResult, guildsCountResult, guildsCacheResult, playerCountResult] = await Promise.allSettled([
+        sysusage.cpu(),
+        client.lavashark.nodesPing(),
+        client.shard?.fetchClientValues('guilds.cache.size').catch(() => [-1]),
+        client.shard?.fetchClientValues('guilds.cache').catch(() => [[]]),
+        client.shard?.fetchClientValues('lavashark.players.size').catch(() => [-1])
+    ]);
+
+    const sysload = sysloadResult.status === 'fulfilled' ? sysloadResult.value : { percent: '0%', detail: '[0.00, 0.00, 0.00]' };
+    const pingList = pingListResult.status === 'fulfilled' ? pingListResult.value : [];
+    const totalGuildsCount = guildsCountResult.status === 'fulfilled' ?
+        (guildsCountResult.value as number[]).reduce((total: number, count: number) => total + count, 0) : 0;
+    const totalMembersCount = guildsCacheResult.status === 'fulfilled' ?
+        (guildsCacheResult.value as []).flat().reduce((acc, guild) => acc + (guild ? (guild as any).memberCount : 0), 0) : 0;
+    const totalPlayerCount = playerCountResult.status === 'fulfilled' ?
+        (playerCountResult.value as number[]).reduce((total: number, count: number) => total + count, 0) : 0;
+
+    console.log('guilds count: ' + totalGuildsCount, guildsCountResult.status === 'fulfilled' ? guildsCountResult.value : []);
+    console.log('members count: ' + totalMembersCount, guildsCacheResult.status === 'fulfilled' ? (guildsCacheResult.value as unknown as []).map((guilds: any) => guilds.reduce((acc: any, guild: any) => acc + (guild ? (guild as any).memberCount : 0), 0)) : []);
+    console.log('lavashark player: ' + totalPlayerCount, playerCountResult.status === 'fulfilled' ? playerCountResult.value : []);
+
 
     const systemStatus: SystemStatus = {
         load: sysload,
@@ -80,9 +120,9 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
             bot: botPing,
             api: client.ws.ping
         },
-        serverCount: client.guilds.cache.size,
-        totalMembers: client.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0),
-        playing: client.lavashark.players.size
+        serverCount: totalGuildsCount,
+        totalMembers: totalMembersCount,
+        playing: totalPlayerCount
     };
 
     const nodes = client.lavashark.nodes;
@@ -101,7 +141,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
             nodesStatus.push({ name: `✅ ${node.identifier}`, value: `ping: **${ping}ms**` });
         }
     }
-    bot.logger.emit('log', 'nodesStatus: ' + JSON.stringify(nodesStatus));
+    bot.logger.emit('log', bot.shardId, 'nodesStatus: ' + JSON.stringify(nodesStatus));
 
     const nodeHealth = healthValue === 0 ? 'All nodes are active' : `⚠️ There are ${healthValue} nodes disconnected`;
 
