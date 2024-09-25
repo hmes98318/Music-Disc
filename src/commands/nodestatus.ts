@@ -43,7 +43,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
                 nodesStatus.push({ name: `✅ ${node.identifier}`, value: `ping: **${ping}ms**` });
             }
         }
-        bot.logger.emit('log', 'nodesStatus: ' + JSON.stringify(nodesStatus));
+        bot.logger.emit('log', bot.shardId, 'nodesStatus: ' + JSON.stringify(nodesStatus));
 
         const nodeHealth = healthValue === 0 ? 'All nodes are active' : `⚠️ There are ${healthValue} nodes disconnected`;
 
@@ -69,9 +69,9 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
                 const nodePingPromise = client.lavashark.nodePing(node);
                 const [nodeInfo, nodeStats, nodePing] = await Promise.all([nodeInfoPromise, nodeStatsPromise, nodePingPromise]);
 
-                bot.logger.emit('log', 'nodeInfo: ' + JSON.stringify(nodeInfo));
-                bot.logger.emit('log', 'nodeStats: ' + JSON.stringify(nodeStats));
-                bot.logger.emit('log', 'nodePing: ' + nodePing + 'ms');
+                bot.logger.emit('log', bot.shardId, 'nodeInfo: ' + JSON.stringify(nodeInfo));
+                bot.logger.emit('log', bot.shardId, 'nodeStats: ' + JSON.stringify(nodeStats));
+                bot.logger.emit('log', bot.shardId, 'nodePing: ' + nodePing + 'ms');
 
                 return message.reply({
                     embeds: [embeds.nodeStatus(bot.config.embedsColor, nodeName, nodeInfo, nodeStats, nodePing)],
@@ -113,7 +113,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
                 nodesStatus.push({ name: `✅ ${node.identifier}`, value: `ping: ${ping}ms` });
             }
         }
-        bot.logger.emit('log', 'nodesStatus: ' + JSON.stringify(nodesStatus));
+        bot.logger.emit('log', bot.shardId, 'nodesStatus: ' + JSON.stringify(nodesStatus));
 
         const nodeHealth = healthValue === 0 ? '✅ All nodes are active' : `⚠️ There are ${healthValue} nodes disconnected`;
 
@@ -137,9 +137,9 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
                 const nodePingPromise = client.lavashark.nodePing(node);
                 const [nodeInfo, nodeStats, nodePing] = await Promise.all([nodeInfoPromise, nodeStatsPromise, nodePingPromise]);
 
-                bot.logger.emit('log', 'nodeInfo: ' + JSON.stringify(nodeInfo));
-                bot.logger.emit('log', 'nodeStats: ' + JSON.stringify(nodeStats));
-                bot.logger.emit('log', 'nodePing: ' + nodePing + 'ms');
+                bot.logger.emit('log', bot.shardId, 'nodeInfo: ' + JSON.stringify(nodeInfo));
+                bot.logger.emit('log', bot.shardId, 'nodeStats: ' + JSON.stringify(nodeStats));
+                bot.logger.emit('log', bot.shardId, 'nodePing: ' + nodePing + 'ms');
 
                 return interaction.editReply({
                     embeds: [embeds.nodeStatus(bot.config.embedsColor, nodeName, nodeInfo, nodeStats, nodePing)],

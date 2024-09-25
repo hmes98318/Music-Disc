@@ -130,7 +130,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
             });
 
             msg.delete()
-                .catch(() => bot.logger.emit('discord', 'Failed to edit deleted message.'));
+                .catch(() => bot.logger.emit('discord', bot.shardId, 'Failed to edit deleted message.'));
 
             return collector.stop();
         });
@@ -142,7 +142,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
                     embeds: [],
                     allowedMentions: { repliedUser: false }
                 })
-                    .catch(() => bot.logger.emit('discord', 'Failed to edit deleted message.'));
+                    .catch(() => bot.logger.emit('discord', bot.shardId, 'Failed to edit deleted message.'));
             }
         });
     }
@@ -242,7 +242,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
             });
 
             msg.delete()
-                .catch(() => bot.logger.emit('discord', 'Failed to edit deleted message.'));
+                .catch(() => bot.logger.emit('discord', bot.shardId, 'Failed to edit deleted message.'));
 
             return collector.stop();
         });
@@ -254,7 +254,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
                     embeds: [],
                     allowedMentions: { repliedUser: false }
                 })
-                    .catch(() => bot.logger.emit('discord', 'Failed to edit deleted message.'));
+                    .catch(() => bot.logger.emit('discord', bot.shardId, 'Failed to edit deleted message.'));
             }
         });
     }

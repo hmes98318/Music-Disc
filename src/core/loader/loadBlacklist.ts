@@ -9,13 +9,13 @@ const loadBlacklist = async (bot: Bot) => {
 
         if (Array.isArray(blacklistArray) && blacklistArray.length > 0) {
             bot.blacklist = blacklistArray;
-            bot.logger.emit('log', 'Blacklist loaded: ' + bot.blacklist.length + ' users');
+            bot.logger.emit('log', bot.shardId, 'Blacklist loaded: ' + bot.blacklist.length + ' users');
         }
         else {
-            bot.logger.emit('log', 'No blacklist entries found.');
+            bot.logger.emit('log', bot.shardId, 'No blacklist entries found.');
         }
     } catch (error) {
-        bot.logger.emit('error', 'Error loading blacklist:' + error);
+        bot.logger.emit('error', bot.shardId, 'Error loading blacklist:' + error);
     }
 };
 

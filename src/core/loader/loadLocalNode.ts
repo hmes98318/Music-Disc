@@ -6,7 +6,7 @@ import type { Bot } from '../../@types';
 
 const loadLocalNode = (bot: Bot, localNodeController: LocalNodeController) => {
     return new Promise<void>(async (resolve, reject) => {
-        bot.logger.emit('log', `-> loading local Lavalink node ......`);
+        bot.logger.emit('log', bot.shardId, `-> loading local Lavalink node ......`);
 
         const hasJava = await localNodeController.checkJavaVersion(true);
 
@@ -24,12 +24,12 @@ const loadLocalNode = (bot: Bot, localNodeController: LocalNodeController) => {
             port: `Port:   ${localNodeController.port.toString().padStart(10, ' ')}`
         };
 
-        bot.logger.emit('log', `+--------------------+`);
-        bot.logger.emit('log', `| ${nodeInfo.active.padEnd(15, ' ')} |`);
-        bot.logger.emit('log', `| ${nodeInfo.port.padEnd(15, ' ')} |`);
-        bot.logger.emit('log', `+--------------------+`);
+        bot.logger.emit('log', bot.shardId, `+--------------------+`);
+        bot.logger.emit('log', bot.shardId, `| ${nodeInfo.active.padEnd(15, ' ')} |`);
+        bot.logger.emit('log', bot.shardId, `| ${nodeInfo.port.padEnd(15, ' ')} |`);
+        bot.logger.emit('log', bot.shardId, `+--------------------+`);
 
-        bot.logger.emit('log', cst.color.grey + '-- loading local Lavalink node finished --' + cst.color.white);
+        bot.logger.emit('log', bot.shardId, cst.color.grey + '-- loading local Lavalink node finished --' + cst.color.white);
         resolve();
     });
 };

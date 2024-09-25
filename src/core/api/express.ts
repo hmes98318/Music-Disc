@@ -414,7 +414,7 @@ const registerExpressEvents = (bot: Bot, client: Client, localNodeController: Lo
 
             await guild?.leave();
         } catch (error) {
-            bot.logger.emit('error', `There was an error leaving the guild: \n ${error}`);
+            bot.logger.emit('error', bot.shardId, `There was an error leaving the guild: \n ${error}`);
             return res.send('FAILED');
         }
 
@@ -545,7 +545,7 @@ const registerExpressEvents = (bot: Bot, client: Client, localNodeController: Lo
         client.lavashark.players.forEach(async (player) => {
             player.metadata?.channel?.send({ embeds: [embeds.maintainNotice(bot.config.embedsColor)] })
                 .catch((error) => {
-                    bot.logger.emit('error', `[api] Fail to send maintainNotice` + error);
+                    bot.logger.emit('error', bot.shardId, `[api] Fail to send maintainNotice` + error);
                 });
         });
 

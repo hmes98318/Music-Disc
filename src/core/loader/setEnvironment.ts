@@ -44,7 +44,7 @@ const setEnvironment = (bot: Bot) => {
     bot.config.localNode.downloadLink = process.env.LOCAL_NODE_DOWNLOAD_LINK || bot.config.localNode.downloadLink;
 
     // console.log('setEnvironment: ', config);
-    bot.logger.emit('log', 'Set environment variables.');
+    bot.logger.emit('log', bot.shardId, 'Set environment variables.');
 };
 
 export { setEnvironment };

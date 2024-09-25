@@ -33,16 +33,16 @@ export default async (bot: Bot, client: Client) => {
         shark: `LavaShark:  ${cst.color.cyan}${bot.sysInfo.shark_version}${cst.color.white}`,
     };
 
-    bot.logger.emit('log', `+-----------------------+`);
-    bot.logger.emit('log', `| ${release.bot.padEnd(30, ' ')} |`);
-    bot.logger.emit('log', `| ${release.nodejs.padEnd(30, ' ')} |`);
-    bot.logger.emit('log', `| ${release.djs.padEnd(30, ' ')} |`);
-    bot.logger.emit('log', `| ${release.shark.padEnd(30, ' ')} |`);
-    bot.logger.emit('log', `+-----------------------+`);
+    bot.logger.emit('log', bot.shardId, `+-----------------------+`);
+    bot.logger.emit('log', bot.shardId, `| ${release.bot.padEnd(30, ' ')} |`);
+    bot.logger.emit('log', bot.shardId, `| ${release.nodejs.padEnd(30, ' ')} |`);
+    bot.logger.emit('log', bot.shardId, `| ${release.djs.padEnd(30, ' ')} |`);
+    bot.logger.emit('log', bot.shardId, `| ${release.shark.padEnd(30, ' ')} |`);
+    bot.logger.emit('log', bot.shardId, `+-----------------------+`);
 
 
     if (bot.config.slashCommand) {
-        bot.logger.emit('log', 'Enable slash command.');
+        bot.logger.emit('log', bot.shardId, 'Enable slash command.');
         client.application?.commands.set(client.commands.map(cmd => {
             return {
                 name: cmd.name,
@@ -52,7 +52,7 @@ export default async (bot: Bot, client: Client) => {
         }));
     }
     else {
-        bot.logger.emit('log', 'Disable slash command.');
+        bot.logger.emit('log', bot.shardId, 'Disable slash command.');
     }
 
 
@@ -66,6 +66,9 @@ export default async (bot: Bot, client: Client) => {
     }, 10 * 60 * 1000); // 10 minutes
 
 
-    if (bot.config.admin) bot.logger.emit('log', `Set admin as user ID : ${bot.config.admin}`);
-    bot.logger.emit('discord', `>>> Logged in as ${client.user?.username}`);
+    if (bot.config.admin) bot.logger.emit('log', bot.shardId, `Set admin as user ID : ${bot.config.admin}`);
+    bot.logger.emit('discord', bot.shardId, `>>> Logged in as ${client.user?.username}`);
+
+
+    bot.logger.emit('log', bot.shardId, `${cst.color.green}Launched shard ${bot.shardId + 1} / ${client.shard?.count}${cst.color.white}`);
 };

@@ -27,6 +27,7 @@ export class App {
         this.#client = client;
 
         this.bot = {
+            shardId: this.#client.shard?.ids[0] ?? -1,
             blacklist: cst.blacklist,
             config: cst.config,
             logger: new Logger(cst.logger.format, cst.logger.logDir),
@@ -52,7 +53,7 @@ export class App {
             .then(async () => { if (this.bot.config.enableSite) await loadSite(this.bot, this.#client, this.#localNodeController); })
             .then(() => checkNodesStats(this.bot, this.#client.lavashark))
             .then(() => {
-                this.bot.logger.emit('log', cst.color.green + '*** All loaded successfully ***' + cst.color.white);
+                this.bot.logger.emit('log', this.bot.shardId, cst.color.green + '*** All loaded successfully ***' + cst.color.white);
                 this.#client.login(process.env.BOT_TOKEN);
             });
     }

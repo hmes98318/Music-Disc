@@ -4,5 +4,5 @@ import type { Bot } from "../../@types";
 
 
 export default async (bot: Bot, _client: Client, node: Node) => {
-    bot.logger.emit('lavashark', `[nodeDisconnect] Disconnect from "${node.identifier}"`);
+    bot.logger.emit('lavashark', bot.shardId, `[nodeDisconnect] Disconnect from "${node.identifier}"`);
 };

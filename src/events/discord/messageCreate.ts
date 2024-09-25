@@ -22,7 +22,7 @@ export default async (bot: Bot, client: Client, message: Message) => {
         if (message.author.id !== bot.config.admin)
             return message.reply({ content: `❌ | This command requires administrator privileges.`, allowedMentions: { repliedUser: false } })
                 .catch((error) => {
-                    bot.logger.emit('error', `[messageCreate] Error reply: (${message.author.username} : ${message.content})` + error);
+                    bot.logger.emit('error', bot.shardId, `[messageCreate] Error reply: (${message.author.username} : ${message.content})` + error);
                     return;
                 });
     }
@@ -31,20 +31,20 @@ export default async (bot: Bot, client: Client, message: Message) => {
         if (!message.member?.voice.channel)
             return message.reply({ content: `❌ | You are not connected to an audio channel.`, allowedMentions: { repliedUser: false } })
                 .catch((error) => {
-                    bot.logger.emit('error', `[messageCreate] Error reply: (${message.author.username} : ${message.content})` + error);
+                    bot.logger.emit('error', bot.shardId, `[messageCreate] Error reply: (${message.author.username} : ${message.content})` + error);
                     return;
                 });
 
         if (message.guild?.members.me?.voice.channel && message.member.voice.channelId !== message.guild.members.me.voice.channelId)
             return message.reply({ content: `❌ | You are not on the same audio channel as me.`, allowedMentions: { repliedUser: false } })
                 .catch((error) => {
-                    bot.logger.emit('error', `[messageCreate] Error reply: (${message.author.username} : ${message.content})` + error);
+                    bot.logger.emit('error', bot.shardId, `[messageCreate] Error reply: (${message.author.username} : ${message.content})` + error);
                     return;
                 });
     }
 
 
-    bot.logger.emit('discord', `[messageCreate] (${cst.color.grey}${message.guild?.name}${cst.color.white}) ${message.author.username} : ${message.content}`);
+    bot.logger.emit('discord', bot.shardId, `[messageCreate] (${cst.color.grey}${message.guild?.name}${cst.color.white}) ${message.author.username} : ${message.content}`);
 
     let guild;
 
@@ -52,7 +52,7 @@ export default async (bot: Bot, client: Client, message: Message) => {
     try {
         guild = await client.guilds.fetch(message.guildId!);
     } catch (error) {
-        bot.logger.emit('error', `[messageCreate] Error fetching guild (${message.guildId}): ${error}`);
+        bot.logger.emit('error', bot.shardId, `[messageCreate] Error fetching guild (${message.guildId}): ${error}`);
         return message.reply({ content: `❌ | Unable to get guild data in cache.`, allowedMentions: { repliedUser: false } });
     }
 
@@ -60,7 +60,7 @@ export default async (bot: Bot, client: Client, message: Message) => {
     try {
         await guild.members.fetch(message.author.id);
     } catch (error) {
-        bot.logger.emit('error', `[messageCreate] Error fetching member (${message.author.id}): ${error}`);
+        bot.logger.emit('error', bot.shardId, `[messageCreate] Error fetching member (${message.author.id}): ${error}`);
         return message.reply({ content: `❌ | Unable to get member data in cache.`, allowedMentions: { repliedUser: false } });
     }
 

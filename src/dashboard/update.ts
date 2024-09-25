@@ -33,7 +33,7 @@ async function update(bot: Bot, player: Player, track: Track): Promise<void> {
             components: [row]
         });
     } catch (error) {
-        bot.logger.emit('error', 'Dashboard error: ' + error);
+        bot.logger.emit('error', bot.shardId, 'Dashboard error: ' + error);
     }
 }
 

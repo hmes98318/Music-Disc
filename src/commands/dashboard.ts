@@ -25,7 +25,7 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
     try {
         await player.dashboard?.delete();
     } catch (error) {
-        bot.logger.emit('error', 'Dashboard delete error:' + error);
+        bot.logger.emit('error', bot.shardId, 'Dashboard delete error:' + error);
     }
 
     await dashboard.initial(bot, message, player);
@@ -43,7 +43,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
     try {
         await player.dashboard?.delete();
     } catch (error) {
-        bot.logger.emit('error', 'Dashboard delete error:' + error);
+        bot.logger.emit('error', bot.shardId, 'Dashboard delete error:' + error);
     }
 
     await dashboard.initial(bot, interaction, player);

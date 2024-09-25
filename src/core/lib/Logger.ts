@@ -6,11 +6,11 @@ import * as zlib from 'zlib';
 
 export type LoggerEvents = {
     'api': (message: string) => void;
-    'error': (message: string) => void;
-    'lavashark': (message: string) => void;
+    'error': (shardId:number, message: string) => void;
+    'lavashark': (shardId:number, message: string) => void;
     'localNode': (message: string) => void;
-    'log': (message: string) => void;
-    'discord': (message: string) => void;
+    'log': (shardId:number, message: string) => void;
+    'discord': (shardId:number, message: string) => void;
 };
 
 
@@ -76,13 +76,13 @@ export class Logger extends EventEmitter {
             this.#addLog(msg);
         });
 
-        this.on('error', (message: string) => {
-            const msg = `${this.getFormatTime()} [error] ${message}`;
+        this.on('error', (shardId:number, message: string) => {
+            const msg = `${this.getFormatTime()} [#${shardId}] [error] ${message}`;
             this.#addLog(msg);
         });
 
-        this.on('lavashark', (message: string) => {
-            const msg = `${this.getFormatTime()} [lavashark] ${message}`;
+        this.on('lavashark', (shardId:number, message: string) => {
+            const msg = `${this.getFormatTime()} [#${shardId}] [lavashark] ${message}`;
             this.#addLog(msg);
         });
 
@@ -91,13 +91,13 @@ export class Logger extends EventEmitter {
             this.#addLog(msg);
         });
 
-        this.on('log', (message: string) => {
-            const msg = `${this.getFormatTime()} ${message}`;
+        this.on('log', (shardId:number, message: string) => {
+            const msg = `${this.getFormatTime()} [#${shardId}] ${message}`;
             this.#addLog(msg);
         });
 
-        this.on('discord', (message: string) => {
-            const msg = `${this.getFormatTime()} [discord] ${message}`;
+        this.on('discord', (shardId:number, message: string) => {
+            const msg = `${this.getFormatTime()} [#${shardId}] [discord] ${message}`;
             this.#addLog(msg);
         });
     }

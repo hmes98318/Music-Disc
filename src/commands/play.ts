@@ -34,7 +34,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
     const res = await client.lavashark.search(str);
 
     if (res.loadType === LoadType.ERROR) {
-        bot.logger.emit('error', `Search Error: ${res.exception?.message}`);
+        bot.logger.emit('error', bot.shardId, `Search Error: ${res.exception?.message}`);
         return message.reply({ content: `❌ | No results found.`, allowedMentions: { repliedUser: false } });
     }
     else if (res.loadType === LoadType.EMPTY) {
@@ -74,7 +74,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
         player.metadata = message;
         player.filters.setVolume(curVolume);
     } catch (error) {
-        bot.logger.emit('error', 'Error joining channel: ' + error);
+        bot.logger.emit('error', bot.shardId, 'Error joining channel: ' + error);
         return message.reply({ content: `❌ | I can't join voice channel.`, allowedMentions: { repliedUser: false } });
     }
 
@@ -97,7 +97,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
     if (!player.playing) {
         await player.play()
             .catch(async (error) => {
-                bot.logger.emit('error', 'Error playing track: ' + error);
+                bot.logger.emit('error', bot.shardId, 'Error playing track: ' + error);
                 await message.reply({ content: `❌ | The service is experiencing some problems, please try again.`, allowedMentions: { repliedUser: false } });
                 return player.destroy();
             });
@@ -111,7 +111,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
     const res = await client.lavashark.search(str!);
 
     if (res.loadType === LoadType.ERROR) {
-        bot.logger.emit('error', `Search Error: ${res.exception?.message}`);
+        bot.logger.emit('error', bot.shardId, `Search Error: ${res.exception?.message}`);
         return interaction.editReply({ content: `❌ | No results found.`, allowedMentions: { repliedUser: false } });
     }
     else if (res.loadType === LoadType.EMPTY) {
@@ -154,7 +154,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
         player.metadata = interaction;
         player.filters.setVolume(curVolume);
     } catch (error) {
-        bot.logger.emit('error', 'Error joining channel: ' + error);
+        bot.logger.emit('error', bot.shardId, 'Error joining channel: ' + error);
         return interaction.editReply({ content: `❌ | I can't join voice channel.`, allowedMentions: { repliedUser: false } });
     }
 
@@ -177,7 +177,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
     if (!player.playing) {
         await player.play()
             .catch(async (error) => {
-                bot.logger.emit('error', 'Error playing track: ' + error);
+                bot.logger.emit('error', bot.shardId, 'Error playing track: ' + error);
                 await interaction.editReply({ content: `❌ | The service is experiencing some problems, please try again.`, allowedMentions: { repliedUser: false } });
                 return player.destroy();
             });

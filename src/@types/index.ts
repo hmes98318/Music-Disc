@@ -45,6 +45,7 @@ export enum LoginType {
 
 
 export interface Bot {
+    shardId: number;
     blacklist: string[];
     config: Config;
     logger: Logger;

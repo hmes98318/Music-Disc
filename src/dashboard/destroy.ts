@@ -11,7 +11,7 @@ async function destroy(bot: Bot, player: Player, embedsColor: string | number) {
             components: []
         });
     } catch (error) {
-        bot.logger.emit('error', 'Dashboard error: ' + error);
+        bot.logger.emit('error', bot.shardId, 'Dashboard error: ' + error);
     }
     finally {
         player.dashboard = null;

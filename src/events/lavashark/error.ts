@@ -4,5 +4,5 @@ import type { Bot } from "../../@types";
 
 
 export default async (bot: Bot, _client: Client, node: Node, error: any) => {
-    bot.logger.emit('lavashark', `[error] Error on node "${node.identifier}": ` + error.message);
+    bot.logger.emit('lavashark', bot.shardId, `[error] Error on node "${node.identifier}": ` + error.message);
 };
