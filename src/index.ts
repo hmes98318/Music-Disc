@@ -1,7 +1,7 @@
 import { Client, Collection, GatewayIntentBits } from 'discord.js';
 import { LavaShark } from 'lavashark';
 
-import { App } from './core/App';
+import { App } from './App';
 import nodeList from '../nodelist.json';
 
 

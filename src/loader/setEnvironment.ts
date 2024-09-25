@@ -1,6 +1,6 @@
 import * as dotenv from 'dotenv';
 import { hashGenerator } from '../lib/hashGenerator';
-import type { Bot, LoginType } from '../../@types';
+import type { Bot, LoginType } from './../@types';
 
 
 dotenv.config();

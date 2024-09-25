@@ -1,10 +1,10 @@
 import express from 'express';
 
-import { registerExpressEvents } from '../api/express';
+import { registerExpressEvents } from '../lib/api/express';
 import { SessionManager } from '../lib/session-manager/SessionManager';
 
 import type { Client } from 'discord.js';
-import type { Bot } from '../../@types';
+import type { Bot } from './../@types';
 import type { LocalNodeController } from '../lib/localnode/LocalNodeController';
 
 

@@ -7,7 +7,7 @@ import type {
 } from "discord.js";
 import type { LavaShark } from "lavashark";
 
-import type { Logger } from "../core/lib/Logger";
+import type { Logger } from "../lib/Logger";
 import type { IPBlockerConfig, SessionManagerConfig } from "./SessionManager.types";
 
 

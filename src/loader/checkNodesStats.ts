@@ -1,7 +1,7 @@
-import { cst } from '../../utils/constants';
+import { cst } from './../utils/constants';
 
 import type { LavaShark } from 'lavashark';
-import type { Bot } from '../../@types';
+import type { Bot } from './../@types';
 
 
 const checkNodesStats = async (bot: Bot, lavashark: LavaShark) => {

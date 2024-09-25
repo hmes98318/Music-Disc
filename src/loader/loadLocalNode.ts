@@ -1,7 +1,7 @@
-import { cst } from '../../utils/constants';
+import { cst } from './../utils/constants';
 
 import type { LocalNodeController } from '../lib/localnode/LocalNodeController';
-import type { Bot } from '../../@types';
+import type { Bot } from './../@types';
 
 
 const loadLocalNode = (bot: Bot, localNodeController: LocalNodeController) => {

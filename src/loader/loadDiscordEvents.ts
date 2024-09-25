@@ -1,20 +1,20 @@
 import * as fs from 'fs';
-import { cst } from '../../utils/constants';
+import { cst } from './../utils/constants';
 
 import type { Client } from 'discord.js';
-import type { Bot } from '../../@types';
+import type { Bot } from './../@types';
 
 
 const loadDiscordEvents = (bot: Bot, client: Client) => {
     return new Promise<void>(async (resolve, reject) => {
         bot.logger.emit('log', bot.shardId, `-> loading Discord Events ......`);
 
-        const files = fs.readdirSync(`${__dirname}/../../events/discord/`);
+        const files = fs.readdirSync(`${__dirname}/../events/discord/`);
 
         bot.logger.emit('log', bot.shardId, `+--------------------------------+`);
         for (const file of files) {
             try {
-                const event = await import(`${__dirname}/../../events/discord/${file}`);
+                const event = await import(`${__dirname}/../events/discord/${file}`);
                 const eventName = file.split('.')[0];
 
                 client.on(eventName, event.default.bind(null, bot, client));

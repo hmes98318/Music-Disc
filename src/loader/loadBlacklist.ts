@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import type { Bot } from '../../@types';
+import type { Bot } from './../@types';
 
 
 const loadBlacklist = async (bot: Bot) => {

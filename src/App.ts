@@ -11,10 +11,10 @@ import {
 
 import { LocalNodeController } from './lib/localnode/LocalNodeController';
 import { Logger } from './lib/Logger';
-import { cst } from '../utils/constants';
+import { cst } from './utils/constants';
 
 import type { Client } from 'discord.js';
-import type { Bot, SystemInfo } from '../@types';
+import type { Bot, SystemInfo } from './@types';
 
 
 export class App {

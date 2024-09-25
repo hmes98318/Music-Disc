@@ -3,8 +3,8 @@ import fs from 'fs';
 import path from 'path';
 import readline from 'readline';
 
-import { cst } from '../../../utils/constants';
-import { formatBytes } from '../../../utils/functions/unitConverter';
+import { cst } from '../../utils/constants';
+import { formatBytes } from '../../utils/functions/unitConverter';
 
 import type { Logger } from '../Logger';
 
