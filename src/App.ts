@@ -1,30 +1,39 @@
+import { Client, Collection, GatewayIntentBits } from 'discord.js';
+import { LavaShark } from 'lavashark';
+
 import {
     checkNodesStats,
-    loadSite,
     loadBlacklist,
     loadCommands,
     loadDiscordEvents,
     loadLavaSharkEvents,
-    loadLocalNode,
     setEnvironment
 } from './loader';
-
-import { LocalNodeController } from './lib/localnode/LocalNodeController';
 import { Logger } from './lib/Logger';
 import { cst } from './utils/constants';
+import nodeList from '../nodelist.json';
 
-import type { Client } from 'discord.js';
 import type { Bot, SystemInfo } from './@types';
 
 
-export class App {
+class App {
     public bot: Bot;
-
     #client: Client;
-    #localNodeController: LocalNodeController;
 
-    constructor(client: Client) {
-        this.#client = client;
+    constructor() {
+        this.#client = new Client({
+            intents: [
+                GatewayIntentBits.Guilds,
+                GatewayIntentBits.GuildMessages,
+                GatewayIntentBits.GuildVoiceStates,
+                GatewayIntentBits.MessageContent
+            ]
+        });
+        this.#client.commands = new Collection();
+        this.#client.lavashark = new LavaShark({
+            nodes: nodeList,
+            sendWS: (guildId, payload) => { this.#client.guilds.cache.get(guildId)?.shard.send(payload); }
+        });
 
         this.bot = {
             shardId: this.#client.shard?.ids[0] ?? -1,
@@ -33,24 +42,19 @@ export class App {
             logger: new Logger(cst.logger.format, cst.logger.logDir),
             sysInfo: {} as SystemInfo
         };
-        setEnvironment(this.bot);
-        loadBlacklist(this.bot);
 
-        this.#localNodeController = new LocalNodeController(
-            this.bot.config.localNode.downloadLink,
-            this.bot.logger,
-            this.bot.config.localNode.autoRestart
-        );
+        setEnvironment(this.bot.config);
+        this.bot.logger.emit('log', this.bot.shardId, 'Set environment variables.');
+
+        loadBlacklist(this.bot);
     }
 
 
-    public async initialize() {
+    public async init() {
         return Promise.resolve()
-            .then(async () => { if (this.bot.config.enableLocalNode) await loadLocalNode(this.bot, this.#localNodeController); })
             .then(() => loadDiscordEvents(this.bot, this.#client))
             .then(() => loadLavaSharkEvents(this.bot, this.#client))
             .then(() => loadCommands(this.bot, this.#client))
-            .then(async () => { if (this.bot.config.enableSite) await loadSite(this.bot, this.#client, this.#localNodeController); })
             .then(() => checkNodesStats(this.bot, this.#client.lavashark))
             .then(() => {
                 this.bot.logger.emit('log', this.bot.shardId, cst.color.green + '*** All loaded successfully ***' + cst.color.white);
@@ -58,3 +62,16 @@ export class App {
             });
     }
 }
+
+
+const main = async () => {
+    const app = new App();
+    app.init();
+};
+
+main();
+
+
+process.on('unhandledRejection', (error) => {
+    console.error('Unhandled promise rejection:', error);
+});

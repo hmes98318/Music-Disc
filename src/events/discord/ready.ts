@@ -1,30 +1,12 @@
-import os from 'os';
-
-import {
-    Client,
-    ClientPresenceStatus,
-    version as dcVersion
-} from 'discord.js';
-import { VERSION as sharkVersion } from 'lavashark';
-
-import { version as botVersion } from '../../../package.json';
-import { getOSVersion } from '../../utils/functions/getOSVersion';
+import { Client, ClientPresenceStatus } from 'discord.js';
+import { getSysInfo } from '../../utils/functions/getSysInfo';
 import { cst } from '../../utils/constants';
 
 import type { Bot } from "../../@types";
 
 
 export default async (bot: Bot, client: Client) => {
-    bot.sysInfo = {
-        startupTime: new Date(),
-        os_version: await getOSVersion(),
-        bot_version: `v${botVersion}`,
-        node_version: process.version,
-        dc_version: `v${dcVersion}`,
-        shark_version: `v${sharkVersion}`,
-        cpu: `${os.cpus()[0].model}`
-    };
-
+    bot.sysInfo = await getSysInfo();
 
     const release = {
         bot: `${bot.config.name}: ${cst.color.cyan}${bot.sysInfo.bot_version}${cst.color.white}`,
@@ -70,5 +52,5 @@ export default async (bot: Bot, client: Client) => {
     bot.logger.emit('discord', bot.shardId, `>>> Logged in as ${client.user?.username}`);
 
 
-    bot.logger.emit('log', bot.shardId, `${cst.color.green}Launched shard ${bot.shardId + 1} / ${client.shard?.count}${cst.color.white}`);
+    bot.logger.emit('log', bot.shardId, `${cst.color.green}*** Launched shard ${bot.shardId + 1} / ${client.shard?.count} ***${cst.color.white}`);
 };

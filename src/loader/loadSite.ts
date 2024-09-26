@@ -3,12 +3,12 @@ import express from 'express';
 import { registerExpressEvents } from '../lib/api/express';
 import { SessionManager } from '../lib/session-manager/SessionManager';
 
-import type { Client } from 'discord.js';
+import type { ShardingManager } from 'discord.js';
 import type { Bot } from './../@types';
 import type { LocalNodeController } from '../lib/localnode/LocalNodeController';
 
 
-const loadSite = (bot: Bot, client: Client, localNodeController: LocalNodeController) => {
+const loadSite = (bot: Bot, shardManager: ShardingManager, localNodeController: LocalNodeController) => {
     return new Promise<void>((resolve, _reject) => {
         bot.logger.emit('api', `-> loading Web Framework ......`);
 
@@ -17,7 +17,7 @@ const loadSite = (bot: Bot, client: Client, localNodeController: LocalNodeContro
         const sessionManager = new SessionManager(bot.config.sessionManager, bot.config.ipBlocker);
 
 
-        registerExpressEvents(bot, client, localNodeController, app, sessionManager);
+        registerExpressEvents(bot, shardManager, localNodeController, app, sessionManager);
 
         app.listen(port, () => {
             bot.logger.emit('api', `Server start listening port on ${port}`);

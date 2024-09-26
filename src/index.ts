@@ -1,32 +1,13 @@
-import { Client, Collection, GatewayIntentBits } from 'discord.js';
-import { LavaShark } from 'lavashark';
-
-import { App } from './App';
-import nodeList from '../nodelist.json';
-
-
+/**
+ * Some web features are unavailable
+ * ENABLE_LOCAL_NODE = false
+ */
+import { Controller } from "./Controller";
 
 
-const client = new Client({
-    intents: [
-        GatewayIntentBits.Guilds,
-        GatewayIntentBits.GuildMessages,
-        GatewayIntentBits.GuildVoiceStates,
-        GatewayIntentBits.MessageContent
-    ]
-});
-client.commands = new Collection();
-client.lavashark = new LavaShark({
-    nodes: nodeList,
-    sendWS: (guildId, payload) => { client.guilds.cache.get(guildId)?.shard.send(payload); }
-});
+const controller = new Controller();
 
-
-const main = async () => {
-    const app = new App(client);
-    app.initialize();
-};
-main();
+controller.init();
 
 
 process.on('unhandledRejection', (error) => {

@@ -5,10 +5,8 @@
     "main": "./src/index.ts",
     "scripts": {
         "start": "npm run build && node ./dist/src/index.js",
-        "start:shard": "npm run build && node ./dist/src/shard.js",
         "build": "tsc",
         "dev": "ts-node ./src/index.ts",
-        "dev:shard": "ts-node ./src/shard.ts",
         "lint": "eslint . --ext .ts --color"
     },
     "repository": {

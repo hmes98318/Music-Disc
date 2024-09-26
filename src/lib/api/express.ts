@@ -2,7 +2,7 @@ import bodyParser from 'body-parser';
 import cookie from "cookie";
 import express from 'express';
 import undici from "undici";
-import { NodeState } from 'lavashark';
+import { Node, NodeState } from 'lavashark';
 
 import { embeds } from '../../embeds';
 import { hashGenerator } from '../hashGenerator';
@@ -10,14 +10,14 @@ import { sysusage } from '../../utils/functions/sysusage';
 import { uptime } from '../../utils/functions/uptime';
 import { LoginType } from '../../@types';
 
-import type { Client, VoiceChannel } from 'discord.js';
+import type { ShardingManager, VoiceChannel } from 'discord.js';
 import type { Express } from 'express';
 import type { Bot } from '../../@types';
 import type { SessionManager } from '../session-manager/SessionManager';
 import type { LocalNodeController } from '../localnode/LocalNodeController';
 
 
-const registerExpressEvents = (bot: Bot, client: Client, localNodeController: LocalNodeController, app: Express, sessionManager: SessionManager) => {
+const registerExpressEvents = (bot: Bot, shardManager: ShardingManager, localNodeController: LocalNodeController, app: Express, sessionManager: SessionManager) => {
     const siteConfig = bot.config.site;
 
     const cssPath = `${process.cwd()}/views/css`;
@@ -80,7 +80,7 @@ const registerExpressEvents = (bot: Bot, client: Client, localNodeController: Lo
                     const tokenResponseData = await undici.request('https://discord.com/api/oauth2/token', {
                         method: 'POST',
                         body: new URLSearchParams({
-                            client_id: client.user?.id,
+                            client_id: await shardManager.fetchClientValues('user.id'),
                             client_secret: bot.config.clientSecret,
                             code,
                             grant_type: 'authorization_code',
@@ -166,8 +166,8 @@ const registerExpressEvents = (bot: Bot, client: Client, localNodeController: Lo
         res.sendFile(`${viewsPath}/serverlist.html`);
     });
 
-    app.get('/servers/:id', verifyLogin, (req, res) => {
-        const server = client.guilds.cache.find((x) => x.id === req.params.id);
+    app.get('/servers/:id', verifyLogin, async (req, res) => {
+        const server = (await shardManager.fetchClientValues('guilds.cache') as any).find((x: any) => x.id === req.params.id);
 
         if (!server) {
             res.redirect('/serverlist');
@@ -248,18 +248,39 @@ const registerExpressEvents = (bot: Bot, client: Client, localNodeController: Lo
         return res.redirect('/login');
     });
 
-    app.get('/api/info', verifyLogin, (req, res) => {
+    app.get('/api/info', verifyLogin, async (req, res) => {
         // bot.logger.emit('api', '[GET] /api/info ' + req.ip);
+
+        const [guildsCountResult, guildsCacheResult] = await Promise.allSettled([
+            shardManager.fetchClientValues('guilds.cache.size').catch(() => [-1]),
+            shardManager.fetchClientValues('guilds.cache').catch(() => [[]]),
+        ]);
+
+        const totalGuildsCount = guildsCountResult.status === 'fulfilled' ?
+            (guildsCountResult.value as number[]).reduce((total: number, count: number) => total + count, 0) : 0;
+        const totalMembersCount = guildsCacheResult.status === 'fulfilled' ?
+            (guildsCacheResult.value as []).flat().reduce((acc, guild) => acc + (guild ? (guild as any).memberCount : 0), 0) : 0;
+
+
         const info = {
             ...bot.sysInfo,
-            serverCount: client.guilds.cache.size,
-            totalMembers: client.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0)
+            serverCount: `${totalGuildsCount} ${JSON.stringify(guildsCountResult.status === 'fulfilled' ? guildsCountResult.value : [])}`,
+            totalMembers: `${totalMembersCount} ${JSON.stringify(guildsCacheResult.status === 'fulfilled' ? (guildsCacheResult.value as unknown as []).map((guilds: any) => guilds.reduce((acc: any, guild: any) => acc + (guild ? (guild as any).memberCount : 0), 0)) : [])}`
         };
         res.json(info);
     });
 
     app.get('/api/status', verifyLogin, async (req, res) => {
         // bot.logger.emit('api', '[GET] /api/status ' + req.ip);
+
+        const [pingResult, playerCountResult] = await Promise.allSettled([
+            shardManager.fetchClientValues('ws.ping').catch(() => [-1]),
+            shardManager.fetchClientValues('lavashark.players.size').catch(() => [-1])
+        ]);
+
+        const totalPlayerCount = playerCountResult.status === 'fulfilled' ?
+            (playerCountResult.value as number[]).reduce((total: number, count: number) => total + count, 0) : 0;
+
 
         const systemStatus = {
             load: await sysusage.cpu(),
@@ -268,9 +289,9 @@ const registerExpressEvents = (bot: Bot, client: Client, localNodeController: Lo
             uptime: uptime(bot.sysInfo.startupTime),
             ping: {
                 bot: -1,
-                api: client.ws.ping
+                api: `${JSON.stringify(pingResult.status === 'fulfilled' ? pingResult.value : [-1])}`
             },
-            playing: client.lavashark.players.size
+            playing: `${totalPlayerCount} ${JSON.stringify(playerCountResult.status === 'fulfilled' ? playerCountResult.value : [])}`
         };
 
         res.json(systemStatus);
@@ -279,12 +300,12 @@ const registerExpressEvents = (bot: Bot, client: Client, localNodeController: Lo
     app.get('/api/node/status', verifyLogin, async (req, res) => {
         // bot.logger.emit('api', '[GET] /api/info ' + req.ip);
 
-        const nodesPromises = client.lavashark.nodes.map(async (node) => {
+        const nodesPromises = (await shardManager.fetchClientValues('lavashark.nodes') as Node[]).map(async (node) => {
             if (node.state === NodeState.CONNECTED) {
                 try {
                     const nodeInfoPromise = node.getInfo();
                     const nodeStatsPromise = node.getStats();
-                    const nodePingPromise = client.lavashark.nodePing(node);
+                    const nodePingPromise = node.getPing();
                     const timeoutPromise = new Promise((_, reject) => {
                         setTimeout(() => {
                             reject(new Error(`nodes_status "${node.identifier}" Timeout`));
@@ -333,13 +354,13 @@ const registerExpressEvents = (bot: Bot, client: Client, localNodeController: Lo
         }
     });
 
-    app.get('/api/serverlist', verifyLogin, (req, res) => {
+    app.get('/api/serverlist', verifyLogin, async (req, res) => {
         // bot.logger.emit('api', '[GET] /api/serverlist ' + req.ip);
 
-        const allServer = client.guilds.cache;
-        const playingServers = new Set(client.lavashark.players.keys());
+        const allServer = (await shardManager.fetchClientValues('guilds.cache') as any).flat();
+        const playingServers = new Set((await shardManager.fetchClientValues('lavashark.players') as any).flat().keys());
 
-        const serverlist = allServer.map((guild) => ({
+        const serverlist = allServer.map((guild: any) => ({
             data: guild,
             active: playingServers.has(guild.id),
         }));
@@ -350,7 +371,7 @@ const registerExpressEvents = (bot: Bot, client: Client, localNodeController: Lo
     app.get('/api/server/info/:guildID', verifyLogin, async (req, res) => {
         // bot.logger.emit('api', `[GET] /api/server/info/${req.params.guildID} ` + req.ip);
 
-        const guild = await client.guilds.fetch(req.params.guildID);
+        const guild = await (await shardManager.fetchClientValues('guilds.cache') as any).flat().fetch(req.params.guildID);
 
         if (!guild) {
             res.send({});
@@ -359,72 +380,72 @@ const registerExpressEvents = (bot: Bot, client: Client, localNodeController: Lo
             res.send(guild);
         }
     });
-
-    app.get('/api/server/nowplaying/:guildID', verifyLogin, async (req, res) => {
-        const player = client.lavashark.getPlayer(req.params.guildID);
-
-        if (!player) {
-            const resData = {
-                status: 'NOT_FOUND',
-                data: {}
-            };
-
-            res.json(resData);
-        }
-        else {
-            const voiceChannel = client.channels.cache.get(player.voiceChannelId) as VoiceChannel;
-            const resData = {
-                status: 'OK',
-                data: {
-                    endpoint: player.voiceState.event?.endpoint ?? 'UNKNOWN',
-                    voiceChannel: voiceChannel,
-                    members: voiceChannel.members,
-                    current: player.current,
-                    isPaused: player.paused,
-                    repeatMode: player.repeatMode,
-                    volume: player.volume,
-                    maxVolume: bot.config.maxVolume
-                }
-            };
-
-            res.json(resData);
-        }
-    });
-
-    app.post('/api/server/leave', verifyLogin, async (req, res) => {
-        const { guildID } = req.body;
-
-        if (!guildID) {
-            return res.send('PARAMETER_ERROR');
-        }
-
-        const guild = client.guilds.cache.get(guildID);
-
-        if (!guild) {
-            return res.send('PARAMETER_ERROR');
-        }
-
-
-        try {
-            const player = client.lavashark.getPlayer(guildID);
-
-            if (player) {
-                player.destroy();
+    /*
+        app.get('/api/server/nowplaying/:guildID', verifyLogin, async (req, res) => {
+            const player = client.lavashark.getPlayer(req.params.guildID);
+    
+            if (!player) {
+                const resData = {
+                    status: 'NOT_FOUND',
+                    data: {}
+                };
+    
+                res.json(resData);
             }
-
-            await guild?.leave();
-        } catch (error) {
-            bot.logger.emit('error', bot.shardId, `There was an error leaving the guild: \n ${error}`);
-            return res.send('FAILED');
-        }
-
-        return res.send('SUCCESS');
-    });
-
-    app.get('/api/user/:userID', verifyLogin, (req, res) => {
+            else {
+                const voiceChannel = client.channels.cache.get(player.voiceChannelId) as VoiceChannel;
+                const resData = {
+                    status: 'OK',
+                    data: {
+                        endpoint: player.voiceState.event?.endpoint ?? 'UNKNOWN',
+                        voiceChannel: voiceChannel,
+                        members: voiceChannel.members,
+                        current: player.current,
+                        isPaused: player.paused,
+                        repeatMode: player.repeatMode,
+                        volume: player.volume,
+                        maxVolume: bot.config.maxVolume
+                    }
+                };
+    
+                res.json(resData);
+            }
+        });
+    
+        app.post('/api/server/leave', verifyLogin, async (req, res) => {
+            const { guildID } = req.body;
+    
+            if (!guildID) {
+                return res.send('PARAMETER_ERROR');
+            }
+    
+            const guild = client.guilds.cache.get(guildID);
+    
+            if (!guild) {
+                return res.send('PARAMETER_ERROR');
+            }
+    
+    
+            try {
+                const player = client.lavashark.getPlayer(guildID);
+    
+                if (player) {
+                    player.destroy();
+                }
+    
+                await guild?.leave();
+            } catch (error) {
+                bot.logger.emit('error', bot.shardId, `There was an error leaving the guild: \n ${error}`);
+                return res.send('FAILED');
+            }
+    
+            return res.send('SUCCESS');
+        });
+    */
+    app.get('/api/user/:userID', verifyLogin, async (req, res) => {
         // bot.logger.emit('api', `[GET] /api/user/avatar/${req.params.id} ` + req.ip);
 
-        const user = client.users.cache.get(req.params.userID);
+        const user = (await shardManager.fetchClientValues('users.cache') as any).flat().get(req.params.userID);
         res.send(user);
     });
 
@@ -540,18 +561,18 @@ const registerExpressEvents = (bot: Bot, client: Client, localNodeController: Lo
             }
         }
     });
-
-    app.post('/api/maintain/send', verifyLogin, async (req, res) => {
-        client.lavashark.players.forEach(async (player) => {
-            player.metadata?.channel?.send({ embeds: [embeds.maintainNotice(bot.config.embedsColor)] })
-                .catch((error) => {
-                    bot.logger.emit('error', bot.shardId, `[api] Fail to send maintainNotice` + error);
-                });
+    /*
+        app.post('/api/maintain/send', verifyLogin, async (req, res) => {
+            client.lavashark.players.forEach(async (player) => {
+                player.metadata?.channel?.send({ embeds: [embeds.maintainNotice(bot.config.embedsColor)] })
+                    .catch((error) => {
+                        bot.logger.emit('error', bot.shardId, `[api] Fail to send maintainNotice` + error);
+                    });
+            });
+    
+            res.json({ type: 'SEND_MAINTAIN', result: 'SUCCEED' });
         });
-
-        res.json({ type: 'SEND_MAINTAIN', result: 'SUCCEED' });
-    });
-
+    */
     app.get('/api/oauth2-link', (req, res) => {
         res.json({ link: bot.config.site.oauth2Link });
     });

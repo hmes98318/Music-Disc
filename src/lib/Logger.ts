@@ -11,6 +11,7 @@ export type LoggerEvents = {
     'localNode': (message: string) => void;
     'log': (shardId:number, message: string) => void;
     'discord': (shardId:number, message: string) => void;
+    'shard': (message: string) => void;
 };
 
 
@@ -98,6 +99,11 @@ export class Logger extends EventEmitter {
 
         this.on('discord', (shardId:number, message: string) => {
             const msg = `${this.getFormatTime()} [#${shardId}] [discord] ${message}`;
+            this.#addLog(msg);
+        });
+
+        this.on('shard', (message: string) => {
+            const msg = `${this.getFormatTime()} [shard] ${message}`;
             this.#addLog(msg);
         });
     }
