@@ -39,7 +39,7 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
     const row = new ActionRowBuilder<ButtonBuilder>()
         .addComponents(saveButton);
 
-    return message.channel.send({
+    return message.reply({
         embeds: [embeds.save(bot.config.embedsColor, track!.title, subtitle, track!.uri, track!.thumbnail!)],
         components: [row],
         allowedMentions: { repliedUser: false }

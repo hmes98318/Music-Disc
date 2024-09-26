@@ -20,7 +20,7 @@ async function initial(bot: Bot, interactionOrMessage: ChatInputCommandInteracti
         throw new TypeError("Invalid Interaction or Message type");
     }
 
-    player.dashboard = await channel!.send({
+    player.dashboard = await (channel as any /* discord.js type error ? (v14.16.2) */).send({
         embeds: [embeds.connected(bot.config.embedsColor)],
         components: []
     });

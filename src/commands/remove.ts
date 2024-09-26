@@ -107,9 +107,9 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
         });
 
 
-        const collector = message.channel.createMessageCollector({
+        const collector = (message.channel as any /* discord.js type error ? (v14.16.2) */).createMessageCollector({
             time: 10000, // 10s
-            filter: m => m.author.id === message.author.id
+            filter: (m: any) => m.author.id === message.author.id
         });
 
         collector.on('collect', async (query: Message<boolean>) => {
@@ -219,9 +219,9 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
         });
 
 
-        const collector = interaction.channel!.createMessageCollector({
+        const collector = (interaction.channel as any /* discord.js type error ? (v14.16.2) */).createMessageCollector({
             time: 10000, // 10s
-            filter: m => m.author.id === interaction.user.id
+            filter: (m: any) => m.author.id === interaction.user.id
         });
 
         collector.on('collect', async (query: Message<boolean>) => {

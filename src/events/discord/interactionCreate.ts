@@ -116,9 +116,9 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
                     const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(select);
                     const msg = await interaction.reply({ content: `Select a song loop mode.`, ephemeral: true, components: [row] });
 
-                    const collector = interaction.channel!.createMessageComponentCollector({
+                    const collector = (interaction.channel as any /* discord.js type error ? (v14.16.2) */).createMessageComponentCollector({
                         time: 20000, // 20s
-                        filter: i => i.user.id === interaction.user.id
+                        filter: (i:any) => i.user.id === interaction.user.id
                     });
 
                     collector.on("collect", async (i: StringSelectMenuInteraction) => {
