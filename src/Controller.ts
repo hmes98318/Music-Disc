@@ -20,7 +20,7 @@ export class Controller {
             config: cst.config,
             logger: new Logger(cst.logger.format, cst.logger.logDir),
             sysInfo: {} as SystemInfo
-        }
+        };
 
         setEnvironment(this.#bot.config);
         this.#bot.logger.emit('shard', 'Set environment variables.');

@@ -2,7 +2,7 @@ import bodyParser from 'body-parser';
 import cookie from "cookie";
 import express from 'express';
 import undici from "undici";
-import { Node, NodeState } from 'lavashark';
+import { NodeState } from 'lavashark';
 
 import { embeds } from '../../embeds';
 import { hashGenerator } from '../hashGenerator';
