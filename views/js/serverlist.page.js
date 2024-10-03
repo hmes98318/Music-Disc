@@ -59,9 +59,7 @@ function filterServers() {
         img.width = 60;
         img.height = 60;
         img.alt = guild.data.name;
-        img.src = guild.data.icon
-            ? `https://cdn.discordapp.com/icons/${guild.data.id}/${guild.data.icon}.png`
-            : "https://raw.githubusercontent.com/hmes98318/Music-Disc/main/public/imgs/html/server.png";
+        img.src = guild.data.iconURL ? guild.data.iconURL : "https://raw.githubusercontent.com/hmes98318/Music-Disc/main/public/imgs/html/server.png";
 
         const imgLabel = document.createElement("div");
         imgLabel.className = "img-label";

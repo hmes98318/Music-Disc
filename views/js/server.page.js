@@ -16,7 +16,7 @@ const getServerList = async (guildID) => {
         data.forEach((guild) => {
             const activeClass = (guild.data.id === guildID) ? 'active' : '';
             const isActive = guild.active ? '<div class="active-dot"></div>' : '';
-            const guildIcon = guild.data.icon ? `https://cdn.discordapp.com/icons/${guild.data.id}/${guild.data.icon}.png` : "https://raw.githubusercontent.com/hmes98318/Music-Disc/main/public/imgs/html/server.png";
+            const guildIcon = guild.data.iconURL ? guild.data.iconURL : "https://raw.githubusercontent.com/hmes98318/Music-Disc/main/public/imgs/html/server.png";
 
             const listItem = document.createElement("li");
             listItem.className = activeClass;
