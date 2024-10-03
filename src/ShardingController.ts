@@ -9,7 +9,7 @@ export class ShardingController {
 
     constructor() {
         const fileExtension = path.extname(__filename);
-        this.shardFilePath = path.resolve(__dirname, `./App${fileExtension}`);
+        this.shardFilePath = path.join(__dirname, `./App${fileExtension}`);
     }
 
 

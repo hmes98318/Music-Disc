@@ -136,7 +136,7 @@ const registerExpressEvents = (bot: Bot, shardManager: ShardingManager, localNod
             res.sendFile(`${viewsPath}/login-oauth2.html`);
         });
     }
-    else {
+    else {  // LoginType.USER
         app.get('/login', (req, res) => {
             const cookies = cookie.parse(req.headers.cookie as string || '');
             const sessionId = cookies.sessionId;
@@ -167,7 +167,16 @@ const registerExpressEvents = (bot: Bot, shardManager: ShardingManager, localNod
     });
 
     app.get('/servers/:id', verifyLogin, async (req, res) => {
-        const server = (await shardManager.fetchClientValues('guilds.cache') as any).find((x: any) => x.id === req.params.id);
+        const guildID = req.params.id;
+
+        // 使用 shardManager 在所有 shard 中尋找指定的 guild
+        const guilds = await shardManager.broadcastEval((client, context) => {
+            const guild = client.guilds.cache.get(context.guildID);
+            return guild ? { id: guild.id, name: guild.name } : null;
+        }, { context: { guildID } });
+
+        // 過濾出沒有找到 guild 的 shard，找到 guild 就返回
+        const server = guilds.find(guild => guild !== null);
 
         if (!server) {
             res.redirect('/serverlist');
@@ -298,55 +307,58 @@ const registerExpressEvents = (bot: Bot, shardManager: ShardingManager, localNod
     });
 
     app.get('/api/node/status', verifyLogin, async (req, res) => {
-        // bot.logger.emit('api', '[GET] /api/info ' + req.ip);
-
-        const nodesPromises = (await shardManager.fetchClientValues('lavashark.nodes') as Node[]).map(async (node) => {
-            if (node.state === NodeState.CONNECTED) {
-                try {
-                    const nodeInfoPromise = node.getInfo();
-                    const nodeStatsPromise = node.getStats();
-                    const nodePingPromise = node.getPing();
-                    const timeoutPromise = new Promise((_, reject) => {
-                        setTimeout(() => {
-                            reject(new Error(`nodes_status "${node.identifier}" Timeout`));
-                        }, 1500);
-                    });
-
-                    const [nodeInfo, nodeStats, nodePing] = await (Promise.race([
-                        Promise.all([nodeInfoPromise, nodeStatsPromise, nodePingPromise]),
-                        timeoutPromise
-                    ]) as Promise<[(typeof nodeInfoPromise), (typeof nodeStatsPromise), (typeof nodePingPromise)]>);
-
-                    return {
-                        id: node.identifier,
-                        state: node.state,
-                        info: nodeInfo,
-                        stats: nodeStats,
-                        ping: nodePing
-                    };
-                } catch (_) {
-                    return {
-                        id: node.identifier,
-                        state: node.state,
-                        info: {},
-                        stats: {},
-                        ping: -1
-                    };
-                }
-            }
-            else {
-                return {
-                    id: node.identifier,
-                    state: node.state,
-                    info: {},
-                    stats: {},
-                    ping: -1,
-                };
-            }
-        });
-
         try {
-            const nodesStatusList = await Promise.all(nodesPromises);
+            const nodeStatuses = await shardManager.broadcastEval(async (client, context) => {
+                const nodesPromises = client.lavashark.nodes.map(async (node) => {
+                    if (node.state === context.NodeState.CONNECTED) {
+                        try {
+                            const nodeInfoPromise = node.getInfo();
+                            const nodeStatsPromise = node.getStats();
+                            const nodePingPromise = client.lavashark.nodePing(node);
+                            const timeoutPromise = new Promise((_, reject) => {
+                                setTimeout(() => {
+                                    reject(new Error(`nodes_status "${node.identifier}" Timeout`));
+                                }, 1500);
+                            });
+
+                            const [nodeInfo, nodeStats, nodePing] = await (Promise.race([
+                                Promise.all([nodeInfoPromise, nodeStatsPromise, nodePingPromise,]),
+                                timeoutPromise
+                            ]) as Promise<[(typeof nodeInfoPromise), (typeof nodeStatsPromise), (typeof nodePingPromise)]>);
+
+                            return {
+                                id: node.identifier,
+                                state: node.state,
+                                info: nodeInfo,
+                                stats: nodeStats,
+                                ping: nodePing
+                            };
+                        } catch (_) {
+                            return {
+                                id: node.identifier,
+                                state: node.state,
+                                info: {},
+                                stats: {},
+                                ping: -1
+                            };
+                        }
+                    }
+                    else {
+                        return {
+                            id: node.identifier,
+                            state: node.state,
+                            info: {},
+                            stats: {},
+                            ping: -1
+                        };
+                    }
+                });
+
+                return Promise.all(nodesPromises);
+            }, { context: { NodeState } });
+
+            const nodesStatusList = nodeStatuses.flat();
+
             res.json(nodesStatusList);
         } catch (error) {
             bot.logger.emit('api', 'Error while fetching node data: ' + String(error));
@@ -357,21 +369,53 @@ const registerExpressEvents = (bot: Bot, shardManager: ShardingManager, localNod
     app.get('/api/serverlist', verifyLogin, async (req, res) => {
         // bot.logger.emit('api', '[GET] /api/serverlist ' + req.ip);
 
-        const allServer = (await shardManager.fetchClientValues('guilds.cache') as any).flat();
-        const playingServers = new Set((await shardManager.fetchClientValues('lavashark.players') as any).flat().keys());
+        const result = await shardManager.broadcastEval((client) => {
+            const allServers = client.guilds.cache.map((guild) => ({
+                id: guild.id,
+                name: guild.name,
+                memberCount: guild.memberCount,
+                iconURL: guild.iconURL(),
+            }));
 
-        const serverlist = allServer.map((guild: any) => ({
-            data: guild,
-            active: playingServers.has(guild.id),
-        }));
+            const playingServers = new Set(client.lavashark.players.keys());
+
+            return allServers.map((server) => ({
+                data: server,
+                active: playingServers.has(server.id),
+            }));
+        });
+
+        const serverlist = result.flat();
 
         res.send(serverlist);
     });
 
     app.get('/api/server/info/:guildID', verifyLogin, async (req, res) => {
         // bot.logger.emit('api', `[GET] /api/server/info/${req.params.guildID} ` + req.ip);
+        const guildID = req.params.guildID;
 
-        const guild = await (await shardManager.fetchClientValues('guilds.cache') as any).flat().fetch(req.params.guildID);
+        // 在所有 shard 中查找該 guild
+        const guildData = await shardManager.broadcastEval(async (client, context) => {
+            try {
+                const guild = await client.guilds.fetch(context.guildID);
+
+                if (!guild) {
+                    return null;
+                }
+
+                return {
+                    id: guild.id,
+                    name: guild.name,
+                    memberCount: guild.memberCount,
+                    iconURL: guild.iconURL(),
+                };
+            } catch (_) {
+                return null;
+            }
+        }, { context: { guildID } });
+
+        // 過濾掉沒有找到的 shard，獲取 guild 資料
+        const guild = guildData.find(data => data !== null);
 
         if (!guild) {
             res.send({});
@@ -380,73 +424,97 @@ const registerExpressEvents = (bot: Bot, shardManager: ShardingManager, localNod
             res.send(guild);
         }
     });
-    /*
-        app.get('/api/server/nowplaying/:guildID', verifyLogin, async (req, res) => {
-            const player = client.lavashark.getPlayer(req.params.guildID);
-    
+
+    app.get('/api/server/nowplaying/:guildID', verifyLogin, async (req, res) => {
+        const guildID = req.params.guildID;
+
+        const resData = await shardManager.broadcastEval(async (client, context) => {
+            const player = client.lavashark.getPlayer(context.guildID);
             if (!player) {
-                const resData = {
-                    status: 'NOT_FOUND',
-                    data: {}
-                };
-    
-                res.json(resData);
+                return null;
+            }
+
+            const voiceChannel = client.channels.cache.get(player.voiceChannelId) as VoiceChannel;
+            if (!voiceChannel) {
+                return null;
+            }
+
+            return {
+                endpoint: player.voiceState.event?.endpoint ?? 'UNKNOWN',
+                voiceChannelId: voiceChannel.id,
+                members: Array.from(voiceChannel.members.values()).map((member) => ({
+                    id: member.id,
+                    username: member.user.username,
+                    displayName: member.displayName,
+                    displayAvatarURL: member.displayAvatarURL()
+                })),
+                current: player.current,
+                isPaused: player.paused,
+                repeatMode: player.repeatMode,
+                volume: player.volume,
+                maxVolume: context.bot.config.maxVolume
+            };
+        }, { context: { bot, guildID } });
+
+        // 過濾掉沒有 player 的 shard
+        const playerData = resData.find(data => data !== null);
+
+        if (!playerData) {
+            return res.json({
+                status: 'NOT_FOUND',
+                data: {}
+            });
+        } else {
+            return res.json({
+                status: 'OK',
+                data: playerData
+            });
+        }
+    });
+
+    app.post('/api/server/leave', verifyLogin, async (req, res) => {
+        const { guildID } = req.body;
+
+        if (!guildID) {
+            return res.send('PARAMETER_ERROR');
+        }
+
+        try {
+            const result = await shardManager.broadcastEval(async (client, context) => {
+                const guild = client.guilds.cache.get(context.guildID);
+
+                if (!guild) {
+                    return false;
+                }
+
+                try {
+                    const player = client.lavashark.getPlayer(context.guildID);
+
+                    if (player) {
+                        player.destroy();
+                    }
+
+
+                    await guild.leave();
+                    return true;
+                } catch (error) {
+                    bot.logger.emit('error', bot.shardId, `Error leaving guild ${context.guildID}: ${error}`);
+                    return false;
+                }
+            }, { context: { guildID } });
+
+            const success = result.some(r => r === true);
+
+            if (success) {
+                return res.send('SUCCESS');
             }
             else {
-                const voiceChannel = client.channels.cache.get(player.voiceChannelId) as VoiceChannel;
-                const resData = {
-                    status: 'OK',
-                    data: {
-                        endpoint: player.voiceState.event?.endpoint ?? 'UNKNOWN',
-                        voiceChannel: voiceChannel,
-                        members: voiceChannel.members,
-                        current: player.current,
-                        isPaused: player.paused,
-                        repeatMode: player.repeatMode,
-                        volume: player.volume,
-                        maxVolume: bot.config.maxVolume
-                    }
-                };
-    
-                res.json(resData);
-            }
-        });
-    
-        app.post('/api/server/leave', verifyLogin, async (req, res) => {
-            const { guildID } = req.body;
-    
-            if (!guildID) {
                 return res.send('PARAMETER_ERROR');
             }
-    
-            const guild = client.guilds.cache.get(guildID);
-    
-            if (!guild) {
-                return res.send('PARAMETER_ERROR');
-            }
-    
-    
-            try {
-                const player = client.lavashark.getPlayer(guildID);
-    
-                if (player) {
-                    player.destroy();
-                }
-    
-                await guild?.leave();
-            } catch (error) {
-                bot.logger.emit('error', bot.shardId, `There was an error leaving the guild: \n ${error}`);
-                return res.send('FAILED');
-            }
-    
-            return res.send('SUCCESS');
-        });
-    */
-    app.get('/api/user/:userID', verifyLogin, async (req, res) => {
-        // bot.logger.emit('api', `[GET] /api/user/avatar/${req.params.id} ` + req.ip);
-
-        const user = (await shardManager.fetchClientValues('users.cache') as any).flat().get(req.params.userID);
-        res.send(user);
+        } catch (error) {
+            bot.logger.emit('error', bot.shardId, `There was an error processing the leave request: \n ${error}`);
+            return res.send('FAILED');
+        }
     });
 
     app.get('/api/lavashark/getThumbnail/:source/:id', verifyLogin, (req, res) => {
@@ -561,18 +629,22 @@ const registerExpressEvents = (bot: Bot, shardManager: ShardingManager, localNod
             }
         }
     });
-    /*
-        app.post('/api/maintain/send', verifyLogin, async (req, res) => {
+
+    app.post('/api/maintain/send', verifyLogin, async (req, res) => {
+        const maintainEmbed = embeds.maintainNotice(bot.config.embedsColor);
+
+        await shardManager.broadcastEval(async (client, context) => {
             client.lavashark.players.forEach(async (player) => {
-                player.metadata?.channel?.send({ embeds: [embeds.maintainNotice(bot.config.embedsColor)] })
-                    .catch((error) => {
+                (player.metadata?.channel as any /* discord.js type error ? (v14.16.2) */).send({ embeds: [context.maintainEmbed] })
+                    .catch((error: string) => {
                         bot.logger.emit('error', bot.shardId, `[api] Fail to send maintainNotice` + error);
                     });
             });
-    
-            res.json({ type: 'SEND_MAINTAIN', result: 'SUCCEED' });
-        });
-    */
+        }, { context: { maintainEmbed } });
+
+        res.json({ type: 'SEND_MAINTAIN', result: 'SUCCEED' });
+    });
+
     app.get('/api/oauth2-link', (req, res) => {
         res.json({ link: bot.config.site.oauth2Link });
     });
