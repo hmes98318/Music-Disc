@@ -76,3 +76,102 @@ export const cst = {
         logDir      : './logs'
     }
 };
+
+/**
+ * Music filter config
+ * (Filter name all lowercase)
+ */
+export const filtersConfig = {
+    bass: {
+        equalizer: [
+            0.25,   // 25 Hz
+            0.2,    // 40 Hz
+            0.1,    // 63 Hz
+            0.1,    // 100 Hz
+            0.05,   // 160 Hz
+            0.0,    // 250 Hz
+            -0.05,  // 400 Hz
+            -0.1,   // 630 Hz
+            0.0,    // 1000 Hz
+            0.0,    // 1600 Hz
+            0.0,    // 2500 Hz
+            0.0,    // 4000 Hz
+            0.0,    // 6300 Hz
+            0.0,    // 10000 Hz
+            0.0     // 16000 Hz
+        ]
+    },
+    karaoke: {
+        karaoke: {
+            level: 0.8,
+            monoLevel: 1.0,
+            filterBand: 220.0,
+            filterWidth: 100.0,
+        }
+    },
+    lowpass: {
+        lowPass: { smoothing: 15 }
+    },
+    nightcore: {
+        equalizer: [
+            0.3,   // 25 Hz
+            0.3,   // 40 Hz
+            0.2,   // 63 Hz
+            0.1,   // 100 Hz
+            0.0,   // 160 Hz
+            0.0,   // 250 Hz
+            0.0,   // 400 Hz
+            0.0,   // 630 Hz
+            0.0,   // 1000 Hz
+            0.1,   // 1600 Hz
+            0.2,   // 2500 Hz
+            0.2,   // 4000 Hz
+            0.1,   // 6300 Hz
+            -0.1,  // 10000 Hz
+            -0.2   // 16000 Hz
+        ],
+        timescale: { pitch: 1.2, rate: 1.15 },
+        tremolo: { depth: 0.2, frequency: 12 }
+    },
+    soft: {
+        equalizer: [
+            0.1,   // 25 Hz
+            0.1,   // 40 Hz
+            0.1,   // 63 Hz
+            0.0,   // 100 Hz
+            0.0,   // 160 Hz
+            0.0,   // 250 Hz
+            0.0,   // 400 Hz
+            -0.1,  // 630 Hz
+            -0.2,  // 1000 Hz
+            0.0,   // 1600 Hz
+            0.0,   // 2500 Hz
+            0.0,   // 4000 Hz
+            0.0,   // 6300 Hz
+            0.0,   // 10000 Hz
+            0.0    // 16000 Hz
+        ],
+        lowPass: { smoothing: 5 }   // 使用低通濾波器，平滑高頻
+    },
+    vaporwave: {
+        equalizer: [
+            0.2,   // 25 Hz
+            0.2,   // 40 Hz
+            0.1,   // 63 Hz
+            0.0,   // 100 Hz
+            -0.1,  // 160 Hz
+            -0.1,  // 250 Hz
+            0.0,   // 400 Hz
+            0.0,   // 630 Hz
+            0.1,   // 1000 Hz
+            0.2,   // 1600 Hz
+            0.3,   // 2500 Hz
+            0.2,   // 4000 Hz
+            0.1,   // 6300 Hz
+            0.0,   // 10000 Hz
+            -0.1   // 16000 Hz
+        ],
+        timescale: { pitch: 0.9, rate: 0.95 },  // 輕微降低音高和速度
+        tremolo: { depth: 0.1, frequency: 6 }
+    }
+};
