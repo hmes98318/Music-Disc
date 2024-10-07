@@ -25,7 +25,7 @@
         "discord.js": "~14.16.2",
         "dotenv": "^16.4.5",
         "express": "^4.21.0",
-        "lavashark": "^2.0.1",
+        "lavashark": "^2.1.1",
         "undici": "^6.19.8"
     },
     "devDependencies": {
