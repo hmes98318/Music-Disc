@@ -54,12 +54,14 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
             player.setRepeatMode(RepeatMode.OFF);
             break;
         }
-        case 'one' || 'single': {
+        case 'one':
+        case 'single': {
             mode = 1;
             player.setRepeatMode(RepeatMode.TRACK);
             break;
         }
-        case 'all' || 'queue': {
+        case 'all':
+        case 'queue': {
             mode = 2;
             player.setRepeatMode(RepeatMode.QUEUE);
             break;
