@@ -1,9 +1,7 @@
-version: "3.8"
-
 services:
     lavalink:
-        image: fredboat/lavalink:3.7.12 # pin the image version to Lavalink v3
-        container_name: lavalink_v3
+        image: fredboat/lavalink:4.0.8 # pin the image version to Lavalink v3
+        container_name: lavalink_v4
         restart: unless-stopped
         environment:
             - _JAVA_OPTIONS=-Xmx6G # set Java options here
