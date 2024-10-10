@@ -32,7 +32,7 @@ export const cst = {
         enableLocalNode         : false,
         localNode: {
             autoRestart         : true,
-            downloadLink        : 'https://github.com/lavalink-devs/Lavalink/releases/download/4.0.7/Lavalink.jar'
+            downloadLink        : 'https://github.com/lavalink-devs/Lavalink/releases/download/4.0.8/Lavalink.jar'
         },
         // SessionManager config
         sessionManager: {
