@@ -260,23 +260,35 @@ const registerExpressEvents = (bot: Bot, shardManager: ShardingManager, localNod
     app.get('/api/info', verifyLogin, async (req, res) => {
         // bot.logger.emit('api', '[GET] /api/info ' + req.ip);
 
-        const [guildsCountResult, guildsCacheResult] = await Promise.allSettled([
-            shardManager.fetchClientValues('guilds.cache.size').catch(() => [-1]),
-            shardManager.fetchClientValues('guilds.cache').catch(() => [[]]),
-        ]);
+        try {
+            const results = await shardManager.broadcastEval(async (client) => {
+                return {
+                    serverCount: client.guilds.cache.size,
+                    totalMembers: client.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0)
+                };
+            });
 
-        const totalGuildsCount = guildsCountResult.status === 'fulfilled' ?
-            (guildsCountResult.value as number[]).reduce((total: number, count: number) => total + count, 0) : 0;
-        const totalMembersCount = guildsCacheResult.status === 'fulfilled' ?
-            (guildsCacheResult.value as []).flat().reduce((acc, guild) => acc + (guild ? (guild as any).memberCount : 0), 0) : 0;
+            const totalServerCount = results.reduce((acc, shard) => acc + shard.serverCount, 0);
+            const totalMemberCount = results.reduce((acc, shard) => acc + shard.totalMembers, 0);
 
+            const info = {
+                ...bot.sysInfo,
+                serverCount: `${totalServerCount} [${results.map(shard => shard.serverCount).join(', ')}]`,
+                totalMembers: `${totalMemberCount} [${results.map(shard => shard.totalMembers).join(', ')}]`
+            };
 
-        const info = {
-            ...bot.sysInfo,
-            serverCount: `${totalGuildsCount} ${JSON.stringify(guildsCountResult.status === 'fulfilled' ? guildsCountResult.value : [])}`,
-            totalMembers: `${totalMembersCount} ${JSON.stringify(guildsCacheResult.status === 'fulfilled' ? (guildsCacheResult.value as unknown as []).map((guilds: any) => guilds.reduce((acc: any, guild: any) => acc + (guild ? (guild as any).memberCount : 0), 0)) : [])}`
-        };
-        res.json(info);
+            res.json(info);
+        } catch (error) {
+            bot.logger.emit('api', `[${bot.shardId}] Failed to get shard info: ${error}`);
+
+            const info = {
+                ...bot.sysInfo,
+                serverCount: 'error',
+                totalMembers: 'error'
+            };
+
+            res.json(info);
+        }
     });
 
     app.get('/api/status', verifyLogin, async (req, res) => {

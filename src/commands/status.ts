@@ -19,42 +19,8 @@ export const options = [];
 
 export const execute = async (bot: Bot, client: Client, message: Message) => {
     const botPing = `${Date.now() - message.createdTimestamp}ms`;
-
-    const [sysloadResult, pingListResult, guildsCountResult, guildsCacheResult, playerCountResult] = await Promise.allSettled([
-        sysusage.cpu(),
-        client.lavashark.nodesPing(),
-        client.shard?.fetchClientValues('guilds.cache.size').catch(() => [-1]),
-        client.shard?.fetchClientValues('guilds.cache').catch(() => [[]]),
-        client.shard?.fetchClientValues('lavashark.players.size').catch(() => [-1])
-    ]);
-
-    const sysload = sysloadResult.status === 'fulfilled' ? sysloadResult.value : { percent: '0%', detail: '[0.00, 0.00, 0.00]' };
-    const pingList = pingListResult.status === 'fulfilled' ? pingListResult.value : [];
-    const totalGuildsCount = guildsCountResult.status === 'fulfilled' ?
-        (guildsCountResult.value as number[]).reduce((total: number, count: number) => total + count, 0) : 0;
-    const totalMembersCount = guildsCacheResult.status === 'fulfilled' ?
-        (guildsCacheResult.value as []).flat().reduce((acc, guild) => acc + (guild ? (guild as any).memberCount : 0), 0) : 0;
-    const totalPlayerCount = playerCountResult.status === 'fulfilled' ?
-        (playerCountResult.value as number[]).reduce((total: number, count: number) => total + count, 0) : 0;
-
-    console.log('guilds count: ' + totalGuildsCount, guildsCountResult.status === 'fulfilled' ? guildsCountResult.value : []);
-    console.log('members count: ' + totalMembersCount, guildsCacheResult.status === 'fulfilled' ? (guildsCacheResult.value as unknown as []).map((guilds: any) => guilds.reduce((acc: any, guild: any) => acc + (guild ? (guild as any).memberCount : 0), 0)) : []);
-    console.log('lavashark player: ' + totalPlayerCount, playerCountResult.status === 'fulfilled' ? playerCountResult.value : []);
-
-
-    const systemStatus: SystemStatus = {
-        load: sysload,
-        memory: sysusage.ram(),
-        heap: sysusage.heap(),
-        uptime: uptime(bot.sysInfo.startupTime),
-        ping: {
-            bot: botPing,
-            api: client.ws.ping
-        },
-        serverCount: totalGuildsCount,
-        totalMembers: totalMembersCount,
-        playing: totalPlayerCount
-    };
+    const sysload = await sysusage.cpu();
+    const pingList = await client.lavashark.nodesPing();
 
     const nodes = client.lavashark.nodes;
     const nodesStatus = [];
@@ -72,10 +38,39 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
             nodesStatus.push({ name: `✅ ${node.identifier}`, value: `ping: **${ping}ms**` });
         }
     }
-    bot.logger.emit('log', bot.shardId, 'nodesStatus: ' + JSON.stringify(nodesStatus));
 
     const nodeHealth = healthValue === 0 ? 'All nodes are active' : `⚠️ There are ${healthValue} nodes disconnected`;
 
+
+    const results = await client.shard!.broadcastEval(async (client) => {
+        return {
+            serverCount: client.guilds.cache.size,
+            totalMembers: client.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0),
+            playing: client.lavashark.players.size
+        };
+    });
+
+
+    const totalServerCount = results.reduce((acc, shard) => acc + shard.serverCount, 0);
+    const totalMemberCount = results.reduce((acc, shard) => acc + shard.totalMembers, 0);
+    const totalPlaying = results.reduce((acc, shard) => acc + shard.playing, 0);
+
+    const systemStatus: SystemStatus = {
+        load: sysload,
+        memory: sysusage.ram(),
+        heap: sysusage.heap(),
+        uptime: uptime(bot.sysInfo.startupTime),
+        ping: {
+            bot: botPing,
+            api: client.ws.ping
+        },
+        serverCount: totalServerCount,
+        totalMembers: totalMemberCount,
+        playing: totalPlaying
+    };
+
+
+    bot.logger.emit('log', bot.shardId, 'nodesStatus: ' + JSON.stringify(nodesStatus));
 
     return message.reply({
         embeds: [
@@ -88,42 +83,8 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
 
 export const slashExecute = async (bot: Bot, client: Client, interaction: ChatInputCommandInteraction) => {
     const botPing = `${Date.now() - interaction.createdTimestamp}ms`;
-
-    const [sysloadResult, pingListResult, guildsCountResult, guildsCacheResult, playerCountResult] = await Promise.allSettled([
-        sysusage.cpu(),
-        client.lavashark.nodesPing(),
-        client.shard?.fetchClientValues('guilds.cache.size').catch(() => [-1]),
-        client.shard?.fetchClientValues('guilds.cache').catch(() => [[]]),
-        client.shard?.fetchClientValues('lavashark.players.size').catch(() => [-1])
-    ]);
-
-    const sysload = sysloadResult.status === 'fulfilled' ? sysloadResult.value : { percent: '0%', detail: '[0.00, 0.00, 0.00]' };
-    const pingList = pingListResult.status === 'fulfilled' ? pingListResult.value : [];
-    const totalGuildsCount = guildsCountResult.status === 'fulfilled' ?
-        (guildsCountResult.value as number[]).reduce((total: number, count: number) => total + count, 0) : 0;
-    const totalMembersCount = guildsCacheResult.status === 'fulfilled' ?
-        (guildsCacheResult.value as []).flat().reduce((acc, guild) => acc + (guild ? (guild as any).memberCount : 0), 0) : 0;
-    const totalPlayerCount = playerCountResult.status === 'fulfilled' ?
-        (playerCountResult.value as number[]).reduce((total: number, count: number) => total + count, 0) : 0;
-
-    console.log('guilds count: ' + totalGuildsCount, guildsCountResult.status === 'fulfilled' ? guildsCountResult.value : []);
-    console.log('members count: ' + totalMembersCount, guildsCacheResult.status === 'fulfilled' ? (guildsCacheResult.value as unknown as []).map((guilds: any) => guilds.reduce((acc: any, guild: any) => acc + (guild ? (guild as any).memberCount : 0), 0)) : []);
-    console.log('lavashark player: ' + totalPlayerCount, playerCountResult.status === 'fulfilled' ? playerCountResult.value : []);
-
-
-    const systemStatus: SystemStatus = {
-        load: sysload,
-        memory: sysusage.ram(),
-        heap: sysusage.heap(),
-        uptime: uptime(bot.sysInfo.startupTime),
-        ping: {
-            bot: botPing,
-            api: client.ws.ping
-        },
-        serverCount: totalGuildsCount,
-        totalMembers: totalMembersCount,
-        playing: totalPlayerCount
-    };
+    const sysload = await sysusage.cpu();
+    const pingList = await client.lavashark.nodesPing();
 
     const nodes = client.lavashark.nodes;
     const nodesStatus = [];
@@ -141,10 +102,39 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
             nodesStatus.push({ name: `✅ ${node.identifier}`, value: `ping: **${ping}ms**` });
         }
     }
-    bot.logger.emit('log', bot.shardId, 'nodesStatus: ' + JSON.stringify(nodesStatus));
 
     const nodeHealth = healthValue === 0 ? 'All nodes are active' : `⚠️ There are ${healthValue} nodes disconnected`;
 
+
+    const results = await client.shard!.broadcastEval(async (client) => {
+        return {
+            serverCount: client.guilds.cache.size,
+            totalMembers: client.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0),
+            playing: client.lavashark.players.size
+        };
+    });
+
+
+    const totalServerCount = results.reduce((acc, shard) => acc + shard.serverCount, 0);
+    const totalMemberCount = results.reduce((acc, shard) => acc + shard.totalMembers, 0);
+    const totalPlaying = results.reduce((acc, shard) => acc + shard.playing, 0);
+
+    const systemStatus: SystemStatus = {
+        load: sysload,
+        memory: sysusage.ram(),
+        heap: sysusage.heap(),
+        uptime: uptime(bot.sysInfo.startupTime),
+        ping: {
+            bot: botPing,
+            api: client.ws.ping
+        },
+        serverCount: totalServerCount,
+        totalMembers: totalMemberCount,
+        playing: totalPlaying
+    };
+
+
+    bot.logger.emit('log', bot.shardId, 'nodesStatus: ' + JSON.stringify(nodesStatus));
 
     return interaction.editReply({
         embeds: [
