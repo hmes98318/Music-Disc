@@ -321,31 +321,42 @@ const registerExpressEvents = (bot: Bot, shardManager: ShardingManager, localNod
     app.get('/api/node/status', verifyLogin, async (req, res) => {
         try {
             const nodeStatuses = await shardManager.broadcastEval(async (client, context) => {
-                const nodesPromises = client.lavashark.nodes.map(async (node) => {
-                    if (node.state === context.NodeState.CONNECTED) {
-                        try {
-                            const nodeInfoPromise = node.getInfo();
-                            const nodeStatsPromise = node.getStats();
-                            const nodePingPromise = client.lavashark.nodePing(node);
-                            const timeoutPromise = new Promise((_, reject) => {
-                                setTimeout(() => {
-                                    reject(new Error(`nodes_status "${node.identifier}" Timeout`));
-                                }, 1500);
-                            });
+                if (client.shard?.ids[0] === 0) {
+                    const nodesPromises = client.lavashark.nodes.map(async (node) => {
+                        if (node.state === context.NodeState.CONNECTED) {
+                            try {
+                                const nodeInfoPromise = node.getInfo();
+                                const nodeStatsPromise = node.getStats();
+                                const nodePingPromise = client.lavashark.nodePing(node);
+                                const timeoutPromise = new Promise((_, reject) => {
+                                    setTimeout(() => {
+                                        reject(new Error(`nodes_status "${node.identifier}" Timeout`));
+                                    }, 1500);
+                                });
 
-                            const [nodeInfo, nodeStats, nodePing] = await (Promise.race([
-                                Promise.all([nodeInfoPromise, nodeStatsPromise, nodePingPromise,]),
-                                timeoutPromise
-                            ]) as Promise<[(typeof nodeInfoPromise), (typeof nodeStatsPromise), (typeof nodePingPromise)]>);
+                                const [nodeInfo, nodeStats, nodePing] = await (Promise.race([
+                                    Promise.all([nodeInfoPromise, nodeStatsPromise, nodePingPromise,]),
+                                    timeoutPromise
+                                ]) as Promise<[(typeof nodeInfoPromise), (typeof nodeStatsPromise), (typeof nodePingPromise)]>);
 
-                            return {
-                                id: node.identifier,
-                                state: node.state,
-                                info: nodeInfo,
-                                stats: nodeStats,
-                                ping: nodePing
-                            };
-                        } catch (_) {
+                                return {
+                                    id: node.identifier,
+                                    state: node.state,
+                                    info: nodeInfo,
+                                    stats: nodeStats,
+                                    ping: nodePing
+                                };
+                            } catch (_) {
+                                return {
+                                    id: node.identifier,
+                                    state: node.state,
+                                    info: {},
+                                    stats: {},
+                                    ping: -1
+                                };
+                            }
+                        }
+                        else {
                             return {
                                 id: node.identifier,
                                 state: node.state,
@@ -354,22 +365,13 @@ const registerExpressEvents = (bot: Bot, shardManager: ShardingManager, localNod
                                 ping: -1
                             };
                         }
-                    }
-                    else {
-                        return {
-                            id: node.identifier,
-                            state: node.state,
-                            info: {},
-                            stats: {},
-                            ping: -1
-                        };
-                    }
-                });
+                    });
 
-                return Promise.all(nodesPromises);
+                    return Promise.all(nodesPromises);
+                }
             }, { context: { NodeState } });
 
-            const nodesStatusList = nodeStatuses.flat();
+            const nodesStatusList = nodeStatuses[0];
 
             res.json(nodesStatusList);
         } catch (error) {
