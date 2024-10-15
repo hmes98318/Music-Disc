@@ -74,7 +74,8 @@ export const cst = {
     logger: {
         format      : 'YYYY-MM-DD HH:mm:ss',            // Time format 'YYYY-MM-DD HH(hh):mm:ss.l'
         logDir      : './logs'
-    }
+    },
+    cacheExpiration : 30 * 60 * 1000            // stats cache validity time (default: 30 minutes)
 };
 
 /**

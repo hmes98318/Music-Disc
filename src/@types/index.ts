@@ -50,6 +50,11 @@ export interface Bot {
     config: Config;
     logger: Logger;
     sysInfo: SystemInfo;
+    stats: {
+        guildsCount: number[];
+        membersCount: number[];
+        lastRefresh: number | null;     // Date.now()
+    }
 }
 
 /**

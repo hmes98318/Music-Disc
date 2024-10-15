@@ -4,6 +4,7 @@ import express from 'express';
 import undici from "undici";
 import { NodeState } from 'lavashark';
 
+import { cst } from '../../utils/constants';
 import { embeds } from '../../embeds';
 import { hashGenerator } from '../hashGenerator';
 import { sysusage } from '../../utils/functions/sysusage';
@@ -260,35 +261,36 @@ const registerExpressEvents = (bot: Bot, shardManager: ShardingManager, localNod
     app.get('/api/info', verifyLogin, async (req, res) => {
         // bot.logger.emit('api', '[GET] /api/info ' + req.ip);
 
-        try {
-            const results = await shardManager.broadcastEval(async (client) => {
-                return {
-                    serverCount: client.guilds.cache.size,
-                    totalMembers: client.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0)
-                };
-            });
+        if (!bot.stats.lastRefresh || ((Date.now() - bot.stats.lastRefresh) > cst.cacheExpiration)) {
+            try {
+                const results = await shardManager.broadcastEval(async (client) => {
+                    return {
+                        serverCount: client.guilds.cache.size,
+                        totalMembers: client.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0)
+                    };
+                });
 
-            const totalServerCount = results.reduce((acc, shard) => acc + shard.serverCount, 0);
-            const totalMemberCount = results.reduce((acc, shard) => acc + shard.totalMembers, 0);
 
-            const info = {
-                ...bot.sysInfo,
-                serverCount: `${totalServerCount} [${results.map(shard => shard.serverCount).join(', ')}]`,
-                totalMembers: `${totalMemberCount} [${results.map(shard => shard.totalMembers).join(', ')}]`
-            };
+                bot.stats.guildsCount = results.map((shard) => shard.serverCount) || bot.stats.guildsCount;
+                bot.stats.membersCount = results.map((shard) => shard.totalMembers) || bot.stats.membersCount;
+                bot.stats.lastRefresh = Date.now();
 
-            res.json(info);
-        } catch (error) {
-            bot.logger.emit('api', `[${bot.shardId}] Failed to get shard info: ${error}`);
-
-            const info = {
-                ...bot.sysInfo,
-                serverCount: 'error',
-                totalMembers: 'error'
-            };
-
-            res.json(info);
+            } catch (error) {
+                bot.logger.emit('api', `[${bot.shardId}] Failed to get shard info: ${error}`);
+            }
         }
+
+
+        const totalServerCount = bot.stats.guildsCount.reduce((acc, guilds) => acc + guilds, 0);
+        const totalMemberCount = bot.stats.membersCount.reduce((acc, members) => acc + members, 0);
+
+        const info = {
+            ...bot.sysInfo,
+            serverCount: `${totalServerCount} ${JSON.stringify(bot.stats.guildsCount)}`,
+            totalMembers: `${totalMemberCount} ${JSON.stringify(bot.stats.membersCount)}`
+        };
+
+        res.json(info);
     });
 
     app.get('/api/status', verifyLogin, async (req, res) => {

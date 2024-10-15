@@ -40,7 +40,12 @@ class App {
             blacklist: cst.blacklist,
             config: cst.config,
             logger: new Logger(cst.logger.format, cst.logger.logDir),
-            sysInfo: {} as SystemInfo
+            sysInfo: {} as SystemInfo,
+            stats: {
+                guildsCount: [-1],
+                membersCount: [-1],
+                lastRefresh: null,
+            }
         };
 
         setEnvironment(this.bot.config);

@@ -1,3 +1,4 @@
+import { cst } from '../utils/constants';
 import { embeds } from '../embeds';
 import { uptime } from '../utils/functions/uptime';
 import { sysusage } from '../utils/functions/sysusage';
@@ -44,15 +45,32 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
 
     const results = await client.shard!.broadcastEval(async (client) => {
         return {
-            serverCount: client.guilds.cache.size,
-            totalMembers: client.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0),
             playing: client.lavashark.players.size
         };
     });
 
+    if (!bot.stats.lastRefresh || ((Date.now() - bot.stats.lastRefresh) > cst.cacheExpiration)) {
+        try {
+            const results = await client.shard!.broadcastEval(async (client) => {
+                return {
+                    serverCount: client.guilds.cache.size,
+                    totalMembers: client.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0)
+                };
+            });
 
-    const totalServerCount = results.reduce((acc, shard) => acc + shard.serverCount, 0);
-    const totalMemberCount = results.reduce((acc, shard) => acc + shard.totalMembers, 0);
+
+            bot.stats.guildsCount = results.map((shard) => shard.serverCount) || bot.stats.guildsCount;
+            bot.stats.membersCount = results.map((shard) => shard.totalMembers) || bot.stats.membersCount;
+            bot.stats.lastRefresh = Date.now();
+
+        } catch (error) {
+            bot.logger.emit('api', `[${bot.shardId}] Failed to get shard info: ${error}`);
+        }
+    }
+
+
+    const totalServerCount = bot.stats.guildsCount.reduce((acc, guilds) => acc + guilds, 0);
+    const totalMemberCount = bot.stats.membersCount.reduce((acc, members) => acc + members, 0);
     const totalPlaying = results.reduce((acc, shard) => acc + shard.playing, 0);
 
     const systemStatus: SystemStatus = {
@@ -108,15 +126,32 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
 
     const results = await client.shard!.broadcastEval(async (client) => {
         return {
-            serverCount: client.guilds.cache.size,
-            totalMembers: client.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0),
             playing: client.lavashark.players.size
         };
     });
 
+    if (!bot.stats.lastRefresh || ((Date.now() - bot.stats.lastRefresh) > cst.cacheExpiration)) {
+        try {
+            const results = await client.shard!.broadcastEval(async (client) => {
+                return {
+                    serverCount: client.guilds.cache.size,
+                    totalMembers: client.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0)
+                };
+            });
 
-    const totalServerCount = results.reduce((acc, shard) => acc + shard.serverCount, 0);
-    const totalMemberCount = results.reduce((acc, shard) => acc + shard.totalMembers, 0);
+
+            bot.stats.guildsCount = results.map((shard) => shard.serverCount) || bot.stats.guildsCount;
+            bot.stats.membersCount = results.map((shard) => shard.totalMembers) || bot.stats.membersCount;
+            bot.stats.lastRefresh = Date.now();
+
+        } catch (error) {
+            bot.logger.emit('api', `[${bot.shardId}] Failed to get shard info: ${error}`);
+        }
+    }
+
+
+    const totalServerCount = bot.stats.guildsCount.reduce((acc, guilds) => acc + guilds, 0);
+    const totalMemberCount = bot.stats.membersCount.reduce((acc, members) => acc + members, 0);
     const totalPlaying = results.reduce((acc, shard) => acc + shard.playing, 0);
 
     const systemStatus: SystemStatus = {
