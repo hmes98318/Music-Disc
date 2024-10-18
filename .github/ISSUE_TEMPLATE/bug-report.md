@@ -9,6 +9,7 @@ assignees: ''
 
 **Describe the bug**
 <!-- A clear and concise description of what the bug is. -->
+<!-- Execution log -->
 
 **To Reproduce**
 Steps to reproduce the behavior:
@@ -26,12 +27,7 @@ If applicable, add screenshots to help explain your problem.
 **Version Information:**
  - Node.js: x.x.x
  - Discord.js: x.x.x
- - Music-Disc: x.x.x
- - Dependency modules
-     * discord-player: x.x.x
-     * ffmpeg-static: x.x.x
-     * opusscript: x.x.x
-     * play-dl: x.x.x (or ytdl-core)
+ - Music-Disc: x.x.x (commit hash)
 
 **Additional context**
 Add any other context about the problem here.
