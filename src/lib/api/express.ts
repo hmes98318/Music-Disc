@@ -264,6 +264,8 @@ const registerExpressEvents = (bot: Bot, shardManager: ShardingManager, localNod
         if (!bot.stats.lastRefresh || ((Date.now() - bot.stats.lastRefresh) > cst.cacheExpiration)) {
             try {
                 const results = await shardManager.broadcastEval(async (client) => {
+                    await client.guilds.fetch();
+
                     return {
                         serverCount: client.guilds.cache.size,
                         totalMembers: client.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0)
