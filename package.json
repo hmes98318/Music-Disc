@@ -1,6 +1,6 @@
 {
     "name": "music-disc",
-    "version": "3.0.0-beta",
+    "version": "3.0.0",
     "description": "Discord Music Bot",
     "main": "./src/index.ts",
     "scripts": {
