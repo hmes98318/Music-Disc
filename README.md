@@ -28,7 +28,7 @@ If you encounter any issues or would like to contribute to the community, please
 
 ### Clone the latest version of the repository
 ```
-git clone -b v2.2.0 https://github.com/hmes98318/Music-Disc.git
+git clone -b v3.0.0 https://github.com/hmes98318/Music-Disc.git
 ```
 or [**click here**](https://github.com/hmes98318/Music-Disc/releases) to download  
 
@@ -36,13 +36,13 @@ or [**click here**](https://github.com/hmes98318/Music-Disc/releases) to downloa
 ### Install the dependencies
 install all the dependencies from [**package.json**](./package.json)  
 ```
-npm install
+npm ci
 ```
 
 
 ### Add Lavalink node
 Edit the [`nodelist.json`](./nodelist.json) file to add a [Lavalink](https://github.com/lavalink-devs/Lavalink) node.  
-Only supports Lavalink **v3.7.x** nodes, **v3.7.12** is recommended.  
+Only supports Lavalink **v4** nodes, **v4.0.8** or higher is recommended.  
  * Use [public node](https://lavalink-list.darrennathanael.com/)  
  * or [host your own](https://blog.darrennathanael.com/post/how-to-lavalink/)  
  * or enable [local node setup](https://musicdisc.ggwp.tw/docs/Environment-variables-description#local-node)  
