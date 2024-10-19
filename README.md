@@ -132,8 +132,6 @@ If you don't have any available nodes, you need to first start the server contai
 ### Start with Docker Compose
 Please put your **token** into the `BOT_TOKEN` variable.  
 ```yml
-version: '3.8'
-
 services:
   music-disc:
     image: hmes98318/music-disc:latest
