@@ -34,8 +34,8 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
     const res = await client.lavashark.search(str);
 
     if (res.loadType === LoadType.ERROR) {
-        bot.logger.emit('error', bot.shardId, `Search Error: ${res.exception?.message}`);
-        return message.reply({ content: `❌ | No results found.`, allowedMentions: { repliedUser: false } });
+        bot.logger.emit('error', bot.shardId, `Search Error: ${(res as any).data?.message}`);
+        return message.reply({ content: `❌ | No results found. (${(res as any).data?.message})`, allowedMentions: { repliedUser: false } });
     }
     else if (res.loadType === LoadType.EMPTY) {
         return message.reply({ content: `❌ | No matches.`, allowedMentions: { repliedUser: false } });
@@ -111,8 +111,8 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
     const res = await client.lavashark.search(str!);
 
     if (res.loadType === LoadType.ERROR) {
-        bot.logger.emit('error', bot.shardId, `Search Error: ${res.exception?.message}`);
-        return interaction.editReply({ content: `❌ | No results found.`, allowedMentions: { repliedUser: false } });
+        bot.logger.emit('error', bot.shardId, `Search Error: ${(res as any).data?.message}`);
+        return interaction.editReply({ content: `❌ | No results found. (${(res as any).data?.message})`, allowedMentions: { repliedUser: false } });
     }
     else if (res.loadType === LoadType.EMPTY) {
         return interaction.editReply({ content: `❌ | No matches.`, allowedMentions: { repliedUser: false } });
