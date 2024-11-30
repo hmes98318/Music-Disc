@@ -28,7 +28,7 @@ If you encounter any issues or would like to contribute to the community, please
 
 ### Clone the latest version of the repository
 ```
-git clone -b v3.0.0 https://github.com/hmes98318/Music-Disc.git
+git clone -b v3.1.0 https://github.com/hmes98318/Music-Disc.git
 ```
 or [**click here**](https://github.com/hmes98318/Music-Disc/releases) to download  
 
@@ -68,6 +68,7 @@ Refer to [**.env.example**](./.env.example) and edit the **.env** fileEdit the f
 BOT_TOKEN = "your_token"
 
 # Admin of the bot (User ID)
+# For multiple admins, separate their user IDs with commas.
 # OAUTH2 mode requires setting BOT_ADMIN, BOT_CLIENT_SECRET value
 BOT_ADMIN = ""              
 BOT_CLIENT_SECRET = ""
