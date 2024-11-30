@@ -61,7 +61,7 @@ export interface Bot {
  * Constants variables
  */
 export interface Config {
-    admin: string | null;
+    admin: string[];
     clientSecret: string | null;
     name: string;
     prefix: string;

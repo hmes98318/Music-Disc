@@ -375,7 +375,7 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
         if (!cmd) return;
 
         if (cmd.requireAdmin) {
-            if (interaction.user.id !== bot.config.admin) {
+            if (!bot.config.admin?.includes(interaction.user.id)) {
                 return interaction.reply({ content: `❌ | This command requires administrator privileges.`, allowedMentions: { repliedUser: false } })
                     .catch((error) => {
                         bot.logger.emit('error', bot.shardId, `[interactionCreate] Error reply: (${interaction.user.username} : /${interaction.commandName})` + error);

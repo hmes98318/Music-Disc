@@ -107,7 +107,7 @@ const registerExpressEvents = (bot: Bot, shardManager: ShardingManager, localNod
                         const user = await userResult.body.json() as any;
                         console.log('user info', user);
 
-                        if (user.id === bot.config.admin) {
+                        if (bot.config.admin.includes(user.id)) {
                             sessionManager.ipBlocker.delete(userIP);
 
                             const sessionId = hashGenerator.generateRandomKey();

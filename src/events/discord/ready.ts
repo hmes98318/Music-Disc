@@ -48,7 +48,7 @@ export default async (bot: Bot, client: Client) => {
     }, 10 * 60 * 1000); // 10 minutes
 
 
-    if (bot.config.admin) bot.logger.emit('log', bot.shardId, `Set admin as user ID : ${bot.config.admin}`);
+    bot.logger.emit('log', bot.shardId, `Set admin as user ID : ${JSON.stringify(bot.config.admin)}`);
     bot.logger.emit('discord', bot.shardId, `>>> Logged in as ${client.user?.username}`);
 
 

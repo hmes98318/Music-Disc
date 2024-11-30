@@ -6,8 +6,11 @@ import type { Config, LoginType } from './../@types';
 dotenv.config();
 
 const setEnvironment = (config: Config) => {
-    // Admin of the bot
-    config.admin = process.env.BOT_ADMIN || config.admin;
+    // Admin of the bot (user_id[])
+    config.admin = (/^\d{1,}(?:,\d{1,})*$/).test(String(process.env.BOT_ADMIN)) 
+        ? (String(process.env.BOT_ADMIN).replace(/\s+/g, '').split(',')) 
+        : config.admin; 
+
     config.clientSecret = process.env.BOT_CLIENT_SECRET || config.clientSecret;
 
     // Bot settings

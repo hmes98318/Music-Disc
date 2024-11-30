@@ -7,7 +7,7 @@ import { LoginType } from "../@types";
 export const cst = {
     // Default config
     config: {
-        admin                   : null,                 // It must be the user ID (string)
+        admin                   : [],                   // It must be the user ID (string)
         clientSecret            : null,
         name                    : 'Music Disc',
         prefix                  : '+',
