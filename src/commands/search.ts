@@ -117,6 +117,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
         player.addTracks(track, message.author);
 
         if (!player.playing) {
+            player.filters.setVolume(curVolume);
             await player.play()
                 .catch(async (error) => {
                     bot.logger.emit('error', bot.shardId, 'Error playing track: ' + error);
@@ -154,6 +155,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
             player.addTracks(res.tracks.find(x => x.uri == i.values[0])!, message.author);
 
             if (!player.playing) {
+                player.filters.setVolume(curVolume);
                 await player.play()
                     .catch(async (error) => {
                         bot.logger.emit('error', bot.shardId, 'Error playing track: ' + error);
@@ -241,6 +243,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
         player.addTracks(res.tracks, interaction.user);
 
         if (!player.playing) {
+            player.filters.setVolume(curVolume);
             await player.play()
                 .catch(async (error) => {
                     bot.logger.emit('error', bot.shardId, 'Error playing track: ' + error);
@@ -256,6 +259,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
         player.addTracks(track, interaction.user);
 
         if (!player.playing) {
+            player.filters.setVolume(curVolume);
             await player.play()
                 .catch(async (error) => {
                     bot.logger.emit('error', bot.shardId, 'Error playing track: ' + error);

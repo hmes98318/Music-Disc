@@ -72,7 +72,6 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
         // Connects to the voice channel
         await player.connect();
         player.metadata = message;
-        player.filters.setVolume(curVolume);
     } catch (error) {
         bot.logger.emit('error', bot.shardId, 'Error joining channel: ' + error);
         return message.reply({ content: `❌ | I can't join voice channel.`, allowedMentions: { repliedUser: false } });
@@ -95,6 +94,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
     }
 
     if (!player.playing) {
+        player.filters.setVolume(curVolume);
         await player.play()
             .catch(async (error) => {
                 bot.logger.emit('error', bot.shardId, 'Error playing track: ' + error);
@@ -175,6 +175,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
     }
 
     if (!player.playing) {
+        player.filters.setVolume(curVolume);
         await player.play()
             .catch(async (error) => {
                 bot.logger.emit('error', bot.shardId, 'Error playing track: ' + error);
