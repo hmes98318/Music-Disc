@@ -54,7 +54,7 @@ export default async (bot: Bot, client: Client) => {
             type: bot.config.bot.activity.type,
             state: bot.config.bot.activity.state,
             url: bot.config.bot.activity.url
-        })
+        });
     }, 10 * 60 * 1000); // 10 minutes
 
 

@@ -9,7 +9,7 @@ import { embeds } from '../../embeds';
 import { hashGenerator } from '../hashGenerator';
 import { sysusage } from '../../utils/functions/sysusage';
 import { uptime } from '../../utils/functions/uptime';
-import { LoginType, LoginTypeEnum } from '../../@types';
+import { LoginTypeEnum } from '../../@types';
 
 import type { ShardingManager, VoiceChannel } from 'discord.js';
 import type { Express } from 'express';
