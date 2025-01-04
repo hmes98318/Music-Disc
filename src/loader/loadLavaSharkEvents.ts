@@ -1,4 +1,6 @@
+import path from 'path';
 import * as fs from 'fs';
+
 import { cst } from './../utils/constants';
 
 import type { Client } from 'discord.js';
@@ -15,10 +17,11 @@ const loadLavaSharkEvents = (bot: Bot, client: Client) => {
         bot.logger.emit('log', bot.shardId, `+--------------------------------+`);
         for (const file of files) {
             try {
-                const event = await import(`${__dirname}/../events/lavashark/${file}`);
+                const eventModule = await import(path.join('file://', `${__dirname}/../events/lavashark/${file}`));
+                const event = eventModule.default.default;
                 const eventName = file.split('.')[0] as keyof LavaSharkEvents;
 
-                client.lavashark.on(eventName, event.default.bind(null, bot, client));
+                client.lavashark.on(eventName, event.bind(null, bot, client));
                 bot.logger.emit('log', bot.shardId, `| Loaded event ${file.split('.')[0].padEnd(17, ' ')} |`);
             } catch (error) {
                 reject(error);

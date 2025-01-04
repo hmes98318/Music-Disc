@@ -23,7 +23,7 @@ export class LocalNodeController {
     public lavalinkPid: number | null;
 
     /** Local node listenong port */
-    public port: number;
+    public port: number | null;
 
     /** @inner Manually set up the logger */
     public logger: Logger;
@@ -38,6 +38,9 @@ export class LocalNodeController {
         this.logger = logger;
 
         this.lavalinkLogs = [];
+        this.lavalinkPid = null;
+        this.port = null;
+
         this.#lavalinkProcessController = null;
         this.#lavalinkProcessFileName = (path.extname(__filename) === '.ts') ? 'LavalinkProcess.ts' : 'LavalinkProcess.js';
         this.#manualRestart = false;
@@ -290,6 +293,10 @@ export class LocalNodeController {
              * It is necessary to scan all pid occupying the port to forcefully terminate all pid.
              */
             if (process.platform === 'win32') {
+                if (!this.port) {
+                    return false;
+                }
+
                 const winPidList = await this.#winGetPid(this.port);
 
                 for (const winPid of winPidList) {

@@ -12,9 +12,9 @@ const loadSite = (bot: Bot, shardManager: ShardingManager, localNodeController: 
     return new Promise<void>((resolve, _reject) => {
         bot.logger.emit('api', `-> loading Web Framework ......`);
 
-        const port = bot.config.site.port || 33333;
+        const port = bot.config.webDashboard.port || 33333;
         const app = express();
-        const sessionManager = new SessionManager(bot.config.sessionManager, bot.config.ipBlocker);
+        const sessionManager = new SessionManager(bot.config.webDashboard.sessionManager, bot.config.webDashboard.ipBlocker);
 
 
         registerExpressEvents(bot, shardManager, localNodeController, app, sessionManager);

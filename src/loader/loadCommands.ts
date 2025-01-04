@@ -1,4 +1,6 @@
 import * as fs from 'fs';
+import path from 'path';
+
 import { cst } from './../utils/constants';
 
 import type { Client } from 'discord.js';
@@ -14,7 +16,7 @@ const loadCommands = (bot: Bot, client: Client) => {
         bot.logger.emit('log', bot.shardId, `+--------------------------------+`);
         for (const file of files) {
             try {
-                const command = await import(`${__dirname}/../commands/${file}`);
+                const command = await import(path.join('file://', `${__dirname}/../commands/${file}`));
                 const commandName = command.name.toLowerCase();
 
                 client.commands.set(commandName, command);

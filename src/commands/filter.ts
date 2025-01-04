@@ -101,7 +101,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
             i.deferUpdate();
             await msg.edit({
                 content: '',
-                embeds: [embeds.filterMsg(bot.config.embedsColor, effectName)],
+                embeds: [embeds.filterMsg(bot.config.bot.embedsColor, effectName)],
                 components: [],
                 allowedMentions: { repliedUser: false }
             })
@@ -158,7 +158,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
 
     return interaction.editReply({
         content: '',
-        embeds: [embeds.filterMsg(bot.config.embedsColor, effectName ?? 'unknown')],
+        embeds: [embeds.filterMsg(bot.config.bot.embedsColor, effectName ?? 'unknown')],
         components: [],
         allowedMentions: { repliedUser: false }
     })

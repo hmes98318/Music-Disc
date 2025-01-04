@@ -55,7 +55,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
     const validBlackist = isUserInBlacklist(message.member?.voice.channel, bot.blacklist);
     if (validBlackist.length > 0) {
         return message.reply({
-            embeds: [embeds.blacklist(bot.config.embedsColor, validBlackist)],
+            embeds: [embeds.blacklist(bot.config.bot.embedsColor, validBlackist)],
             allowedMentions: { repliedUser: false }
         });
     }
@@ -76,7 +76,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
         };
     }
 
-    const curVolume = player.setting.volume ?? bot.config.defaultVolume;
+    const curVolume = player.setting.volume ?? bot.config.bot.volume.default;
 
     try {
         // Connects to the voice channel
@@ -92,7 +92,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
         // Intial dashboard
         if (!player.dashboard) await dashboard.initial(bot, message, player);
     } catch (error) {
-        await dashboard.destroy(bot, player, bot.config.embedsColor);
+        await dashboard.destroy(bot, player, bot.config.bot.embedsColor);
     }
 
     await message.react('👍');
@@ -125,7 +125,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
                     return player.destroy();
                 });
 
-            player.filters.setVolume(bot.config.defaultVolume);
+            player.filters.setVolume(bot.config.bot.volume.default);
         }
 
         return message.reply({ content: "✅ | Music added.", allowedMentions: { repliedUser: false } });
@@ -163,7 +163,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
                         return player.destroy();
                     });
 
-                player.filters.setVolume(bot.config.defaultVolume);
+                player.filters.setVolume(bot.config.bot.volume.default);
             }
 
             i.deferUpdate();
@@ -198,7 +198,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
     const validBlackist = isUserInBlacklist(channel, bot.blacklist);
     if (validBlackist.length > 0) {
         return interaction.editReply({
-            embeds: [embeds.blacklist(bot.config.embedsColor, validBlackist)],
+            embeds: [embeds.blacklist(bot.config.bot.embedsColor, validBlackist)],
             allowedMentions: { repliedUser: false }
         });
     }
@@ -219,7 +219,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
         };
     }
 
-    const curVolume = player.setting.volume ?? bot.config.defaultVolume;
+    const curVolume = player.setting.volume ?? bot.config.bot.volume.default;
 
     try {
         // Connects to the voice channel
@@ -235,7 +235,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
         // Intial dashboard
         if (!player.dashboard) await dashboard.initial(bot, interaction, player);
     } catch (error) {
-        await dashboard.destroy(bot, player, bot.config.embedsColor);
+        await dashboard.destroy(bot, player, bot.config.bot.embedsColor);
     }
 
 
@@ -267,7 +267,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
                     return player.destroy();
                 });
 
-            player.filters.setVolume(bot.config.defaultVolume);
+            player.filters.setVolume(bot.config.bot.volume.default);
         }
 
         return interaction.editReply({ content: "✅ | Music added.", allowedMentions: { repliedUser: false } });
@@ -304,7 +304,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
                         return player.destroy();
                     });
 
-                player.filters.setVolume(bot.config.defaultVolume);
+                player.filters.setVolume(bot.config.bot.volume.default);
             }
 
             i.deferUpdate();

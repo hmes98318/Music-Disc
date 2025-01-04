@@ -1,69 +1,96 @@
-import * as dotenv from 'dotenv';
+import { ActivityType } from 'discord.js';
 import { hashGenerator } from '../lib/hashGenerator';
-import type { Config, LoginType } from './../@types';
+import { config } from '../../config.js';
+
+import type { Config } from './../@types';
 
 
-dotenv.config();
+const setEnvironment = (defaultConfig: Config) => {
+    defaultConfig.bot = {
+        textCommand: config.bot.textCommand ?? defaultConfig.bot.textCommand,
+        slashCommand: config.bot.slashCommand ?? defaultConfig.bot.slashCommand,
 
-const setEnvironment = (config: Config) => {
-    // Admin of the bot (user_id[])
-    config.admin = (/^\d{1,}(?:,\d{1,})*$/).test(String(process.env.BOT_ADMIN)) 
-        ? (String(process.env.BOT_ADMIN).replace(/\s+/g, '').split(',')) 
-        : config.admin; 
+        // Admin of the bot (user_id[])
+        admin: (Array.isArray(config.bot.admin) && config.bot.admin.length > 0)
+            ? config.bot.admin
+            : defaultConfig.bot.admin,
+        clientSecret: config.bot.clientSecret || defaultConfig.bot.clientSecret,
 
-    config.clientSecret = process.env.BOT_CLIENT_SECRET || config.clientSecret;
+        // Bot settings
+        name: config.bot.name || defaultConfig.bot.name,
+        prefix: config.bot.prefix || defaultConfig.bot.prefix,
+        status: ['online', 'idle', 'dnd'].includes(config.bot.status)
+            ? config.bot.status
+            : defaultConfig.bot.status,
+        activityType: Object.values(ActivityType).includes(config.bot.activityType)
+            ? config.bot.activityType
+            : defaultConfig.bot.activityType,
+        playing: config.bot.playing || defaultConfig.bot.playing,
+        embedsColor: config.bot.embedsColor || defaultConfig.bot.embedsColor,
 
-    // Bot settings
-    config.name = process.env.BOT_NAME || config.name;
-    config.prefix = process.env.BOT_PREFIX || config.prefix;
-    config.status = ['online', 'idle', 'dnd'].includes(String(process.env.BOT_STATUS)) ? String(process.env.BOT_STATUS) : config.status;
-    config.playing = process.env.BOT_PLAYING || config.playing;
-    config.embedsColor = process.env.BOT_EMBEDS_COLOR || config.embedsColor;
-    config.slashCommand = isTrueOrFalse(process.env.BOT_SLASH_COMMAND) ?? config.slashCommand;
+        // Volume settings
+        volume: {
+            default: isNumber(config.bot.volume.default)
+                ? config.bot.volume.default
+                : defaultConfig.bot.volume.default,
+            max: isNumber(config.bot.volume.max)
+                ? config.bot.volume.max
+                : defaultConfig.bot.volume.max
+        },
 
-    // Volume settings
-    config.defaultVolume = (isNumber(process.env.DEFAULT_VOLUME) && Number(process.env.DEFAULT_VOLUME) !== 0) ? Number(process.env.DEFAULT_VOLUME) : config.defaultVolume;
-    config.maxVolume = (isNumber(process.env.MAX_VOLUME) && Number(process.env.MAX_VOLUME) !== 0) ? Number(process.env.MAX_VOLUME) : config.maxVolume;
+        // Auto leave channel settings
+        autoLeave: {
+            enabled: config.bot.autoLeave.enabled ?? defaultConfig.bot.autoLeave.enabled,
+            cooldown: isNumber(config.bot.autoLeave.cooldown)
+                ? config.bot.autoLeave.cooldown
+                : defaultConfig.bot.autoLeave.cooldown
+        },
 
-    // Auto leave channel settings
-    config.autoLeave = isTrueOrFalse(process.env.AUTO_LEAVE) ?? config.autoLeave;
-    config.autoLeaveCooldown = isNumber(process.env.AUTO_LEAVE_COOLDOWN) ? Number(process.env.AUTO_LEAVE_COOLDOWN) : config.autoLeaveCooldown;
-
-    // Show voice channel updates
-    config.displayVoiceState = isTrueOrFalse(process.env.DISPLAY_VOICE_STATE) ?? config.displayVoiceState;
+        // Show voice channel updates
+        displayVoiceState: config.bot.displayVoiceState ?? defaultConfig.bot.displayVoiceState
+    };
 
     // Web dashboard settings
-    config.enableSite = isTrueOrFalse(process.env.ENABLE_SITE) ?? config.enableSite;
-    config.site.port = isNumber(process.env.SITE_PORT) ? Number(process.env.SITE_PORT) : config.site.port;
-    config.site.loginType = (['USER', 'OAUTH2'].includes(String(process.env.SITE_LOGIN_TYPE)) ? String(process.env.SITE_LOGIN_TYPE) : config.site.loginType) as LoginType;
-    config.site.username = process.env.SITE_USERNAME || config.site.username;
-    config.site.password = hashGenerator.generateHash(process.env.SITE_PASSWORD || config.site.password);
-    config.site.oauth2Link = process.env.SITE_OAUTH2_LINK || config.site.oauth2Link;
-    config.site.oauth2RedirectUri = process.env.SITE_OAUTH2_REDIRECT_URI || config.site.oauth2RedirectUri;
+    defaultConfig.webDashboard = {
+        enabled: config.webDashboard.enabled ?? defaultConfig.webDashboard.enabled,
+        port: isNumber(config.webDashboard.port)
+            ? config.webDashboard.port
+            : defaultConfig.webDashboard.port,
+        loginType: ['USER', 'OAUTH2'].includes(config.webDashboard.loginType)
+            ? config.webDashboard.loginType
+            : defaultConfig.webDashboard.loginType,
+
+        user: {
+            username: config.webDashboard.user.username || defaultConfig.webDashboard.user.username,
+            password: hashGenerator.generateHash(config.webDashboard.user.password || defaultConfig.webDashboard.user.password)
+        },
+        oauth2: {
+            link: config.webDashboard.oauth2.link || defaultConfig.webDashboard.oauth2.link,
+            redirectUri: config.webDashboard.oauth2.redirectUri || defaultConfig.webDashboard.oauth2.redirectUri
+        },
+
+        sessionManager: {
+            validTime: config.webDashboard.sessionManager.validTime ?? defaultConfig.webDashboard.sessionManager.validTime,
+            cleanupInterval: config.webDashboard.sessionManager.cleanupInterval ?? defaultConfig.webDashboard.sessionManager.cleanupInterval,
+        },
+        ipBlocker: {
+            retryLimit: config.webDashboard.ipBlocker.retryLimit ?? defaultConfig.webDashboard.ipBlocker.retryLimit,
+            unlockTimeoutDuration: config.webDashboard.ipBlocker.unlockTimeoutDuration ?? defaultConfig.webDashboard.ipBlocker.unlockTimeoutDuration,
+            cleanupInterval: config.webDashboard.ipBlocker.cleanupInterval ?? defaultConfig.webDashboard.ipBlocker.cleanupInterval,
+        }
+    };
 
     // Local Lavalink node
-    config.enableLocalNode = isTrueOrFalse(process.env.ENABLE_LOCAL_NODE) ?? config.enableLocalNode;
-    config.localNode.autoRestart = isTrueOrFalse(process.env.LOCAL_NODE_AUTO_RESTART) ?? config.localNode.autoRestart;
-    config.localNode.downloadLink = process.env.LOCAL_NODE_DOWNLOAD_LINK || config.localNode.downloadLink;
-
-    // console.log('setEnvironment: ', config);
+    defaultConfig.localNode = {
+        enabled: config.localNode.enabled ?? defaultConfig.localNode.enabled,
+        autoRestart: config.localNode.autoRestart ?? defaultConfig.localNode.autoRestart,
+        downloadLink: config.localNode.downloadLink || defaultConfig.localNode.downloadLink
+    };
 };
 
 export { setEnvironment };
 
 
 const isNumber = (value: any): boolean => {
-    return !isNaN(Number(value));
-};
-
-const isTrueOrFalse = (value: any) => {
-    if (value === 'true') {
-        return true;
-    }
-    else if (value === 'false') {
-        return false;
-    }
-    else {
-        return null;
-    }
+    return (typeof (value) === 'number' && !isNaN(value));
 };

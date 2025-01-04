@@ -11,8 +11,8 @@ const botStatus = (config: Config, systemInfo: SystemInfo, systemStatus: SystemS
     const heapUsage = `${systemStatus.heap.percent}  \`${systemStatus.heap.detail}\``;
 
     const embed_ = new EmbedBuilder()
-        .setColor(config.embedsColor as HexColorString | number)
-        .setTitle(`${config.name} ${systemInfo.bot_version}`)
+        .setColor(config.bot.embedsColor as HexColorString | number)
+        .setTitle(`${config.bot.name} ${systemInfo.bot_version}`)
         .setURL('https://github.com/hmes98318/Music-Disc')
         .setDescription(`**• Serving ${systemStatus.serverCount} servers**\n**• Total ${systemStatus.totalMembers} members**\n**• Playing on ${systemStatus.playing} servers**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━`)
         .addFields(

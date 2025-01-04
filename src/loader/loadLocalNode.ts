@@ -21,7 +21,7 @@ const loadLocalNode = (bot: Bot, localNodeController: LocalNodeController) => {
 
         const nodeInfo = {
             active: `LavaLink: ${(localNodeController.lavalinkPid !== null ? 'ACTIVE' : 'INACTIVE').padStart(8, ' ')}`,
-            port: `Port:   ${localNodeController.port.toString().padStart(10, ' ')}`
+            port: `Port:   ${localNodeController.port!.toString().padStart(10, ' ')}`
         };
 
         bot.logger.emit('log', bot.shardId, `+--------------------+`);

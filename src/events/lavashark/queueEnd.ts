@@ -6,9 +6,9 @@ import type { Bot } from "../../@types";
 
 
 export default async (bot: Bot, _client: Client, player: Player) => {
-    if (bot.config.autoLeave) {
+    if (bot.config.bot.autoLeave.enabled) {
         await player.destroy();
     }
 
-    await dashboard.destroy(bot, player, bot.config.embedsColor);
+    await dashboard.destroy(bot, player, bot.config.bot.embedsColor);
 };

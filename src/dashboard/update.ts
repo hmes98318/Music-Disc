@@ -29,7 +29,7 @@ async function update(bot: Bot, player: Player, track: Track): Promise<void> {
 
     try {
         await player.dashboard!.edit({
-            embeds: [embeds.dashboard(bot.config.embedsColor, 'Dashboard', track!.title, subtitle, track!.uri, track!.thumbnail!)],
+            embeds: [embeds.dashboard(bot.config.bot.embedsColor, 'Dashboard', track!.title, subtitle, track!.uri, track!.thumbnail!)],
             components: [row]
         });
     } catch (error) {

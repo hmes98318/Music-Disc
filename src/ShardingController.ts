@@ -8,15 +8,16 @@ export class ShardingController {
     public manager: ShardingManager;
 
     constructor() {
+        dotenv.config();
+
         const fileExtension = path.extname(__filename);
         this.shardFilePath = path.join(__dirname, `./App${fileExtension}`);
+
+        this.manager = new ShardingManager(this.shardFilePath, { token: process.env.BOT_TOKEN });
     }
 
 
     public spwan() {
-        dotenv.config();
-        this.manager = new ShardingManager(this.shardFilePath, { token: process.env.BOT_TOKEN });
-
         this.manager.spawn();
     }
 }

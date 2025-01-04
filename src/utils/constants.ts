@@ -1,3 +1,4 @@
+import { ActivityType, ClientPresenceStatus } from "discord.js";
 import { LoginType } from "../@types";
 
 
@@ -7,43 +8,69 @@ import { LoginType } from "../@types";
 export const cst = {
     // Default config
     config: {
-        admin                   : [],                   // It must be the user ID (string)
-        clientSecret            : null,
-        name                    : 'Music Disc',
-        prefix                  : '+',
-        status                  : 'online',             // 'online' | 'idle' | 'dnd'
-        playing                 : '+help | music',
-        embedsColor             : '#FFFFFF',
-        slashCommand            : true,
-        defaultVolume           : 50,
-        maxVolume               : 100,
-        autoLeave               : true,
-        autoLeaveCooldown       : 5000,
-        displayVoiceState       : true,
-        enableSite              : true,
-        site: {
-            port                : 33333,
-            loginType           : LoginType.USER,                   // "USER" | 'OAUTH2'
-            username            : 'admin',
-            password            : 'password',
-            oauth2Link          : null,                             // OAuth2 URL
-            oauth2RedirectUri   : `http://localhost:33333/login`    // Redirect link after OAuth2 authentication is complete
+        bot: {
+            textCommand             : true,                 // Whether to enable text command
+            slashCommand            : true,                 // Whether to enable slash command
+    
+            // OAUTH2 mode requires setting "admin", "clientSecret" value
+            admin                   : [],                   // It must be the user ID (string[])
+            clientSecret            : '',
+    
+            name                    : 'Music Disc',
+            prefix                  : '+',
+            status                  : ('online' as ClientPresenceStatus),       // 'online' | 'idle' | 'dnd'
+            activityType            : ActivityType.Playing,                     // https://discord.com/developers/docs/topics/gateway-events#activity-object-activity-types
+            playing                 : '+help | music',
+            embedsColor             : '#FFFFFF',
+            volume: {
+                default             : 50,
+                max                 : 100,
+            },
+            // Auto leave channel settings
+            autoLeave: {
+                enabled             : true,
+                cooldown            : 5000,         // ms
+            },
+            // Show voice channel updates
+            displayVoiceState       : true,
         },
-        enableLocalNode         : false,
+    
+        // Web dashboard settings
+        webDashboard: {
+            enabled                 : true,
+            port                    : 33333,
+            loginType               : ('USER' as LoginType),    // "USER" | "OAUTH2"
+    
+            // USER mode settings
+            user: {
+                username            : "admin",
+                password            : "password",
+            },
+    
+            // OAUTH2 mode settings
+            oauth2: {
+                link                : "",
+                redirectUri         : "http://localhost:33333/login",
+            },
+    
+            // SessionManager config
+            sessionManager: {
+                validTime           : 10 * 60 * 1000,           // Session validity time (ms) (default: 10 minutes)
+                cleanupInterval     : 5 * 60 * 1000             // Timing cleaner time (ms) (default: 5 minutes)
+            },
+            // IPBlocker config
+            ipBlocker: {
+                retryLimit              : 5,                    // Maximum number of retries (default: 5)
+                unlockTimeoutDuration   : 5 * 60 * 1000,        // Blocking time (ms) (default: 5 minutes)
+                cleanupInterval         : 5 * 60 * 1000         // Timing cleaner time (ms) (default: 5 minutes)
+            }
+        },
+    
+        // Local Lavalink node
         localNode: {
+            enabled             : false,
             autoRestart         : true,
             downloadLink        : 'https://github.com/lavalink-devs/Lavalink/releases/download/4.0.8/Lavalink.jar'
-        },
-        // SessionManager config
-        sessionManager: {
-            validTime: 10 * 60 * 1000,          // Session validity time (ms) (default: 10 minutes)
-            cleanupInterval: 5 * 60 * 1000      // Timing cleaner time (ms) (default: 5 minutes)
-        },
-        // IPBlocker config
-        ipBlocker: {
-            retryLimit: 5,                              // Maximum number of retries (default: 5)
-            unlockTimeoutDuration: 5 * 60 * 1000,       // Blocking time (ms) (default: 5 minutes)
-            cleanupInterval: 5 * 60 * 1000              // Timing cleaner time (ms) (default: 5 minutes)
         }
     },
     blacklist               : [],           // It must be the user ID (string[])
@@ -77,6 +104,7 @@ export const cst = {
     },
     cacheExpiration : 30 * 60 * 1000            // stats cache validity time (default: 30 minutes)
 };
+
 
 /**
  * Music filter config

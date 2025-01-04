@@ -95,7 +95,7 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
     return message.reply({
         embeds: [
             embeds.botStatus(bot.config, bot.sysInfo, systemStatus),
-            embeds.nodesStatus(bot.config.embedsColor, nodeHealth, nodesStatus)
+            embeds.nodesStatus(bot.config.bot.embedsColor, nodeHealth, nodesStatus)
         ],
         allowedMentions: { repliedUser: false }
     });
@@ -178,7 +178,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
     return interaction.editReply({
         embeds: [
             embeds.botStatus(bot.config, bot.sysInfo, systemStatus),
-            embeds.nodesStatus(bot.config.embedsColor, nodeHealth, nodesStatus)
+            embeds.nodesStatus(bot.config.bot.embedsColor, nodeHealth, nodesStatus)
         ],
         allowedMentions: { repliedUser: false }
     });

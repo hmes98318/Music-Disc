@@ -24,7 +24,7 @@ export const options = [
 
 
 export const execute = async (bot: Bot, client: Client, message: Message, args: string[]) => {
-    const maxVolume = bot.config.maxVolume;
+    const maxVolume = bot.config.bot.volume.max;
     const player = client.lavashark.getPlayer(message.guild!.id);
 
     if (!player) {
@@ -55,7 +55,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
 
 export const slashExecute = async (bot: Bot, client: Client, interaction: ChatInputCommandInteraction) => {
 
-    const maxVolume = bot.config.maxVolume;
+    const maxVolume = bot.config.bot.volume.max;
     const player = client.lavashark.getPlayer(interaction.guild!.id);
 
     if (!player) {

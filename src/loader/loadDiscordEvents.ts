@@ -1,4 +1,7 @@
+import path from 'path';
 import * as fs from 'fs';
+
+import { Events } from 'discord.js';
 import { cst } from './../utils/constants';
 
 import type { Client } from 'discord.js';
@@ -14,10 +17,15 @@ const loadDiscordEvents = (bot: Bot, client: Client) => {
         bot.logger.emit('log', bot.shardId, `+--------------------------------+`);
         for (const file of files) {
             try {
-                const event = await import(`${__dirname}/../events/discord/${file}`);
+                const eventModule = await import(path.join('file://', `${__dirname}/../events/discord/${file}`));
+                const event = eventModule.default.default;
                 const eventName = file.split('.')[0];
 
-                client.on(eventName, event.default.bind(null, bot, client));
+                if (!bot.config.bot.textCommand && eventName === Events.MessageCreate) {
+                    continue;
+                }
+
+                client.on(eventName, event.bind(null, bot, client));
                 bot.logger.emit('log', bot.shardId, `| Loaded event ${file.split('.')[0].padEnd(17, ' ')} |`);
             } catch (error) {
                 reject(error);

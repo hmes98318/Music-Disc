@@ -32,7 +32,7 @@ export const options = [
 
 
 export const execute = async (bot: Bot, client: Client, message: Message, args: string[]) => {
-    const prefix = bot.config.prefix;
+    const prefix = bot.config.bot.prefix;
 
     if (!args[0]) {
         const title = client.user?.username;
@@ -68,7 +68,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
 
             i.deferUpdate();
             await msg.edit({
-                embeds: [embeds.help(bot.config.embedsColor, title!, usage)],
+                embeds: [embeds.help(bot.config.bot.embedsColor, title!, usage)],
                 components: [],
                 allowedMentions: { repliedUser: false }
             })
@@ -99,7 +99,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
                 const description = `${x.description}\n\`\`\`${prefix}${x.usage}\`\`\``;
 
                 message.reply({
-                    embeds: [embeds.help(bot.config.embedsColor, command, description)],
+                    embeds: [embeds.help(bot.config.bot.embedsColor, command, description)],
                     allowedMentions: { repliedUser: false }
                 });
                 return true;
@@ -111,7 +111,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
 };
 
 export const slashExecute = async (bot: Bot, client: Client, interaction: ChatInputCommandInteraction) => {
-    const prefix = bot.config.prefix;
+    const prefix = bot.config.bot.prefix;
     const command = interaction.options.getString("command");
 
     if (!command) {
@@ -148,7 +148,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
 
             i.deferUpdate();
             await msg.edit({
-                embeds: [embeds.help(bot.config.embedsColor, title!, usage)],
+                embeds: [embeds.help(bot.config.bot.embedsColor, title!, usage)],
                 components: [],
                 allowedMentions: { repliedUser: false }
             })
@@ -179,7 +179,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
                 const description = `${x.description}\n\`\`\`${prefix}${x.usage}\`\`\``;
 
                 interaction.editReply({
-                    embeds: [embeds.help(bot.config.embedsColor, command, description)],
+                    embeds: [embeds.help(bot.config.bot.embedsColor, command, description)],
                     allowedMentions: { repliedUser: false }
                 });
                 return true;

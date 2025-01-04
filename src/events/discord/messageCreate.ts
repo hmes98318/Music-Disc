@@ -5,7 +5,7 @@ import type { Bot } from "../../@types";
 
 
 export default async (bot: Bot, client: Client, message: Message) => {
-    const prefix = bot.config.prefix;
+    const prefix = bot.config.bot.prefix;
 
     if (bot.blacklist && bot.blacklist.includes(message.author.id)) return;
     if (message.author.bot || message.channel.type !== ChannelType.GuildText) return;
@@ -19,7 +19,7 @@ export default async (bot: Bot, client: Client, message: Message) => {
     if (!cmd) return;
 
     if (cmd.requireAdmin) {
-        if (!bot.config.admin.includes(message.author.id))
+        if (!bot.config.bot.admin.includes(message.author.id))
             return message.reply({ content: `❌ | This command requires administrator privileges.`, allowedMentions: { repliedUser: false } })
                 .catch((error) => {
                     bot.logger.emit('error', bot.shardId, `[messageCreate] Error reply: (${message.author.username} : ${message.content})` + error);

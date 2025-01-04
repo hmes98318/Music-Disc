@@ -58,7 +58,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
         else {
             await message.react('👍');
             return message.reply({
-                embeds: [embeds.removeTrack(bot.config.embedsColor, tracks[index - 1])],
+                embeds: [embeds.removeTrack(bot.config.bot.embedsColor, tracks[index - 1])],
                 allowedMentions: { repliedUser: false }
             });
         }
@@ -75,7 +75,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
             const musicTitle = tracks.slice(index1 - 1, index2).join('\n');
             await message.react('👍');
             return message.reply({
-                embeds: [embeds.removeTrack(bot.config.embedsColor, musicTitle)],
+                embeds: [embeds.removeTrack(bot.config.bot.embedsColor, musicTitle)],
                 allowedMentions: { repliedUser: false }
             });
         }
@@ -102,7 +102,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
         await message.react('👍');
         const msg = await message.reply({
             content: instruction,
-            embeds: [embeds.removeList(bot.config.embedsColor, nowplaying, tracksQueue, methods[repeatMode])],
+            embeds: [embeds.removeList(bot.config.bot.embedsColor, nowplaying, tracksQueue, methods[repeatMode])],
             allowedMentions: { repliedUser: false }
         });
 
@@ -125,7 +125,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
             player.queue.remove(index - 1);
 
             await query.reply({
-                embeds: [embeds.removeTrack(bot.config.embedsColor, tracks[index - 1])],
+                embeds: [embeds.removeTrack(bot.config.bot.embedsColor, tracks[index - 1])],
                 allowedMentions: { repliedUser: false }
             });
 
@@ -174,7 +174,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
         }
         else {
             return interaction.editReply({
-                embeds: [embeds.removeTrack(bot.config.embedsColor, tracks[index! - 1])],
+                embeds: [embeds.removeTrack(bot.config.bot.embedsColor, tracks[index! - 1])],
                 allowedMentions: { repliedUser: false }
             });
         }
@@ -188,7 +188,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
         else {
             const musicTitle = tracks.slice(index1 - 1, index2).join('\n');
             return interaction.editReply({
-                embeds: [embeds.removeTrack(bot.config.embedsColor, musicTitle)],
+                embeds: [embeds.removeTrack(bot.config.bot.embedsColor, musicTitle)],
                 allowedMentions: { repliedUser: false }
             });
         }
@@ -214,7 +214,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
 
         const msg = await interaction.editReply({
             content: instruction,
-            embeds: [embeds.removeList(bot.config.embedsColor, nowplaying, tracksQueue, methods[repeatMode])],
+            embeds: [embeds.removeList(bot.config.bot.embedsColor, nowplaying, tracksQueue, methods[repeatMode])],
             allowedMentions: { repliedUser: false }
         });
 
@@ -237,7 +237,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
             player.queue.remove(index - 1);
 
             await query.reply({
-                embeds: [embeds.removeTrack(bot.config.embedsColor, tracks[index - 1])],
+                embeds: [embeds.removeTrack(bot.config.bot.embedsColor, tracks[index - 1])],
                 allowedMentions: { repliedUser: false }
             });
 

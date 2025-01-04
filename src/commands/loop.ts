@@ -46,7 +46,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
     let mode = null;
     const methods = ['Off', 'Single', 'All'];
 
-    if (!args[0]) return message.reply({ content: `❌ | ${bot.config.prefix}${usage}`, allowedMentions: { repliedUser: false } });
+    if (!args[0]) return message.reply({ content: `❌ | ${bot.config.bot.prefix}${usage}`, allowedMentions: { repliedUser: false } });
 
     switch (args[0].toLowerCase()) {
         case 'off': {
@@ -67,7 +67,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
             break;
         }
         default: {
-            return message.reply({ content: `❌ | ${bot.config.prefix}${usage}`, allowedMentions: { repliedUser: false } });
+            return message.reply({ content: `❌ | ${bot.config.bot.prefix}${usage}`, allowedMentions: { repliedUser: false } });
         }
     }
 
@@ -103,7 +103,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
             break;
         }
         default: {
-            return interaction.editReply({ content: `❌ | ${bot.config.prefix}${usage}`, allowedMentions: { repliedUser: false } });
+            return interaction.editReply({ content: `❌ | ${bot.config.bot.prefix}${usage}`, allowedMentions: { repliedUser: false } });
         }
     }
 

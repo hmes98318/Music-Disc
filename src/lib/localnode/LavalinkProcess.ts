@@ -3,11 +3,11 @@ import path from 'path';
 
 
 class LavalinkProcess {
-    public pid: number;
+    public pid!: number;
     public lavalinkJarPath: string;
     public outputLog: boolean;
 
-    #lavalinkProcess: child_process.ChildProcessWithoutNullStreams;
+    #lavalinkProcess!: child_process.ChildProcessWithoutNullStreams;
 
     constructor(lavalinkJarPath: any) {
         this.lavalinkJarPath = String(lavalinkJarPath);
