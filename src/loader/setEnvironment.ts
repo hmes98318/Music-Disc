@@ -22,10 +22,14 @@ const setEnvironment = (defaultConfig: Config) => {
         status: ['online', 'idle', 'dnd'].includes(config.bot.status)
             ? config.bot.status
             : defaultConfig.bot.status,
-        activityType: Object.values(ActivityType).includes(config.bot.activityType)
-            ? config.bot.activityType
-            : defaultConfig.bot.activityType,
-        playing: config.bot.playing || defaultConfig.bot.playing,
+        activity: {
+            name: config.bot.activity.name || defaultConfig.bot.activity.name,
+            type: Object.values(ActivityType).includes(config.bot.activity.type)
+                ? config.bot.activity.type
+                : defaultConfig.bot.activity.type,
+            state: config.bot.activity.state || defaultConfig.bot.activity.state,
+            url: config.bot.activity.url || defaultConfig.bot.activity.url,
+        },
         embedsColor: config.bot.embedsColor || defaultConfig.bot.embedsColor,
 
         // Volume settings

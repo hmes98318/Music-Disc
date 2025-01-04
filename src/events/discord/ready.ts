@@ -40,11 +40,21 @@ export default async (bot: Bot, client: Client) => {
 
     client.lavashark.start(String(client.user?.id));
     client.user?.setStatus(bot.config.bot.status as ClientPresenceStatus);
-    client.user?.setActivity(bot.config.bot.playing);
+    client.user?.setActivity({
+        name: bot.config.bot.activity.name,
+        type: bot.config.bot.activity.type,
+        state: bot.config.bot.activity.state,
+        url: bot.config.bot.activity.url
+    });
 
     // Prevent the disappearance of the activity status
     setInterval(() => {
-        client.user?.setActivity(bot.config.bot.playing);
+        client.user?.setActivity({
+            name: bot.config.bot.activity.name,
+            type: bot.config.bot.activity.type,
+            state: bot.config.bot.activity.state,
+            url: bot.config.bot.activity.url
+        })
     }, 10 * 60 * 1000); // 10 minutes
 
 

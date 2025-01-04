@@ -19,8 +19,12 @@ export const cst = {
             name                    : 'Music Disc',
             prefix                  : '+',
             status                  : ('online' as ClientPresenceStatus),       // 'online' | 'idle' | 'dnd'
-            activityType            : ActivityType.Playing,                     // https://discord.com/developers/docs/topics/gateway-events#activity-object-activity-types
-            playing                 : '+help | music',
+            activity: {
+                type                : ActivityType.Playing,                     // https://discord.com/developers/docs/topics/gateway-events#activity-object-activity-types
+                name                : '+help | music',
+                state               : undefined,
+                url                 : undefined,
+            },
             embedsColor             : '#FFFFFF',
             volume: {
                 default             : 50,

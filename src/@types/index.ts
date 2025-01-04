@@ -3,7 +3,6 @@ import type {
     ChatInputCommandInteraction,
     ClientPresenceStatus,
     Collection,
-    HexColorString,
     Message
 } from "discord.js";
 import type { LavaShark } from "lavashark";
@@ -77,8 +76,12 @@ export type BotConfig = {
     name: string;
     prefix: string;
     status: ClientPresenceStatus;
-    activityType: ActivityType;
-    playing: string;
+    activity: {
+        type: ActivityType;
+        name: string;
+        state?: string;
+        url?: string;
+    }
     embedsColor: string;
     volume: {
         default: number;

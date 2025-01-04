@@ -13,8 +13,12 @@ const config = {
         name                    : 'Music Disc',
         prefix                  : '-',
         status                  : 'online',             // 'online' | 'idle' | 'dnd'
-        activityType            : 2,                    // https://discord.com/developers/docs/topics/gateway-events#activity-object-activity-types
-        playing                 : '+help | music',
+        activity: {
+            type                : 0,                    // https://discord.com/developers/docs/topics/gateway-events#activity-object-activity-types
+            name                : '+help | music',
+            // state               : '',
+            // url                 : '',                // The streaming type currently only supports Twitch and YouTube. Only https://twitch.tv/ and https://youtube.com/ urls will work.
+        },
         embedsColor             : '#FFFFFF',
         volume: {
             default             : 50,
