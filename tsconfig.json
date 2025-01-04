@@ -2,8 +2,8 @@
     "compilerOptions": {
         "incremental": true,
         "target": "ES2022",
-        "module": "CommonJS",
-        "moduleResolution": "node",
+        "module": "NodeNext",
+        "moduleResolution": "NodeNext",
         "lib": [
             "ES2022"
         ],
@@ -11,17 +11,16 @@
             "src/"
         ],
         "outDir": "dist/",
-        "resolveJsonModule": true,
-        "allowJs": false,
-        "checkJs": false,
+        "allowJs": true,
+        "checkJs": true,
         "declaration": false,
         "noEmit": false,
         "isolatedModules": true,
         "esModuleInterop": true,
+        "resolveJsonModule": true,
+        "removeComments": true,
         "forceConsistentCasingInFileNames": true,
         "strict": true,
-        "strictNullChecks": true,
-        "strictPropertyInitialization": false,
         "skipDefaultLibCheck": true,
         "skipLibCheck": true
     },
