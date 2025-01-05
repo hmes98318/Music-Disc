@@ -26,7 +26,10 @@
     },
     "include": [
         "src/*.ts",
-        "src/**/*.ts"
+        "src/**/*.ts",
+        "package*.json",
+        "config.js",
+        "nodelist.json"
     ],
     "exclude": [
         "node_modules",
