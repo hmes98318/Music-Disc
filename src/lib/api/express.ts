@@ -1,21 +1,21 @@
 import bodyParser from 'body-parser';
-import cookie from "cookie";
+import cookie from 'cookie';
 import express from 'express';
-import undici from "undici";
+import undici from 'undici';
 import { NodeState } from 'lavashark';
 
-import { cst } from '../../utils/constants';
-import { embeds } from '../../embeds';
-import { hashGenerator } from '../hashGenerator';
-import { sysusage } from '../../utils/functions/sysusage';
-import { uptime } from '../../utils/functions/uptime';
-import { LoginTypeEnum } from '../../@types';
+import { cst } from '../../utils/constants.js';
+import { embeds } from '../../embeds/index.js';
+import { hashGenerator } from '../hashGenerator.js';
+import { sysusage } from '../../utils/functions/sysusage.js';
+import { uptime } from '../../utils/functions/uptime.js';
+import { LoginTypeEnum } from '../../@types/index.js';
 
 import type { ShardingManager, VoiceChannel } from 'discord.js';
 import type { Express } from 'express';
-import type { Bot } from '../../@types';
-import type { SessionManager } from '../session-manager/SessionManager';
-import type { LocalNodeController } from '../localnode/LocalNodeController';
+import type { Bot } from '../../@types/index.js';
+import type { SessionManager } from '../session-manager/SessionManager.js';
+import type { LocalNodeController } from '../localnode/LocalNodeController.js';
 
 
 const registerExpressEvents = (bot: Bot, shardManager: ShardingManager, localNodeController: LocalNodeController, app: Express, sessionManager: SessionManager) => {

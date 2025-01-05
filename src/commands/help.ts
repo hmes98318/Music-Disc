@@ -7,10 +7,10 @@ import {
     Message,
     StringSelectMenuBuilder,
     StringSelectMenuInteraction
-} from "discord.js";
-import { embeds } from "../embeds";
+} from 'discord.js';
+import { embeds } from '../embeds/index.js';
 
-import type { Bot } from "../@types";
+import type { Bot } from '../@types/index.js';
 
 
 export const name = 'help';
@@ -23,8 +23,8 @@ export const sendTyping = true;
 export const requireAdmin = false;
 export const options = [
     {
-        name: "command",
-        description: "which command need help",
+        name: 'command',
+        description: 'which command need help',
         type: 3,
         required: false
     }
@@ -39,8 +39,8 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
         const commands = client.commands.filter(x => x.showHelp !== false);
 
         const select = new StringSelectMenuBuilder()
-            .setCustomId("helpSelect")
-            .setPlaceholder("Select the help")
+            .setCustomId('helpSelect')
+            .setPlaceholder('Select the help')
             .setOptions(commands.map(x => {
                 return {
                     label: x.name,
@@ -60,8 +60,8 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
             filter: i => i.user.id === message.author.id
         });
 
-        collector.on("collect", async (i: StringSelectMenuInteraction) => {
-            if (i.customId != "helpSelect") return;
+        collector.on('collect', async (i: StringSelectMenuInteraction) => {
+            if (i.customId != 'helpSelect') return;
 
             const cmd = commands.find(x => x.name === i.values[0]);
             const usage = `${cmd.description}\n\`\`\`${prefix}${cmd.usage}\`\`\``;
@@ -77,10 +77,10 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
             return collector.stop();
         });
 
-        collector.on("end", async (collected: Collection<string, ButtonInteraction>, reason: string) => {
-            if (reason == "time" && collected.size == 0) {
+        collector.on('end', async (collected: Collection<string, ButtonInteraction>, reason: string) => {
+            if (reason == 'time' && collected.size == 0) {
                 await msg.edit({
-                    content: "❌ | Time expired.",
+                    content: '❌ | Time expired.',
                     components: [],
                     allowedMentions: { repliedUser: false }
                 })
@@ -112,15 +112,15 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
 
 export const slashExecute = async (bot: Bot, client: Client, interaction: ChatInputCommandInteraction) => {
     const prefix = bot.config.bot.prefix;
-    const command = interaction.options.getString("command");
+    const command = interaction.options.getString('command');
 
     if (!command) {
         const title = client.user?.username;
         const commands = client.commands.filter(x => x.showHelp !== false);
 
         const select = new StringSelectMenuBuilder()
-            .setCustomId("helpSelect")
-            .setPlaceholder("Select the help")
+            .setCustomId('helpSelect')
+            .setPlaceholder('Select the help')
             .setOptions(commands.map(x => {
                 return {
                     label: x.name,
@@ -140,8 +140,8 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
             filter: i => i.user.id === interaction.user.id
         });
 
-        collector.on("collect", async (i: StringSelectMenuInteraction) => {
-            if (i.customId != "helpSelect") return;
+        collector.on('collect', async (i: StringSelectMenuInteraction) => {
+            if (i.customId != 'helpSelect') return;
 
             const cmd = commands.find(x => x.name === i.values[0]);
             const usage = `${cmd.description}\n\`\`\`${prefix}${cmd.usage}\`\`\``;
@@ -157,10 +157,10 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
             return collector.stop();
         });
 
-        collector.on("end", async (collected: Collection<string, ButtonInteraction>, reason: string) => {
-            if (reason == "time" && collected.size == 0) {
+        collector.on('end', async (collected: Collection<string, ButtonInteraction>, reason: string) => {
+            if (reason == 'time' && collected.size == 0) {
                 await msg.edit({
-                    content: "❌ | Time expired.",
+                    content: '❌ | Time expired.',
                     components: [],
                     allowedMentions: { repliedUser: false }
                 })

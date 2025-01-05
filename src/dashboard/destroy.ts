@@ -1,7 +1,7 @@
-import { embeds } from "../embeds";
+import { embeds } from '../embeds/index.js';
 
-import type { Player } from "lavashark";
-import type { Bot } from "../@types";
+import type { Player } from 'lavashark';
+import type { Bot } from '../@types/index.js';
 
 
 async function destroy(bot: Bot, player: Player, embedsColor: string | number) {

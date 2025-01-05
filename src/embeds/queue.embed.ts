@@ -1,4 +1,4 @@
-import { EmbedBuilder, HexColorString } from "discord.js";
+import { EmbedBuilder, HexColorString } from 'discord.js';
 
 
 const addTrack = (embedsColor: HexColorString | string | number, title: string, subtitle: string, url: string, thumbnail: string) => {

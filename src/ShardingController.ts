@@ -1,4 +1,6 @@
 import path from 'path';
+import { fileURLToPath } from 'url';
+
 import { ShardingManager } from 'discord.js';
 import * as dotenv from 'dotenv';
 
@@ -9,6 +11,9 @@ export class ShardingController {
 
     constructor() {
         dotenv.config();
+
+        const __filename = fileURLToPath(import.meta.url);
+        const __dirname = path.dirname(__filename);
 
         const fileExtension = path.extname(__filename);
         this.shardFilePath = path.join(__dirname, `./App${fileExtension}`);

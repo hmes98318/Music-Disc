@@ -1,4 +1,4 @@
-import { EmbedBuilder, HexColorString } from "discord.js";
+import { EmbedBuilder, HexColorString } from 'discord.js';
 
 
 const connected = (embedsColor: HexColorString | string | number) => {

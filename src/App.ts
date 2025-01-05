@@ -1,3 +1,5 @@
+import fs from 'fs';
+
 import { Client, Collection, GatewayIntentBits } from 'discord.js';
 import { LavaShark } from 'lavashark';
 
@@ -8,12 +10,11 @@ import {
     loadDiscordEvents,
     loadLavaSharkEvents,
     setEnvironment
-} from './loader';
-import { Logger } from './lib/Logger';
-import { cst } from './utils/constants';
-import nodeList from '../nodelist.json';
+} from './loader/index.js';
+import { Logger } from './lib/Logger.js';
+import { cst } from './utils/constants.js';
 
-import type { Bot, SystemInfo } from './@types';
+import type { Bot, SystemInfo } from './@types/index.js';
 
 
 class App {
@@ -31,7 +32,7 @@ class App {
         });
         this.#client.commands = new Collection();
         this.#client.lavashark = new LavaShark({
-            nodes: nodeList,
+            nodes: this.#loadNodeList(),
             sendWS: (guildId, payload) => { this.#client.guilds.cache.get(guildId)?.shard.send(payload); }
         });
 
@@ -65,6 +66,15 @@ class App {
                 this.bot.logger.emit('log', this.bot.shardId, cst.color.green + '*** All loaded successfully ***' + cst.color.white);
                 this.#client.login(process.env.BOT_TOKEN);
             });
+    }
+
+    #loadNodeList() {
+        try {
+            const data = fs.readFileSync('./nodelist.json', 'utf-8');
+            return JSON.parse(data);
+        } catch (error) {
+            throw new Error(`Failed to load nodelist.json: ${JSON.stringify(error)}`);
+        }
     }
 }
 

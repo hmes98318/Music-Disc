@@ -7,11 +7,11 @@ import {
     Message,
     StringSelectMenuBuilder,
     StringSelectMenuInteraction
-} from "discord.js";
-import { embeds } from "../embeds";
-import { filtersConfig } from "../utils/constants";
+} from 'discord.js';
+import { embeds } from '../embeds/index.js';
+import { filtersConfig } from '../utils/constants.js';
 
-import type { Bot } from "../@types";
+import type { Bot } from '../@types/index.js';
 
 
 export const name = 'filter';
@@ -24,8 +24,8 @@ export const sendTyping = true;
 export const requireAdmin = false;
 export const options = [
     {
-        name: "filter",
-        description: "Select the music filter mode you want to set.",
+        name: 'filter',
+        description: 'Select the music filter mode you want to set.',
         type: 3,
         required: true,
         choices: [
@@ -51,8 +51,8 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
 
     if (!args[0]) {
         const select = new StringSelectMenuBuilder()
-            .setCustomId("filterSelect")
-            .setPlaceholder("Select filter mode")
+            .setCustomId('filterSelect')
+            .setPlaceholder('Select filter mode')
             .setOptions([
                 ...(Object.keys(filtersConfig).map((effectName) => {
                     return {
@@ -75,8 +75,8 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
             filter: i => i.user.id === message.author.id
         });
 
-        collector.on("collect", async (i: StringSelectMenuInteraction) => {
-            if (i.customId !== "filterSelect") return;
+        collector.on('collect', async (i: StringSelectMenuInteraction) => {
+            if (i.customId !== 'filterSelect') return;
 
             const effectName = i.values[0];
 
@@ -110,10 +110,10 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
             return collector.stop();
         });
 
-        collector.on("end", async (collected: Collection<string, ButtonInteraction>, reason: string) => {
-            if (reason === "time" && collected.size === 0) {
+        collector.on('end', async (collected: Collection<string, ButtonInteraction>, reason: string) => {
+            if (reason === 'time' && collected.size === 0) {
                 await msg.edit({
-                    content: "❌ | Time expired.",
+                    content: '❌ | Time expired.',
                     components: [],
                     allowedMentions: { repliedUser: false }
                 })
@@ -146,7 +146,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
     }
 
 
-    const effectName = interaction.options.getString("filter");
+    const effectName = interaction.options.getString('filter');
 
     if (effectName === 'clear') {
         player.filters.clear();

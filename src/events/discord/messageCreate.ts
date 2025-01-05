@@ -1,7 +1,7 @@
-import { Client, Message, ChannelType } from "discord.js";
-import { cst } from "../../utils/constants";
+import { Client, Message, ChannelType } from 'discord.js';
+import { cst } from '../../utils/constants.js';
 
-import type { Bot } from "../../@types";
+import type { Bot } from '../../@types/index.js';
 
 
 export default async (bot: Bot, client: Client, message: Message) => {

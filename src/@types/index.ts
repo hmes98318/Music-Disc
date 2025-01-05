@@ -4,11 +4,11 @@ import type {
     ClientPresenceStatus,
     Collection,
     Message
-} from "discord.js";
-import type { LavaShark } from "lavashark";
+} from 'discord.js';
+import type { LavaShark } from 'lavashark';
 
-import type { Logger } from "../lib/Logger";
-import type { IPBlockerConfig, SessionManagerConfig } from "./SessionManager.types";
+import type { Logger } from '../lib/Logger.js';
+import type { IPBlockerConfig, SessionManagerConfig } from './SessionManager.types.js';
 
 
 declare module 'discord.js' {
@@ -92,6 +92,7 @@ export type BotConfig = {
         cooldown: number;
     };
     displayVoiceState: boolean;
+    specifyMessageChannel: string | null;
 };
 
 export type WebDashboardConfig = {

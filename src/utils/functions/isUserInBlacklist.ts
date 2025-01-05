@@ -1,4 +1,4 @@
-import type { VoiceBasedChannel } from "discord.js";
+import type { VoiceBasedChannel } from 'discord.js';
 
 const isUserInBlacklist = (voiceChannel: VoiceBasedChannel | null | undefined, blacklist: string[]) => {
     if (!voiceChannel) {

@@ -5,11 +5,11 @@ import {
     ChatInputCommandInteraction,
     Client,
     Message
-} from "discord.js";
-import { embeds } from "../embeds";
-import { cst } from "../utils/constants";
+} from 'discord.js';
+import { embeds } from '../embeds/index.js';
+import { cst } from '../utils/constants.js';
 
-import type { Bot } from "../@types";
+import type { Bot } from '../@types/index.js';
 
 
 export const name = 'queue';

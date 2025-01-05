@@ -1,5 +1,5 @@
-import { IPBlocker } from "./IPBlocker";
-import type { IPBlockerConfig, SessionManagerConfig } from "../../@types/SessionManager.types";
+import { IPBlocker } from './IPBlocker.js';
+import type { IPBlockerConfig, SessionManagerConfig } from '../../@types/SessionManager.types.js';
 
 
 export interface SessionData {

@@ -3,6 +3,7 @@
     "version": "3.1.0",
     "description": "Discord Music Bot",
     "main": "./src/index.ts",
+    "type": "module",
     "scripts": {
         "start": "npm run build && node ./dist/src/index.js",
         "build": "tsc",

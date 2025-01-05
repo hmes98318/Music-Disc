@@ -1,5 +1,5 @@
 /**
- * @type {import('./src/@types/index').Config} - Bot config
+ * @type {import('./src/@types/index.js').Config} - Bot config
  */
 const config = {
     bot: {
@@ -31,6 +31,12 @@ const config = {
         },
         // Show voice channel updates
         displayVoiceState       : true,
+
+        // Specify the text channel for receiving commands.
+        // If this value is set, text messages from other channels will not be processed.
+        specifyMessageChannel   : null,         // Text channel ID
+
+        // i18n: {}
     },
 
     // Web dashboard settings

@@ -1,6 +1,6 @@
 import os from 'os';
 import util from 'util';
-import { exec } from "child_process";
+import { exec } from 'child_process';
 
 import { CpuInfo } from 'os';
 
@@ -75,7 +75,7 @@ const getCpuLoad = () => {
 
     cpus.forEach(cpu => {
         for (const type in cpu.times) {
-            totalTick += cpu.times[type as keyof CpuInfo["times"]];
+            totalTick += cpu.times[type as keyof CpuInfo['times']];
         }
         totalIdle += cpu.times.idle;
     });

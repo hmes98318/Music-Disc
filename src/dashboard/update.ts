@@ -2,13 +2,13 @@ import {
     ActionRowBuilder,
     ButtonBuilder,
     ButtonStyle,
-} from "discord.js";
+} from 'discord.js';
 
-import { cst } from "../utils/constants";
-import { embeds } from "../embeds";
+import { cst } from '../utils/constants.js';
+import { embeds } from '../embeds/index.js';
 
-import type { Player, Track } from "lavashark";
-import type { Bot } from "../@types";
+import type { Player, Track } from 'lavashark';
+import type { Bot } from '../@types/index.js';
 
 
 async function update(bot: Bot, player: Player, track: Track): Promise<void> {

@@ -1,7 +1,7 @@
-import { RepeatMode } from "lavashark";
+import { RepeatMode } from 'lavashark';
 
-import type { Client, Message, ChatInputCommandInteraction } from "discord.js";
-import type { Bot } from "../@types";
+import type { Client, Message, ChatInputCommandInteraction } from 'discord.js';
+import type { Bot } from '../@types/index.js';
 
 
 export const name = 'loop';
@@ -14,22 +14,22 @@ export const sendTyping = true;
 export const requireAdmin = false;
 export const options = [
     {
-        name: "mode",
-        description: "The loop mode",
+        name: 'mode',
+        description: 'The loop mode',
         type: 3,
         required: true,
         choices: [
             {
-                name: "Off",
-                value: "off"
+                name: 'Off',
+                value: 'off'
             },
             {
-                name: "One",
-                value: "one"
+                name: 'One',
+                value: 'one'
             },
             {
-                name: "All",
-                value: "all"
+                name: 'All',
+                value: 'all'
             }
         ]
     }
@@ -86,7 +86,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
     let mode = null;
     const methods = ['Off', 'Single', 'All'];
 
-    switch (interaction.options.getString("mode")) {
+    switch (interaction.options.getString('mode')) {
         case 'off': {
             mode = 0;
             player.setRepeatMode(RepeatMode.OFF);

@@ -1,11 +1,11 @@
-import { loadLocalNode, loadSite, setEnvironment } from "./loader";
-import { Logger } from "./lib/Logger";
-import { LocalNodeController } from "./lib/localnode/LocalNodeController";
-import { ShardingController } from "./ShardingController";
-import { getSysInfo } from "./utils/functions/getSysInfo";
-import { cst } from "./utils/constants";
+import { loadLocalNode, loadSite, setEnvironment } from './loader/index.js';
+import { Logger } from './lib/Logger.js';
+import { LocalNodeController } from './lib/localnode/LocalNodeController.js';
+import { ShardingController } from './ShardingController.js';
+import { getSysInfo } from './utils/functions/getSysInfo.js';
+import { cst } from './utils/constants.js';
 
-import type { Bot, SystemInfo } from "./@types";
+import type { Bot, SystemInfo } from './@types/index.js';
 
 
 export class Controller {

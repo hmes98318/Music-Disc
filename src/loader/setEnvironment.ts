@@ -1,8 +1,8 @@
 import { ActivityType } from 'discord.js';
-import { hashGenerator } from '../lib/hashGenerator';
+import { hashGenerator } from '../lib/hashGenerator.js';
 import { config } from '../../config.js';
 
-import type { Config } from './../@types';
+import type { Config } from './../@types/index.js';
 
 
 const setEnvironment = (defaultConfig: Config) => {
@@ -51,7 +51,9 @@ const setEnvironment = (defaultConfig: Config) => {
         },
 
         // Show voice channel updates
-        displayVoiceState: config.bot.displayVoiceState ?? defaultConfig.bot.displayVoiceState
+        displayVoiceState: config.bot.displayVoiceState ?? defaultConfig.bot.displayVoiceState,
+
+        specifyMessageChannel: config.bot.specifyMessageChannel || defaultConfig.bot.specifyMessageChannel
     };
 
     // Web dashboard settings

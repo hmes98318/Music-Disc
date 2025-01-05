@@ -5,10 +5,10 @@ import {
     ChatInputCommandInteraction,
     Client,
     Message
-} from "discord.js";
-import { embeds } from "../embeds";
+} from 'discord.js';
+import { embeds } from '../embeds/index.js';
 
-import type { Bot } from "../@types";
+import type { Bot } from '../@types/index.js';
 
 
 export const name = 'nowplaying';

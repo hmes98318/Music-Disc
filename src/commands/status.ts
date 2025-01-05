@@ -1,10 +1,10 @@
-import { cst } from '../utils/constants';
-import { embeds } from '../embeds';
-import { uptime } from '../utils/functions/uptime';
-import { sysusage } from '../utils/functions/sysusage';
+import { cst } from '../utils/constants.js';
+import { embeds } from '../embeds/index.js';
+import { uptime } from '../utils/functions/uptime.js';
+import { sysusage } from '../utils/functions/sysusage.js';
 
 import type { ChatInputCommandInteraction, Client, Message } from 'discord.js';
-import type { Bot, SystemStatus } from '../@types';
+import type { Bot, SystemStatus } from '../@types/index.js';
 
 
 export const name = 'status';

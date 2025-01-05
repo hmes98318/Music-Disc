@@ -1,12 +1,12 @@
-import { embeds } from "../embeds";
+import { embeds } from '../embeds/index.js';
 
 import type {
     ChatInputCommandInteraction,
     Client,
     Message,
     ReadonlyCollection
-} from "discord.js";
-import type { Bot } from "../@types";
+} from 'discord.js';
+import type { Bot } from '../@types/index.js';
 
 
 export const name = 'remove';
@@ -19,14 +19,14 @@ export const sendTyping = true;
 export const requireAdmin = false;
 export const options = [
     {
-        name: "index",
-        description: "track index number",
+        name: 'index',
+        description: 'track index number',
         type: 10,
         required: false
     },
     {
-        name: "index2",
-        description: "from index to index 2 track",
+        name: 'index2',
+        description: 'from index to index 2 track',
         type: 10,
         required: false
     }
@@ -136,7 +136,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
         });
 
         collector.on('end', async (collected: ReadonlyCollection<string, Message<boolean>>, reason: string) => {
-            if (reason == "time" && collected.size == 0) {
+            if (reason == 'time' && collected.size == 0) {
                 await msg.edit({
                     content: `❌ | Song remove time expired`,
                     embeds: [],
@@ -248,7 +248,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
         });
 
         collector.on('end', async (collected: ReadonlyCollection<string, Message<boolean>>, reason: string) => {
-            if (reason == "time" && collected.size == 0) {
+            if (reason == 'time' && collected.size == 0) {
                 await msg.edit({
                     content: `❌ | Song remove time expired`,
                     embeds: [],

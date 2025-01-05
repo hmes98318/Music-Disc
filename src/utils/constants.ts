@@ -1,5 +1,5 @@
-import { ActivityType, ClientPresenceStatus } from "discord.js";
-import { LoginType } from "../@types";
+import { ActivityType, ClientPresenceStatus } from 'discord.js';
+import { LoginType } from '../@types/index.js';
 
 
 /**
@@ -12,7 +12,7 @@ export const cst = {
             textCommand             : true,                 // Whether to enable text command
             slashCommand            : true,                 // Whether to enable slash command
     
-            // OAUTH2 mode requires setting "admin", "clientSecret" value
+            // OAUTH2 mode requires setting 'admin', 'clientSecret' value
             admin                   : [],                   // It must be the user ID (string[])
             clientSecret            : '',
     
@@ -37,24 +37,28 @@ export const cst = {
             },
             // Show voice channel updates
             displayVoiceState       : true,
+
+            // Specify the text channel for receiving commands.
+            // If this value is set, text messages from other channels will not be processed.
+            specifyMessageChannel   : null,         // Text channel ID
         },
     
         // Web dashboard settings
         webDashboard: {
             enabled                 : true,
             port                    : 33333,
-            loginType               : ('USER' as LoginType),    // "USER" | "OAUTH2"
+            loginType               : ('USER' as LoginType),    // 'USER' | 'OAUTH2'
     
             // USER mode settings
             user: {
-                username            : "admin",
-                password            : "password",
+                username            : 'admin',
+                password            : 'password',
             },
     
             // OAUTH2 mode settings
             oauth2: {
-                link                : "",
-                redirectUri         : "http://localhost:33333/login",
+                link                : '',
+                redirectUri         : 'http://localhost:33333/login',
             },
     
             // SessionManager config

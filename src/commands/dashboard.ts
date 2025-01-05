@@ -1,7 +1,7 @@
-import { dashboard } from "../dashboard";
+import { dashboard } from '../dashboard/index.js';
 
-import type { ChatInputCommandInteraction, Client, Message } from "discord.js";
-import type { Bot } from "../@types";
+import type { ChatInputCommandInteraction, Client, Message } from 'discord.js';
+import type { Bot } from '../@types/index.js';
 
 
 export const name = 'dashboard';
@@ -48,5 +48,5 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
 
     await dashboard.initial(bot, interaction, player);
     await dashboard.update(bot, player, player.current!);
-    return interaction.editReply("✅ | Dashboard updated.");
+    return interaction.editReply('✅ | Dashboard updated.');
 };

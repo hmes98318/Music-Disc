@@ -1,8 +1,8 @@
-import { NodeState } from "lavashark";
-import { embeds } from "../embeds";
+import { NodeState } from 'lavashark';
+import { embeds } from '../embeds/index.js';
 
-import type { ChatInputCommandInteraction, Client, Message } from "discord.js";
-import type { Bot } from "../@types";
+import type { ChatInputCommandInteraction, Client, Message } from 'discord.js';
+import type { Bot } from '../@types/index.js';
 
 
 export const name = 'nodestatus';
@@ -15,8 +15,8 @@ export const sendTyping = true;
 export const requireAdmin = false;
 export const options = [
     {
-        name: "nodename",
-        description: "The node name",
+        name: 'nodename',
+        description: 'The node name',
         type: 3,
         required: false
     }

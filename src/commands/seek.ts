@@ -1,7 +1,7 @@
-import { timeToSeconds } from "../utils/functions/unitConverter";
+import { timeToSeconds } from '../utils/functions/unitConverter.js';
 
-import type { ChatInputCommandInteraction, Client, Message } from "discord.js";
-import type { Bot } from "../@types";
+import type { ChatInputCommandInteraction, Client, Message } from 'discord.js';
+import type { Bot } from '../@types/index.js';
 
 
 export const name = 'seek';
@@ -14,8 +14,8 @@ export const sendTyping = true;
 export const requireAdmin = false;
 export const options = [
     {
-        name: "seek",
-        description: "traget time (ex: 3m20s, 1:20:55)",
+        name: 'seek',
+        description: 'traget time (ex: 3m20s, 1:20:55)',
         type: 3,
         required: true
     }
@@ -56,7 +56,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
         return interaction.editReply({ content: '❌ | There is no music currently playing.', allowedMentions: { repliedUser: false } });
     }
 
-    const str = interaction.options.getString("seek");
+    const str = interaction.options.getString('seek');
     const tragetTime = timeToSeconds(str!);
 
     if (!tragetTime) {

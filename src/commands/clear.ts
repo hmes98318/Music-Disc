@@ -1,5 +1,5 @@
-import type { ChatInputCommandInteraction, Client, Message } from "discord.js";
-import type { Bot } from "../@types";
+import type { ChatInputCommandInteraction, Client, Message } from 'discord.js';
+import type { Bot } from '../@types/index.js';
 
 
 export const name = 'clear';
@@ -32,5 +32,5 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
     }
 
     player.queue.clear();
-    return interaction.editReply("✅ | Queue cleared.");
+    return interaction.editReply('✅ | Queue cleared.');
 };

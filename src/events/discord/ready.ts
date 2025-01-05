@@ -1,8 +1,8 @@
 import { Client, ClientPresenceStatus } from 'discord.js';
-import { getSysInfo } from '../../utils/functions/getSysInfo';
-import { cst } from '../../utils/constants';
+import { getSysInfo } from '../../utils/functions/getSysInfo.js';
+import { cst } from '../../utils/constants.js';
 
-import type { Bot } from "../../@types";
+import type { Bot } from '../../@types/index.js';
 
 
 export default async (bot: Bot, client: Client) => {

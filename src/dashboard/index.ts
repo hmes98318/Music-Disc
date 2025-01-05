@@ -1,6 +1,6 @@
-import { initial } from "./initial";
-import { update } from "./update";
-import { destroy } from "./destroy";
+import { initial } from './initial.js';
+import { update } from './update.js';
+import { destroy } from './destroy.js';
 
 
 const dashboard = {

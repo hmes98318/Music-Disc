@@ -1,9 +1,9 @@
-import { dashboard } from "../../dashboard";
-import { embeds } from "../../embeds";
+import { dashboard } from '../../dashboard/index.js';
+import { embeds } from '../../embeds/index.js';
 
-import type { Client, Message } from "discord.js";
-import type { Player, Track } from "lavashark";
-import type { Bot } from "../../@types";
+import type { Client, Message } from 'discord.js';
+import type { Player, Track } from 'lavashark';
+import type { Bot } from '../../@types/index.js';
 
 
 export default async (bot: Bot, _client: Client, player: Player, tracks: Track | Track[]) => {

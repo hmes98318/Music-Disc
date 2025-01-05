@@ -1,7 +1,7 @@
-import { dashboard } from "../dashboard";
+import { dashboard } from '../dashboard/index.js';
 
-import type { ChatInputCommandInteraction, Client, Message } from "discord.js";
-import type { Bot } from "../@types";
+import type { ChatInputCommandInteraction, Client, Message } from 'discord.js';
+import type { Bot } from '../@types/index.js';
 
 
 export const name = 'leave';

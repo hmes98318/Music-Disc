@@ -1,11 +1,11 @@
-import { connected, dashboard, disconnect } from "./dashboard.embed";
-import { blacklist, filterMsg, help } from "./msg.embed";
-import { ping } from "./ping.embed";
-import { addTrack, addPlaylist, queue } from "./queue.embed";
-import { removeList, removeTrack } from "./remove.embed";
-import { save } from "./save.embed";
-import { server } from "./server.embed";
-import { botStatus, maintainNotice, nodeDisconnected, nodesStatus, nodeStatus, validNodeName } from "./status.embed";
+import { connected, dashboard, disconnect } from './dashboard.embed.js';
+import { blacklist, filterMsg, help } from './msg.embed.js';
+import { ping } from './ping.embed.js';
+import { addTrack, addPlaylist, queue } from './queue.embed.js';
+import { removeList, removeTrack } from './remove.embed.js';
+import { save } from './save.embed.js';
+import { server } from './server.embed.js';
+import { botStatus, maintainNotice, nodeDisconnected, nodesStatus, nodeStatus, validNodeName } from './status.embed.js';
 
 
 const embeds = {

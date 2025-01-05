@@ -1,5 +1,5 @@
-import { EmbedBuilder, HexColorString } from "discord.js";
-import { Config } from "../@types";
+import { EmbedBuilder, HexColorString } from 'discord.js';
+import { Config } from '../@types/index.js';
 
 
 const server = (config: Config, serverlist: string) => {

@@ -1,6 +1,6 @@
-import type { Client } from "discord.js";
-import type { IncomingDiscordPayload } from "lavashark/typings/src/@types";
-import type { Bot } from "../../@types";
+import type { Client } from 'discord.js';
+import type { IncomingDiscordPayload } from 'lavashark/typings/src/@types';
+import type { Bot } from '../../@types/index.js';
 
 
 export default async (_bot: Bot, client: Client, packet: unknown) => {

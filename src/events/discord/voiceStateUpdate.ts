@@ -1,7 +1,7 @@
-import { cst } from "../../utils/constants";
+import { cst } from '../../utils/constants.js';
 
-import type { Client, VoiceBasedChannel, VoiceState } from "discord.js";
-import type { Bot } from "../../@types";
+import type { Client, VoiceBasedChannel, VoiceState } from 'discord.js';
+import type { Bot } from '../../@types/index.js';
 
 
 const pool = new Map();

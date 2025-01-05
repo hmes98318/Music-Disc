@@ -1,4 +1,4 @@
-import { EmbedBuilder, HexColorString } from "discord.js";
+import { EmbedBuilder, HexColorString } from 'discord.js';
 
 
 const removeList = (embedsColor: HexColorString | string | number, nowPlaying: string, queueList: string, repeatMode: string) => {

@@ -2,11 +2,12 @@ import child_process, { ChildProcess } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 import readline from 'readline';
+import { fileURLToPath } from 'url';
 
-import { cst } from '../../utils/constants';
-import { formatBytes } from '../../utils/functions/unitConverter';
+import { cst } from '../../utils/constants.js';
+import { formatBytes } from '../../utils/functions/unitConverter.js';
 
-import type { Logger } from '../Logger';
+import type { Logger } from '../Logger.js';
 
 
 export class LocalNodeController {
@@ -33,6 +34,8 @@ export class LocalNodeController {
     #manualRestart: boolean;
 
     constructor(downloadLink: string, logger: Logger, autoRestart: boolean = true) {
+        const __filename = fileURLToPath(import.meta.url);
+
         this.downloadLink = downloadLink;
         this.autoRestart = autoRestart;
         this.logger = logger;
@@ -106,6 +109,9 @@ export class LocalNodeController {
         await this.#downloadFile(this.downloadLink, filename);
 
         return new Promise<void>((resolve, _reject) => {
+            const __filename = fileURLToPath(import.meta.url);
+            const __dirname = path.dirname(__filename);
+
             this.#lavalinkProcessController = child_process.fork(path.resolve(__dirname, this.#lavalinkProcessFileName));
 
             // Send .jar path

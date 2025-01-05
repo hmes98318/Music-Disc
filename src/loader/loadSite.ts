@@ -1,11 +1,11 @@
 import express from 'express';
 
-import { registerExpressEvents } from '../lib/api/express';
-import { SessionManager } from '../lib/session-manager/SessionManager';
+import { registerExpressEvents } from '../lib/api/express.js';
+import { SessionManager } from '../lib/session-manager/SessionManager.js';
 
 import type { ShardingManager } from 'discord.js';
-import type { Bot } from './../@types';
-import type { LocalNodeController } from '../lib/localnode/LocalNodeController';
+import type { Bot } from './../@types/index.js';
+import type { LocalNodeController } from '../lib/localnode/LocalNodeController.js';
 
 
 const loadSite = (bot: Bot, shardManager: ShardingManager, localNodeController: LocalNodeController) => {
