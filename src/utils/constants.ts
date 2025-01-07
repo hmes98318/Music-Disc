@@ -42,7 +42,17 @@ export const cst = {
             // If this value is set, text messages from other channels will not be processed.
             specifyMessageChannel   : null,         // Text channel ID
         },
-    
+
+        // Lavalink node list
+        nodeList: [
+            {
+                id: 'Node 1',
+                hostname: 'localhost',
+                port: 2333,
+                password: 'youshallnotpass'
+            }
+        ],
+
         // Web dashboard settings
         webDashboard: {
             enabled                 : true,

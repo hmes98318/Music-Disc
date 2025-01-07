@@ -56,6 +56,11 @@ const setEnvironment = (defaultConfig: Config) => {
         specifyMessageChannel: config.bot.specifyMessageChannel || defaultConfig.bot.specifyMessageChannel
     };
 
+    // Lavalink node list
+    defaultConfig.nodeList = (Array.isArray(config.nodeList) && config.nodeList.length > 0)
+        ? config.nodeList
+        : defaultConfig.nodeList;
+
     // Web dashboard settings
     defaultConfig.webDashboard = {
         enabled: config.webDashboard.enabled ?? defaultConfig.webDashboard.enabled,

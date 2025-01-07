@@ -6,6 +6,7 @@ import type {
     Message
 } from 'discord.js';
 import type { LavaShark } from 'lavashark';
+import type { NodeOptions } from 'lavashark/typings/src/@types/index.js';
 
 import type { Logger } from '../lib/Logger.js';
 import type { IPBlockerConfig, SessionManagerConfig } from './SessionManager.types.js';
@@ -64,6 +65,7 @@ export type Bot = {
  */
 export type Config = {
     bot: BotConfig;
+    nodeList: NodeOptions[];
     webDashboard: WebDashboardConfig;
     localNode: LocalNodeConfig;
 };

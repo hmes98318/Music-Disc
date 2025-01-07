@@ -28,8 +28,7 @@
         "src/*.ts",
         "src/**/*.ts",
         "package*.json",
-        "config.js",
-        "nodelist.json"
+        "config.js"
     ],
     "exclude": [
         "node_modules",

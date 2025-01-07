@@ -30,11 +30,6 @@ class App {
                 GatewayIntentBits.MessageContent
             ]
         });
-        this.#client.commands = new Collection();
-        this.#client.lavashark = new LavaShark({
-            nodes: this.#loadNodeList(),
-            sendWS: (guildId, payload) => { this.#client.guilds.cache.get(guildId)?.shard.send(payload); }
-        });
 
         this.bot = {
             shardId: this.#client.shard?.ids[0] ?? -1,
@@ -53,6 +48,12 @@ class App {
         this.bot.logger.emit('log', this.bot.shardId, 'Set environment variables.');
 
         loadBlacklist(this.bot);
+
+        this.#client.commands = new Collection();
+        this.#client.lavashark = new LavaShark({
+            nodes: this.bot.config.nodeList,
+            sendWS: (guildId, payload) => { this.#client.guilds.cache.get(guildId)?.shard.send(payload); }
+        });
     }
 
 
@@ -66,15 +67,6 @@ class App {
                 this.bot.logger.emit('log', this.bot.shardId, cst.color.green + '*** All loaded successfully ***' + cst.color.white);
                 this.#client.login(process.env.BOT_TOKEN);
             });
-    }
-
-    #loadNodeList() {
-        try {
-            const data = fs.readFileSync('./nodelist.json', 'utf-8');
-            return JSON.parse(data);
-        } catch (error) {
-            throw new Error(`Failed to load nodelist.json: ${JSON.stringify(error)}`);
-        }
     }
 }
 

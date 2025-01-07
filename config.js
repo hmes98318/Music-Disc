@@ -39,6 +39,16 @@ const config = {
         // i18n: {}
     },
 
+    // Lavalink node list
+    nodeList: [
+        {
+            id: 'Node 1',
+            hostname: 'localhost',
+            port: 2333,
+            password: 'youshallnotpass'
+        }
+    ],
+
     // Web dashboard settings
     webDashboard: {
         enabled                 : true,
