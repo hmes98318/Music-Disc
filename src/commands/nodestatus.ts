@@ -45,10 +45,10 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
         }
         bot.logger.emit('log', bot.shardId, 'nodesStatus: ' + JSON.stringify(nodesStatus));
 
-        const nodeHealth = healthValue === 0 ? 'All nodes are active' : `⚠️ There are ${healthValue} nodes disconnected`;
+        const nodeHealth = healthValue === 0 ? client.i18n.t('commands:MESSAGE_NODE_ALL_ACTIVE') : client.i18n.t('commands:MESSAGE_NODE_ALL_ACTIVE', { healthValue: healthValue });
 
         return message.reply({
-            embeds: [embeds.nodesStatus(bot.config.bot.embedsColor, nodeHealth, nodesStatus)],
+            embeds: [embeds.nodesStatus(bot, nodeHealth, nodesStatus)],
             allowedMentions: { repliedUser: false }
         });
     }
@@ -59,7 +59,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
             if (node.identifier === nodeName) {
                 if (node.state !== NodeState.CONNECTED) {
                     return message.reply({
-                        embeds: [embeds.nodeDisconnected(bot.config.bot.embedsColor, nodeName)],
+                        embeds: [embeds.nodeDisconnected(bot, nodeName)],
                         allowedMentions: { repliedUser: false }
                     });
                 }
@@ -74,7 +74,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
                 bot.logger.emit('log', bot.shardId, 'nodePing: ' + nodePing + 'ms');
 
                 return message.reply({
-                    embeds: [embeds.nodeStatus(bot.config.bot.embedsColor, nodeName, nodeInfo, nodeStats, nodePing)],
+                    embeds: [embeds.nodeStatus(bot, nodeName, nodeInfo, nodeStats, nodePing)],
                     allowedMentions: { repliedUser: false }
                 });
             }
@@ -86,7 +86,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
         }
 
         return message.reply({
-            embeds: [embeds.validNodeName(bot.config.bot.embedsColor, nodesName)],
+            embeds: [embeds.validNodeName(bot, nodesName)],
             allowedMentions: { repliedUser: false }
         });
     }
@@ -115,10 +115,10 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
         }
         bot.logger.emit('log', bot.shardId, 'nodesStatus: ' + JSON.stringify(nodesStatus));
 
-        const nodeHealth = healthValue === 0 ? '✅ All nodes are active' : `⚠️ There are ${healthValue} nodes disconnected`;
+        const nodeHealth = healthValue === 0 ? client.i18n.t('commands:MESSAGE_NODE_ALL_ACTIVE') : client.i18n.t('commands:MESSAGE_NODE_ALL_ACTIVE', { healthValue: healthValue });
 
         return interaction.editReply({
-            embeds: [embeds.nodesStatus(bot.config.bot.embedsColor, nodeHealth, nodesStatus)],
+            embeds: [embeds.nodesStatus(bot, nodeHealth, nodesStatus)],
             allowedMentions: { repliedUser: false }
         });
     }
@@ -127,7 +127,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
             if (node.identifier === nodeName) {
                 if (node.state !== NodeState.CONNECTED) {
                     return interaction.editReply({
-                        embeds: [embeds.nodeDisconnected(bot.config.bot.embedsColor, nodeName)],
+                        embeds: [embeds.nodeDisconnected(bot, nodeName)],
                         allowedMentions: { repliedUser: false }
                     });
                 }
@@ -142,7 +142,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
                 bot.logger.emit('log', bot.shardId, 'nodePing: ' + nodePing + 'ms');
 
                 return interaction.editReply({
-                    embeds: [embeds.nodeStatus(bot.config.bot.embedsColor, nodeName, nodeInfo, nodeStats, nodePing)],
+                    embeds: [embeds.nodeStatus(bot, nodeName, nodeInfo, nodeStats, nodePing)],
                     allowedMentions: { repliedUser: false }
                 });
             }
@@ -154,7 +154,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
         }
 
         return interaction.editReply({
-            embeds: [embeds.validNodeName(bot.config.bot.embedsColor, nodesName)],
+            embeds: [embeds.validNodeName(bot, nodesName)],
             allowedMentions: { repliedUser: false }
         });
     }

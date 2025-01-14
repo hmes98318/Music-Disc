@@ -1,10 +1,11 @@
 import { EmbedBuilder, HexColorString } from 'discord.js';
+import type { Bot } from '../@types/index.js';
 
 
-const blacklist = (embedsColor: HexColorString | string | number, userList: { name: string; value: string; }[]) => {
+const blacklist = (bot: Bot, userList: { name: string; value: string; }[]) => {
     const embed_ = new EmbedBuilder()
-        .setColor(embedsColor as HexColorString | number)
-        .setTitle(`There are blacklisted users in the voice channel`)
+        .setColor(bot.config.bot.embedsColor as HexColorString | number)
+        .setTitle(bot.i18n.t('embeds:MESSAGE_BLACKLIST'))
         .setDescription('━━━━━━━━━━━━━━━━━━━━━━━━━━━━')
         .addFields(userList)
         .setTimestamp();
@@ -12,19 +13,19 @@ const blacklist = (embedsColor: HexColorString | string | number, userList: { na
     return embed_;
 };
 
-const help = (embedsColor: HexColorString | string | number, command: string, description: string) => {
+const help = (bot: Bot, command: string, description: string) => {
     const embed_ = new EmbedBuilder()
-        .setColor(embedsColor as HexColorString | number)
-        .setTitle(`Command **${command}**`)
+        .setColor(bot.config.bot.embedsColor as HexColorString | number)
+        .setTitle(bot.i18n.t('embeds:MESSAGE_COMMAND', { command: command }))
         .setDescription(description);
 
     return embed_;
 };
 
-const filterMsg = (embedsColor: HexColorString | string | number, effectName: string) => {
+const filterMsg = (bot: Bot, effectName: string) => {
     const embed_ = new EmbedBuilder()
-        .setColor(embedsColor as HexColorString | number)
-        .setDescription(`Set filter mode to **${effectName}**`);
+        .setColor(bot.config.bot.embedsColor as HexColorString | number)
+        .setDescription(bot.i18n.t('embeds:MESSAGE_FILTER', { effectName: effectName }));
 
     return embed_;
 };

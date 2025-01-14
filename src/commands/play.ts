@@ -27,7 +27,7 @@ export const options = [
 
 export const execute = async (bot: Bot, client: Client, message: Message, args: string[]) => {
     if (!args[0]) {
-        return message.reply({ content: `❌ | Write the name of the music you want to search.`, allowedMentions: { repliedUser: false } });
+        return message.reply({ content: client.i18n.t('commands:MESSAGE_PLAY_ARGS_ERROR'), allowedMentions: { repliedUser: false } });
     }
 
     const str = args.join(' ');
@@ -35,17 +35,17 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
 
     if (res.loadType === LoadType.ERROR) {
         bot.logger.emit('error', bot.shardId, `Search Error: ${(res as any).data?.message}`);
-        return message.reply({ content: `❌ | No results found. (${(res as any).data?.message})`, allowedMentions: { repliedUser: false } });
+        return message.reply({ content: client.i18n.t('commands:ERROR_PLAY_SEARCH', { reason: (res as any).data?.message }), allowedMentions: { repliedUser: false } });
     }
     else if (res.loadType === LoadType.EMPTY) {
-        return message.reply({ content: `❌ | No matches.`, allowedMentions: { repliedUser: false } });
+        return message.reply({ content: client.i18n.t('commands:MESSAGE_PLAY_SEARCH_NO_MATCH'), allowedMentions: { repliedUser: false } });
     }
 
 
     const validBlackist = isUserInBlacklist(message.member?.voice.channel, bot.blacklist);
     if (validBlackist.length > 0) {
         return message.reply({
-            embeds: [embeds.blacklist(bot.config.bot.embedsColor, validBlackist)],
+            embeds: [embeds.blacklist(bot, validBlackist)],
             allowedMentions: { repliedUser: false }
         });
     }
@@ -74,14 +74,14 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
         player.metadata = message;
     } catch (error) {
         bot.logger.emit('error', bot.shardId, 'Error joining channel: ' + error);
-        return message.reply({ content: `❌ | I can't join voice channel.`, allowedMentions: { repliedUser: false } });
+        return message.reply({ content: client.i18n.t('commands:ERROR_PLAY_JOIN_CHANNEL'), allowedMentions: { repliedUser: false } });
     }
 
     try {
         // Intial dashboard
         if (!player.dashboard) await dashboard.initial(bot, message, player);
     } catch (error) {
-        await dashboard.destroy(bot, player, bot.config.bot.embedsColor);
+        await dashboard.destroy(bot, player);
     }
 
 
@@ -98,7 +98,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
         await player.play()
             .catch(async (error) => {
                 bot.logger.emit('error', bot.shardId, 'Error playing track: ' + error);
-                await message.reply({ content: `❌ | The service is experiencing some problems, please try again.`, allowedMentions: { repliedUser: false } });
+                await message.reply({ content: client.i18n.t('commands:ERROR_PLAY_MUSIC', { reason: JSON.stringify(error) }), allowedMentions: { repliedUser: false } });
                 return player.destroy();
             });
     }
@@ -112,10 +112,10 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
 
     if (res.loadType === LoadType.ERROR) {
         bot.logger.emit('error', bot.shardId, `Search Error: ${(res as any).data?.message}`);
-        return interaction.editReply({ content: `❌ | No results found. (${(res as any).data?.message})`, allowedMentions: { repliedUser: false } });
+        return interaction.editReply({ content: client.i18n.t('commands:ERROR_PLAY_SEARCH', { reason: (res as any).data?.message }), allowedMentions: { repliedUser: false } });
     }
     else if (res.loadType === LoadType.EMPTY) {
-        return interaction.editReply({ content: `❌ | No matches.`, allowedMentions: { repliedUser: false } });
+        return interaction.editReply({ content: client.i18n.t('commands:MESSAGE_PLAY_SEARCH_NO_MATCH'), allowedMentions: { repliedUser: false } });
     }
 
 
@@ -125,7 +125,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
     const validBlackist = isUserInBlacklist(channel, bot.blacklist);
     if (validBlackist.length > 0) {
         return interaction.editReply({
-            embeds: [embeds.blacklist(bot.config.bot.embedsColor, validBlackist)],
+            embeds: [embeds.blacklist(bot, validBlackist)],
             allowedMentions: { repliedUser: false }
         });
     }
@@ -155,14 +155,14 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
         player.filters.setVolume(curVolume);
     } catch (error) {
         bot.logger.emit('error', bot.shardId, 'Error joining channel: ' + error);
-        return interaction.editReply({ content: `❌ | I can't join voice channel.`, allowedMentions: { repliedUser: false } });
+        return interaction.editReply({ content: client.i18n.t('commands:ERROR_PLAY_JOIN_CHANNEL'), allowedMentions: { repliedUser: false } });
     }
 
     try {
         // Intial dashboard
         if (!player.dashboard) await dashboard.initial(bot, interaction, player);
     } catch (error) {
-        await dashboard.destroy(bot, player, bot.config.bot.embedsColor);
+        await dashboard.destroy(bot, player);
     }
 
 
@@ -179,10 +179,10 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
         await player.play()
             .catch(async (error) => {
                 bot.logger.emit('error', bot.shardId, 'Error playing track: ' + error);
-                await interaction.editReply({ content: `❌ | The service is experiencing some problems, please try again.`, allowedMentions: { repliedUser: false } });
+                await interaction.editReply({ content: client.i18n.t('commands:ERROR_PLAY_MUSIC', { reason: JSON.stringify(error) }), allowedMentions: { repliedUser: false } });
                 return player.destroy();
             });
     }
 
-    return interaction.editReply({ content: '✅ | Music added.', allowedMentions: { repliedUser: false } });
+    return interaction.editReply({ content: client.i18n.t('commands:MESSAGE_PLAY_MUSIC_ADD'), allowedMentions: { repliedUser: false } });
 };

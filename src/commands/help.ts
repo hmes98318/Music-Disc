@@ -40,7 +40,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
 
         const select = new StringSelectMenuBuilder()
             .setCustomId('helpSelect')
-            .setPlaceholder('Select the help')
+            .setPlaceholder(client.i18n.t('commands:MESSAGE_HELP_SELECT_MODE'))
             .setOptions(commands.map(x => {
                 return {
                     label: x.name,
@@ -50,7 +50,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
             }));
         const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(select);
         const msg = await message.reply({
-            content: 'Choose a command to get help. ⬇️',
+            content: client.i18n.t('commands:MESSAGE_HELP_SELECT_LIST'),
             components: [row.toJSON()],
             allowedMentions: { repliedUser: false }
         });
@@ -68,7 +68,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
 
             i.deferUpdate();
             await msg.edit({
-                embeds: [embeds.help(bot.config.bot.embedsColor, title!, usage)],
+                embeds: [embeds.help(bot, title!, usage)],
                 components: [],
                 allowedMentions: { repliedUser: false }
             })
@@ -80,7 +80,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
         collector.on('end', async (collected: Collection<string, ButtonInteraction>, reason: string) => {
             if (reason == 'time' && collected.size == 0) {
                 await msg.edit({
-                    content: '❌ | Time expired.',
+                    content: client.i18n.t('commands:ERROR_TIME_EXPIRED'),
                     components: [],
                     allowedMentions: { repliedUser: false }
                 })
@@ -99,14 +99,14 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
                 const description = `${x.description}\n\`\`\`${prefix}${x.usage}\`\`\``;
 
                 message.reply({
-                    embeds: [embeds.help(bot.config.bot.embedsColor, command, description)],
+                    embeds: [embeds.help(bot, command, description)],
                     allowedMentions: { repliedUser: false }
                 });
                 return true;
             }
         });
 
-        if (!found) return message.reply({ content: '❌ | The command not found.', allowedMentions: { repliedUser: false } });
+        if (!found) return message.reply({ content: client.i18n.t('commands:MESSAGE_HELP_NOT_FOUND'), allowedMentions: { repliedUser: false } });
     }
 };
 
@@ -120,7 +120,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
 
         const select = new StringSelectMenuBuilder()
             .setCustomId('helpSelect')
-            .setPlaceholder('Select the help')
+            .setPlaceholder(client.i18n.t('commands:MESSAGE_HELP_SELECT_MODE'))
             .setOptions(commands.map(x => {
                 return {
                     label: x.name,
@@ -130,7 +130,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
             }));
         const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(select);
         const msg = await interaction.editReply({
-            content: 'Choose a command to get help. ⬇️',
+            content: client.i18n.t('commands:MESSAGE_HELP_SELECT_LIST'),
             components: [row.toJSON()],
             allowedMentions: { repliedUser: false }
         });
@@ -148,7 +148,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
 
             i.deferUpdate();
             await msg.edit({
-                embeds: [embeds.help(bot.config.bot.embedsColor, title!, usage)],
+                embeds: [embeds.help(bot, title!, usage)],
                 components: [],
                 allowedMentions: { repliedUser: false }
             })
@@ -160,7 +160,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
         collector.on('end', async (collected: Collection<string, ButtonInteraction>, reason: string) => {
             if (reason == 'time' && collected.size == 0) {
                 await msg.edit({
-                    content: '❌ | Time expired.',
+                    content: client.i18n.t('commands:ERROR_TIME_EXPIRED'),
                     components: [],
                     allowedMentions: { repliedUser: false }
                 })
@@ -179,13 +179,13 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
                 const description = `${x.description}\n\`\`\`${prefix}${x.usage}\`\`\``;
 
                 interaction.editReply({
-                    embeds: [embeds.help(bot.config.bot.embedsColor, command, description)],
+                    embeds: [embeds.help(bot, command, description)],
                     allowedMentions: { repliedUser: false }
                 });
                 return true;
             }
         });
 
-        if (!found) return interaction.editReply({ content: '❌ | The command not found.', allowedMentions: { repliedUser: false } });
+        if (!found) return interaction.editReply({ content: client.i18n.t('commands:MESSAGE_HELP_NOT_FOUND'), allowedMentions: { repliedUser: false } });
     }
 };

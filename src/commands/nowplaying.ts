@@ -26,21 +26,21 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
     const player = client.lavashark.getPlayer(message.guild!.id);
 
     if (!player) {
-        return message.reply({ content: '❌ | There is no music currently playing.', allowedMentions: { repliedUser: false } });
+        return message.reply({ content: client.i18n.t('commands:ERROR_NO_PLAYING'), allowedMentions: { repliedUser: false } });
     }
 
     const track = player.current;
-    const subtitle = `Author : **${track?.author}**\nDuration **${track?.duration.label}**\n`;
+    const subtitle = client.i18n.t('commands:MESSAGE_NOW_PLAYING_SUBTITLE', { author: track?.author, label: track?.duration.label });
 
     const saveButton = new ButtonBuilder()
         .setCustomId('musicSave')
-        .setLabel('Save Song')
+        .setLabel(client.i18n.t('commands:MESSAGE_NOW_PLAYING_SAVE_BUTTON'))
         .setStyle(ButtonStyle.Success);
     const row = new ActionRowBuilder<ButtonBuilder>()
         .addComponents(saveButton);
 
     return message.reply({
-        embeds: [embeds.save(bot.config.bot.embedsColor, track!.title, subtitle, track!.uri, track!.thumbnail!)],
+        embeds: [embeds.save(bot, track!.title, subtitle, track!.uri, track!.thumbnail!)],
         components: [row],
         allowedMentions: { repliedUser: false }
     });
@@ -50,21 +50,21 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
     const player = client.lavashark.getPlayer(interaction.guild!.id);
 
     if (!player) {
-        return interaction.reply({ content: '❌ | There is no music currently playing.', allowedMentions: { repliedUser: false } });
+        return interaction.reply({ content: client.i18n.t('commands:ERROR_NO_PLAYING'), allowedMentions: { repliedUser: false } });
     }
 
     const track = player.current;
-    const subtitle = `Author : **${track?.author}**\nDuration **${track?.duration.label}**\n`;
+    const subtitle = client.i18n.t('commands:MESSAGE_NOW_PLAYING_SUBTITLE', { author: track?.author, label: track?.duration.label });
 
     const saveButton = new ButtonBuilder()
         .setCustomId('musicSave')
-        .setLabel('Save Song')
+        .setLabel(client.i18n.t('commands:MESSAGE_NOW_PLAYING_SAVE_BUTTON'))
         .setStyle(ButtonStyle.Success);
     const row = new ActionRowBuilder<ButtonBuilder>()
         .addComponents(saveButton);
 
     return interaction.editReply({
-        embeds: [embeds.save(bot.config.bot.embedsColor, track!.title, subtitle, track!.uri, track!.thumbnail!)],
+        embeds: [embeds.save(bot, track!.title, subtitle, track!.uri, track!.thumbnail!)],
         components: [row],
         allowedMentions: { repliedUser: false }
     });

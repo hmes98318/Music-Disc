@@ -41,6 +41,12 @@ export const cst = {
             // Specify the text channel for receiving commands.
             // If this value is set, text messages from other channels will not be processed.
             specifyMessageChannel   : null,         // Text channel ID
+
+            // Language settings
+            i18n: {
+                localePath          : '../../locales',
+                defaultLocale       : 'en-US'
+            }
         },
 
         // Lavalink node list

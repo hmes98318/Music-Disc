@@ -13,12 +13,11 @@ import type { Bot } from '../@types/index.js';
 
 async function update(bot: Bot, player: Player, track: Track): Promise<void> {
     const playing = !(player.paused);
-    const methods = ['Off', 'Single', 'All'];
+    const methods = ['OFF', 'SINGLE', 'ALL'];
     const repeatMode = player.repeatMode;
     const volume = player.volume;
-    const subtitle = `Author : **${track?.author}**\nDuration **${track?.duration.label}**\n`
-                    + `────────────────────\n`
-                    + `Volume: \`${volume}%\` | Loop: \`${methods[repeatMode]}\``;
+    const subtitle = bot.i18n.t('embeds:DASHBOARD_SUBTITLE', { author: track.author, duration: track.duration.label, volume: volume, repeatMode: methods[repeatMode] });
+
 
     const playPauseButton = new ButtonBuilder().setCustomId('Dashboard-PlayPause').setEmoji(playing ? cst.button.pause : cst.button.play).setStyle(playing ? ButtonStyle.Secondary : ButtonStyle.Success);
     const skipButton = new ButtonBuilder().setCustomId('Dashboard-Skip').setEmoji(cst.button.skip).setStyle(ButtonStyle.Secondary);
@@ -29,7 +28,7 @@ async function update(bot: Bot, player: Player, track: Track): Promise<void> {
 
     try {
         await player.dashboard!.edit({
-            embeds: [embeds.dashboard(bot.config.bot.embedsColor, 'Dashboard', track!.title, subtitle, track!.uri, track!.thumbnail!)],
+            embeds: [embeds.dashboard(bot, 'Dashboard', track!.title, subtitle, track!.uri, track!.thumbnail!)],
             components: [row]
         });
     } catch (error) {

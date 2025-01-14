@@ -5,6 +5,7 @@ import type {
     Collection,
     Message
 } from 'discord.js';
+import type { i18n } from 'i18next';
 import type { LavaShark } from 'lavashark';
 import type { NodeOptions } from 'lavashark/typings/src/@types/index.js';
 
@@ -15,7 +16,8 @@ import type { IPBlockerConfig, SessionManagerConfig } from './SessionManager.typ
 declare module 'discord.js' {
     export interface Client {
         commands: Collection<unknown, any>,
-        lavashark: LavaShark
+        lavashark: LavaShark,
+        i18n: i18n;
     }
 }
 
@@ -57,7 +59,8 @@ export type Bot = {
         guildsCount: number[];
         membersCount: number[];
         lastRefresh: number | null;     // Date.now()
-    }
+    },
+    i18n: i18n;
 }
 
 /**
@@ -95,6 +98,10 @@ export type BotConfig = {
     };
     displayVoiceState: boolean;
     specifyMessageChannel: string | null;
+    i18n: {
+        localePath: string;
+        defaultLocale: string;
+    }
 };
 
 export type WebDashboardConfig = {

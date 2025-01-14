@@ -1,37 +1,38 @@
 import { EmbedBuilder, HexColorString } from 'discord.js';
+import type { Bot } from '../@types/index.js';
 
 
-const addTrack = (embedsColor: HexColorString | string | number, title: string, subtitle: string, url: string, thumbnail: string) => {
+const addTrack = (bot: Bot, title: string, subtitle: string, url: string, thumbnail: string) => {
     const embed_ = new EmbedBuilder()
-        .setColor(embedsColor as HexColorString | number)
+        .setColor(bot.config.bot.embedsColor as HexColorString | number)
         .setTitle(title)
         .setURL(url)
         .setThumbnail(thumbnail)
-        .addFields({ name: 'Added Track', value: subtitle, inline: true })
+        .addFields({ name: bot.i18n.t('embeds:QUEUE_ADD_TRACK'), value: subtitle, inline: true })
         .setTimestamp();
 
     return embed_;
 };
 
-const addPlaylist = (embedsColor: HexColorString | string | number, title: string, subtitle: string, url: string, thumbnail: string) => {
+const addPlaylist = (bot: Bot, title: string, subtitle: string, url: string, thumbnail: string) => {
     const embed_ = new EmbedBuilder()
-        .setColor(embedsColor as HexColorString | number)
+        .setColor(bot.config.bot.embedsColor as HexColorString | number)
         .setTitle(title)
         .setURL(url)
         .setThumbnail(thumbnail)
-        .addFields({ name: 'Added Playlist', value: subtitle, inline: true })
+        .addFields({ name: bot.i18n.t('embeds:QUEUE_ADD_PLAYLIST'), value: subtitle, inline: true })
         .setTimestamp();
 
     return embed_;
 };
 
-const queue = (embedsColor: HexColorString | string | number, nowPlaying: string, queueList: string, repeatMode: string) => {
+const queue = (bot: Bot, nowPlaying: string, queueList: string, repeatMode: string) => {
     const embed_ = new EmbedBuilder()
-        .setColor(embedsColor as HexColorString | number)
-        .setTitle('Queue List')
+        .setColor(bot.config.bot.embedsColor as HexColorString | number)
+        .setTitle(bot.i18n.t('embeds:QUEUE_LIST_TITLE'))
         .addFields({ name: nowPlaying, value: queueList })
         .setTimestamp()
-        .setFooter({ text: `Loop: ${repeatMode}` });
+        .setFooter({ text: bot.i18n.t('embeds:QUEUE_LIST_LOOP_MODE', { repeatMode: repeatMode }) });
 
     return embed_;
 };

@@ -53,7 +53,12 @@ const setEnvironment = (defaultConfig: Config) => {
         // Show voice channel updates
         displayVoiceState: config.bot.displayVoiceState ?? defaultConfig.bot.displayVoiceState,
 
-        specifyMessageChannel: config.bot.specifyMessageChannel || defaultConfig.bot.specifyMessageChannel
+        specifyMessageChannel: config.bot.specifyMessageChannel || defaultConfig.bot.specifyMessageChannel,
+
+        i18n: {
+            localePath: config.bot.i18n.localePath || defaultConfig.bot.i18n.localePath,
+            defaultLocale: config.bot.i18n.defaultLocale || defaultConfig.bot.i18n.defaultLocale
+        }
     };
 
     // Lavalink node list

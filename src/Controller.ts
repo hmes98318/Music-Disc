@@ -24,8 +24,9 @@ export class Controller {
                 guildsCount: [-1],
                 membersCount: [-1],
                 lastRefresh: null,
-            }
-        };
+            },
+            i18n: null
+        } as unknown as Bot;
 
         setEnvironment(this.#bot.config);
         this.#bot.logger.emit('shard', 'Set environment variables.');

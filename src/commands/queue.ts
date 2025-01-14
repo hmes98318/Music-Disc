@@ -27,7 +27,7 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
     const player = client.lavashark.getPlayer(message.guild!.id);
 
     if (!player) {
-        return message.reply({ content: '❌ | There is no music currently playing.', allowedMentions: { repliedUser: false } });
+        return message.reply({ content: client.i18n.t('commands:ERROR_NO_PLAYING'), allowedMentions: { repliedUser: false } });
     }
 
 
@@ -47,7 +47,7 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
     const startIdx = (page - 1) * 10;
     const endIdx = page * 10;
 
-    const nowplaying = `Now Playing: ${player.current?.title}\n\n`;
+    const nowplaying = client.i18n.t('commands:MESSAGE_NOW_PLAYING_TITLE', { title: player.current?.title });
     let tracksQueue = '';
     const tracks = player.queue.tracks.slice(startIdx, endIdx)
         .map((track, index) => {
@@ -66,7 +66,7 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
     }
 
 
-    const methods = ['Off', 'Single', 'All'];
+    const methods = ['OFF', 'SINGLE', 'ALL'];
     const repeatMode = player.repeatMode;
 
     const prevButton = new ButtonBuilder().setCustomId('queuelist-prev').setEmoji(cst.button.prev).setStyle(ButtonStyle.Secondary);
@@ -76,7 +76,7 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
     const row = new ActionRowBuilder<ButtonBuilder>().addComponents(prevButton, nextButton, delButton, clsButton);
 
     player.setting.queuePage.msg = await message.reply({
-        embeds: [embeds.queue(bot.config.bot.embedsColor, nowplaying, tracksQueue, methods[repeatMode])],
+        embeds: [embeds.queue(bot, nowplaying, tracksQueue, methods[repeatMode])],
         components: [row],
         allowedMentions: { repliedUser: false },
     });
@@ -89,7 +89,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
     const player = client.lavashark.getPlayer(interaction.guild!.id);
 
     if (!player) {
-        return interaction.editReply({ content: '❌ | There is no music currently playing.', allowedMentions: { repliedUser: false } });
+        return interaction.editReply({ content: client.i18n.t('commands:ERROR_NO_PLAYING'), allowedMentions: { repliedUser: false } });
     }
 
 
@@ -109,7 +109,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
     const startIdx = (page - 1) * 10;
     const endIdx = page * 10;
 
-    const nowplaying = `Now Playing: ${player.current?.title}\n\n`;
+    const nowplaying = client.i18n.t('commands:MESSAGE_NOW_PLAYING_TITLE', { title: player.current?.title });
     let tracksQueue = '';
     const tracks = player.queue.tracks.slice(startIdx, endIdx)
         .map((track, index) => {
@@ -128,7 +128,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
     }
 
 
-    const methods = ['Off', 'Single', 'All'];
+    const methods = ['OFF', 'SINGLE', 'ALL'];
     const repeatMode = player.repeatMode;
 
     const prevButton = new ButtonBuilder().setCustomId('queuelist-prev').setEmoji(cst.button.prev).setStyle(ButtonStyle.Secondary);
@@ -138,7 +138,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
     const row = new ActionRowBuilder<ButtonBuilder>().addComponents(prevButton, nextButton, delButton, clsButton);
 
     player.setting.queuePage.msg = await interaction.editReply({
-        embeds: [embeds.queue(bot.config.bot.embedsColor, nowplaying, tracksQueue, methods[repeatMode])],
+        embeds: [embeds.queue(bot, nowplaying, tracksQueue, methods[repeatMode])],
         components: [row],
         allowedMentions: { repliedUser: false },
     });

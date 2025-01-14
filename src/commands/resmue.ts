@@ -17,11 +17,11 @@ export const execute = async (_bot: Bot, client: Client, message: Message) => {
     const player = client.lavashark.getPlayer(message.guild!.id);
 
     if (!player) {
-        return message.reply({ content: '❌ | There is no music currently playing.', allowedMentions: { repliedUser: false } });
+        return message.reply({ content: client.i18n.t('commands:ERROR_NO_PLAYING'), allowedMentions: { repliedUser: false } });
     }
 
     if (!player.paused) {
-        return message.reply({ content: '❌ | The music has been resumed.', allowedMentions: { repliedUser: false } });
+        return message.reply({ content: client.i18n.t('commands:MESSAGE_RESUME_MUSIC_RESUMED'), allowedMentions: { repliedUser: false } });
     }
 
     const SUCCESS = await player.resume();
@@ -32,13 +32,13 @@ export const slashExecute = async (_bot: Bot, client: Client, interaction: ChatI
     const player = client.lavashark.getPlayer(interaction.guild!.id);
 
     if (!player) {
-        return interaction.editReply({ content: '❌ | There is no music currently playing.', allowedMentions: { repliedUser: false } });
+        return interaction.editReply({ content: client.i18n.t('commands:ERROR_NO_PLAYING'), allowedMentions: { repliedUser: false } });
     }
 
     if (!player.paused) {
-        return interaction.editReply({ content: '❌ | The music has been resumed.', allowedMentions: { repliedUser: false } });
+        return interaction.editReply({ content: client.i18n.t('commands:MESSAGE_RESUME_MUSIC_RESUMED'), allowedMentions: { repliedUser: false } });
     }
 
     const SUCCESS = await player.resume();
-    return SUCCESS ? interaction.editReply('▶️ | Music resumed.') : interaction.editReply('❌ | Music pause failed.');
+    return SUCCESS ? interaction.editReply(client.i18n.t('commands:MESSAGE_RESUME_SUCCESS')) : interaction.editReply(client.i18n.t('commands:MESSAGE_RESUME_FAIL'));
 };

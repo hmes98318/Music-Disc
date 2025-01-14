@@ -10,5 +10,5 @@ export default async (bot: Bot, _client: Client, player: Player) => {
         await player.destroy();
     }
 
-    await dashboard.destroy(bot, player, bot.config.bot.embedsColor);
+    await dashboard.destroy(bot, player);
 };

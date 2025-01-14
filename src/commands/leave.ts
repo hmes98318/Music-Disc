@@ -19,7 +19,7 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
     const player = client.lavashark.getPlayer(message.guild!.id);
 
     if (!player) {
-        return message.reply({ content: '❌ | There is no music currently playing.', allowedMentions: { repliedUser: false } });
+        return message.reply({ content: client.i18n.t('commands:ERROR_NO_PLAYING'), allowedMentions: { repliedUser: false } });
     }
 
     if (bot.config.bot.autoLeave.enabled) {
@@ -28,7 +28,7 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
     else {
         player.queue.clear();
         await player.skip();
-        await dashboard.destroy(bot, player, bot.config.bot.embedsColor);
+        await dashboard.destroy(bot, player);
     }
 
     return message.react('👍');
@@ -38,7 +38,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
     const player = client.lavashark.getPlayer(interaction.guild!.id);
 
     if (!player) {
-        return interaction.editReply({ content: '❌ | There is no music currently playing.', allowedMentions: { repliedUser: false } });
+        return interaction.editReply({ content: client.i18n.t('commands:ERROR_NO_PLAYING'), allowedMentions: { repliedUser: false } });
     }
 
     if (bot.config.bot.autoLeave.enabled) {
@@ -47,8 +47,8 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
     else {
         player.queue.clear();
         await player.skip();
-        await dashboard.destroy(bot, player, bot.config.bot.embedsColor);
+        await dashboard.destroy(bot, player);
     }
 
-    return interaction.editReply('✅ | Bot leave.');
+    return interaction.editReply(client.i18n.t('commands:MESSAGE_LEAVE_SUCCESS'));
 };

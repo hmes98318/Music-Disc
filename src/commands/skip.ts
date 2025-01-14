@@ -17,7 +17,7 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
     const player = client.lavashark.getPlayer(message.guild!.id);
 
     if (!player) {
-        return message.reply({ content: '❌ | There is no music currently playing.', allowedMentions: { repliedUser: false } });
+        return message.reply({ content: client.i18n.t('commands:ERROR_NO_PLAYING'), allowedMentions: { repliedUser: false } });
     }
 
     const SUCCESS = await player.skip();
@@ -28,9 +28,9 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
     const player = client.lavashark.getPlayer(interaction.guild!.id);
 
     if (!player) {
-        return interaction.editReply({ content: '❌ | There is no music currently playing.', allowedMentions: { repliedUser: false } });
+        return interaction.editReply({ content: client.i18n.t('commands:ERROR_NO_PLAYING'), allowedMentions: { repliedUser: false } });
     }
 
     const SUCCESS = await player.skip();
-    return SUCCESS ? interaction.editReply('✅ | Music skipped.') : interaction.editReply('❌ | Music skip failed.');
+    return SUCCESS ? interaction.editReply(client.i18n.t('commands:MESSAGE_SKIP_SUCCESS')) : interaction.editReply(client.i18n.t('commands:MESSAGE_SKIP_FAIL'));
 };

@@ -40,7 +40,7 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
         }
     }
 
-    const nodeHealth = healthValue === 0 ? 'All nodes are active' : `⚠️ There are ${healthValue} nodes disconnected`;
+    const nodeHealth = healthValue === 0 ? client.i18n.t('commands:MESSAGE_NODE_ALL_ACTIVE') : client.i18n.t('commands:MESSAGE_NODE_ALL_ACTIVE', { healthValue: healthValue });
 
 
     const results = await client.shard!.broadcastEval(async (client) => {
@@ -94,8 +94,8 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
 
     return message.reply({
         embeds: [
-            embeds.botStatus(bot.config, bot.sysInfo, systemStatus),
-            embeds.nodesStatus(bot.config.bot.embedsColor, nodeHealth, nodesStatus)
+            embeds.botStatus(bot, systemStatus),
+            embeds.nodesStatus(bot, nodeHealth, nodesStatus)
         ],
         allowedMentions: { repliedUser: false }
     });
@@ -123,7 +123,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
         }
     }
 
-    const nodeHealth = healthValue === 0 ? 'All nodes are active' : `⚠️ There are ${healthValue} nodes disconnected`;
+    const nodeHealth = healthValue === 0 ? client.i18n.t('commands:MESSAGE_NODE_ALL_ACTIVE') : client.i18n.t('commands:MESSAGE_NODE_ALL_ACTIVE', { healthValue: healthValue });
 
 
     const results = await client.shard!.broadcastEval(async (client) => {
@@ -177,8 +177,8 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
 
     return interaction.editReply({
         embeds: [
-            embeds.botStatus(bot.config, bot.sysInfo, systemStatus),
-            embeds.nodesStatus(bot.config.bot.embedsColor, nodeHealth, nodesStatus)
+            embeds.botStatus(bot, systemStatus),
+            embeds.nodesStatus(bot, nodeHealth, nodesStatus)
         ],
         allowedMentions: { repliedUser: false }
     });

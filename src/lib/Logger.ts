@@ -7,6 +7,7 @@ import * as zlib from 'zlib';
 export type LoggerEvents = {
     'api': (message: string) => void;
     'error': (shardId:number, message: string) => void;
+    'i18n': (message: string) => void;
     'lavashark': (shardId:number, message: string) => void;
     'localNode': (message: string) => void;
     'log': (shardId:number, message: string) => void;
@@ -79,6 +80,11 @@ export class Logger extends EventEmitter {
 
         this.on('error', (shardId:number, message: string) => {
             const msg = `${this.getFormatTime()} [#${shardId}] [error] ${message}`;
+            this.#addLog(msg);
+        });
+
+        this.on('i18n', (message: string) => {
+            const msg = `${this.getFormatTime()} [i18n] ${message}`;
             this.#addLog(msg);
         });
 

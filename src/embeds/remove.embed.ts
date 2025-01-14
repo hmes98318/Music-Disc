@@ -1,21 +1,22 @@
 import { EmbedBuilder, HexColorString } from 'discord.js';
+import type { Bot } from '../@types/index.js';
 
 
-const removeList = (embedsColor: HexColorString | string | number, nowPlaying: string, queueList: string, repeatMode: string) => {
+const removeList = (bot: Bot, nowPlaying: string, queueList: string, repeatMode: string) => {
     const embed_ = new EmbedBuilder()
-        .setColor(embedsColor as HexColorString | number)
-        .setTitle('Remove List')
+        .setColor(bot.config.bot.embedsColor as HexColorString | number)
+        .setTitle(bot.i18n.t('embeds:REMOVE_LIST_TITLE'))
         .addFields({ name: nowPlaying, value: queueList })
         .setTimestamp()
-        .setFooter({ text: `Loop: ${repeatMode}` });
+        .setFooter({ text: bot.i18n.t('embeds:REMOVE_LIST_LOOP_MODE', { repeatMode: repeatMode }) });
 
     return embed_;
 };
 
-const removeTrack = (embedsColor: HexColorString | string | number, musicTitle: string) => {
+const removeTrack = (bot: Bot, musicTitle: string) => {
     const embed_ = new EmbedBuilder()
-        .setColor(embedsColor as HexColorString | number)
-        .setTitle('Removed Music')
+        .setColor(bot.config.bot.embedsColor as HexColorString | number)
+        .setTitle(bot.i18n.t('embeds:REMOVE_TRACK_TITLE'))
         .setDescription(musicTitle)
         .setTimestamp();
 

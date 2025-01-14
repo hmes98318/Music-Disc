@@ -649,7 +649,7 @@ const registerExpressEvents = (bot: Bot, shardManager: ShardingManager, localNod
     });
 
     app.post('/api/maintain/send', verifyLogin, async (req, res) => {
-        const maintainEmbed = embeds.maintainNotice(bot.config.bot.embedsColor);
+        const maintainEmbed = embeds.maintainNotice(bot);
 
         await shardManager.broadcastEval(async (client, context) => {
             client.lavashark.players.forEach(async (player) => {

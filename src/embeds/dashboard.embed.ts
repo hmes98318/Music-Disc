@@ -1,25 +1,26 @@
 import { EmbedBuilder, HexColorString } from 'discord.js';
+import type { Bot } from '../@types/index.js';
 
 
-const connected = (embedsColor: HexColorString | string | number) => {
+const connected = (bot: Bot) => {
     const embed_ = new EmbedBuilder()
-        .setColor(embedsColor as HexColorString | number)
-        .setDescription('Voice channel connected successfully.');
+        .setColor(bot.config.bot.embedsColor as HexColorString | number)
+        .setDescription(bot.i18n.t('embeds:DASHBOARD_VOICE_CHANNEL_CONNECT_SUCCESS'));
 
     return embed_;
 };
 
-const disconnect = (embedsColor: HexColorString | string | number) => {
+const disconnect = (bot: Bot) => {
     const embed_ = new EmbedBuilder()
-        .setColor(embedsColor as HexColorString | number)
-        .setDescription('Finished playing.');
+        .setColor(bot.config.bot.embedsColor as HexColorString | number)
+        .setDescription(bot.i18n.t('embeds:DASHBOARD_FINISH_PLAYING'));
 
     return embed_;
 };
 
-const dashboard = (embedsColor: HexColorString | string | number, status: string, title: string, subtitle: string, url: string, thumbnail: string) => {
+const dashboard = (bot: Bot, status: string, title: string, subtitle: string, url: string, thumbnail: string) => {
     const embed_ = new EmbedBuilder()
-        .setColor(embedsColor as HexColorString | number)
+        .setColor(bot.config.bot.embedsColor as HexColorString | number)
         .setTitle(title)
         .setURL(url)
         .setThumbnail(thumbnail)

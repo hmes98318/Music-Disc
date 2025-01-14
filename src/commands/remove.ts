@@ -37,13 +37,13 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
     const player = client.lavashark.getPlayer(message.guild!.id);
 
     if (!player) {
-        return message.reply({ content: '❌ | There is no music currently playing.', allowedMentions: { repliedUser: false } });
+        return message.reply({ content: client.i18n.t('commands:ERROR_NO_PLAYING'), allowedMentions: { repliedUser: false } });
     }
 
     const tracks = player.queue.tracks.map((track, index) => { return `${++index}. \`${track.title}\``; });
 
     if (tracks.length < 1) {
-        return message.reply({ content: `❌ | No music in queue after current.`, allowedMentions: { repliedUser: false } });
+        return message.reply({ content: client.i18n.t('commands:MESSAGE_REMOVE_QUEUE_EMPTY'), allowedMentions: { repliedUser: false } });
     }
 
     let SUCCESS = false;
@@ -58,7 +58,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
         else {
             await message.react('👍');
             return message.reply({
-                embeds: [embeds.removeTrack(bot.config.bot.embedsColor, tracks[index - 1])],
+                embeds: [embeds.removeTrack(bot, tracks[index - 1])],
                 allowedMentions: { repliedUser: false }
             });
         }
@@ -75,13 +75,13 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
             const musicTitle = tracks.slice(index1 - 1, index2).join('\n');
             await message.react('👍');
             return message.reply({
-                embeds: [embeds.removeTrack(bot.config.bot.embedsColor, musicTitle)],
+                embeds: [embeds.removeTrack(bot, musicTitle)],
                 allowedMentions: { repliedUser: false }
             });
         }
     }
     else if (args.length < 1) { // +rm
-        const nowplaying = `Now Playing : ${player.current?.title}\n\n`;
+        const nowplaying = client.i18n.t('commands:MESSAGE_NOW_PLAYING_TITLE', { title: player.current?.title });
         let tracksQueue = '';
 
         if (tracks.length < 1) {
@@ -89,20 +89,20 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
         }
         else if (tracks.length > 9) {
             tracksQueue = tracks.slice(0, 10).join('\n');
-            tracksQueue += `\nand ${tracks.length - 10} other songs`;
+            tracksQueue += client.i18n.t('commands:MESSAGE_NOW_PLAYING_BUTTOMTITLE', { length: tracks.length - 10 });
         }
         else {
             tracksQueue = tracks.join('\n');
         }
 
-        const methods = ['Off', 'Single', 'All'];
+        const methods = ['OFF', 'SINGLE', 'ALL'];
         const repeatMode = player.repeatMode;
-        const instruction = `Choose a song from **1** to **${tracks.length}** to **remove** or enter others to cancel selection. ⬇️`;
+        const instruction = client.i18n.t('commands:MESSAGE_REMOVE_INSTRUCTION', { length: tracks.length });
 
         await message.react('👍');
         const msg = await message.reply({
             content: instruction,
-            embeds: [embeds.removeList(bot.config.bot.embedsColor, nowplaying, tracksQueue, methods[repeatMode])],
+            embeds: [embeds.removeList(bot, nowplaying, tracksQueue, methods[repeatMode])],
             allowedMentions: { repliedUser: false }
         });
 
@@ -117,7 +117,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
             const index = parseInt(query.content);
 
             if (!index || index <= 0 || index > tracks.length) {
-                await message.reply({ content: `✅ | Cancelled remove.`, allowedMentions: { repliedUser: false } });
+                await message.reply({ content: client.i18n.t('commands:MESSAGE_REMOVE_CANCEL'), allowedMentions: { repliedUser: false } });
                 return collector.stop();
             }
 
@@ -125,7 +125,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
             player.queue.remove(index - 1);
 
             await query.reply({
-                embeds: [embeds.removeTrack(bot.config.bot.embedsColor, tracks[index - 1])],
+                embeds: [embeds.removeTrack(bot, tracks[index - 1])],
                 allowedMentions: { repliedUser: false }
             });
 
@@ -138,7 +138,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
         collector.on('end', async (collected: ReadonlyCollection<string, Message<boolean>>, reason: string) => {
             if (reason == 'time' && collected.size == 0) {
                 await msg.edit({
-                    content: `❌ | Song remove time expired`,
+                    content: client.i18n.t('commands:ERROR_TIME_EXPIRED'),
                     embeds: [],
                     allowedMentions: { repliedUser: false }
                 })
@@ -152,13 +152,13 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
     const player = client.lavashark.getPlayer(interaction.guild!.id);
 
     if (!player) {
-        return interaction.editReply({ content: '❌ | There is no music currently playing.', allowedMentions: { repliedUser: false } });
+        return interaction.editReply({ content: client.i18n.t('commands:ERROR_NO_PLAYING'), allowedMentions: { repliedUser: false } });
     }
 
     const tracks = player.queue.tracks.map((track, index) => { return `${++index}. \`${track.title}\``; });
 
     if (tracks.length < 1) {
-        return interaction.editReply({ content: `❌ | No music in queue after current.`, allowedMentions: { repliedUser: false } });
+        return interaction.editReply({ content: client.i18n.t('commands:MESSAGE_REMOVE_QUEUE_EMPTY'), allowedMentions: { repliedUser: false } });
     }
 
     const index1 = interaction.options.getNumber('index');
@@ -170,11 +170,11 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
         SUCCESS = player.queue.remove(index! - 1);
 
         if (!SUCCESS) {
-            return interaction.editReply('❌ | Music remove failed.');
+            return interaction.editReply(client.i18n.t('commands:MESSAGE_REMOVE_FAIL'));
         }
         else {
             return interaction.editReply({
-                embeds: [embeds.removeTrack(bot.config.bot.embedsColor, tracks[index! - 1])],
+                embeds: [embeds.removeTrack(bot, tracks[index! - 1])],
                 allowedMentions: { repliedUser: false }
             });
         }
@@ -183,18 +183,18 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
         SUCCESS = player.queue.remove(index1 - 1, index2 - index1 + 1);
 
         if (!SUCCESS) {
-            return interaction.editReply('❌ | Music remove failed.');
+            return interaction.editReply(client.i18n.t('commands:MESSAGE_REMOVE_FAIL'));
         }
         else {
             const musicTitle = tracks.slice(index1 - 1, index2).join('\n');
             return interaction.editReply({
-                embeds: [embeds.removeTrack(bot.config.bot.embedsColor, musicTitle)],
+                embeds: [embeds.removeTrack(bot, musicTitle)],
                 allowedMentions: { repliedUser: false }
             });
         }
     }
     else if (index1 === null && index2 === null) { // +rm
-        const nowplaying = `Now Playing : ${player.current?.title}\n\n`;
+        const nowplaying = client.i18n.t('commands:MESSAGE_NOW_PLAYING_TITLE', { title: player.current?.title });
         let tracksQueue = '';
 
         if (tracks.length < 1) {
@@ -202,19 +202,19 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
         }
         else if (tracks.length > 9) {
             tracksQueue = tracks.slice(0, 10).join('\n');
-            tracksQueue += `\nand ${tracks.length - 10} other songs`;
+            tracksQueue += client.i18n.t('commands:MESSAGE_NOW_PLAYING_BUTTOMTITLE', { length: tracks.length - 10 });
         }
         else {
             tracksQueue = tracks.join('\n');
         }
 
-        const methods = ['Off', 'Single', 'All'];
+        const methods = ['OFF', 'SINGLE', 'ALL'];
         const repeatMode = player.repeatMode;
-        const instruction = `Choose a song from **1** to **${tracks.length}** to **remove** or enter others to cancel selection. ⬇️`;
+        const instruction = client.i18n.t('commands:MESSAGE_REMOVE_INSTRUCTION', { length: tracks.length });
 
         const msg = await interaction.editReply({
             content: instruction,
-            embeds: [embeds.removeList(bot.config.bot.embedsColor, nowplaying, tracksQueue, methods[repeatMode])],
+            embeds: [embeds.removeList(bot, nowplaying, tracksQueue, methods[repeatMode])],
             allowedMentions: { repliedUser: false }
         });
 
@@ -229,7 +229,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
             const index = parseInt(query.content);
 
             if (!index || index <= 0 || index > tracks.length) {
-                await interaction.editReply({ content: `✅ | Cancelled remove.`, allowedMentions: { repliedUser: false } });
+                await interaction.editReply({ content: client.i18n.t('commands:MESSAGE_REMOVE_CANCEL'), allowedMentions: { repliedUser: false } });
                 return collector.stop();
             }
 
@@ -237,7 +237,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
             player.queue.remove(index - 1);
 
             await query.reply({
-                embeds: [embeds.removeTrack(bot.config.bot.embedsColor, tracks[index - 1])],
+                embeds: [embeds.removeTrack(bot, tracks[index - 1])],
                 allowedMentions: { repliedUser: false }
             });
 
@@ -250,7 +250,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
         collector.on('end', async (collected: ReadonlyCollection<string, Message<boolean>>, reason: string) => {
             if (reason == 'time' && collected.size == 0) {
                 await msg.edit({
-                    content: `❌ | Song remove time expired`,
+                    content: client.i18n.t('commands:ERROR_TIME_EXPIRED'),
                     embeds: [],
                     allowedMentions: { repliedUser: false }
                 })

@@ -17,7 +17,7 @@ export const execute = async (_bot: Bot, client: Client, message: Message) => {
     const player = client.lavashark.getPlayer(message.guild!.id);
 
     if (!player) {
-        return message.reply({ content: '❌ | There is no music currently playing.', allowedMentions: { repliedUser: false } });
+        return message.reply({ content: client.i18n.t('commands:ERROR_NO_PLAYING'), allowedMentions: { repliedUser: false } });
     }
 
     player.queue.shuffle();
@@ -28,9 +28,9 @@ export const slashExecute = async (_bot: Bot, client: Client, interaction: ChatI
     const player = client.lavashark.getPlayer(interaction.guild!.id);
 
     if (!player) {
-        return interaction.editReply({ content: '❌ | There is no music currently playing.', allowedMentions: { repliedUser: false } });
+        return interaction.editReply({ content: client.i18n.t('commands:ERROR_NO_PLAYING'), allowedMentions: { repliedUser: false } });
     }
 
     player.queue.shuffle();
-    return interaction.editReply('✅ | Music shuffled.');
+    return interaction.editReply(client.i18n.t('commands:MESSAGE_SHUFFLE_SUCCESS'));
 };
