@@ -1,6 +1,5 @@
 # i18n Directory Format Guidelines
 
-## Introduction
 Use **IETF Language Tags** for organizing and naming i18n (internationalization) files. Each language's translation files must be placed in a directory named according to the following format:
 
 ## Naming Rules
@@ -11,6 +10,11 @@ Use **IETF Language Tags** for organizing and naming i18n (internationalization)
 
 - **<language>**: A two-letter code defined by [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1), representing the language. (Must be lowercase)
 - **<region>**: A two-letter code defined by [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2), representing the country or region. (Must be uppercase)
+
+## Important Warning
+
+**Do not delete the `en-US` directory.**  
+The `en-US` directory serves as the default template language. It is used to check for missing translation keys in other languages and automatically add them if necessary. Deleting this directory will disrupt this automated process and lead to incomplete or missing translations in the application.
 
 ---
 
