@@ -2,6 +2,16 @@
  * @type {import('./src/@types/index.js').Config} - Bot config
  */
 const config = {
+    // Lavalink node list
+    nodeList: [
+        {
+            id: 'Node 1',
+            hostname: 'localhost',
+            port: 2333,
+            password: 'youshallnotpass'
+        }
+    ],
+
     bot: {
         textCommand             : true,                 // Whether to enable text command
         slashCommand            : true,                 // Whether to enable slash command
@@ -36,18 +46,12 @@ const config = {
         // If this value is set, text messages from other channels will not be processed.
         specifyMessageChannel   : null,         // Text channel ID
 
-        // i18n: {}
-    },
-
-    // Lavalink node list
-    nodeList: [
-        {
-            id: 'Node 1',
-            hostname: 'localhost',
-            port: 2333,
-            password: 'youshallnotpass'
+        // Language settings
+        i18n: {
+            localePath          : '../../locales',
+            defaultLocale       : 'en-US'
         }
-    ],
+    },
 
     // Web dashboard settings
     webDashboard: {
