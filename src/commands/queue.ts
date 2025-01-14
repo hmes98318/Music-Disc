@@ -5,11 +5,11 @@ import {
     ChatInputCommandInteraction,
     Client,
     Message
-} from "discord.js";
-import { embeds } from "../embeds";
-import { cst } from "../utils/constants";
+} from 'discord.js';
+import { embeds } from '../embeds/index.js';
+import { cst } from '../utils/constants.js';
 
-import type { Bot } from "../@types";
+import type { Bot } from '../@types/index.js';
 
 
 export const name = 'queue';
@@ -76,7 +76,7 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
     const row = new ActionRowBuilder<ButtonBuilder>().addComponents(prevButton, nextButton, delButton, clsButton);
 
     player.setting.queuePage.msg = await message.reply({
-        embeds: [embeds.queue(bot.config.embedsColor, nowplaying, tracksQueue, methods[repeatMode])],
+        embeds: [embeds.queue(bot.config.bot.embedsColor, nowplaying, tracksQueue, methods[repeatMode])],
         components: [row],
         allowedMentions: { repliedUser: false },
     });
@@ -138,7 +138,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
     const row = new ActionRowBuilder<ButtonBuilder>().addComponents(prevButton, nextButton, delButton, clsButton);
 
     player.setting.queuePage.msg = await interaction.editReply({
-        embeds: [embeds.queue(bot.config.embedsColor, nowplaying, tracksQueue, methods[repeatMode])],
+        embeds: [embeds.queue(bot.config.bot.embedsColor, nowplaying, tracksQueue, methods[repeatMode])],
         components: [row],
         allowedMentions: { repliedUser: false },
     });

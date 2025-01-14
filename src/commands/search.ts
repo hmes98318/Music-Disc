@@ -7,14 +7,14 @@ import {
     Message,
     StringSelectMenuBuilder,
     StringSelectMenuInteraction,
-} from "discord.js";
+} from 'discord.js';
 
-import { dashboard } from "../dashboard";
-import { embeds } from "../embeds";
-import { isUserInBlacklist } from "../utils/functions/isUserInBlacklist";
-import { LoadType } from "../@types";
+import { dashboard } from '../dashboard/index.js';
+import { embeds } from '../embeds/index.js';
+import { isUserInBlacklist } from '../utils/functions/isUserInBlacklist.js';
+import { LoadType } from '../@types/index.js';
 
-import type { Bot } from "../@types";
+import type { Bot } from '../@types/index.js';
 
 
 export const name = 'search';
@@ -27,8 +27,8 @@ export const sendTyping = true;
 export const requireAdmin = false;
 export const options = [
     {
-        name: "search",
-        description: "The song name",
+        name: 'search',
+        description: 'The song name',
         type: 3,
         required: true
     }
@@ -55,7 +55,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
     const validBlackist = isUserInBlacklist(message.member?.voice.channel, bot.blacklist);
     if (validBlackist.length > 0) {
         return message.reply({
-            embeds: [embeds.blacklist(bot.config.embedsColor, validBlackist)],
+            embeds: [embeds.blacklist(bot.config.bot.embedsColor, validBlackist)],
             allowedMentions: { repliedUser: false }
         });
     }
@@ -76,7 +76,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
         };
     }
 
-    const curVolume = player.setting.volume ?? bot.config.defaultVolume;
+    const curVolume = player.setting.volume ?? bot.config.bot.volume.default;
 
     try {
         // Connects to the voice channel
@@ -92,14 +92,14 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
         // Intial dashboard
         if (!player.dashboard) await dashboard.initial(bot, message, player);
     } catch (error) {
-        await dashboard.destroy(bot, player, bot.config.embedsColor);
+        await dashboard.destroy(bot, player, bot.config.bot.embedsColor);
     }
 
     await message.react('👍');
 
 
     if (res.loadType === LoadType.PLAYLIST) {
-        player.addTracks(res.tracks, message.author);
+        player.addTracks(res.tracks, (message.author as any));
 
         if (!player.playing) {
             await player.play()
@@ -110,11 +110,11 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
                 });
         }
 
-        return message.reply({ content: "✅ | Music added.", allowedMentions: { repliedUser: false } });
+        return message.reply({ content: '✅ | Music added.', allowedMentions: { repliedUser: false } });
     }
     else if (res.tracks.length === 1) {
         const track = res.tracks[0];
-        player.addTracks(track, message.author);
+        player.addTracks(track, (message.author as any));
 
         if (!player.playing) {
             player.filters.setVolume(curVolume);
@@ -125,18 +125,18 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
                     return player.destroy();
                 });
 
-            player.filters.setVolume(bot.config.defaultVolume);
+            player.filters.setVolume(bot.config.bot.volume.default);
         }
 
-        return message.reply({ content: "✅ | Music added.", allowedMentions: { repliedUser: false } });
+        return message.reply({ content: '✅ | Music added.', allowedMentions: { repliedUser: false } });
     }
     else {
         const select = new StringSelectMenuBuilder()
-            .setCustomId("musicSelect")
-            .setPlaceholder("Select the music")
+            .setCustomId('musicSelect')
+            .setPlaceholder('Select the music')
             .setOptions(res.tracks.map(x => {
                 return {
-                    label: x.title.length >= 25 ? x.title.substring(0, 22) + "..." : x.title,
+                    label: x.title.length >= 25 ? x.title.substring(0, 22) + '...' : x.title,
                     description: `Duration: ${x.duration.label}`,
                     value: x.uri
                 };
@@ -149,10 +149,10 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
             filter: i => i.user.id === message.author.id
         });
 
-        collector.on("collect", async (i: StringSelectMenuInteraction) => {
-            if (i.customId != "musicSelect") return;
+        collector.on('collect', async (i: StringSelectMenuInteraction) => {
+            if (i.customId != 'musicSelect') return;
 
-            player.addTracks(res.tracks.find(x => x.uri == i.values[0])!, message.author);
+            player.addTracks(res.tracks.find(x => x.uri == i.values[0])!, (message.author as any));
 
             if (!player.playing) {
                 player.filters.setVolume(curVolume);
@@ -163,24 +163,24 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
                         return player.destroy();
                     });
 
-                player.filters.setVolume(bot.config.defaultVolume);
+                player.filters.setVolume(bot.config.bot.volume.default);
             }
 
             i.deferUpdate();
-            await msg.edit({ content: "✅ | Music added.", components: [], allowedMentions: { repliedUser: false } });
+            await msg.edit({ content: '✅ | Music added.', components: [], allowedMentions: { repliedUser: false } });
         });
 
-        collector.on("end", async (collected: Collection<string, ButtonInteraction>, reason: string) => {
-            if (reason == "time" && collected.size == 0) {
+        collector.on('end', async (collected: Collection<string, ButtonInteraction>, reason: string) => {
+            if (reason == 'time' && collected.size == 0) {
                 if (!player.playing) player.destroy();
-                await msg.edit({ content: "❌ | Time expired.", components: [], allowedMentions: { repliedUser: false } });
+                await msg.edit({ content: '❌ | Time expired.', components: [], allowedMentions: { repliedUser: false } });
             }
         });
     }
 };
 
 export const slashExecute = async (bot: Bot, client: Client, interaction: ChatInputCommandInteraction) => {
-    const str = interaction.options.getString("search");
+    const str = interaction.options.getString('search');
     const res = await client.lavashark.search(str!);
 
     if (res.loadType === LoadType.ERROR) {
@@ -198,7 +198,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
     const validBlackist = isUserInBlacklist(channel, bot.blacklist);
     if (validBlackist.length > 0) {
         return interaction.editReply({
-            embeds: [embeds.blacklist(bot.config.embedsColor, validBlackist)],
+            embeds: [embeds.blacklist(bot.config.bot.embedsColor, validBlackist)],
             allowedMentions: { repliedUser: false }
         });
     }
@@ -219,7 +219,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
         };
     }
 
-    const curVolume = player.setting.volume ?? bot.config.defaultVolume;
+    const curVolume = player.setting.volume ?? bot.config.bot.volume.default;
 
     try {
         // Connects to the voice channel
@@ -235,12 +235,12 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
         // Intial dashboard
         if (!player.dashboard) await dashboard.initial(bot, interaction, player);
     } catch (error) {
-        await dashboard.destroy(bot, player, bot.config.embedsColor);
+        await dashboard.destroy(bot, player, bot.config.bot.embedsColor);
     }
 
 
     if (res.loadType === LoadType.PLAYLIST) {
-        player.addTracks(res.tracks, interaction.user);
+        player.addTracks(res.tracks, (interaction.user as any));
 
         if (!player.playing) {
             player.filters.setVolume(curVolume);
@@ -252,11 +252,11 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
                 });
         }
 
-        return interaction.editReply({ content: "✅ | Music added.", allowedMentions: { repliedUser: false } });
+        return interaction.editReply({ content: '✅ | Music added.', allowedMentions: { repliedUser: false } });
     }
     else if (res.tracks.length === 1) {
         const track = res.tracks[0];
-        player.addTracks(track, interaction.user);
+        player.addTracks(track, (interaction.user as any));
 
         if (!player.playing) {
             player.filters.setVolume(curVolume);
@@ -267,18 +267,18 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
                     return player.destroy();
                 });
 
-            player.filters.setVolume(bot.config.defaultVolume);
+            player.filters.setVolume(bot.config.bot.volume.default);
         }
 
-        return interaction.editReply({ content: "✅ | Music added.", allowedMentions: { repliedUser: false } });
+        return interaction.editReply({ content: '✅ | Music added.', allowedMentions: { repliedUser: false } });
     }
     else {
         const select = new StringSelectMenuBuilder()
-            .setCustomId("musicSelect")
-            .setPlaceholder("Select the music")
+            .setCustomId('musicSelect')
+            .setPlaceholder('Select the music')
             .setOptions(res.tracks.map(x => {
                 return {
-                    label: x.title.length >= 25 ? x.title.substring(0, 22) + "..." : x.title,
+                    label: x.title.length >= 25 ? x.title.substring(0, 22) + '...' : x.title,
                     description: `Duration: ${x.duration.label}`,
                     value: x.uri
                 };
@@ -291,10 +291,10 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
             filter: i => i.user.id === interaction.user.id
         });
 
-        collector.on("collect", async (i: StringSelectMenuInteraction) => {
-            if (i.customId != "musicSelect") return;
+        collector.on('collect', async (i: StringSelectMenuInteraction) => {
+            if (i.customId != 'musicSelect') return;
 
-            player.addTracks(res.tracks.find(x => x.uri == i.values[0])!, interaction.user);
+            player.addTracks(res.tracks.find(x => x.uri == i.values[0])!, (interaction.user as any));
 
             if (!player.playing) {
                 await player.play()
@@ -304,17 +304,17 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
                         return player.destroy();
                     });
 
-                player.filters.setVolume(bot.config.defaultVolume);
+                player.filters.setVolume(bot.config.bot.volume.default);
             }
 
             i.deferUpdate();
-            await msg.edit({ content: "✅ | Music added.", components: [], allowedMentions: { repliedUser: false } });
+            await msg.edit({ content: '✅ | Music added.', components: [], allowedMentions: { repliedUser: false } });
         });
 
-        collector.on("end", async (collected: Collection<string, ButtonInteraction>, reason: string) => {
-            if (reason == "time" && collected.size == 0) {
+        collector.on('end', async (collected: Collection<string, ButtonInteraction>, reason: string) => {
+            if (reason == 'time' && collected.size == 0) {
                 if (!player.playing) player.destroy();
-                await msg.edit({ content: "❌ | Time expired.", components: [], allowedMentions: { repliedUser: false } });
+                await msg.edit({ content: '❌ | Time expired.', components: [], allowedMentions: { repliedUser: false } });
             }
         });
     }

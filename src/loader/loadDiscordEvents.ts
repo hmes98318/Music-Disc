@@ -1,12 +1,19 @@
+import path from 'path';
 import * as fs from 'fs';
-import { cst } from './../utils/constants';
+import { fileURLToPath } from 'url';
+
+import { Events } from 'discord.js';
+import { cst } from './../utils/constants.js';
 
 import type { Client } from 'discord.js';
-import type { Bot } from './../@types';
+import type { Bot } from './../@types/index.js';
 
 
 const loadDiscordEvents = (bot: Bot, client: Client) => {
     return new Promise<void>(async (resolve, reject) => {
+        const __filename = fileURLToPath(import.meta.url);
+        const __dirname = path.dirname(__filename);
+
         bot.logger.emit('log', bot.shardId, `-> loading Discord Events ......`);
 
         const files = fs.readdirSync(`${__dirname}/../events/discord/`);
@@ -14,10 +21,15 @@ const loadDiscordEvents = (bot: Bot, client: Client) => {
         bot.logger.emit('log', bot.shardId, `+--------------------------------+`);
         for (const file of files) {
             try {
-                const event = await import(`${__dirname}/../events/discord/${file}`);
+                const eventModule = await import(path.join('file://', `${__dirname}/../events/discord/${file}`));
+                const event = eventModule.default;
                 const eventName = file.split('.')[0];
 
-                client.on(eventName, event.default.bind(null, bot, client));
+                if (!bot.config.bot.textCommand && eventName === Events.MessageCreate) {
+                    continue;
+                }
+
+                client.on(eventName, event.bind(null, bot, client));
                 bot.logger.emit('log', bot.shardId, `| Loaded event ${file.split('.')[0].padEnd(17, ' ')} |`);
             } catch (error) {
                 reject(error);

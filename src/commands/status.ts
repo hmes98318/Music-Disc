@@ -1,10 +1,10 @@
-import { cst } from '../utils/constants';
-import { embeds } from '../embeds';
-import { uptime } from '../utils/functions/uptime';
-import { sysusage } from '../utils/functions/sysusage';
+import { cst } from '../utils/constants.js';
+import { embeds } from '../embeds/index.js';
+import { uptime } from '../utils/functions/uptime.js';
+import { sysusage } from '../utils/functions/sysusage.js';
 
 import type { ChatInputCommandInteraction, Client, Message } from 'discord.js';
-import type { Bot, SystemStatus } from '../@types';
+import type { Bot, SystemStatus } from '../@types/index.js';
 
 
 export const name = 'status';
@@ -95,7 +95,7 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
     return message.reply({
         embeds: [
             embeds.botStatus(bot.config, bot.sysInfo, systemStatus),
-            embeds.nodesStatus(bot.config.embedsColor, nodeHealth, nodesStatus)
+            embeds.nodesStatus(bot.config.bot.embedsColor, nodeHealth, nodesStatus)
         ],
         allowedMentions: { repliedUser: false }
     });
@@ -178,7 +178,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
     return interaction.editReply({
         embeds: [
             embeds.botStatus(bot.config, bot.sysInfo, systemStatus),
-            embeds.nodesStatus(bot.config.embedsColor, nodeHealth, nodesStatus)
+            embeds.nodesStatus(bot.config.bot.embedsColor, nodeHealth, nodesStatus)
         ],
         allowedMentions: { repliedUser: false }
     });

@@ -1,4 +1,4 @@
-import type { IPBlockerConfig } from "../../@types/SessionManager.types";
+import type { IPBlockerConfig } from '../../@types/SessionManager.types.js';
 
 
 export interface IPInfo {

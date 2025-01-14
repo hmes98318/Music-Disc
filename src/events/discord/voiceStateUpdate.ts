@@ -1,7 +1,7 @@
-import { cst } from "../../utils/constants";
+import { cst } from '../../utils/constants.js';
 
-import type { Client, VoiceBasedChannel, VoiceState } from "discord.js";
-import type { Bot } from "../../@types";
+import type { Client, VoiceBasedChannel, VoiceState } from 'discord.js';
+import type { Bot } from '../../@types/index.js';
 
 
 const pool = new Map();
@@ -15,7 +15,7 @@ const checkBlacklistUsers = (channel: VoiceBasedChannel | null, blacklist: strin
 
 
 export default async (bot: Bot, client: Client, oldState: VoiceState, newState: VoiceState) => {
-    const display = bot.config.displayVoiceState ?? true;
+    const display = bot.config.bot.displayVoiceState ?? true;
     const blacklist = bot.blacklist || [];
 
     if (newState.channelId === null) {
@@ -46,7 +46,7 @@ export default async (bot: Bot, client: Client, oldState: VoiceState, newState: 
                     const timeoutID = setTimeout(() => {
                         player.destroy();
 
-                    }, bot.config.autoLeaveCooldown);
+                    }, bot.config.bot.autoLeave.cooldown);
 
                     pool.set(oldState.guild.id, timeoutID);
                     // bot.logger.emit('discord', bot.shardId, '[voiceStateUpdate] pool.add', pool);
@@ -72,7 +72,7 @@ export default async (bot: Bot, client: Client, oldState: VoiceState, newState: 
                     const timeoutID = setTimeout(() => {
                         player.destroy();
 
-                    }, bot.config.autoLeaveCooldown);
+                    }, bot.config.bot.autoLeave.cooldown);
 
                     pool.set(newState.guild.id, timeoutID);
                     // bot.logger.emit('discord', bot.shardId, '[voiceStateUpdate] checkBlacklistUsers.add', pool);
@@ -122,7 +122,7 @@ export default async (bot: Bot, client: Client, oldState: VoiceState, newState: 
                     const timeoutID = setTimeout(() => {
                         player.destroy();
 
-                    }, bot.config.autoLeaveCooldown);
+                    }, bot.config.bot.autoLeave.cooldown);
 
                     pool.set(oldState.guild.id, timeoutID);
                     // bot.logger.emit('discord', bot.shardId, '[voiceStateUpdate] pool.add', pool);
@@ -135,7 +135,7 @@ export default async (bot: Bot, client: Client, oldState: VoiceState, newState: 
                     const timeoutID = setTimeout(() => {
                         player.destroy();
 
-                    }, bot.config.autoLeaveCooldown);
+                    }, bot.config.bot.autoLeave.cooldown);
 
                     pool.set(newState.guild.id, timeoutID);
                     // bot.logger.emit('discord', bot.shardId, '[voiceStateUpdate] checkBlacklistUsers.add', pool);

@@ -1,4 +1,4 @@
-import { EmbedBuilder, HexColorString } from "discord.js";
+import { EmbedBuilder, HexColorString } from 'discord.js';
 
 
 const blacklist = (embedsColor: HexColorString | string | number, userList: { name: string; value: string; }[]) => {

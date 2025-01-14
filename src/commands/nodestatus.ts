@@ -1,8 +1,8 @@
-import { NodeState } from "lavashark";
-import { embeds } from "../embeds";
+import { NodeState } from 'lavashark';
+import { embeds } from '../embeds/index.js';
 
-import type { ChatInputCommandInteraction, Client, Message } from "discord.js";
-import type { Bot } from "../@types";
+import type { ChatInputCommandInteraction, Client, Message } from 'discord.js';
+import type { Bot } from '../@types/index.js';
 
 
 export const name = 'nodestatus';
@@ -15,8 +15,8 @@ export const sendTyping = true;
 export const requireAdmin = false;
 export const options = [
     {
-        name: "nodename",
-        description: "The node name",
+        name: 'nodename',
+        description: 'The node name',
         type: 3,
         required: false
     }
@@ -48,7 +48,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
         const nodeHealth = healthValue === 0 ? 'All nodes are active' : `⚠️ There are ${healthValue} nodes disconnected`;
 
         return message.reply({
-            embeds: [embeds.nodesStatus(bot.config.embedsColor, nodeHealth, nodesStatus)],
+            embeds: [embeds.nodesStatus(bot.config.bot.embedsColor, nodeHealth, nodesStatus)],
             allowedMentions: { repliedUser: false }
         });
     }
@@ -59,7 +59,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
             if (node.identifier === nodeName) {
                 if (node.state !== NodeState.CONNECTED) {
                     return message.reply({
-                        embeds: [embeds.nodeDisconnected(bot.config.embedsColor, nodeName)],
+                        embeds: [embeds.nodeDisconnected(bot.config.bot.embedsColor, nodeName)],
                         allowedMentions: { repliedUser: false }
                     });
                 }
@@ -74,7 +74,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
                 bot.logger.emit('log', bot.shardId, 'nodePing: ' + nodePing + 'ms');
 
                 return message.reply({
-                    embeds: [embeds.nodeStatus(bot.config.embedsColor, nodeName, nodeInfo, nodeStats, nodePing)],
+                    embeds: [embeds.nodeStatus(bot.config.bot.embedsColor, nodeName, nodeInfo, nodeStats, nodePing)],
                     allowedMentions: { repliedUser: false }
                 });
             }
@@ -86,7 +86,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
         }
 
         return message.reply({
-            embeds: [embeds.validNodeName(bot.config.embedsColor, nodesName)],
+            embeds: [embeds.validNodeName(bot.config.bot.embedsColor, nodesName)],
             allowedMentions: { repliedUser: false }
         });
     }
@@ -118,7 +118,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
         const nodeHealth = healthValue === 0 ? '✅ All nodes are active' : `⚠️ There are ${healthValue} nodes disconnected`;
 
         return interaction.editReply({
-            embeds: [embeds.nodesStatus(bot.config.embedsColor, nodeHealth, nodesStatus)],
+            embeds: [embeds.nodesStatus(bot.config.bot.embedsColor, nodeHealth, nodesStatus)],
             allowedMentions: { repliedUser: false }
         });
     }
@@ -127,7 +127,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
             if (node.identifier === nodeName) {
                 if (node.state !== NodeState.CONNECTED) {
                     return interaction.editReply({
-                        embeds: [embeds.nodeDisconnected(bot.config.embedsColor, nodeName)],
+                        embeds: [embeds.nodeDisconnected(bot.config.bot.embedsColor, nodeName)],
                         allowedMentions: { repliedUser: false }
                     });
                 }
@@ -142,7 +142,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
                 bot.logger.emit('log', bot.shardId, 'nodePing: ' + nodePing + 'ms');
 
                 return interaction.editReply({
-                    embeds: [embeds.nodeStatus(bot.config.embedsColor, nodeName, nodeInfo, nodeStats, nodePing)],
+                    embeds: [embeds.nodeStatus(bot.config.bot.embedsColor, nodeName, nodeInfo, nodeStats, nodePing)],
                     allowedMentions: { repliedUser: false }
                 });
             }
@@ -154,7 +154,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
         }
 
         return interaction.editReply({
-            embeds: [embeds.validNodeName(bot.config.embedsColor, nodesName)],
+            embeds: [embeds.validNodeName(bot.config.bot.embedsColor, nodesName)],
             allowedMentions: { repliedUser: false }
         });
     }

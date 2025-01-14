@@ -1,7 +1,7 @@
-import { RepeatMode } from "lavashark";
+import { RepeatMode } from 'lavashark';
 
-import type { Client, Message, ChatInputCommandInteraction } from "discord.js";
-import type { Bot } from "../@types";
+import type { Client, Message, ChatInputCommandInteraction } from 'discord.js';
+import type { Bot } from '../@types/index.js';
 
 
 export const name = 'loop';
@@ -14,22 +14,22 @@ export const sendTyping = true;
 export const requireAdmin = false;
 export const options = [
     {
-        name: "mode",
-        description: "The loop mode",
+        name: 'mode',
+        description: 'The loop mode',
         type: 3,
         required: true,
         choices: [
             {
-                name: "Off",
-                value: "off"
+                name: 'Off',
+                value: 'off'
             },
             {
-                name: "One",
-                value: "one"
+                name: 'One',
+                value: 'one'
             },
             {
-                name: "All",
-                value: "all"
+                name: 'All',
+                value: 'all'
             }
         ]
     }
@@ -46,7 +46,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
     let mode = null;
     const methods = ['Off', 'Single', 'All'];
 
-    if (!args[0]) return message.reply({ content: `❌ | ${bot.config.prefix}${usage}`, allowedMentions: { repliedUser: false } });
+    if (!args[0]) return message.reply({ content: `❌ | ${bot.config.bot.prefix}${usage}`, allowedMentions: { repliedUser: false } });
 
     switch (args[0].toLowerCase()) {
         case 'off': {
@@ -67,7 +67,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
             break;
         }
         default: {
-            return message.reply({ content: `❌ | ${bot.config.prefix}${usage}`, allowedMentions: { repliedUser: false } });
+            return message.reply({ content: `❌ | ${bot.config.bot.prefix}${usage}`, allowedMentions: { repliedUser: false } });
         }
     }
 
@@ -86,7 +86,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
     let mode = null;
     const methods = ['Off', 'Single', 'All'];
 
-    switch (interaction.options.getString("mode")) {
+    switch (interaction.options.getString('mode')) {
         case 'off': {
             mode = 0;
             player.setRepeatMode(RepeatMode.OFF);
@@ -103,7 +103,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
             break;
         }
         default: {
-            return interaction.editReply({ content: `❌ | ${bot.config.prefix}${usage}`, allowedMentions: { repliedUser: false } });
+            return interaction.editReply({ content: `❌ | ${bot.config.bot.prefix}${usage}`, allowedMentions: { repliedUser: false } });
         }
     }
 

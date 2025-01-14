@@ -1,11 +1,11 @@
-import { loadLocalNode, loadSite, setEnvironment } from "./loader";
-import { Logger } from "./lib/Logger";
-import { LocalNodeController } from "./lib/localnode/LocalNodeController";
-import { ShardingController } from "./ShardingController";
-import { getSysInfo } from "./utils/functions/getSysInfo";
-import { cst } from "./utils/constants";
+import { loadLocalNode, loadSite, setEnvironment } from './loader/index.js';
+import { Logger } from './lib/Logger.js';
+import { LocalNodeController } from './lib/localnode/LocalNodeController.js';
+import { ShardingController } from './ShardingController.js';
+import { getSysInfo } from './utils/functions/getSysInfo.js';
+import { cst } from './utils/constants.js';
 
-import type { Bot, SystemInfo } from "./@types";
+import type { Bot, SystemInfo } from './@types/index.js';
 
 
 export class Controller {
@@ -33,7 +33,7 @@ export class Controller {
         this.#shardManager = new ShardingController();
 
         this.#localNodeController = new LocalNodeController(
-            this.#bot.config.localNode.downloadLink,
+            this.#bot.config.localNode.downloadLink!,
             this.#bot.logger,
             this.#bot.config.localNode.autoRestart
         );
@@ -44,9 +44,9 @@ export class Controller {
         this.#bot.sysInfo = await getSysInfo();
 
         return Promise.resolve()
-            .then(async () => { if (this.#bot.config.enableLocalNode) await loadLocalNode(this.#bot, this.#localNodeController); })
+            .then(async () => { if (this.#bot.config.localNode.enabled) await loadLocalNode(this.#bot, this.#localNodeController); })
             .then(() => this.#shardManager.spwan())
-            .then(async () => { if (this.#bot.config.enableSite) await loadSite(this.#bot, this.#shardManager.manager, this.#localNodeController); })
+            .then(async () => { if (this.#bot.config.webDashboard.enabled) await loadSite(this.#bot, this.#shardManager.manager, this.#localNodeController); })
             .then(() => {
                 this.#bot.logger.emit('shard', cst.color.green + '*** ShardingController initialization completed ***' + cst.color.white);
                 this.#bot.logger.emit('shard', 'Launching sharding process...');

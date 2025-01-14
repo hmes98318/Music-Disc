@@ -1,5 +1,5 @@
-import type { ChatInputCommandInteraction, Client, Message } from "discord.js";
-import type { Bot } from "../@types";
+import type { ChatInputCommandInteraction, Client, Message } from 'discord.js';
+import type { Bot } from '../@types/index.js';
 
 
 export const name = 'pause';
@@ -40,5 +40,5 @@ export const slashExecute = async (_bot: Bot, client: Client, interaction: ChatI
     }
 
     const SUCCESS = await player.pause();
-    return SUCCESS ? interaction.editReply("⏸️ | Music paused.") : interaction.editReply('❌ | Music pause failed.');
+    return SUCCESS ? interaction.editReply('⏸️ | Music paused.') : interaction.editReply('❌ | Music pause failed.');
 };

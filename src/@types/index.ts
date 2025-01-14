@@ -1,14 +1,15 @@
 import type {
+    ActivityType,
     ChatInputCommandInteraction,
     ClientPresenceStatus,
     Collection,
-    HexColorString,
     Message
-} from "discord.js";
-import type { LavaShark } from "lavashark";
+} from 'discord.js';
+import type { LavaShark } from 'lavashark';
+import type { NodeOptions } from 'lavashark/typings/src/@types/index.js';
 
-import type { Logger } from "../lib/Logger";
-import type { IPBlockerConfig, SessionManagerConfig } from "./SessionManager.types";
+import type { Logger } from '../lib/Logger.js';
+import type { IPBlockerConfig, SessionManagerConfig } from './SessionManager.types.js';
 
 
 declare module 'discord.js' {
@@ -38,13 +39,15 @@ export interface QueuePage {
 }
 
 
-export enum LoginType {
+export enum LoginTypeEnum {
     USER = 'USER',
-    OAUTH2 = 'OAUTH2'
+    OAUTH2 = 'OAUTH2',
 }
 
+export type LoginType = keyof typeof LoginTypeEnum;
 
-export interface Bot {
+
+export type Bot = {
     shardId: number;
     blacklist: string[];
     config: Config;
@@ -60,43 +63,64 @@ export interface Bot {
 /**
  * Constants variables
  */
-export interface Config {
+export type Config = {
+    bot: BotConfig;
+    nodeList: NodeOptions[];
+    webDashboard: WebDashboardConfig;
+    localNode: LocalNodeConfig;
+};
+
+export type BotConfig = {
+    textCommand: boolean;
+    slashCommand: boolean;
     admin: string[];
-    clientSecret: string | null;
+    clientSecret: string;
     name: string;
     prefix: string;
-    status: ClientPresenceStatus | string;
-    playing: string;
-    embedsColor: HexColorString | string | number;
-    slashCommand: boolean;
-    defaultVolume: number;
-    maxVolume: number;
-    autoLeave: boolean;
-    autoLeaveCooldown: number;
+    status: ClientPresenceStatus;
+    activity: {
+        type: ActivityType;
+        name: string;
+        state?: string;
+        url?: string;
+    }
+    embedsColor: string;
+    volume: {
+        default: number;
+        max: number;
+    };
+    autoLeave: {
+        enabled: boolean;
+        cooldown: number;
+    };
     displayVoiceState: boolean;
-    enableSite: boolean;
-    site: SiteConfig;
-    enableLocalNode: boolean;
-    localNode: LocalNode;
+    specifyMessageChannel: string | null;
+};
+
+export type WebDashboardConfig = {
+    enabled: boolean;
+    port: number;
+    loginType: LoginType;
+    user: {
+        username: string;
+        password: string;
+    };
+    oauth2: {
+        link: string;
+        redirectUri: string;
+    };
     sessionManager: SessionManagerConfig;
     ipBlocker: IPBlockerConfig;
-}
+};
 
-interface SiteConfig {
-    port: number;
-    loginType: 'USER' | 'OAUTH2';
-    username: string;
-    password: string;
-    oauth2Link: string | null;
-    oauth2RedirectUri: string | null;
-}
-
-interface LocalNode {
+export type LocalNodeConfig = {
+    enabled: boolean;
     autoRestart: boolean;
-    downloadLink: string;
-}
+    downloadLink?: string;
+};
 
-export interface SystemInfo {
+
+export type SystemInfo = {
     startupTime: Date;
     os_version: string;
     bot_version: string;
@@ -106,7 +130,7 @@ export interface SystemInfo {
     cpu: string;
 }
 
-export interface SystemStatus {
+export type SystemStatus = {
     load: {
         percent: string;
         detail: string;

@@ -2,7 +2,7 @@
  * Some web features are unavailable
  * ENABLE_LOCAL_NODE = false
  */
-import { Controller } from "./Controller";
+import { Controller } from './Controller.js';
 
 
 const controller = new Controller();

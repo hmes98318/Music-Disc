@@ -1,7 +1,7 @@
-import { dashboard } from "../dashboard";
+import { dashboard } from '../dashboard/index.js';
 
-import type { ChatInputCommandInteraction, Client, Message } from "discord.js";
-import type { Bot } from "../@types";
+import type { ChatInputCommandInteraction, Client, Message } from 'discord.js';
+import type { Bot } from '../@types/index.js';
 
 
 export const name = 'leave';
@@ -22,13 +22,13 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
         return message.reply({ content: '❌ | There is no music currently playing.', allowedMentions: { repliedUser: false } });
     }
 
-    if (bot.config.autoLeave) {
+    if (bot.config.bot.autoLeave.enabled) {
         player.destroy();
     }
     else {
         player.queue.clear();
         await player.skip();
-        await dashboard.destroy(bot, player, bot.config.embedsColor);
+        await dashboard.destroy(bot, player, bot.config.bot.embedsColor);
     }
 
     return message.react('👍');
@@ -41,13 +41,13 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
         return interaction.editReply({ content: '❌ | There is no music currently playing.', allowedMentions: { repliedUser: false } });
     }
 
-    if (bot.config.autoLeave) {
+    if (bot.config.bot.autoLeave.enabled) {
         player.destroy();
     }
     else {
         player.queue.clear();
         await player.skip();
-        await dashboard.destroy(bot, player, bot.config.embedsColor);
+        await dashboard.destroy(bot, player, bot.config.bot.embedsColor);
     }
 
     return interaction.editReply('✅ | Bot leave.');

@@ -1,8 +1,8 @@
-import { EmbedBuilder, HexColorString } from "discord.js";
-import { formatBytes, msToTime, timestampToTime } from "../utils/functions/unitConverter";
+import { EmbedBuilder, HexColorString } from 'discord.js';
+import { formatBytes, msToTime, timestampToTime } from '../utils/functions/unitConverter.js';
 
-import type { Info, NodeStats } from "lavashark/typings/src/@types";
-import type { Config, SystemInfo, SystemStatus } from "../@types";
+import type { Info, NodeStats } from 'lavashark/typings/src/@types';
+import type { Config, SystemInfo, SystemStatus } from '../@types/index.js';
 
 
 const botStatus = (config: Config, systemInfo: SystemInfo, systemStatus: SystemStatus) => {
@@ -11,8 +11,8 @@ const botStatus = (config: Config, systemInfo: SystemInfo, systemStatus: SystemS
     const heapUsage = `${systemStatus.heap.percent}  \`${systemStatus.heap.detail}\``;
 
     const embed_ = new EmbedBuilder()
-        .setColor(config.embedsColor as HexColorString | number)
-        .setTitle(`${config.name} ${systemInfo.bot_version}`)
+        .setColor(config.bot.embedsColor as HexColorString | number)
+        .setTitle(`${config.bot.name} ${systemInfo.bot_version}`)
         .setURL('https://github.com/hmes98318/Music-Disc')
         .setDescription(`**• Serving ${systemStatus.serverCount} servers**\n**• Total ${systemStatus.totalMembers} members**\n**• Playing on ${systemStatus.playing} servers**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━`)
         .addFields(
@@ -49,7 +49,7 @@ const nodesStatus = (embedsColor: HexColorString | string | number, nodeHealth: 
 const nodeStatus = (embedsColor: HexColorString | string | number, nodeName: string, nodeInfo: Info, nodeStats: NodeStats, nodePing: number) => {
     const embed_ = new EmbedBuilder()
         .setColor(embedsColor as HexColorString | number)
-        .setTitle(`🛰️ Node "${nodeName}" status`)
+        .setTitle(`🛰️ Node '${nodeName}' status`)
         .setDescription(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━`)
         .addFields(
             { name: `🏷️ INFO`, value: `Version : **${nodeInfo.version.semver}**\nJVM : **${nodeInfo.jvm}**\nLavaplayer : **${nodeInfo.lavaplayer}**\nGit : **${nodeInfo.git.commit}**\nBuild time : **${timestampToTime(nodeInfo.buildTime)}**` },
@@ -64,7 +64,7 @@ const nodeStatus = (embedsColor: HexColorString | string | number, nodeName: str
 const nodeDisconnected = (embedsColor: HexColorString | string | number, nodeName: string) => {
     const embed_ = new EmbedBuilder()
         .setColor(embedsColor as HexColorString | number)
-        .setTitle(`🛰️ Node "${nodeName}" status`)
+        .setTitle(`🛰️ Node '${nodeName}' status`)
         .setDescription(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n❌ | **DISCONNECTED**`)
         .setTimestamp();
 

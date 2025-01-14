@@ -2,11 +2,12 @@ import child_process, { ChildProcess } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 import readline from 'readline';
+import { fileURLToPath } from 'url';
 
-import { cst } from '../../utils/constants';
-import { formatBytes } from '../../utils/functions/unitConverter';
+import { cst } from '../../utils/constants.js';
+import { formatBytes } from '../../utils/functions/unitConverter.js';
 
-import type { Logger } from '../Logger';
+import type { Logger } from '../Logger.js';
 
 
 export class LocalNodeController {
@@ -23,7 +24,7 @@ export class LocalNodeController {
     public lavalinkPid: number | null;
 
     /** Local node listenong port */
-    public port: number;
+    public port: number | null;
 
     /** @inner Manually set up the logger */
     public logger: Logger;
@@ -33,11 +34,16 @@ export class LocalNodeController {
     #manualRestart: boolean;
 
     constructor(downloadLink: string, logger: Logger, autoRestart: boolean = true) {
+        const __filename = fileURLToPath(import.meta.url);
+
         this.downloadLink = downloadLink;
         this.autoRestart = autoRestart;
         this.logger = logger;
 
         this.lavalinkLogs = [];
+        this.lavalinkPid = null;
+        this.port = null;
+
         this.#lavalinkProcessController = null;
         this.#lavalinkProcessFileName = (path.extname(__filename) === '.ts') ? 'LavalinkProcess.ts' : 'LavalinkProcess.js';
         this.#manualRestart = false;
@@ -103,6 +109,9 @@ export class LocalNodeController {
         await this.#downloadFile(this.downloadLink, filename);
 
         return new Promise<void>((resolve, _reject) => {
+            const __filename = fileURLToPath(import.meta.url);
+            const __dirname = path.dirname(__filename);
+
             this.#lavalinkProcessController = child_process.fork(path.resolve(__dirname, this.#lavalinkProcessFileName));
 
             // Send .jar path
@@ -290,6 +299,10 @@ export class LocalNodeController {
              * It is necessary to scan all pid occupying the port to forcefully terminate all pid.
              */
             if (process.platform === 'win32') {
+                if (!this.port) {
+                    return false;
+                }
+
                 const winPidList = await this.#winGetPid(this.port);
 
                 for (const winPid of winPidList) {

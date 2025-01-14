@@ -5,10 +5,10 @@ import {
     ChatInputCommandInteraction,
     Client,
     Message
-} from "discord.js";
-import { embeds } from "../embeds";
+} from 'discord.js';
+import { embeds } from '../embeds/index.js';
 
-import type { Bot } from "../@types";
+import type { Bot } from '../@types/index.js';
 
 
 export const name = 'nowplaying';
@@ -40,7 +40,7 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
         .addComponents(saveButton);
 
     return message.reply({
-        embeds: [embeds.save(bot.config.embedsColor, track!.title, subtitle, track!.uri, track!.thumbnail!)],
+        embeds: [embeds.save(bot.config.bot.embedsColor, track!.title, subtitle, track!.uri, track!.thumbnail!)],
         components: [row],
         allowedMentions: { repliedUser: false }
     });
@@ -64,7 +64,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
         .addComponents(saveButton);
 
     return interaction.editReply({
-        embeds: [embeds.save(bot.config.embedsColor, track!.title, subtitle, track!.uri, track!.thumbnail!)],
+        embeds: [embeds.save(bot.config.bot.embedsColor, track!.title, subtitle, track!.uri, track!.thumbnail!)],
         components: [row],
         allowedMentions: { repliedUser: false }
     });

@@ -2,8 +2,8 @@ import {
     ChatInputCommandInteraction,
     Client,
     Message
-} from "discord.js";
-import type { Bot } from "../@types";
+} from 'discord.js';
+import type { Bot } from '../@types/index.js';
 
 
 export const name = 'move';
@@ -16,15 +16,15 @@ export const sendTyping = true;
 export const requireAdmin = false;
 export const options = [
     {
-        name: "moveindex1",
-        description: "To swap song position 1",
+        name: 'moveindex1',
+        description: 'To swap song position 1',
         type: 4,
         required: true,
         min_value: 1
     },
     {
-        name: "moveindex2",
-        description: "To swap song position 2",
+        name: 'moveindex2',
+        description: 'To swap song position 2',
         type: 4,
         required: true,
         min_value: 1
@@ -77,8 +77,8 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
     }
 
 
-    const index1 = Math.floor(interaction.options.getInteger("moveindex1")!);
-    const index2 = Math.floor(interaction.options.getInteger("moveindex2")!);
+    const index1 = Math.floor(interaction.options.getInteger('moveindex1')!);
+    const index2 = Math.floor(interaction.options.getInteger('moveindex2')!);
 
     const isSuccess = player.queue.move(index1 - 1, index2 - 1);
 

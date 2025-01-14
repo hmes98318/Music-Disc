@@ -8,14 +8,14 @@ import {
     Interaction,
     StringSelectMenuBuilder,
     StringSelectMenuInteraction
-} from "discord.js";
-import { RepeatMode } from "lavashark";
+} from 'discord.js';
+import { RepeatMode } from 'lavashark';
 
-import { cst } from "../../utils/constants";
-import { embeds } from "../../embeds";
-import { dashboard } from "../../dashboard";
+import { cst } from '../../utils/constants.js';
+import { embeds } from '../../embeds/index.js';
+import { dashboard } from '../../dashboard/index.js';
 
-import type { Bot } from "../../@types";
+import type { Bot } from '../../@types/index.js';
 
 
 export default async (bot: Bot, client: Client, interaction: Interaction) => {
@@ -103,8 +103,8 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
                     const methods = ['Off', 'Single', 'All'];
 
                     const select = new StringSelectMenuBuilder()
-                        .setCustomId("Dashboard-Loop-Select")
-                        .setPlaceholder("Select the loop mode")
+                        .setCustomId('Dashboard-Loop-Select')
+                        .setPlaceholder('Select the loop mode')
                         .setOptions(methods.map(x => {
                             return {
                                 label: x,
@@ -121,8 +121,8 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
                         filter: (i:any) => i.user.id === interaction.user.id
                     });
 
-                    collector.on("collect", async (i: StringSelectMenuInteraction) => {
-                        if (i.customId !== "Dashboard-Loop-Select") return;
+                    collector.on('collect', async (i: StringSelectMenuInteraction) => {
+                        if (i.customId !== 'Dashboard-Loop-Select') return;
 
                         bot.logger.emit('discord', bot.shardId, 'loop mode:' + i.values[0]);
                         switch (i.values[0]) {
@@ -149,22 +149,22 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
                         await interaction.editReply({ content: `✅ | Set loop to \`${methods[mode]}\`.`, components: [] });
                     });
 
-                    collector.on("end", async (collected: Collection<string, ButtonInteraction>, reason: string) => {
-                        if (reason === "time" && collected.size === 0) {
-                            await msg.edit({ content: "❌ | Time expired.", components: [], allowedMentions: { repliedUser: false } });
+                    collector.on('end', async (collected: Collection<string, ButtonInteraction>, reason: string) => {
+                        if (reason === 'time' && collected.size === 0) {
+                            await msg.edit({ content: '❌ | Time expired.', components: [], allowedMentions: { repliedUser: false } });
                         }
                     });
                     break;
                 }
 
                 case 'Dashboard-Stop': {
-                    if (bot.config.autoLeave) {
+                    if (bot.config.bot.autoLeave.enabled) {
                         player.destroy();
                     }
                     else {
                         player.queue.clear();
                         await player.skip();
-                        await dashboard.destroy(bot, player, bot.config.embedsColor);
+                        await dashboard.destroy(bot, player, bot.config.bot.embedsColor);
                     }
 
                     await interaction.reply({ content: '✅ | Bot leave.', ephemeral: true, components: [] });
@@ -182,7 +182,7 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
                     const track = player.current;
                     const subtitle = `Author : **${track?.author}**\nDuration **${track?.duration.label}**\n`;
 
-                    guildMember?.send({ embeds: [embeds.save(bot.config.embedsColor, track!.title, subtitle, track!.uri, track!.thumbnail!)] })
+                    guildMember?.send({ embeds: [embeds.save(bot.config.bot.embedsColor, track!.title, subtitle, track!.uri, track!.thumbnail!)] })
                         .then(() => {
                             return interaction.reply({ content: `✅ | I sent you the name of the music in a private message.`, ephemeral: true, components: [] });
                         })
@@ -236,7 +236,7 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
                     const row = new ActionRowBuilder<ButtonBuilder>().addComponents(prevButton, nextButton, delButton, clsButton);
 
                     await player.setting.queuePage.msg?.edit({
-                        embeds: [embeds.queue(bot.config.embedsColor, nowplaying, tracksQueue, methods[repeatMode])],
+                        embeds: [embeds.queue(bot.config.bot.embedsColor, nowplaying, tracksQueue, methods[repeatMode])],
                         components: [row],
                         allowedMentions: { repliedUser: false },
                     });
@@ -287,7 +287,7 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
                     const row = new ActionRowBuilder<ButtonBuilder>().addComponents(prevButton, nextButton, delButton, clsButton);
 
                     await player.setting.queuePage.msg?.edit({
-                        embeds: [embeds.queue(bot.config.embedsColor, nowplaying, tracksQueue, methods[repeatMode])],
+                        embeds: [embeds.queue(bot.config.bot.embedsColor, nowplaying, tracksQueue, methods[repeatMode])],
                         components: [row],
                         allowedMentions: { repliedUser: false },
                     });
@@ -344,7 +344,7 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
                     const row = new ActionRowBuilder<ButtonBuilder>().addComponents(delButton);
 
                     await player.setting.queuePage.msg?.edit({
-                        embeds: [embeds.queue(bot.config.embedsColor, nowplaying, tracksQueue, methods[repeatMode])],
+                        embeds: [embeds.queue(bot.config.bot.embedsColor, nowplaying, tracksQueue, methods[repeatMode])],
                         components: [row],
                         allowedMentions: { repliedUser: false },
                     });
@@ -361,7 +361,7 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
     else {
         if (!interaction.isCommand() || !interaction.inGuild() || interaction.member.user.bot) return;
 
-        if (!bot.config.slashCommand) {
+        if (!bot.config.bot.slashCommand) {
             return interaction.reply({ content: `❌ | The slash command is not enabled.`, allowedMentions: { repliedUser: false } })
                 .catch((error) => {
                     bot.logger.emit('error', bot.shardId, `[interactionCreate] Error reply: (${interaction.user.username} : /${interaction.commandName})` + error);
@@ -375,7 +375,7 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
         if (!cmd) return;
 
         if (cmd.requireAdmin) {
-            if (!bot.config.admin?.includes(interaction.user.id)) {
+            if (!bot.config.bot.admin?.includes(interaction.user.id)) {
                 return interaction.reply({ content: `❌ | This command requires administrator privileges.`, allowedMentions: { repliedUser: false } })
                     .catch((error) => {
                         bot.logger.emit('error', bot.shardId, `[interactionCreate] Error reply: (${interaction.user.username} : /${interaction.commandName})` + error);

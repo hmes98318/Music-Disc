@@ -1,3 +1,5 @@
+import fs from 'fs';
+
 import { Client, Collection, GatewayIntentBits } from 'discord.js';
 import { LavaShark } from 'lavashark';
 
@@ -8,12 +10,11 @@ import {
     loadDiscordEvents,
     loadLavaSharkEvents,
     setEnvironment
-} from './loader';
-import { Logger } from './lib/Logger';
-import { cst } from './utils/constants';
-import nodeList from '../nodelist.json';
+} from './loader/index.js';
+import { Logger } from './lib/Logger.js';
+import { cst } from './utils/constants.js';
 
-import type { Bot, SystemInfo } from './@types';
+import type { Bot, SystemInfo } from './@types/index.js';
 
 
 class App {
@@ -28,11 +29,6 @@ class App {
                 GatewayIntentBits.GuildVoiceStates,
                 GatewayIntentBits.MessageContent
             ]
-        });
-        this.#client.commands = new Collection();
-        this.#client.lavashark = new LavaShark({
-            nodes: nodeList,
-            sendWS: (guildId, payload) => { this.#client.guilds.cache.get(guildId)?.shard.send(payload); }
         });
 
         this.bot = {
@@ -52,6 +48,12 @@ class App {
         this.bot.logger.emit('log', this.bot.shardId, 'Set environment variables.');
 
         loadBlacklist(this.bot);
+
+        this.#client.commands = new Collection();
+        this.#client.lavashark = new LavaShark({
+            nodes: this.bot.config.nodeList,
+            sendWS: (guildId, payload) => { this.#client.guilds.cache.get(guildId)?.shard.send(payload); }
+        });
     }
 
 

@@ -1,7 +1,7 @@
-import { cst } from './../utils/constants';
+import { cst } from './../utils/constants.js';
 
-import type { LocalNodeController } from '../lib/localnode/LocalNodeController';
-import type { Bot } from './../@types';
+import type { LocalNodeController } from '../lib/localnode/LocalNodeController.js';
+import type { Bot } from './../@types/index.js';
 
 
 const loadLocalNode = (bot: Bot, localNodeController: LocalNodeController) => {
@@ -21,7 +21,7 @@ const loadLocalNode = (bot: Bot, localNodeController: LocalNodeController) => {
 
         const nodeInfo = {
             active: `LavaLink: ${(localNodeController.lavalinkPid !== null ? 'ACTIVE' : 'INACTIVE').padStart(8, ' ')}`,
-            port: `Port:   ${localNodeController.port.toString().padStart(10, ' ')}`
+            port: `Port:   ${localNodeController.port!.toString().padStart(10, ' ')}`
         };
 
         bot.logger.emit('log', bot.shardId, `+--------------------+`);

@@ -1,7 +1,7 @@
-import { dashboard } from "../dashboard";
+import { dashboard } from '../dashboard/index.js';
 
-import type { ChatInputCommandInteraction, Client, Message } from "discord.js";
-import type { Bot } from "../@types";
+import type { ChatInputCommandInteraction, Client, Message } from 'discord.js';
+import type { Bot } from '../@types/index.js';
 
 
 export const name = 'volume';
@@ -14,8 +14,8 @@ export const sendTyping = true;
 export const requireAdmin = false;
 export const options = [
     {
-        name: "volume",
-        description: "The volume to set",
+        name: 'volume',
+        description: 'The volume to set',
         type: 4,
         required: true,
         min_value: 1
@@ -24,7 +24,7 @@ export const options = [
 
 
 export const execute = async (bot: Bot, client: Client, message: Message, args: string[]) => {
-    const maxVolume = bot.config.maxVolume;
+    const maxVolume = bot.config.bot.volume.max;
     const player = client.lavashark.getPlayer(message.guild!.id);
 
     if (!player) {
@@ -55,14 +55,14 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
 
 export const slashExecute = async (bot: Bot, client: Client, interaction: ChatInputCommandInteraction) => {
 
-    const maxVolume = bot.config.maxVolume;
+    const maxVolume = bot.config.bot.volume.max;
     const player = client.lavashark.getPlayer(interaction.guild!.id);
 
     if (!player) {
         return interaction.editReply({ content: '❌ | There is no music currently playing.', allowedMentions: { repliedUser: false } });
     }
 
-    const vol = Math.floor(interaction.options.getInteger("volume")!);
+    const vol = Math.floor(interaction.options.getInteger('volume')!);
 
     if (!vol) {
         return interaction.editReply({ content: `Current volume: **${player.volume}** 🔊\n**To change the volume, with \`1\` to \`${maxVolume}\` Type a number between.**`, allowedMentions: { repliedUser: false } });

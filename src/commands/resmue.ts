@@ -1,5 +1,5 @@
-import type { ChatInputCommandInteraction, Client, Message } from "discord.js";
-import type { Bot } from "../@types";
+import type { ChatInputCommandInteraction, Client, Message } from 'discord.js';
+import type { Bot } from '../@types/index.js';
 
 
 export const name = 'resume';
@@ -20,7 +20,7 @@ export const execute = async (_bot: Bot, client: Client, message: Message) => {
         return message.reply({ content: '❌ | There is no music currently playing.', allowedMentions: { repliedUser: false } });
     }
 
-    if(!player.paused) {
+    if (!player.paused) {
         return message.reply({ content: '❌ | The music has been resumed.', allowedMentions: { repliedUser: false } });
     }
 
@@ -35,10 +35,10 @@ export const slashExecute = async (_bot: Bot, client: Client, interaction: ChatI
         return interaction.editReply({ content: '❌ | There is no music currently playing.', allowedMentions: { repliedUser: false } });
     }
 
-    if(!player.paused) {
+    if (!player.paused) {
         return interaction.editReply({ content: '❌ | The music has been resumed.', allowedMentions: { repliedUser: false } });
     }
 
     const SUCCESS = await player.resume();
-    return SUCCESS ? interaction.editReply("▶️ | Music resumed.") : interaction.editReply('❌ | Music pause failed.');
+    return SUCCESS ? interaction.editReply('▶️ | Music resumed.') : interaction.editReply('❌ | Music pause failed.');
 };

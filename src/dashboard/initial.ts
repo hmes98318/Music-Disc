@@ -1,8 +1,8 @@
-import { ChatInputCommandInteraction, Message } from "discord.js";
-import { embeds } from "../embeds";
+import { ChatInputCommandInteraction, Message } from 'discord.js';
+import { embeds } from '../embeds/index.js';
 
-import type { Player } from "lavashark";
-import type { Bot } from "../@types";
+import type { Player } from 'lavashark';
+import type { Bot } from '../@types/index.js';
 
 
 async function initial(bot: Bot, message: Message, player: Player): Promise<void>;
@@ -17,11 +17,11 @@ async function initial(bot: Bot, interactionOrMessage: ChatInputCommandInteracti
         channel = (interactionOrMessage as ChatInputCommandInteraction).channel;
     }
     else {
-        throw new TypeError("Invalid Interaction or Message type");
+        throw new TypeError('Invalid Interaction or Message type');
     }
 
     player.dashboard = await (channel as any /* discord.js type error ? (v14.16.2) */).send({
-        embeds: [embeds.connected(bot.config.embedsColor)],
+        embeds: [embeds.connected(bot.config.bot.embedsColor)],
         components: []
     });
 }

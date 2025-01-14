@@ -1,25 +1,25 @@
 import bodyParser from 'body-parser';
-import cookie from "cookie";
+import cookie from 'cookie';
 import express from 'express';
-import undici from "undici";
+import undici from 'undici';
 import { NodeState } from 'lavashark';
 
-import { cst } from '../../utils/constants';
-import { embeds } from '../../embeds';
-import { hashGenerator } from '../hashGenerator';
-import { sysusage } from '../../utils/functions/sysusage';
-import { uptime } from '../../utils/functions/uptime';
-import { LoginType } from '../../@types';
+import { cst } from '../../utils/constants.js';
+import { embeds } from '../../embeds/index.js';
+import { hashGenerator } from '../hashGenerator.js';
+import { sysusage } from '../../utils/functions/sysusage.js';
+import { uptime } from '../../utils/functions/uptime.js';
+import { LoginTypeEnum } from '../../@types/index.js';
 
 import type { ShardingManager, VoiceChannel } from 'discord.js';
 import type { Express } from 'express';
-import type { Bot } from '../../@types';
-import type { SessionManager } from '../session-manager/SessionManager';
-import type { LocalNodeController } from '../localnode/LocalNodeController';
+import type { Bot } from '../../@types/index.js';
+import type { SessionManager } from '../session-manager/SessionManager.js';
+import type { LocalNodeController } from '../localnode/LocalNodeController.js';
 
 
 const registerExpressEvents = (bot: Bot, shardManager: ShardingManager, localNodeController: LocalNodeController, app: Express, sessionManager: SessionManager) => {
-    const siteConfig = bot.config.site;
+    const siteConfig = bot.config.webDashboard;
 
     const cssPath = `${process.cwd()}/views/css`;
     const jsPath = `${process.cwd()}/views/js`;
@@ -55,7 +55,7 @@ const registerExpressEvents = (bot: Bot, shardManager: ShardingManager, localNod
      * ---------- Site ----------
      */
 
-    if (bot.config.site.loginType === LoginType.OAUTH2) {
+    if (bot.config.webDashboard.loginType === LoginTypeEnum.OAUTH2) {
         app.get('/login', async (req, res) => {
             const userIP = (req.headers['x-real-ip'] || req.headers['x-forwarded-for'] || req.ip) as string;
 
@@ -82,10 +82,10 @@ const registerExpressEvents = (bot: Bot, shardManager: ShardingManager, localNod
                         method: 'POST',
                         body: new URLSearchParams({
                             client_id: await shardManager.fetchClientValues('user.id'),
-                            client_secret: bot.config.clientSecret,
+                            client_secret: bot.config.bot.clientSecret,
                             code,
                             grant_type: 'authorization_code',
-                            redirect_uri: bot.config.site.oauth2RedirectUri,
+                            redirect_uri: bot.config.webDashboard.oauth2.redirectUri,
                             scope: 'identify',
                         } as any).toString(),
                         headers: {
@@ -107,7 +107,7 @@ const registerExpressEvents = (bot: Bot, shardManager: ShardingManager, localNod
                         const user = await userResult.body.json() as any;
                         console.log('user info', user);
 
-                        if (bot.config.admin.includes(user.id)) {
+                        if (bot.config.bot.admin.includes(user.id)) {
                             sessionManager.ipBlocker.delete(userIP);
 
                             const sessionId = hashGenerator.generateRandomKey();
@@ -207,8 +207,8 @@ const registerExpressEvents = (bot: Bot, shardManager: ShardingManager, localNod
         const { username, password } = req.body;
 
         const admin = {
-            username: siteConfig.username,
-            password: siteConfig.password
+            username: siteConfig.user.username,
+            password: siteConfig.user.password
         };
 
 
@@ -470,7 +470,7 @@ const registerExpressEvents = (bot: Bot, shardManager: ShardingManager, localNod
                 isPaused: player.paused,
                 repeatMode: player.repeatMode,
                 volume: player.volume,
-                maxVolume: context.bot.config.maxVolume
+                maxVolume: context.bot.config.bot.volume.max
             };
         }, { context: { bot, guildID } });
 
@@ -547,7 +547,7 @@ const registerExpressEvents = (bot: Bot, shardManager: ShardingManager, localNod
     });
 
     app.get('/api/localnode/hasEnable', verifyLogin, (req, res) => {
-        res.json({ enable: bot.config.enableLocalNode });
+        res.json({ enable: bot.config.localNode.enabled });
     });
 
     app.get('/api/localnode/isActive', verifyLogin, (req, res) => {
@@ -649,7 +649,7 @@ const registerExpressEvents = (bot: Bot, shardManager: ShardingManager, localNod
     });
 
     app.post('/api/maintain/send', verifyLogin, async (req, res) => {
-        const maintainEmbed = embeds.maintainNotice(bot.config.embedsColor);
+        const maintainEmbed = embeds.maintainNotice(bot.config.bot.embedsColor);
 
         await shardManager.broadcastEval(async (client, context) => {
             client.lavashark.players.forEach(async (player) => {
@@ -664,7 +664,7 @@ const registerExpressEvents = (bot: Bot, shardManager: ShardingManager, localNod
     });
 
     app.get('/api/oauth2-link', (req, res) => {
-        res.json({ link: bot.config.site.oauth2Link });
+        res.json({ link: bot.config.webDashboard.oauth2.link });
     });
 
 
