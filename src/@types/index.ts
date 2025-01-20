@@ -9,6 +9,7 @@ import type { i18n } from 'i18next';
 import type { LavaShark } from 'lavashark';
 import type { NodeOptions } from 'lavashark/typings/src/@types/index.js';
 
+import type { Language } from '../lib/i18n/Language.js';
 import type { Logger } from '../lib/Logger.js';
 import type { IPBlockerConfig, SessionManagerConfig } from './SessionManager.types.js';
 
@@ -61,6 +62,7 @@ export type Bot = {
         lastRefresh: number | null;     // Date.now()
     },
     i18n: i18n;
+    lang: Language;
 }
 
 /**

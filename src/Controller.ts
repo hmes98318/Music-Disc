@@ -25,7 +25,8 @@ export class Controller {
                 membersCount: [-1],
                 lastRefresh: null,
             },
-            i18n: null
+            i18n: null,
+            lang: null
         } as unknown as Bot;
 
         setEnvironment(this.#bot.config);
