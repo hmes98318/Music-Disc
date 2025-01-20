@@ -30,7 +30,7 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
 
     if (interaction.isButton()) {
         if (!voiceChannel) {
-            return interaction.reply({ content: client.i18n.t('events:MESSAGE_NOT_IN_VOICE_CHANNEL'), ephemeral: true, components: [] })
+            return interaction.reply({ content: client.i18n.t('events:ERROR_NOT_IN_VOICE_CHANNEL'), ephemeral: true, components: [] })
                 .catch((error) => {
                     bot.logger.emit('error', bot.shardId, '[interactionCreate] Error reply: ' + error);
                 });

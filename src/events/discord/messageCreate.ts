@@ -30,7 +30,7 @@ export default async (bot: Bot, client: Client, message: Message) => {
 
     if (cmd.voiceChannel) {
         if (!message.member?.voice.channel)
-            return message.reply({ content: client.i18n.t('events:MESSAGE_NOT_IN_VOICE_CHANNEL'), allowedMentions: { repliedUser: false } })
+            return message.reply({ content: client.i18n.t('events:ERROR_NOT_IN_VOICE_CHANNEL'), allowedMentions: { repliedUser: false } })
                 .catch((error) => {
                     bot.logger.emit('error', bot.shardId, `[messageCreate] Error reply: (${message.author.username} : ${message.content})` + error);
                     return;
