@@ -32,7 +32,6 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
         };
     }
 
-    const curVolume = player.setting.volume ?? bot.config.bot.volume.default;
 
     try {
         // Connects to the voice channel
