@@ -13,5 +13,6 @@
     "MESSAGE_NOW_PLAYING_TITLE": "正在播放: {{title}}\n\n",
     "MESSAGE_SELECT_LOOP_MODE": "選擇歌曲循環模式。",
     "MESSAGE_SEND_PRIVATE_MESSAGE": "✅ | 我已將歌曲名稱發送至您的私人訊息中。",
-    "MESSAGE_SET_LOOP_MODE": "✅ | 循環模式設置為 `{{mode}}`"
+    "MESSAGE_SET_LOOP_MODE": "✅ | 循環模式設置為 `{{mode}}`",
+    "MESSAGE_SPECIFIC_CHANNEL_WARN": "❌ | 您無法在此頻道中執行指令。請使用 <#{{channelId}}> 文字頻道。\n"
 }

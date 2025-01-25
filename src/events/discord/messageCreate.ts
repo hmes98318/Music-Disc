@@ -11,13 +11,20 @@ export default async (bot: Bot, client: Client, message: Message) => {
     if (message.author.bot || message.channel.type !== ChannelType.GuildText) return;
     if (message.content.indexOf(prefix) !== 0) return;
 
-    console.log('message.channelId', message.channelId);
 
     const args = message.content.slice(prefix.length).trim().split(/ +/g);
     const command = String(args.shift()).toLowerCase();
     const cmd = client.commands.get(command) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(command));
 
     if (!cmd) return;
+
+    if (bot.config.bot.specifyMessageChannel && bot.config.bot.specifyMessageChannel !== message.channelId) {
+        return message.reply({ content: client.i18n.t('events:MESSAGE_SPECIFIC_CHANNEL_WARN', { channelId: bot.config.bot.specifyMessageChannel }), allowedMentions: { repliedUser: false } })
+            .catch((error) => {
+                bot.logger.emit('error', bot.shardId, `[messageCreate] Error reply: (${message.author.username} : ${message.content})` + error);
+                return;
+            });
+    }
 
     if (cmd.requireAdmin) {
         if (!bot.config.bot.admin.includes(message.author.id))

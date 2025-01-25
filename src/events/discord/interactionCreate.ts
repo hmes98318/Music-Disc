@@ -19,11 +19,12 @@ import type { Bot } from '../../@types/index.js';
 
 
 export default async (bot: Bot, client: Client, interaction: Interaction) => {
+
     if (bot.blacklist && bot.blacklist.includes(interaction.user.id)) return;
+    if (interaction.user.bot) return;
+
 
     if (!interaction.guild || !interaction.guild.members) return;
-
-    console.log('interaction.channelId', interaction.channelId);
 
     const guildMember = interaction.guild.members.cache.get(interaction.user.id);
     const voiceChannel = guildMember!.voice.channel;
@@ -360,7 +361,7 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
         }
     }
     else {
-        if (!interaction.isCommand() || !interaction.inGuild() || interaction.member.user.bot) return;
+        if (!interaction.isCommand() || !interaction.inGuild()) return;
 
         if (!bot.config.bot.slashCommand) {
             return interaction.reply({ content: client.i18n.t('events:ERROR_SLASH_NOT_ENABLE'), allowedMentions: { repliedUser: false } })
@@ -374,6 +375,14 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
         const cmd = client.commands.get(interaction.commandName);
 
         if (!cmd) return;
+
+        if (bot.config.bot.specifyMessageChannel && bot.config.bot.specifyMessageChannel !== interaction.channelId) {
+            return interaction.reply({ content: client.i18n.t('events:MESSAGE_SPECIFIC_CHANNEL_WARN', { channelId: bot.config.bot.specifyMessageChannel }), allowedMentions: { repliedUser: false } })
+                .catch((error) => {
+                    bot.logger.emit('error', bot.shardId, `[interactionCreate] Error reply: (${interaction.user.username} : /${interaction.commandName})` + error);
+                    return;
+                });
+        }
 
         if (cmd.requireAdmin) {
             if (!bot.config.bot.admin?.includes(interaction.user.id)) {

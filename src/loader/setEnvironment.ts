@@ -53,7 +53,9 @@ const setEnvironment = (defaultConfig: Config) => {
         // Show voice channel updates
         displayVoiceState: config.bot.displayVoiceState ?? defaultConfig.bot.displayVoiceState,
 
-        specifyMessageChannel: config.bot.specifyMessageChannel || defaultConfig.bot.specifyMessageChannel,
+        specifyMessageChannel: (/^\d+$/).test(String(config.bot.specifyMessageChannel))
+            ? String(config.bot.specifyMessageChannel)
+            : defaultConfig.bot.specifyMessageChannel,
 
         i18n: {
             localePath: config.bot.i18n.localePath || defaultConfig.bot.i18n.localePath,
