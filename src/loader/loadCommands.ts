@@ -23,6 +23,10 @@ const loadCommands = (bot: Bot, client: Client) => {
                 const command = await import(path.join('file://', `${__dirname}/../commands/${file}`));
                 const commandName = command.name.toLowerCase();
 
+                if (bot.config.command.disableCommand.includes(commandName)) {
+                    continue;
+                }
+
                 client.commands.set(commandName, command);
                 bot.logger.emit('log', bot.shardId, `| Loaded Command ${commandName.padEnd(15, ' ')} |`);
             } catch (error) {
@@ -31,6 +35,35 @@ const loadCommands = (bot: Bot, client: Client) => {
         }
         bot.logger.emit('log', bot.shardId, `+--------------------------------+`);
         bot.logger.emit('log', bot.shardId, `${cst.color.grey}-- loading Commands finished --${cst.color.white}`);
+
+        bot.config.command.adminCommand.forEach((commandName, index) => {
+            if (!client.commands.has(commandName)) {
+                bot.logger.emit('log', bot.shardId, `Admin command not found: ${commandName}`);
+                bot.config.command.adminCommand.splice(index, 1);
+            }
+        });
+        bot.config.command.djCommand.forEach((commandName, index) => {
+            if (!client.commands.has(commandName)) {
+                bot.logger.emit('log', bot.shardId, `DJ command not found: ${commandName}`);
+                bot.config.command.djCommand.splice(index, 1);
+            }
+        });
+
+
+        // bot.logger.emit('log', bot.shardId, `Available commands: ${(Array.from(client.commands.keys()) as string[]).join(', ')}`);
+
+        (bot.config.command.disableCommand.length > 0)
+            ? bot.logger.emit('log', bot.shardId, `Disabled commands: ${bot.config.command.disableCommand.join(', ')}`)
+            : bot.logger.emit('log', bot.shardId, `Disabled commands: NOT SET`);
+
+        (bot.config.command.adminCommand.length > 0)
+            ? bot.logger.emit('log', bot.shardId, `Admin commands: ${bot.config.command.adminCommand.join(', ')}`)
+            : bot.logger.emit('log', bot.shardId, `Admin commands: NOT SET`);
+
+        (bot.config.command.djCommand.length > 0)
+            ? bot.logger.emit('log', bot.shardId, `DJ commands: ${bot.config.command.djCommand.join(', ')}`)
+            : bot.logger.emit('log', bot.shardId, `DJ commands: NOT SET`);
+
 
         resolve();
     });

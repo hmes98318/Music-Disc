@@ -7,9 +7,8 @@ import type { Bot } from '../../@types/index.js';
 export default async (bot: Bot, client: Client, message: Message) => {
     const prefix = bot.config.bot.prefix;
 
-    if (bot.blacklist && bot.blacklist.includes(message.author.id)) return;
-    if (message.author.bot || message.channel.type !== ChannelType.GuildText) return;
     if (message.content.indexOf(prefix) !== 0) return;
+    if (message.author.bot || message.channel.type !== ChannelType.GuildText) return;
 
 
     const args = message.content.slice(prefix.length).trim().split(/ +/g);
@@ -17,6 +16,8 @@ export default async (bot: Bot, client: Client, message: Message) => {
     const cmd = client.commands.get(command) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(command));
 
     if (!cmd) return;
+
+    if (bot.blacklist && bot.blacklist.includes(message.author.id)) return;
 
     if (bot.config.bot.specifyMessageChannel && bot.config.bot.specifyMessageChannel !== message.channelId) {
         return message.reply({ content: client.i18n.t('events:MESSAGE_SPECIFIC_CHANNEL_WARN', { channelId: bot.config.bot.specifyMessageChannel }), allowedMentions: { repliedUser: false } })
@@ -26,9 +27,20 @@ export default async (bot: Bot, client: Client, message: Message) => {
             });
     }
 
-    if (cmd.requireAdmin) {
+    // Admin command
+    if (bot.config.command.adminCommand.includes(cmd.name)) {
         if (!bot.config.bot.admin.includes(message.author.id))
             return message.reply({ content: client.i18n.t('events:ERROR_REQUIRE_ADMIN'), allowedMentions: { repliedUser: false } })
+                .catch((error) => {
+                    bot.logger.emit('error', bot.shardId, `[messageCreate] Error reply: (${message.author.username} : ${message.content})` + error);
+                    return;
+                });
+    }
+
+    // DJ command
+    if (bot.config.command.djCommand.includes(cmd.name)) {
+        if (!bot.config.bot.admin.includes(message.author.id) && !bot.config.bot.dj.includes(message.author.id))
+            return message.reply({ content: client.i18n.t('events:ERROR_REQUIRE_DJ'), allowedMentions: { repliedUser: false } })
                 .catch((error) => {
                     bot.logger.emit('error', bot.shardId, `[messageCreate] Error reply: (${message.author.username} : ${message.content})` + error);
                     return;

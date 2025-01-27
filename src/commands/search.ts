@@ -24,7 +24,6 @@ export const usage = 'search <URL/song name>';
 export const voiceChannel = true;
 export const showHelp = true;
 export const sendTyping = true;
-export const requireAdmin = false;
 export const options = [
     {
         name: 'search',

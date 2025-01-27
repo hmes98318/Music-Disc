@@ -73,12 +73,14 @@ export type Config = {
     nodeList: NodeOptions[];
     webDashboard: WebDashboardConfig;
     localNode: LocalNodeConfig;
+    command: CommandConfig;
 };
 
 export type BotConfig = {
     textCommand: boolean;
     slashCommand: boolean;
     admin: string[];
+    dj: string[];
     clientSecret: string;
     name: string;
     prefix: string;
@@ -126,6 +128,12 @@ export type LocalNodeConfig = {
     enabled: boolean;
     autoRestart: boolean;
     downloadLink?: string;
+};
+
+export type CommandConfig = {
+    disableCommand: string[];
+    adminCommand: string[];
+    djCommand: string[];
 };
 
 

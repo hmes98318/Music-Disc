@@ -13,7 +13,6 @@ export const usage = 'move <index1> <index2>';
 export const voiceChannel = true;
 export const showHelp = true;
 export const sendTyping = true;
-export const requireAdmin = false;
 export const options = [
     {
         name: 'moveindex1',

@@ -21,7 +21,6 @@ export const usage = 'filter [effect name]';
 export const voiceChannel = true;
 export const showHelp = true;
 export const sendTyping = true;
-export const requireAdmin = false;
 export const options = [
     {
         name: 'filter',

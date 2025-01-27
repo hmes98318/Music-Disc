@@ -11,7 +11,6 @@ export const usage = 'loop <off/one/all>';
 export const voiceChannel = true;
 export const showHelp = true;
 export const sendTyping = true;
-export const requireAdmin = false;
 export const options = [
     {
         name: 'mode',

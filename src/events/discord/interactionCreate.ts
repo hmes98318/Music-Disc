@@ -384,14 +384,24 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
                 });
         }
 
-        if (cmd.requireAdmin) {
-            if (!bot.config.bot.admin?.includes(interaction.user.id)) {
+        // Admin command
+        if (bot.config.command.adminCommand.includes(cmd.name)) {
+            if (!bot.config.bot.admin.includes(interaction.user.id))
                 return interaction.reply({ content: client.i18n.t('events:ERROR_REQUIRE_ADMIN'), allowedMentions: { repliedUser: false } })
                     .catch((error) => {
                         bot.logger.emit('error', bot.shardId, `[interactionCreate] Error reply: (${interaction.user.username} : /${interaction.commandName})` + error);
                         return;
                     });
-            }
+        }
+
+        // DJ command
+        if (bot.config.command.djCommand.includes(cmd.name)) {
+            if (!bot.config.bot.admin.includes(interaction.user.id) && !bot.config.bot.dj.includes(interaction.user.id))
+                return interaction.reply({ content: client.i18n.t('events:ERROR_REQUIRE_DJ'), allowedMentions: { repliedUser: false } })
+                    .catch((error) => {
+                        bot.logger.emit('error', bot.shardId, `[interactionCreate] Error reply: (${interaction.user.username} : /${interaction.commandName})` + error);
+                        return;
+                    });
         }
 
         if (cmd.voiceChannel) {

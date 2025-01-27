@@ -4,6 +4,7 @@
     "ERROR_NOT_IN_VOICE_CHANNEL": "❌ | You are not connected to an audio channel.",
     "ERROR_NOT_PLAYING": "❌ | There is no music currently playing.",
     "ERROR_REQUIRE_ADMIN": "❌ | This command requires administrator privileges.",
+    "ERROR_REQUIRE_DJ": "❌ | This command requires DJ privileges.",
     "ERROR_SEND_PRIVATE_MESSAGE": "❌ | I can't send you a private message.",
     "ERROR_SLASH_NOT_ENABLE": "❌ | The slash command is not enabled.",
     "ERROR_TIME_EXPIRED": "❌ | Time expired.",

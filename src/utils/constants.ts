@@ -13,7 +13,9 @@ export const cst = {
             slashCommand            : true,                 // Whether to enable slash command
     
             // OAUTH2 mode requires setting 'admin', 'clientSecret' value
-            admin                   : [],                   // It must be the user ID (string[])
+            admin                   : [],                   // Admin users, It must be the user ID (string[])
+            dj                      : [],                   // DJ users, It must be the user ID (string[])
+
             clientSecret            : '',
     
             name                    : 'Music Disc',
@@ -95,6 +97,13 @@ export const cst = {
             enabled             : false,
             autoRestart         : true,
             downloadLink        : 'https://github.com/lavalink-devs/Lavalink/releases/download/4.0.8/Lavalink.jar'
+        },
+
+        // Command permission settings
+        command: {
+            disableCommand      : [],                                   // Disabled commands, all enabled by default
+            adminCommand        : ['language','server', 'status'],      // Admin commands, only Admin role user can use
+            djCommand           : []                                    // DJ commands, only DJ role user can use
         }
     },
     blacklist               : [],           // It must be the user ID (string[])

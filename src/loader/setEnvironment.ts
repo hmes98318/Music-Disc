@@ -14,6 +14,11 @@ const setEnvironment = (defaultConfig: Config) => {
         admin: (Array.isArray(config.bot.admin) && config.bot.admin.length > 0)
             ? config.bot.admin
             : defaultConfig.bot.admin,
+        // DJ of the bot (user_id[])
+        dj: (Array.isArray(config.bot.dj) && config.bot.dj.length > 0)
+            ? config.bot.dj
+            : defaultConfig.bot.dj,
+
         clientSecret: config.bot.clientSecret || defaultConfig.bot.clientSecret,
 
         // Bot settings
@@ -103,6 +108,18 @@ const setEnvironment = (defaultConfig: Config) => {
         enabled: config.localNode.enabled ?? defaultConfig.localNode.enabled,
         autoRestart: config.localNode.autoRestart ?? defaultConfig.localNode.autoRestart,
         downloadLink: config.localNode.downloadLink || defaultConfig.localNode.downloadLink
+    };
+
+    defaultConfig.command = {
+        disableCommand: (Array.isArray(config.command.disableCommand) && config.command.disableCommand.length > 0)
+            ? config.command.disableCommand
+            : defaultConfig.command.disableCommand,
+        adminCommand: (Array.isArray(config.command.adminCommand) && config.command.adminCommand.length > 0)
+            ? config.command.adminCommand
+            : defaultConfig.command.adminCommand,
+        djCommand: (Array.isArray(config.command.djCommand) && config.command.djCommand.length > 0)
+            ? config.command.djCommand
+            : defaultConfig.command.djCommand,
     };
 };
 
