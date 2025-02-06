@@ -20,7 +20,8 @@ const loadCommands = (bot: Bot, client: Client) => {
         bot.logger.emit('log', bot.shardId, `+--------------------------------+`);
         for (const file of files) {
             try {
-                const command = await import(path.join('file://', `${__dirname}/../commands/${file}`));
+                const filePath = 'file://' + path.resolve(`${__dirname}/../commands/${file}`);
+                const command = await import(filePath);
                 const commandName = command.name.toLowerCase();
 
                 if (bot.config.command.disableCommand.includes(commandName)) {

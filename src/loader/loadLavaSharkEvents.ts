@@ -21,7 +21,8 @@ const loadLavaSharkEvents = (bot: Bot, client: Client) => {
         bot.logger.emit('log', bot.shardId, `+--------------------------------+`);
         for (const file of files) {
             try {
-                const eventModule = await import(path.join('file://', `${__dirname}/../events/lavashark/${file}`));
+                const filePath = 'file://' + path.resolve(`${__dirname}/../events/lavashark/${file}`);
+                const eventModule = await import(filePath);
                 const event = eventModule.default;
                 const eventName = file.split('.')[0] as keyof LavaSharkEvents;
 
