@@ -1,0 +1,19 @@
+{
+    "ERROR_GET_GUILD_DATA_CACHE": "❌ | 서버 데이터를 캐시에서 가져올 수 없습니다.",
+    "ERROR_NOT_IN_SAME_VOICE_CHANNEL": "❌ | 봇과 같은 음성 채널에 있지 않습니다.",
+    "ERROR_NOT_IN_VOICE_CHANNEL": "❌ | 음성 채널에 연결되어 있지 않습니다.",
+    "ERROR_NOT_PLAYING": "❌ | 현재 재생 중인 음악이 없습니다.",
+    "ERROR_REQUIRE_ADMIN": "❌ | 해당 명령어는 관리자 권한이 필요합니다.",
+    "ERROR_REQUIRE_DJ": "❌ | 이 명령을 사용하려면 DJ 권한이 필요합니다.",
+    "ERROR_SEND_PRIVATE_MESSAGE": "❌ | DM을 보낼 수 없습니다.",
+    "ERROR_SLASH_NOT_ENABLE": "❌ | 슬래시 명령이 활성화되어 있지 않습니다.",
+    "ERROR_TIME_EXPIRED": "❌ | 시간이 초과되었습니다.",
+    "MESSAGE_BOT_LEAVE_CHANNEL": "✅ | 봇이 떠났습니다.",
+    "MESSAGE_MUSIC_SHUFFLE": "✅ | 음악을 랜덤으로 재생합니다.",
+    "MESSAGE_NOW_PLAYING_SUBTITLE": "**아티스트:** {{author}}\n**길이:** {{label}}\n",
+    "MESSAGE_NOW_PLAYING_TITLE": "**재생중:** {{title}}\n\n",
+    "MESSAGE_SELECT_LOOP_MODE": "반복 모드를 입력 혹은 선택하세요.",
+    "MESSAGE_SEND_PRIVATE_MESSAGE": "✅ | DM으로 음악 제목을 보냈습니다.",
+    "MESSAGE_SET_LOOP_MODE": "✅ | `{{mode}}`(으)로 설정되었습니다.",
+    "MESSAGE_SPECIFIC_CHANNEL_WARN": "❌ | 이 채널에서는 명령을 실행할 수 없습니다. <#{{channelId}}> 채널을 사용하세요."
+}
