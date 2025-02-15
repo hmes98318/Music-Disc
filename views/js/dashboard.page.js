@@ -21,7 +21,6 @@ const getBotInfo = async () => {
         document.getElementById("info_shark_version").textContent = data.shark_version;
         document.getElementById("info_cpu").textContent = data.cpu;
         document.getElementById("stat_server").textContent = data.serverCount;
-        document.getElementById("stat_total_members").textContent = data.totalMembers;
     } catch (error) {
         console.error("Error fetching bot info:", error);
     }

@@ -274,7 +274,6 @@ const registerExpressEvents = (bot: Bot, shardManager: ShardingManager, localNod
 
 
                 bot.stats.guildsCount = results.map((shard) => shard.serverCount) || bot.stats.guildsCount;
-                bot.stats.membersCount = results.map((shard) => shard.totalMembers) || bot.stats.membersCount;
                 bot.stats.lastRefresh = Date.now();
 
             } catch (error) {
@@ -284,12 +283,10 @@ const registerExpressEvents = (bot: Bot, shardManager: ShardingManager, localNod
 
 
         const totalServerCount = bot.stats.guildsCount.reduce((acc, guilds) => acc + guilds, 0);
-        const totalMemberCount = bot.stats.membersCount.reduce((acc, members) => acc + members, 0);
 
         const info = {
             ...bot.sysInfo,
             serverCount: `${totalServerCount} ${JSON.stringify(bot.stats.guildsCount)}`,
-            totalMembers: `${totalMemberCount} ${JSON.stringify(bot.stats.membersCount)}`
         };
 
         res.json(info);

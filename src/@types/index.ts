@@ -58,7 +58,6 @@ export type Bot = {
     sysInfo: SystemInfo;
     stats: {
         guildsCount: number[];
-        membersCount: number[];
         lastRefresh: number | null;     // Date.now()
     },
     i18n: i18n;
@@ -166,7 +165,6 @@ export type SystemStatus = {
         api: number;
     };
     serverCount: number;
-    totalMembers: number;
     playing: number;
 }
 

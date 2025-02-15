@@ -28,7 +28,7 @@
     "REMOVE_LIST_TITLE": "제거된 목록",
     "REMOVE_TRACK_TITLE": "제거된 목록",
     "SERVER_TITLE": "{{name}}이(가) 가입된 서버",
-    "STATUS_DESCRIPTION": "• **서비스 중인 서버:** {{serverCount}}개\n• **총:** {{totalMembers}}명\n• **재생중인 서버:** {{playingCount}}개\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
+    "STATUS_DESCRIPTION": "• **서비스 중인 서버:** {{serverCount}}개\n• **재생중인 서버:** {{playingCount}}개\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
     "STATUS_LATENCY_TITLE": "🛰️ 지연시간",
     "STATUS_LATENCY_VALUE": "**봇:** {{botPing}}\n**API:** {{apiPing}}ms",
     "STATUS_SYSTEM_TITLE": "⚙️ 시스템",

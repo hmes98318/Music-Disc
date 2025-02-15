@@ -61,7 +61,6 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
 
 
             bot.stats.guildsCount = results.map((shard) => shard.serverCount) || bot.stats.guildsCount;
-            bot.stats.membersCount = results.map((shard) => shard.totalMembers) || bot.stats.membersCount;
             bot.stats.lastRefresh = Date.now();
 
         } catch (error) {
@@ -71,7 +70,6 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
 
 
     const totalServerCount = bot.stats.guildsCount.reduce((acc, guilds) => acc + guilds, 0);
-    const totalMemberCount = bot.stats.membersCount.reduce((acc, members) => acc + members, 0);
     const totalPlaying = results.reduce((acc, shard) => acc + shard.playing, 0);
 
     const systemStatus: SystemStatus = {
@@ -84,7 +82,6 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
             api: client.ws.ping
         },
         serverCount: totalServerCount,
-        totalMembers: totalMemberCount,
         playing: totalPlaying
     };
 
@@ -144,7 +141,6 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
 
 
             bot.stats.guildsCount = results.map((shard) => shard.serverCount) || bot.stats.guildsCount;
-            bot.stats.membersCount = results.map((shard) => shard.totalMembers) || bot.stats.membersCount;
             bot.stats.lastRefresh = Date.now();
 
         } catch (error) {
@@ -154,7 +150,6 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
 
 
     const totalServerCount = bot.stats.guildsCount.reduce((acc, guilds) => acc + guilds, 0);
-    const totalMemberCount = bot.stats.membersCount.reduce((acc, members) => acc + members, 0);
     const totalPlaying = results.reduce((acc, shard) => acc + shard.playing, 0);
 
     const systemStatus: SystemStatus = {
@@ -167,7 +162,6 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
             api: client.ws.ping
         },
         serverCount: totalServerCount,
-        totalMembers: totalMemberCount,
         playing: totalPlaying
     };
 

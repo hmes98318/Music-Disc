@@ -28,7 +28,7 @@
     "REMOVE_LIST_TITLE": "移除清單",
     "REMOVE_TRACK_TITLE": "已移除音樂",
     "SERVER_TITLE": "包含 **{{name}}** 的伺服器",
-    "STATUS_DESCRIPTION": "**• 服務於 {{serverCount}} 個伺服器**\n**• 總共 {{totalMembers}} 位成員**\n**• 正在 {{playingCount}} 個伺服器上播放**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
+    "STATUS_DESCRIPTION": "**• 服務於 {{serverCount}} 個伺服器**\n**• 正在 {{playingCount}} 個伺服器上播放**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
     "STATUS_LATENCY_TITLE": "🛰️ 延遲",
     "STATUS_LATENCY_VALUE": "機器人 : **{{botPing}}**\nAPI : **{{apiPing}} 毫秒**",
     "STATUS_SYSTEM_TITLE": "⚙️ 系統",

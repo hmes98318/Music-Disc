@@ -15,7 +15,7 @@ const botStatus = (bot: Bot, systemStatus: SystemStatus) => {
         .setColor(bot.config.bot.embedsColor as HexColorString | number)
         .setTitle(`${bot.config.bot.name} ${bot.sysInfo.bot_version}`)
         .setURL('https://github.com/hmes98318/Music-Disc')
-        .setDescription(bot.i18n.t('embeds:STATUS_DESCRIPTION', { serverCount: systemStatus.serverCount, totalMembers: systemStatus.totalMembers, playingCount: systemStatus.playing }))
+        .setDescription(bot.i18n.t('embeds:STATUS_DESCRIPTION', { serverCount: systemStatus.serverCount, playingCount: systemStatus.playing }))
         .addFields(
             { name: bot.i18n.t('embeds:STATUS_SYSTEM_TITLE'), value: bot.i18n.t('embeds:STATUS_SYSTEM_VALUE', { os_version: bot.sysInfo.os_version, node_version: bot.sysInfo.node_version, dc_version: bot.sysInfo.dc_version, shark_version: bot.sysInfo.shark_version, cpu: bot.sysInfo.cpu, uptime: systemStatus.uptime }), inline: false },
             { name: bot.i18n.t('embeds:STATUS_USAGE_TITLE'), value: bot.i18n.t('embeds:STATUS_USAGE_VALUE', { cpuUsage: cpuUsage, ramUsage: ramUsage, heapUsage: heapUsage }), inline: false },
