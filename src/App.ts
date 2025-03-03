@@ -1,5 +1,3 @@
-import fs from 'fs';
-
 import { Client, Collection, GatewayIntentBits } from 'discord.js';
 import { LavaShark } from 'lavashark';
 
@@ -8,6 +6,7 @@ import {
     loadBlacklist,
     loadCommands,
     loadDiscordEvents,
+    loadI18Next,
     loadLavaSharkEvents,
     setEnvironment
 } from './loader/index.js';
@@ -42,7 +41,7 @@ class App {
                 membersCount: [-1],
                 lastRefresh: null,
             }
-        };
+        } as any;
 
         setEnvironment(this.bot.config);
         this.bot.logger.emit('log', this.bot.shardId, 'Set environment variables.');
@@ -59,6 +58,7 @@ class App {
 
     public async init() {
         return Promise.resolve()
+            .then(() => loadI18Next(this.bot, this.#client))
             .then(() => loadDiscordEvents(this.bot, this.#client))
             .then(() => loadLavaSharkEvents(this.bot, this.#client))
             .then(() => loadCommands(this.bot, this.#client))

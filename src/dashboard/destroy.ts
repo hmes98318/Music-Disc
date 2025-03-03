@@ -4,10 +4,10 @@ import type { Player } from 'lavashark';
 import type { Bot } from '../@types/index.js';
 
 
-async function destroy(bot: Bot, player: Player, embedsColor: string | number) {
+async function destroy(bot: Bot, player: Player) {
     try {
         await player.dashboard!.edit({
-            embeds: [embeds.disconnect(embedsColor)],
+            embeds: [embeds.disconnect(bot)],
             components: []
         });
     } catch (error) {

@@ -21,7 +21,6 @@ export const usage = 'filter [effect name]';
 export const voiceChannel = true;
 export const showHelp = true;
 export const sendTyping = true;
-export const requireAdmin = false;
 export const options = [
     {
         name: 'filter',
@@ -45,14 +44,14 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
     const player = client.lavashark.getPlayer(message.guild!.id);
 
     if (!player) {
-        return message.reply({ content: '❌ | There is no music currently playing.', allowedMentions: { repliedUser: false } });
+        return message.reply({ content: client.i18n.t('commands:ERROR_NO_PLAYING'), allowedMentions: { repliedUser: false } });
     }
 
 
     if (!args[0]) {
         const select = new StringSelectMenuBuilder()
             .setCustomId('filterSelect')
-            .setPlaceholder('Select filter mode')
+            .setPlaceholder(client.i18n.t('commands:MESSAGE_FILTER_SELECT_MODE'))
             .setOptions([
                 ...(Object.keys(filtersConfig).map((effectName) => {
                     return {
@@ -65,7 +64,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
 
         const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(select);
         const msg = await message.reply({
-            content: 'Select the music filter mode you want to set. ⬇️',
+            content: client.i18n.t('commands:MESSAGE_FILTER_SELECT_LIST'),
             components: [row.toJSON()],
             allowedMentions: { repliedUser: false }
         });
@@ -86,7 +85,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
             else {
                 if (!Object.keys(filtersConfig).includes(effectName)) {
                     return message.reply({
-                        content: '❌ | The effect name not found.',
+                        content: client.i18n.t('commands:MESSAGE_FILTER_NOT_FOUND'),
                         embeds: [],
                         allowedMentions: { repliedUser: false }
                     });
@@ -101,7 +100,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
             i.deferUpdate();
             await msg.edit({
                 content: '',
-                embeds: [embeds.filterMsg(bot.config.bot.embedsColor, effectName)],
+                embeds: [embeds.filterMsg(bot, effectName)],
                 components: [],
                 allowedMentions: { repliedUser: false }
             })
@@ -113,7 +112,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
         collector.on('end', async (collected: Collection<string, ButtonInteraction>, reason: string) => {
             if (reason === 'time' && collected.size === 0) {
                 await msg.edit({
-                    content: '❌ | Time expired.',
+                    content: client.i18n.t('commands:ERROR_TIME_EXPIRED'),
                     components: [],
                     allowedMentions: { repliedUser: false }
                 })
@@ -128,7 +127,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
             player.filters.clear();
         }
         else if (!Object.keys(filtersConfig).includes(effectName)) {
-            return message.reply({ content: '❌ | The effect name not found.', allowedMentions: { repliedUser: false } });
+            return message.reply({ content: client.i18n.t('commands:MESSAGE_FILTER_NOT_FOUND'), allowedMentions: { repliedUser: false } });
         }
 
 
@@ -142,7 +141,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
     const player = client.lavashark.getPlayer(interaction.guild!.id);
 
     if (!player) {
-        return interaction.editReply({ content: '❌ | There is no music currently playing.', allowedMentions: { repliedUser: false } });
+        return interaction.editReply({ content: client.i18n.t('commands:ERROR_NO_PLAYING'), allowedMentions: { repliedUser: false } });
     }
 
 
@@ -158,7 +157,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
 
     return interaction.editReply({
         content: '',
-        embeds: [embeds.filterMsg(bot.config.bot.embedsColor, effectName ?? 'unknown')],
+        embeds: [embeds.filterMsg(bot, effectName ?? 'unknown')],
         components: [],
         allowedMentions: { repliedUser: false }
     })

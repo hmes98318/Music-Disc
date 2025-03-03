@@ -11,7 +11,6 @@ export const usage = 'server';
 export const voiceChannel = false;
 export const showHelp = true;
 export const sendTyping = false;
-export const requireAdmin = true;
 export const options = [];
 
 
@@ -21,7 +20,7 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
         .join('\n\n');
 
     return message.reply({
-        embeds: [embeds.server(bot.config, serverlist)],
+        embeds: [embeds.server(bot, serverlist)],
         allowedMentions: { repliedUser: false }
     });
 };
@@ -32,7 +31,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
         .join('\n\n');
 
     return interaction.editReply({
-        embeds: [embeds.server(bot.config, serverlist)],
+        embeds: [embeds.server(bot, serverlist)],
         allowedMentions: { repliedUser: false }
     });
 };

@@ -11,7 +11,6 @@ export const usage = 'v <0-100>';
 export const voiceChannel = true;
 export const showHelp = true;
 export const sendTyping = true;
-export const requireAdmin = false;
 export const options = [
     {
         name: 'volume',
@@ -28,20 +27,20 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
     const player = client.lavashark.getPlayer(message.guild!.id);
 
     if (!player) {
-        return message.reply({ content: '❌ | There is no music currently playing.', allowedMentions: { repliedUser: false } });
+        return message.reply({ content: client.i18n.t('commands:ERROR_NO_PLAYING'), allowedMentions: { repliedUser: false } });
     }
 
     await message.react('👍');
     const vol = parseInt(args[0], 10);
 
     if (!vol) {
-        return message.reply({ content: `Current volume: **${player.volume}** 🔊\n**To change the volume, with \`1\` to \`${maxVolume}\` Type a number between.**`, allowedMentions: { repliedUser: false } });
+        return message.reply({ content: client.i18n.t('commands:MESSAGE_VOLUME_ARGS_ERROR', { volume: player.volume, maxVolume: maxVolume }), allowedMentions: { repliedUser: false } });
     }
     if (player.volume === vol) {
-        return message.reply({ content: `❌ | The volume you want to change is already the current volume.`, allowedMentions: { repliedUser: false } });
+        return message.reply({ content: client.i18n.t('commands:MESSAGE_VOLUME_SAME'), allowedMentions: { repliedUser: false } });
     }
     if (vol < 0 || vol > maxVolume) {
-        return message.reply({ content: `❌ | **Type a number from \`1\` to \`${maxVolume}\` to change the volume .**`, allowedMentions: { repliedUser: false } });
+        return message.reply({ content: client.i18n.t('commands:MESSAGE_VOLUME_ARGS_ERROR_2', { maxVolume: maxVolume }), allowedMentions: { repliedUser: false } });
     }
 
 
@@ -50,7 +49,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
 
     await dashboard.update(bot, player, player.current!);
 
-    return message.reply({ content: `🔊 **${vol}**/**${maxVolume}**%`, allowedMentions: { repliedUser: false } });
+    return message.reply({ content: client.i18n.t('commands:MESSAGE_VOLUME_SUCCESS', { volume: vol, maxVolume: maxVolume }), allowedMentions: { repliedUser: false } });
 };
 
 export const slashExecute = async (bot: Bot, client: Client, interaction: ChatInputCommandInteraction) => {
@@ -59,19 +58,19 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
     const player = client.lavashark.getPlayer(interaction.guild!.id);
 
     if (!player) {
-        return interaction.editReply({ content: '❌ | There is no music currently playing.', allowedMentions: { repliedUser: false } });
+        return interaction.editReply({ content: client.i18n.t('commands:ERROR_NO_PLAYING'), allowedMentions: { repliedUser: false } });
     }
 
     const vol = Math.floor(interaction.options.getInteger('volume')!);
 
     if (!vol) {
-        return interaction.editReply({ content: `Current volume: **${player.volume}** 🔊\n**To change the volume, with \`1\` to \`${maxVolume}\` Type a number between.**`, allowedMentions: { repliedUser: false } });
+        return interaction.editReply({ content: client.i18n.t('commands:MESSAGE_VOLUME_ARGS_ERROR', { volume: player.volume, maxVolume: maxVolume }), allowedMentions: { repliedUser: false } });
     }
     if (player.volume === vol) {
-        return interaction.editReply({ content: `❌ | The volume you want to change is already the current volume.`, allowedMentions: { repliedUser: false } });
+        return interaction.editReply({ content: client.i18n.t('commands:MESSAGE_VOLUME_SAME'), allowedMentions: { repliedUser: false } });
     }
     if (vol < 0 || vol > maxVolume) {
-        return interaction.editReply({ content: `❌ | **Type a number from \`1\` to \`${maxVolume}\` to change the volume .**`, allowedMentions: { repliedUser: false } });
+        return interaction.editReply({ content: client.i18n.t('commands:MESSAGE_VOLUME_ARGS_ERROR_2', { maxVolume: maxVolume }), allowedMentions: { repliedUser: false } });
     }
 
 
@@ -80,5 +79,5 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
 
     await dashboard.update(bot, player, player.current!);
 
-    return interaction.editReply({ content: `🔊 **${vol}**/**${maxVolume}**%`, allowedMentions: { repliedUser: false } });
+    return interaction.editReply({ content: client.i18n.t('commands:MESSAGE_VOLUME_SUCCESS', { volume: vol, maxVolume: maxVolume }), allowedMentions: { repliedUser: false } });
 };

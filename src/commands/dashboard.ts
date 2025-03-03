@@ -11,7 +11,6 @@ export const usage = 'dashboard';
 export const voiceChannel = true;
 export const showHelp = true;
 export const sendTyping = false;
-export const requireAdmin = false;
 export const options = [];
 
 
@@ -19,7 +18,7 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
     const player = client.lavashark.getPlayer(message.guild!.id);
 
     if (!player || !player.dashboard) {
-        return message.reply({ content: '❌ | There is no music currently playing.', allowedMentions: { repliedUser: false } });
+        return message.reply({ content: client.i18n.t('commands:ERROR_NO_PLAYING'), allowedMentions: { repliedUser: false } });
     }
 
     try {
@@ -37,7 +36,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
     const player = client.lavashark.getPlayer(interaction.guild!.id);
 
     if (!player || !player.dashboard) {
-        return interaction.editReply({ content: '❌ | There is no music currently playing.', allowedMentions: { repliedUser: false } });
+        return interaction.editReply({ content: client.i18n.t('commands:ERROR_NO_PLAYING'), allowedMentions: { repliedUser: false } });
     }
 
     try {
@@ -48,5 +47,5 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
 
     await dashboard.initial(bot, interaction, player);
     await dashboard.update(bot, player, player.current!);
-    return interaction.editReply('✅ | Dashboard updated.');
+    return interaction.editReply(client.i18n.t('commands:MESSAGE_DASHBOARD_SUCCESS'));
 };

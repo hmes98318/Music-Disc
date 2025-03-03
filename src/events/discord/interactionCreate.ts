@@ -19,23 +19,25 @@ import type { Bot } from '../../@types/index.js';
 
 
 export default async (bot: Bot, client: Client, interaction: Interaction) => {
+
     if (bot.blacklist && bot.blacklist.includes(interaction.user.id)) return;
+    if (interaction.user.bot) return;
+
 
     if (!interaction.guild || !interaction.guild.members) return;
-
 
     const guildMember = interaction.guild.members.cache.get(interaction.user.id);
     const voiceChannel = guildMember!.voice.channel;
 
     if (interaction.isButton()) {
         if (!voiceChannel) {
-            return interaction.reply({ content: `❌ | You are not connected to an audio channel.`, ephemeral: true, components: [] })
+            return interaction.reply({ content: client.i18n.t('events:ERROR_NOT_IN_VOICE_CHANNEL'), ephemeral: true, components: [] })
                 .catch((error) => {
                     bot.logger.emit('error', bot.shardId, '[interactionCreate] Error reply: ' + error);
                 });
         }
         if (interaction.guild?.members.me?.voice.channel && voiceChannel.id !== interaction.guild.members.me.voice.channelId) {
-            return interaction.reply({ content: `❌ | You are not on the same audio channel as me.`, ephemeral: true, components: [] })
+            return interaction.reply({ content: client.i18n.t('events:ERROR_NOT_IN_SAME_VOICE_CHANNEL'), ephemeral: true, components: [] })
                 .catch((error) => {
                     bot.logger.emit('error', bot.shardId, '[interactionCreate] Error reply: ' + error);
                 });
@@ -45,7 +47,7 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
         const player = client.lavashark.getPlayer(interaction.guild!.id);
 
         if (!player) {
-            return interaction.reply({ content: '❌ | There is no music currently playing.', allowedMentions: { repliedUser: false } })
+            return interaction.reply({ content: client.i18n.t('events:ERROR_NOT_PLAYING'), allowedMentions: { repliedUser: false } })
                 .catch((error) => {
                     bot.logger.emit('error', bot.shardId, '[interactionCreate] Error reply: ' + error);
                 });
@@ -114,11 +116,11 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
                         }));
 
                     const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(select);
-                    const msg = await interaction.reply({ content: `Select a song loop mode.`, ephemeral: true, components: [row] });
+                    const msg = await interaction.reply({ content: client.i18n.t('events:MESSAGE_SELECT_LOOP_MODE'), ephemeral: true, components: [row] });
 
                     const collector = (interaction.channel as any /* discord.js type error ? (v14.16.2) */).createMessageComponentCollector({
                         time: 20000, // 20s
-                        filter: (i:any) => i.user.id === interaction.user.id
+                        filter: (i: any) => i.user.id === interaction.user.id
                     });
 
                     collector.on('collect', async (i: StringSelectMenuInteraction) => {
@@ -146,12 +148,12 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
 
                         await i.deferUpdate();
                         interaction.ephemeral = true;
-                        await interaction.editReply({ content: `✅ | Set loop to \`${methods[mode]}\`.`, components: [] });
+                        await interaction.editReply({ content: client.i18n.t('events:MESSAGE_SET_LOOP_MODE', { mode: methods[mode].toUpperCase() }), components: [] });
                     });
 
                     collector.on('end', async (collected: Collection<string, ButtonInteraction>, reason: string) => {
                         if (reason === 'time' && collected.size === 0) {
-                            await msg.edit({ content: '❌ | Time expired.', components: [], allowedMentions: { repliedUser: false } });
+                            await msg.edit({ content: client.i18n.t('events:ERROR_TIME_EXPIRED'), components: [], allowedMentions: { repliedUser: false } });
                         }
                     });
                     break;
@@ -164,31 +166,31 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
                     else {
                         player.queue.clear();
                         await player.skip();
-                        await dashboard.destroy(bot, player, bot.config.bot.embedsColor);
+                        await dashboard.destroy(bot, player);
                     }
 
-                    await interaction.reply({ content: '✅ | Bot leave.', ephemeral: true, components: [] });
+                    await interaction.reply({ content: client.i18n.t('events:MESSAGE_BOT_LEAVE_CHANNEL'), ephemeral: true, components: [] });
                     break;
                 }
 
                 case 'Dashboard-Shuffle': {
                     player.queue.shuffle();
 
-                    await interaction.reply({ content: '✅ | Music shuffled.', ephemeral: true, components: [] });
+                    await interaction.reply({ content: client.i18n.t('events:MESSAGE_MUSIC_SHUFFLE'), ephemeral: true, components: [] });
                     break;
                 }
 
                 case 'musicSave': {
                     const track = player.current;
-                    const subtitle = `Author : **${track?.author}**\nDuration **${track?.duration.label}**\n`;
+                    const subtitle = client.i18n.t('events:MESSAGE_NOW_PLAYING_SUBTITLE', { author: track?.author, label: track?.duration.label });
 
-                    guildMember?.send({ embeds: [embeds.save(bot.config.bot.embedsColor, track!.title, subtitle, track!.uri, track!.thumbnail!)] })
+                    guildMember?.send({ embeds: [embeds.save(bot, track!.title, subtitle, track!.uri, track!.thumbnail!)] })
                         .then(() => {
-                            return interaction.reply({ content: `✅ | I sent you the name of the music in a private message.`, ephemeral: true, components: [] });
+                            return interaction.reply({ content: client.i18n.t('events:MESSAGE_SEND_PRIVATE_MESSAGE'), ephemeral: true, components: [] });
                         })
                         .catch((error) => {
                             bot.logger.emit('error', bot.shardId, 'Error musicSave:' + error);
-                            return interaction.reply({ content: `❌ | I can't send you a private message.`, ephemeral: true, components: [] });
+                            return interaction.reply({ content: client.i18n.t('events:ERROR_SEND_PRIVATE_MESSAGE'), ephemeral: true, components: [] });
                         });
 
                     break;
@@ -208,7 +210,7 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
                     const startIdx = (page - 1) * 10;
                     const endIdx = page * 10;
 
-                    const nowplaying = `Now Playing: ${player.current?.title}\n\n`;
+                    const nowplaying = client.i18n.t('events:MESSAGE_NOW_PLAYING_TITLE', { title: player.current?.title });
                     let tracksQueue = '';
                     const tracks = player.queue.tracks.slice(startIdx, endIdx)
                         .map((track, index) => {
@@ -236,7 +238,7 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
                     const row = new ActionRowBuilder<ButtonBuilder>().addComponents(prevButton, nextButton, delButton, clsButton);
 
                     await player.setting.queuePage.msg?.edit({
-                        embeds: [embeds.queue(bot.config.bot.embedsColor, nowplaying, tracksQueue, methods[repeatMode])],
+                        embeds: [embeds.queue(bot, nowplaying, tracksQueue, methods[repeatMode])],
                         components: [row],
                         allowedMentions: { repliedUser: false },
                     });
@@ -259,7 +261,7 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
                     const startIdx = (page - 1) * 10;
                     const endIdx = page * 10;
 
-                    const nowplaying = `Now Playing: ${player.current?.title}\n\n`;
+                    const nowplaying = client.i18n.t('events:MESSAGE_NOW_PLAYING_TITLE', { title: player.current?.title });
                     let tracksQueue = '';
                     const tracks = player.queue.tracks.slice(startIdx, endIdx)
                         .map((track, index) => {
@@ -287,7 +289,7 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
                     const row = new ActionRowBuilder<ButtonBuilder>().addComponents(prevButton, nextButton, delButton, clsButton);
 
                     await player.setting.queuePage.msg?.edit({
-                        embeds: [embeds.queue(bot.config.bot.embedsColor, nowplaying, tracksQueue, methods[repeatMode])],
+                        embeds: [embeds.queue(bot, nowplaying, tracksQueue, methods[repeatMode])],
                         components: [row],
                         allowedMentions: { repliedUser: false },
                     });
@@ -319,7 +321,7 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
                     const startIdx = (page - 1) * 10;
                     const endIdx = page * 10;
 
-                    const nowplaying = `Now Playing: ${player.current?.title}\n\n`;
+                    const nowplaying = client.i18n.t('events:MESSAGE_NOW_PLAYING_TITLE', { title: player.current?.title });
                     let tracksQueue = '';
                     const tracks = player.queue.tracks.slice(startIdx, endIdx)
                         .map((track, index) => {
@@ -344,7 +346,7 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
                     const row = new ActionRowBuilder<ButtonBuilder>().addComponents(delButton);
 
                     await player.setting.queuePage.msg?.edit({
-                        embeds: [embeds.queue(bot.config.bot.embedsColor, nowplaying, tracksQueue, methods[repeatMode])],
+                        embeds: [embeds.queue(bot, nowplaying, tracksQueue, methods[repeatMode])],
                         components: [row],
                         allowedMentions: { repliedUser: false },
                     });
@@ -359,10 +361,10 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
         }
     }
     else {
-        if (!interaction.isCommand() || !interaction.inGuild() || interaction.member.user.bot) return;
+        if (!interaction.isCommand() || !interaction.inGuild()) return;
 
         if (!bot.config.bot.slashCommand) {
-            return interaction.reply({ content: `❌ | The slash command is not enabled.`, allowedMentions: { repliedUser: false } })
+            return interaction.reply({ content: client.i18n.t('events:ERROR_SLASH_NOT_ENABLE'), allowedMentions: { repliedUser: false } })
                 .catch((error) => {
                     bot.logger.emit('error', bot.shardId, `[interactionCreate] Error reply: (${interaction.user.username} : /${interaction.commandName})` + error);
                     return;
@@ -374,19 +376,37 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
 
         if (!cmd) return;
 
-        if (cmd.requireAdmin) {
-            if (!bot.config.bot.admin?.includes(interaction.user.id)) {
-                return interaction.reply({ content: `❌ | This command requires administrator privileges.`, allowedMentions: { repliedUser: false } })
+        if (bot.config.bot.specifyMessageChannel && bot.config.bot.specifyMessageChannel !== interaction.channelId) {
+            return interaction.reply({ content: client.i18n.t('events:MESSAGE_SPECIFIC_CHANNEL_WARN', { channelId: bot.config.bot.specifyMessageChannel }), allowedMentions: { repliedUser: false } })
+                .catch((error) => {
+                    bot.logger.emit('error', bot.shardId, `[interactionCreate] Error reply: (${interaction.user.username} : /${interaction.commandName})` + error);
+                    return;
+                });
+        }
+
+        // Admin command
+        if (bot.config.command.adminCommand.includes(cmd.name)) {
+            if (!bot.config.bot.admin.includes(interaction.user.id))
+                return interaction.reply({ content: client.i18n.t('events:ERROR_REQUIRE_ADMIN'), allowedMentions: { repliedUser: false } })
                     .catch((error) => {
                         bot.logger.emit('error', bot.shardId, `[interactionCreate] Error reply: (${interaction.user.username} : /${interaction.commandName})` + error);
                         return;
                     });
-            }
+        }
+
+        // DJ command
+        if (bot.config.command.djCommand.includes(cmd.name)) {
+            if (!bot.config.bot.admin.includes(interaction.user.id) && !bot.config.bot.dj.includes(interaction.user.id))
+                return interaction.reply({ content: client.i18n.t('events:ERROR_REQUIRE_DJ'), allowedMentions: { repliedUser: false } })
+                    .catch((error) => {
+                        bot.logger.emit('error', bot.shardId, `[interactionCreate] Error reply: (${interaction.user.username} : /${interaction.commandName})` + error);
+                        return;
+                    });
         }
 
         if (cmd.voiceChannel) {
             if (!voiceChannel) {
-                return interaction.reply({ content: `❌ | You are not connected to an audio channel.`, allowedMentions: { repliedUser: false } })
+                return interaction.reply({ content: client.i18n.t('events:ERROR_NOT_IN_VOICE_CHANNEL'), allowedMentions: { repliedUser: false } })
                     .catch((error) => {
                         bot.logger.emit('error', bot.shardId, `[interactionCreate] Error reply: (${interaction.user.username} : /${interaction.commandName})` + error);
                         return;
@@ -394,7 +414,7 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
             }
 
             if (interaction.guild?.members.me?.voice.channel && voiceChannel.id !== interaction.guild.members.me.voice.channelId) {
-                return interaction.reply({ content: `❌ | You are not on the same audio channel as me.`, allowedMentions: { repliedUser: false } })
+                return interaction.reply({ content: client.i18n.t('events:ERROR_NOT_IN_SAME_VOICE_CHANNEL'), allowedMentions: { repliedUser: false } })
                     .catch((error) => {
                         bot.logger.emit('error', bot.shardId, `[interactionCreate] Error reply: (${interaction.user.username} : /${interaction.commandName})` + error);
                         return;
@@ -412,7 +432,7 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
             guild = await client.guilds.fetch(interaction.guildId!);
         } catch (error) {
             bot.logger.emit('error', bot.shardId, `[interactionCreate] Error fetching guild: ${error}`);
-            return interaction.reply({ content: `❌ | Unable to get guild data in cache.`, allowedMentions: { repliedUser: false } });
+            return interaction.reply({ content: client.i18n.t('events:ERROR_GET_GUILD_DATA_CACHE'), allowedMentions: { repliedUser: false } });
         }
 
         // Ensure member is in cache
@@ -420,7 +440,7 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
             await guild.members.fetch(interaction.user.id);
         } catch (error) {
             bot.logger.emit('error', bot.shardId, `[interactionCreate] Error fetching member: ${error}`);
-            return interaction.reply({ content: `❌ | Unable to get member data in cache.`, allowedMentions: { repliedUser: false } });
+            return interaction.reply({ content: client.i18n.t('events:ERROR_GET_GUILD_DATA_CACHE'), allowedMentions: { repliedUser: false } });
         }
 
 

@@ -21,7 +21,8 @@ const loadDiscordEvents = (bot: Bot, client: Client) => {
         bot.logger.emit('log', bot.shardId, `+--------------------------------+`);
         for (const file of files) {
             try {
-                const eventModule = await import(path.join('file://', `${__dirname}/../events/discord/${file}`));
+                const filePath = 'file://' + path.resolve(`${__dirname}/../events/discord/${file}`);
+                const eventModule = await import(filePath);
                 const event = eventModule.default;
                 const eventName = file.split('.')[0];
 

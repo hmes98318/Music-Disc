@@ -1,9 +1,10 @@
 import { EmbedBuilder, HexColorString } from 'discord.js';
+import type { Bot } from '../@types/index.js';
 
 
-const save = (embedsColor: HexColorString | string | number, title: string, subtitle: string, url: string, thumbnail: string) => {
+const save = (bot: Bot, title: string, subtitle: string, url: string, thumbnail: string) => {
     const embed_ = new EmbedBuilder()
-        .setColor(embedsColor as HexColorString | number)
+        .setColor(bot.config.bot.embedsColor as HexColorString | number)
         .setTitle(title)
         .setURL(url)
         .setThumbnail(thumbnail)

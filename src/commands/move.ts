@@ -13,7 +13,6 @@ export const usage = 'move <index1> <index2>';
 export const voiceChannel = true;
 export const showHelp = true;
 export const sendTyping = true;
-export const requireAdmin = false;
 export const options = [
     {
         name: 'moveindex1',
@@ -36,12 +35,12 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
     const player = client.lavashark.getPlayer(message.guild!.id);
 
     if (!player) {
-        return message.reply({ content: '❌ | There is no music currently playing.', allowedMentions: { repliedUser: false } });
+        return message.reply({ content: client.i18n.t('commands:ERROR_NO_PLAYING'), allowedMentions: { repliedUser: false } });
     }
 
 
     if (!player.queue.size) {
-        return message.reply({ content: '❌ | There is currently no music to be play in the queue.', allowedMentions: { repliedUser: false } });
+        return message.reply({ content: client.i18n.t('commands:ERROR_NO_MUSIC_IN_QUEUE'), allowedMentions: { repliedUser: false } });
     }
 
 
@@ -49,14 +48,14 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
     const index2 = parseInt(args[1], 10);
 
     if (isNaN(index1) || isNaN(index2)) {
-        return message.reply({ content: `❌ | Please enter a valid index range. (1 - ${player.queue.size})`, allowedMentions: { repliedUser: false } });
+        return message.reply({ content: client.i18n.t('commands:MESSAGE_MOVE_WRONG_INDEX', { max: player.queue.size }), allowedMentions: { repliedUser: false } });
     }
 
 
     const isSuccess = player.queue.move(index1 - 1, index2 - 1);
 
     if (!isSuccess) {
-        return message.reply({ content: `❌ | Please enter a valid index range. (1 - ${player.queue.size})`, allowedMentions: { repliedUser: false } });
+        return message.reply({ content: client.i18n.t('commands:MESSAGE_MOVE_WRONG_INDEX', { max: player.queue.size }), allowedMentions: { repliedUser: false } });
     }
 
 
@@ -68,12 +67,12 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
     const player = client.lavashark.getPlayer(interaction.guild!.id);
 
     if (!player) {
-        return interaction.editReply({ content: '❌ | There is no music currently playing.', allowedMentions: { repliedUser: false } });
+        return interaction.editReply({ content: client.i18n.t('commands:ERROR_NO_PLAYING'), allowedMentions: { repliedUser: false } });
     }
 
 
     if (!player.queue.size) {
-        return interaction.editReply({ content: '❌ | There is currently no music to be play in the queue.', allowedMentions: { repliedUser: false } });
+        return interaction.editReply({ content: client.i18n.t('commands:ERROR_NO_MUSIC_IN_QUEUE'), allowedMentions: { repliedUser: false } });
     }
 
 
@@ -83,9 +82,9 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
     const isSuccess = player.queue.move(index1 - 1, index2 - 1);
 
     if (!isSuccess) {
-        return interaction.editReply({ content: `❌ | Please enter a valid index range. (1 - ${player.queue.size})`, allowedMentions: { repliedUser: false } });
+        return interaction.editReply({ content: client.i18n.t('commands:MESSAGE_MOVE_WRONG_INDEX', { max: player.queue.size }), allowedMentions: { repliedUser: false } });
     }
 
 
-    return interaction.editReply({ content: `✅ | Song order exchange successful.`, allowedMentions: { repliedUser: false } });
+    return interaction.editReply({ content: client.i18n.t('commands:MESSAGE_MOVE_SUCCESS'), allowedMentions: { repliedUser: false } });
 };

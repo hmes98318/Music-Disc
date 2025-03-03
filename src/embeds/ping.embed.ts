@@ -1,11 +1,12 @@
 import { EmbedBuilder, HexColorString } from 'discord.js';
+import type { Bot } from '../@types/index.js';
 
 
-const ping = (embedsColor: HexColorString | string | number, botPing: string, apiPing: string) => {
+const ping = (bot: Bot, botPing: string, apiPing: string) => {
     const embed_ = new EmbedBuilder()
-        .setColor(embedsColor as HexColorString | number)
-        .setTitle('🛰️ LATENCY')
-        .setDescription(`Bot : **${botPing}**\nAPI : **${apiPing}ms**`);
+        .setColor(bot.config.bot.embedsColor as HexColorString | number)
+        .setTitle(bot.i18n.t('embeds:PING_TITLE'))
+        .setDescription(bot.i18n.t('embeds:PING_DESCRIPTION', { botPing: botPing, apiPing: apiPing }));
 
     return embed_;
 };

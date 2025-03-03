@@ -1,44 +1,45 @@
 import { EmbedBuilder, HexColorString } from 'discord.js';
 import { formatBytes, msToTime, timestampToTime } from '../utils/functions/unitConverter.js';
+import type { Bot } from '../@types/index.js';
 
 import type { Info, NodeStats } from 'lavashark/typings/src/@types';
-import type { Config, SystemInfo, SystemStatus } from '../@types/index.js';
+import type { SystemStatus } from '../@types/index.js';
 
 
-const botStatus = (config: Config, systemInfo: SystemInfo, systemStatus: SystemStatus) => {
+const botStatus = (bot: Bot, systemStatus: SystemStatus) => {
     const cpuUsage = `${systemStatus.load.percent}  \`${systemStatus.load.detail}\``;
     const ramUsage = `${systemStatus.memory.percent}  \`${systemStatus.memory.detail}\``;
     const heapUsage = `${systemStatus.heap.percent}  \`${systemStatus.heap.detail}\``;
 
     const embed_ = new EmbedBuilder()
-        .setColor(config.bot.embedsColor as HexColorString | number)
-        .setTitle(`${config.bot.name} ${systemInfo.bot_version}`)
+        .setColor(bot.config.bot.embedsColor as HexColorString | number)
+        .setTitle(`${bot.config.bot.name} ${bot.sysInfo.bot_version}`)
         .setURL('https://github.com/hmes98318/Music-Disc')
-        .setDescription(`**• Serving ${systemStatus.serverCount} servers**\n**• Total ${systemStatus.totalMembers} members**\n**• Playing on ${systemStatus.playing} servers**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━`)
+        .setDescription(bot.i18n.t('embeds:STATUS_DESCRIPTION', { serverCount: systemStatus.serverCount, playingCount: systemStatus.playing }))
         .addFields(
-            { name: `⚙️ SYSTEM`, value: `OS : **${systemInfo.os_version}**\nNode.js : **${systemInfo.node_version}**\nDiscord.js : **${systemInfo.dc_version}**\nLavaShark : **${systemInfo.shark_version}**\nCPU : **${systemInfo.cpu}**\nUptime : **${systemStatus.uptime}**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━`, inline: false },
-            { name: `📊 USAGE`, value: `CPU : **${cpuUsage}**\nRam : **${ramUsage}**\nHeap : **${heapUsage}**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━`, inline: false },
-            { name: `🛰️ LATENCY`, value: `Bot : **${systemStatus.ping.bot}**\nAPI : **${systemStatus.ping.api}ms**`, inline: false }
+            { name: bot.i18n.t('embeds:STATUS_SYSTEM_TITLE'), value: bot.i18n.t('embeds:STATUS_SYSTEM_VALUE', { os_version: bot.sysInfo.os_version, node_version: bot.sysInfo.node_version, dc_version: bot.sysInfo.dc_version, shark_version: bot.sysInfo.shark_version, cpu: bot.sysInfo.cpu, uptime: systemStatus.uptime }), inline: false },
+            { name: bot.i18n.t('embeds:STATUS_USAGE_TITLE'), value: bot.i18n.t('embeds:STATUS_USAGE_VALUE', { cpuUsage: cpuUsage, ramUsage: ramUsage, heapUsage: heapUsage }), inline: false },
+            { name: bot.i18n.t('embeds:STATUS_LATENCY_TITLE'), value: bot.i18n.t('embeds:STATUS_LATENCY_VALUE', { botPing: systemStatus.ping.bot, apiPing: systemStatus.ping.api }), inline: false }
         )
         .setTimestamp();
 
     return embed_;
 };
 
-const maintainNotice = (embedsColor: HexColorString | string | number) => {
+const maintainNotice = (bot: Bot) => {
     const embed_ = new EmbedBuilder()
-        .setColor(embedsColor as HexColorString | number)
-        .setTitle(`⚠️ Maintenance Notice ⚠️`)
-        .setDescription(`The bot will begin maintenance in a few minutes. During this time, some features may be temporarily unavailable.`)
+        .setColor(bot.config.bot.embedsColor as HexColorString | number)
+        .setTitle(bot.i18n.t('embeds:MAINTAIN_TITLE'))
+        .setDescription(bot.i18n.t('embeds:MAINTAIN_DESCRIPTION'))
         .setTimestamp();
 
     return embed_;
 };
 
-const nodesStatus = (embedsColor: HexColorString | string | number, nodeHealth: string, nodesStatus: { name: string; value: string; }[]) => {
+const nodesStatus = (bot: Bot, nodeHealth: string, nodesStatus: { name: string; value: string; }[]) => {
     const embed_ = new EmbedBuilder()
-        .setColor(embedsColor as HexColorString | number)
-        .setTitle(`🛰️ Nodes Status`)
+        .setColor(bot.config.bot.embedsColor as HexColorString | number)
+        .setTitle(bot.i18n.t('embeds:NODE_STATUS_TITLE'))
         .setDescription(`**${nodeHealth}**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━`)
         .addFields(nodesStatus)
         .setTimestamp();
@@ -46,35 +47,35 @@ const nodesStatus = (embedsColor: HexColorString | string | number, nodeHealth: 
     return embed_;
 };
 
-const nodeStatus = (embedsColor: HexColorString | string | number, nodeName: string, nodeInfo: Info, nodeStats: NodeStats, nodePing: number) => {
+const nodeStatus = (bot: Bot, nodeName: string, nodeInfo: Info, nodeStats: NodeStats, nodePing: number) => {
     const embed_ = new EmbedBuilder()
-        .setColor(embedsColor as HexColorString | number)
-        .setTitle(`🛰️ Node '${nodeName}' status`)
+        .setColor(bot.config.bot.embedsColor as HexColorString | number)
+        .setTitle(bot.i18n.t('embeds:NODE_STATUS_TITLE_2', { nodeName: nodeName }))
         .setDescription(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━`)
         .addFields(
-            { name: `🏷️ INFO`, value: `Version : **${nodeInfo.version.semver}**\nJVM : **${nodeInfo.jvm}**\nLavaplayer : **${nodeInfo.lavaplayer}**\nGit : **${nodeInfo.git.commit}**\nBuild time : **${timestampToTime(nodeInfo.buildTime)}**` },
-            { name: `📊 STATS`, value: `uptime : **${msToTime(nodeStats.uptime)}**\nPing : **${nodePing} ms**\nPlayer : **${nodeStats.players}**\nPlaying players : **${nodeStats.playingPlayers}**` },
-            { name: `⚙️ CPU`, value: `Cores : **${nodeStats.cpu.cores}**\nSystem load : **${nodeStats.cpu.systemLoad.toFixed(6)}**\nLavalink load : **${nodeStats.cpu.lavalinkLoad.toFixed(6)}**` },
-            { name: `📑 MEMORY`, value: `Used : **${formatBytes(nodeStats.memory.used)}**\nFree : **${formatBytes(nodeStats.memory.free)}**\nAllocated : **${formatBytes(nodeStats.memory.allocated)}**\nReservable : **${formatBytes(nodeStats.memory.reservable)}**\n` })
+            { name: bot.i18n.t('embeds:NODE_STATUS_INFO_TITLE'), value: bot.i18n.t('embeds:NODE_STATUS_INFO_VALUE', { version: nodeInfo.version.semver, jvm: nodeInfo.jvm, lavaplayer: nodeInfo.lavaplayer, git: nodeInfo.git.commit, buildTime: timestampToTime(nodeInfo.buildTime) }) },
+            { name: bot.i18n.t('embeds:NODE_STATUS_STATS_TITLE'), value: bot.i18n.t('embeds:NODE_STATUS_STATS_VALUE', { uptime: msToTime(nodeStats.uptime), nodePing: nodePing, playerCount: nodeStats.players, playingCount: nodeStats.playingPlayers }) },
+            { name: bot.i18n.t('embeds:NODE_STATUS_CPU_TITLE'), value: bot.i18n.t('embeds:NODE_STATUS_CPU_VALUE', { cores: nodeStats.cpu.cores, systemLoad: nodeStats.cpu.systemLoad.toFixed(6), lavalinkLoad: nodeStats.cpu.lavalinkLoad.toFixed(6) }) },
+            { name: bot.i18n.t('embeds:NODE_STATUS_MEMORY_TITLE'), value: bot.i18n.t('embeds:NODE_STATUS_MEMORY_VALUE', { used: formatBytes(nodeStats.memory.used), free: formatBytes(nodeStats.memory.free), allocated: formatBytes(nodeStats.memory.allocated), reservable: formatBytes(nodeStats.memory.reservable) }) })
         .setTimestamp();
 
     return embed_;
 };
 
-const nodeDisconnected = (embedsColor: HexColorString | string | number, nodeName: string) => {
+const nodeDisconnected = (bot: Bot, nodeName: string) => {
     const embed_ = new EmbedBuilder()
-        .setColor(embedsColor as HexColorString | number)
-        .setTitle(`🛰️ Node '${nodeName}' status`)
+        .setColor(bot.config.bot.embedsColor as HexColorString | number)
+        .setTitle(bot.i18n.t('embeds:NODE_STATUS_TITLE_2', { nodeName: nodeName }))
         .setDescription(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n❌ | **DISCONNECTED**`)
         .setTimestamp();
 
     return embed_;
 };
 
-const validNodeName = (embedsColor: HexColorString | string | number, nodesName: string) => {
+const validNodeName = (bot: Bot, nodesName: string) => {
     const embed_ = new EmbedBuilder()
-        .setColor(embedsColor as HexColorString | number)
-        .setTitle(`❌ | Please enter a valid node name.`)
+        .setColor(bot.config.bot.embedsColor as HexColorString | number)
+        .setTitle(bot.i18n.t('embeds:NODE_STATUS_ARGS_ERROR'))
         .setDescription(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n${nodesName}`)
         .setTimestamp();
 

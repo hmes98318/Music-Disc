@@ -14,6 +14,11 @@ const setEnvironment = (defaultConfig: Config) => {
         admin: (Array.isArray(config.bot.admin) && config.bot.admin.length > 0)
             ? config.bot.admin
             : defaultConfig.bot.admin,
+        // DJ of the bot (user_id[])
+        dj: (Array.isArray(config.bot.dj) && config.bot.dj.length > 0)
+            ? config.bot.dj
+            : defaultConfig.bot.dj,
+
         clientSecret: config.bot.clientSecret || defaultConfig.bot.clientSecret,
 
         // Bot settings
@@ -53,7 +58,14 @@ const setEnvironment = (defaultConfig: Config) => {
         // Show voice channel updates
         displayVoiceState: config.bot.displayVoiceState ?? defaultConfig.bot.displayVoiceState,
 
-        specifyMessageChannel: config.bot.specifyMessageChannel || defaultConfig.bot.specifyMessageChannel
+        specifyMessageChannel: (/^\d+$/).test(String(config.bot.specifyMessageChannel))
+            ? String(config.bot.specifyMessageChannel)
+            : defaultConfig.bot.specifyMessageChannel,
+
+        i18n: {
+            localePath: config.bot.i18n.localePath || defaultConfig.bot.i18n.localePath,
+            defaultLocale: config.bot.i18n.defaultLocale || defaultConfig.bot.i18n.defaultLocale
+        }
     };
 
     // Lavalink node list
@@ -96,6 +108,18 @@ const setEnvironment = (defaultConfig: Config) => {
         enabled: config.localNode.enabled ?? defaultConfig.localNode.enabled,
         autoRestart: config.localNode.autoRestart ?? defaultConfig.localNode.autoRestart,
         downloadLink: config.localNode.downloadLink || defaultConfig.localNode.downloadLink
+    };
+
+    defaultConfig.command = {
+        disableCommand: (Array.isArray(config.command.disableCommand) && config.command.disableCommand.length > 0)
+            ? config.command.disableCommand
+            : defaultConfig.command.disableCommand,
+        adminCommand: (Array.isArray(config.command.adminCommand) && config.command.adminCommand.length > 0)
+            ? config.command.adminCommand
+            : defaultConfig.command.adminCommand,
+        djCommand: (Array.isArray(config.command.djCommand) && config.command.djCommand.length > 0)
+            ? config.command.djCommand
+            : defaultConfig.command.djCommand,
     };
 };
 

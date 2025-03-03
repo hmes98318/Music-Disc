@@ -58,6 +58,18 @@ export default async (bot: Bot, client: Client) => {
     }, 10 * 60 * 1000); // 10 minutes
 
 
+    // Specify message channel ID
+    if (bot.config.bot.specifyMessageChannel) {
+        const channel = await client.channels.fetch(bot.config.bot.specifyMessageChannel);
+
+        if (!channel) {
+            bot.config.bot.specifyMessageChannel = null;
+        }
+        else {
+            bot.logger.emit('log', bot.shardId, `Set specify message channel : ${(channel as any).name || 'Unknown channel'} (${bot.config.bot.specifyMessageChannel})`);
+        }
+    }
+
     bot.logger.emit('log', bot.shardId, `Set admin as user ID : ${JSON.stringify(bot.config.bot.admin)}`);
     bot.logger.emit('discord', bot.shardId, `>>> Logged in as ${client.user?.username}`);
 

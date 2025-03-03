@@ -9,7 +9,6 @@ export const usage = 'pause';
 export const voiceChannel = true;
 export const showHelp = true;
 export const sendTyping = false;
-export const requireAdmin = false;
 export const options = [];
 
 
@@ -17,11 +16,11 @@ export const execute = async (_bot: Bot, client: Client, message: Message) => {
     const player = client.lavashark.getPlayer(message.guild!.id);
 
     if (!player) {
-        return message.reply({ content: '❌ | There is no music currently playing.', allowedMentions: { repliedUser: false } });
+        return message.reply({ content: client.i18n.t('commands:ERROR_NO_PLAYING'), allowedMentions: { repliedUser: false } });
     }
 
-    if(player.paused) {
-        return message.reply({ content: '❌ | The music has been paused.', allowedMentions: { repliedUser: false } });
+    if (player.paused) {
+        return message.reply({ content: client.i18n.t('commands:MESSAGE_PAUSE_MUSIC_PAUSED'), allowedMentions: { repliedUser: false } });
     }
 
     const SUCCESS = await player.pause();
@@ -32,13 +31,13 @@ export const slashExecute = async (_bot: Bot, client: Client, interaction: ChatI
     const player = client.lavashark.getPlayer(interaction.guild!.id);
 
     if (!player) {
-        return interaction.editReply({ content: '❌ | There is no music currently playing.', allowedMentions: { repliedUser: false } });
+        return interaction.editReply({ content: client.i18n.t('commands:ERROR_NO_PLAYING'), allowedMentions: { repliedUser: false } });
     }
 
-    if(player.paused) {
-        return interaction.editReply({ content: '❌ | The music has been paused.', allowedMentions: { repliedUser: false } });
+    if (player.paused) {
+        return interaction.editReply({ content: client.i18n.t('commands:MESSAGE_PAUSE_MUSIC_PAUSED'), allowedMentions: { repliedUser: false } });
     }
 
     const SUCCESS = await player.pause();
-    return SUCCESS ? interaction.editReply('⏸️ | Music paused.') : interaction.editReply('❌ | Music pause failed.');
+    return SUCCESS ? interaction.editReply(client.i18n.t('commands:MESSAGE_PAUSE_SUCCESS')) : interaction.editReply(client.i18n.t('commands:MESSAGE_PAUSE_FAIL'));
 };

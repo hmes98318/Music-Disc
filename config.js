@@ -2,12 +2,24 @@
  * @type {import('./src/@types/index.js').Config} - Bot config
  */
 const config = {
+    // Lavalink node list
+    nodeList: [
+        {
+            id: 'Node 1',
+            hostname: 'localhost',
+            port: 2333,
+            password: 'youshallnotpass'
+        }
+    ],
+
     bot: {
         textCommand             : true,                 // Whether to enable text command
         slashCommand            : true,                 // Whether to enable slash command
 
         // OAUTH2 mode requires setting 'admin', 'clientSecret' value
-        admin                   : [],                   // It must be the user ID (string[])
+        admin                   : [],                   // Admin users, It must be the user ID (string[])
+        dj                      : [],                   // DJ users, It must be the user ID (string[])
+
         clientSecret            : '',
 
         name                    : 'Music Disc',
@@ -36,18 +48,12 @@ const config = {
         // If this value is set, text messages from other channels will not be processed.
         specifyMessageChannel   : null,         // Text channel ID
 
-        // i18n: {}
-    },
-
-    // Lavalink node list
-    nodeList: [
-        {
-            id: 'Node 1',
-            hostname: 'localhost',
-            port: 2333,
-            password: 'youshallnotpass'
+        // Language settings
+        i18n: {
+            localePath          : '../../locales',
+            defaultLocale       : 'en-US'
         }
-    ],
+    },
 
     // Web dashboard settings
     webDashboard: {
@@ -85,6 +91,13 @@ const config = {
         enabled             : false,
         autoRestart         : true,
         // downloadLink        : 'https://github.com/lavalink-devs/Lavalink/releases/download/4.0.8/Lavalink.jar'
+    },
+
+    // Command permission settings
+    command: {
+        disableCommand: [],                                 // Disabled commands, all enabled by default
+        adminCommand: ['language','server', 'status'],      // Admin commands, only Admin role user can use
+        djCommand: []                                       // DJ commands, only DJ role user can use
     }
 };
 

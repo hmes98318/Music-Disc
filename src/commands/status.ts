@@ -14,7 +14,6 @@ export const usage = 'status';
 export const voiceChannel = false;
 export const showHelp = true;
 export const sendTyping = true;
-export const requireAdmin = false;
 export const options = [];
 
 
@@ -40,7 +39,7 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
         }
     }
 
-    const nodeHealth = healthValue === 0 ? 'All nodes are active' : `⚠️ There are ${healthValue} nodes disconnected`;
+    const nodeHealth = healthValue === 0 ? client.i18n.t('commands:MESSAGE_NODE_ALL_ACTIVE') : client.i18n.t('commands:MESSAGE_NODE_ALL_ACTIVE', { healthValue: healthValue });
 
 
     const results = await client.shard!.broadcastEval(async (client) => {
@@ -62,7 +61,6 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
 
 
             bot.stats.guildsCount = results.map((shard) => shard.serverCount) || bot.stats.guildsCount;
-            bot.stats.membersCount = results.map((shard) => shard.totalMembers) || bot.stats.membersCount;
             bot.stats.lastRefresh = Date.now();
 
         } catch (error) {
@@ -72,7 +70,6 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
 
 
     const totalServerCount = bot.stats.guildsCount.reduce((acc, guilds) => acc + guilds, 0);
-    const totalMemberCount = bot.stats.membersCount.reduce((acc, members) => acc + members, 0);
     const totalPlaying = results.reduce((acc, shard) => acc + shard.playing, 0);
 
     const systemStatus: SystemStatus = {
@@ -85,7 +82,6 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
             api: client.ws.ping
         },
         serverCount: totalServerCount,
-        totalMembers: totalMemberCount,
         playing: totalPlaying
     };
 
@@ -94,8 +90,8 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
 
     return message.reply({
         embeds: [
-            embeds.botStatus(bot.config, bot.sysInfo, systemStatus),
-            embeds.nodesStatus(bot.config.bot.embedsColor, nodeHealth, nodesStatus)
+            embeds.botStatus(bot, systemStatus),
+            embeds.nodesStatus(bot, nodeHealth, nodesStatus)
         ],
         allowedMentions: { repliedUser: false }
     });
@@ -123,7 +119,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
         }
     }
 
-    const nodeHealth = healthValue === 0 ? 'All nodes are active' : `⚠️ There are ${healthValue} nodes disconnected`;
+    const nodeHealth = healthValue === 0 ? client.i18n.t('commands:MESSAGE_NODE_ALL_ACTIVE') : client.i18n.t('commands:MESSAGE_NODE_ALL_ACTIVE', { healthValue: healthValue });
 
 
     const results = await client.shard!.broadcastEval(async (client) => {
@@ -145,7 +141,6 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
 
 
             bot.stats.guildsCount = results.map((shard) => shard.serverCount) || bot.stats.guildsCount;
-            bot.stats.membersCount = results.map((shard) => shard.totalMembers) || bot.stats.membersCount;
             bot.stats.lastRefresh = Date.now();
 
         } catch (error) {
@@ -155,7 +150,6 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
 
 
     const totalServerCount = bot.stats.guildsCount.reduce((acc, guilds) => acc + guilds, 0);
-    const totalMemberCount = bot.stats.membersCount.reduce((acc, members) => acc + members, 0);
     const totalPlaying = results.reduce((acc, shard) => acc + shard.playing, 0);
 
     const systemStatus: SystemStatus = {
@@ -168,7 +162,6 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
             api: client.ws.ping
         },
         serverCount: totalServerCount,
-        totalMembers: totalMemberCount,
         playing: totalPlaying
     };
 
@@ -177,8 +170,8 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
 
     return interaction.editReply({
         embeds: [
-            embeds.botStatus(bot.config, bot.sysInfo, systemStatus),
-            embeds.nodesStatus(bot.config.bot.embedsColor, nodeHealth, nodesStatus)
+            embeds.botStatus(bot, systemStatus),
+            embeds.nodesStatus(bot, nodeHealth, nodesStatus)
         ],
         allowedMentions: { repliedUser: false }
     });

@@ -21,7 +21,7 @@ async function initial(bot: Bot, interactionOrMessage: ChatInputCommandInteracti
     }
 
     player.dashboard = await (channel as any /* discord.js type error ? (v14.16.2) */).send({
-        embeds: [embeds.connected(bot.config.bot.embedsColor)],
+        embeds: [embeds.connected(bot)],
         components: []
     });
 }

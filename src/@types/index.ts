@@ -5,9 +5,11 @@ import type {
     Collection,
     Message
 } from 'discord.js';
+import type { i18n } from 'i18next';
 import type { LavaShark } from 'lavashark';
 import type { NodeOptions } from 'lavashark/typings/src/@types/index.js';
 
+import type { Language } from '../lib/i18n/Language.js';
 import type { Logger } from '../lib/Logger.js';
 import type { IPBlockerConfig, SessionManagerConfig } from './SessionManager.types.js';
 
@@ -15,7 +17,8 @@ import type { IPBlockerConfig, SessionManagerConfig } from './SessionManager.typ
 declare module 'discord.js' {
     export interface Client {
         commands: Collection<unknown, any>,
-        lavashark: LavaShark
+        lavashark: LavaShark,
+        i18n: i18n;
     }
 }
 
@@ -55,9 +58,10 @@ export type Bot = {
     sysInfo: SystemInfo;
     stats: {
         guildsCount: number[];
-        membersCount: number[];
         lastRefresh: number | null;     // Date.now()
-    }
+    },
+    i18n: i18n;
+    lang: Language;
 }
 
 /**
@@ -68,12 +72,14 @@ export type Config = {
     nodeList: NodeOptions[];
     webDashboard: WebDashboardConfig;
     localNode: LocalNodeConfig;
+    command: CommandConfig;
 };
 
 export type BotConfig = {
     textCommand: boolean;
     slashCommand: boolean;
     admin: string[];
+    dj: string[];
     clientSecret: string;
     name: string;
     prefix: string;
@@ -95,6 +101,10 @@ export type BotConfig = {
     };
     displayVoiceState: boolean;
     specifyMessageChannel: string | null;
+    i18n: {
+        localePath: string;
+        defaultLocale: string;
+    }
 };
 
 export type WebDashboardConfig = {
@@ -117,6 +127,12 @@ export type LocalNodeConfig = {
     enabled: boolean;
     autoRestart: boolean;
     downloadLink?: string;
+};
+
+export type CommandConfig = {
+    disableCommand: string[];
+    adminCommand: string[];
+    djCommand: string[];
 };
 
 
@@ -149,7 +165,6 @@ export type SystemStatus = {
         api: number;
     };
     serverCount: number;
-    totalMembers: number;
     playing: number;
 }
 

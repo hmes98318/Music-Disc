@@ -6,5 +6,5 @@ import type { Bot } from '../../@types/index.js';
 
 
 export default async (bot: Bot, _client: Client, player: Player) => {
-    if (player.dashboard) await dashboard.destroy(bot, player, bot.config.bot.embedsColor);
+    if (player.dashboard) await dashboard.destroy(bot, player);
 };

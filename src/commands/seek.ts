@@ -11,7 +11,6 @@ export const usage = 'seek <[hh]mm]ss/[hh:mm]:ss> (ex: 3m20s, 1:20:55)';
 export const voiceChannel = true;
 export const showHelp = true;
 export const sendTyping = true;
-export const requireAdmin = false;
 export const options = [
     {
         name: 'seek',
@@ -26,14 +25,14 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
     const player = client.lavashark.getPlayer(message.guild!.id);
 
     if (!player) {
-        return message.reply({ content: '❌ | There is no music currently playing.', allowedMentions: { repliedUser: false } });
+        return message.reply({ content: client.i18n.t('commands:ERROR_NO_PLAYING'), allowedMentions: { repliedUser: false } });
     }
 
     const str = args.join(' ');
     const tragetTime = timeToSeconds(str);
 
     if (!tragetTime) {
-        return message.reply({ content: `❌ | Invalid format for the target time.\n(**\`ex: 3m20s, 1m 50s, 1:20:55, 5:20\`**)`, allowedMentions: { repliedUser: false } });
+        return message.reply({ content: client.i18n.t('commands:MESSAGE_SEEK_ARGS_ERROR'), allowedMentions: { repliedUser: false } });
     }
 
     const tragetTimeMs = tragetTime * 1000;
@@ -42,10 +41,10 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
     await player.seek(tragetTimeMs);
 
     if (tragetTimeMs >= player.current!.duration.value) {
-        return message.reply({ content: `✅ | The seek position is beyond the duration of this track. (\`${player.current!.duration.label}\`)\nSkipping to the next song.`, allowedMentions: { repliedUser: false } });
+        return message.reply({ content: client.i18n.t('commands:MESSAGE_SEEK_SKIP', { duration: player.current!.duration.label }), allowedMentions: { repliedUser: false } });
     }
     else {
-        return message.reply({ content: `✅ | Music has been seeked to \`${str}\`.`, allowedMentions: { repliedUser: false } });
+        return message.reply({ content: client.i18n.t('commands:MESSAGE_SEEK_SUCCESS', { duration: str }), allowedMentions: { repliedUser: false } });
     }
 };
 
@@ -53,14 +52,14 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
     const player = client.lavashark.getPlayer(interaction.guild!.id);
 
     if (!player) {
-        return interaction.editReply({ content: '❌ | There is no music currently playing.', allowedMentions: { repliedUser: false } });
+        return interaction.editReply({ content: client.i18n.t('commands:ERROR_NO_PLAYING'), allowedMentions: { repliedUser: false } });
     }
 
     const str = interaction.options.getString('seek');
     const tragetTime = timeToSeconds(str!);
 
     if (!tragetTime) {
-        return interaction.editReply({ content: `❌ | Invalid format for the target time.\n(**\`ex: 3m20s, 1m 50s, 1:20:55, 5:20\`**)`, allowedMentions: { repliedUser: false } });
+        return interaction.editReply({ content: client.i18n.t('commands:MESSAGE_SEEK_ARGS_ERROR'), allowedMentions: { repliedUser: false } });
     }
 
     const tragetTimeMs = tragetTime * 1000;
@@ -68,10 +67,9 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
     await player.seek(tragetTimeMs);
 
     if (tragetTimeMs >= player.current!.duration.value) {
-        return interaction.editReply({ content: `✅ | The seek position is beyond the duration of this track. (\`${player.current!.duration.label}\`)\nSkipping to the next song.`, allowedMentions: { repliedUser: false } });
+        return interaction.editReply({ content: client.i18n.t('commands:MESSAGE_SEEK_SKIP', { duration: player.current!.duration.label }), allowedMentions: { repliedUser: false } });
     }
     else {
-        return interaction.editReply({ content: `✅ | Music has been seeked to \`${str}\`.`, allowedMentions: { repliedUser: false } });
+        return interaction.editReply({ content: client.i18n.t('commands:MESSAGE_SEEK_SUCCESS', { duration: str }), allowedMentions: { repliedUser: false } });
     }
-
 };
