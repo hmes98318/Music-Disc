@@ -1,5 +1,5 @@
 import type { Client } from 'discord.js';
-import type { IncomingDiscordPayload } from 'lavashark/typings/src/@types';
+import type { IncomingDiscordPayload } from 'lavashark/typings/src/@types/LavaShark.types.js';
 import type { Bot } from '../../@types/index.js';
 
 

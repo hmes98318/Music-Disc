@@ -5,7 +5,7 @@ import { fileURLToPath } from 'url';
 import { cst } from './../utils/constants.js';
 
 import type { Client } from 'discord.js';
-import type { LavaSharkEvents } from 'lavashark/typings/src/@types';
+import type { LavaSharkEvents } from 'lavashark/typings/src/@types/LavaShark.types.js';
 import type { Bot } from './../@types/index.js';
 
 
