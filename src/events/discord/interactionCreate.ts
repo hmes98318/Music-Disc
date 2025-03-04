@@ -20,7 +20,7 @@ import type { Bot } from '../../@types/index.js';
 
 export default async (bot: Bot, client: Client, interaction: Interaction) => {
 
-    if (bot.blacklist && bot.blacklist.includes(interaction.user.id)) return;
+    if (bot.config.blacklist && bot.config.blacklist.includes(interaction.user.id)) return;
     if (interaction.user.bot) return;
 
 

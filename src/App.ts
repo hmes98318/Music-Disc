@@ -3,7 +3,6 @@ import { LavaShark } from 'lavashark';
 
 import {
     checkNodesStats,
-    loadBlacklist,
     loadCommands,
     loadDiscordEvents,
     loadI18Next,
@@ -32,7 +31,7 @@ class App {
 
         this.bot = {
             shardId: this.#client.shard?.ids[0] ?? -1,
-            blacklist: cst.blacklist,
+            blacklist: cst.config.blacklist,
             config: cst.config,
             logger: new Logger(cst.logger.format, cst.logger.logDir),
             sysInfo: {} as SystemInfo,
@@ -46,7 +45,13 @@ class App {
         setEnvironment(this.bot.config);
         this.bot.logger.emit('log', this.bot.shardId, 'Set environment variables.');
 
-        loadBlacklist(this.bot);
+        if (this.bot.config.blacklist.length > 0) {
+            this.bot.logger.emit('log', this.bot.shardId, 'Blacklist loaded: ' + this.bot.config.blacklist.length + ' users');
+        }
+        else {
+            this.bot.logger.emit('log', this.bot.shardId, 'No blacklist entries found.');
+        }
+
 
         this.#client.commands = new Collection();
         this.#client.lavashark = new LavaShark({

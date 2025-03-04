@@ -16,7 +16,7 @@ const checkBlacklistUsers = (channel: VoiceBasedChannel | null, blacklist: strin
 
 export default async (bot: Bot, client: Client, oldState: VoiceState, newState: VoiceState) => {
     const display = bot.config.bot.displayVoiceState ?? true;
-    const blacklist = bot.blacklist || [];
+    const blacklist = bot.config.blacklist || [];
 
     if (newState.channelId === null) {
         if (display) bot.logger.emit('discord', bot.shardId, '[voiceStateUpdate]' + cst.color.grey + ` (${newState.member?.guild.name}) ${newState.member?.user.username} left channel` + cst.color.white);
