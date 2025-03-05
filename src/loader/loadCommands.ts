@@ -53,17 +53,26 @@ const loadCommands = (bot: Bot, client: Client) => {
 
         // bot.logger.emit('log', bot.shardId, `Available commands: ${(Array.from(client.commands.keys()) as string[]).join(', ')}`);
 
-        (bot.config.command.disableCommand.length > 0)
-            ? bot.logger.emit('log', bot.shardId, `Disabled commands: ${bot.config.command.disableCommand.join(', ')}`)
-            : bot.logger.emit('log', bot.shardId, `Disabled commands: NOT SET`);
+        if (bot.config.command.disableCommand.length > 0) {
+            bot.logger.emit('log', bot.shardId, `Disabled commands: ${bot.config.command.disableCommand.join(', ')}`);
+        }
+        else {
+            bot.logger.emit('log', bot.shardId, `Disabled commands: NOT SET`);
+        }
 
-        (bot.config.command.adminCommand.length > 0)
-            ? bot.logger.emit('log', bot.shardId, `Admin commands: ${bot.config.command.adminCommand.join(', ')}`)
-            : bot.logger.emit('log', bot.shardId, `Admin commands: NOT SET`);
+        if (bot.config.command.adminCommand.length > 0) {
+            bot.logger.emit('log', bot.shardId, `Admin commands: ${bot.config.command.adminCommand.join(', ')}`);
+        }
+        else {
+            bot.logger.emit('log', bot.shardId, `Admin commands: NOT SET`);
+        }
 
-        (bot.config.command.djCommand.length > 0)
-            ? bot.logger.emit('log', bot.shardId, `DJ commands: ${bot.config.command.djCommand.join(', ')}`)
-            : bot.logger.emit('log', bot.shardId, `DJ commands: NOT SET`);
+        if (bot.config.command.djCommand.length > 0) {
+            bot.logger.emit('log', bot.shardId, `DJ commands: ${bot.config.command.djCommand.join(', ')}`);
+        }
+        else {
+            bot.logger.emit('log', bot.shardId, `DJ commands: NOT SET`);
+        }
 
 
         resolve();

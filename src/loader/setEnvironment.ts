@@ -73,6 +73,10 @@ const setEnvironment = (defaultConfig: Config) => {
         ? config.nodeList
         : defaultConfig.nodeList;
 
+    defaultConfig.blacklist = (Array.isArray(config.blacklist) && config.blacklist.length > 0)
+        ? config.blacklist
+        : defaultConfig.blacklist;
+
     // Web dashboard settings
     defaultConfig.webDashboard = {
         enabled: config.webDashboard.enabled ?? defaultConfig.webDashboard.enabled,

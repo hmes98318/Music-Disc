@@ -17,7 +17,7 @@ export default async (bot: Bot, client: Client, message: Message) => {
 
     if (!cmd) return;
 
-    if (bot.blacklist && bot.blacklist.includes(message.author.id)) return;
+    if (bot.config.blacklist && bot.config.blacklist.includes(message.author.id)) return;
 
     if (bot.config.bot.specifyMessageChannel && bot.config.bot.specifyMessageChannel !== message.channelId) {
         return message.reply({ content: client.i18n.t('events:MESSAGE_SPECIFIC_CHANNEL_WARN', { channelId: bot.config.bot.specifyMessageChannel }), allowedMentions: { repliedUser: false } })

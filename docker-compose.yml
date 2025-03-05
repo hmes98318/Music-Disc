@@ -10,7 +10,5 @@ services:
       - ./config.js:/bot/config.js              # Bot config
       - ./logs:/bot/logs                        # Bot logs
       - ./server:/bot/server                    # localnode configuration file
-      - ./nodelist.json:/bot/nodelist.json      # Lavalink node list
-      - ./blacklist.json:/bot/blacklist.json    # Discord user blacklist
     ports:
       - 33333:33333

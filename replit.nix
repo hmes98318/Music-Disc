@@ -1,7 +1,7 @@
 { pkgs }: {
     deps = [
         pkgs.esbuild
-        pkgs.nodejs-20_x
+        pkgs.nodejs-22_x
         pkgs.jdk
 
         pkgs.nodePackages.typescript

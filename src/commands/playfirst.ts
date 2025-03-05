@@ -41,7 +41,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
     }
 
 
-    const validBlackist = isUserInBlacklist(message.member?.voice.channel, bot.blacklist);
+    const validBlackist = isUserInBlacklist(message.member?.voice.channel, bot.config.blacklist);
     if (validBlackist.length > 0) {
         return message.reply({
             embeds: [embeds.blacklist(bot, validBlackist)],
@@ -127,7 +127,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
     const guildMember = interaction.guild!.members.cache.get(interaction.user.id);
     const { channel } = guildMember!.voice;
 
-    const validBlackist = isUserInBlacklist(channel, bot.blacklist);
+    const validBlackist = isUserInBlacklist(channel, bot.config.blacklist);
     if (validBlackist.length > 0) {
         return interaction.editReply({
             embeds: [embeds.blacklist(bot, validBlackist)],

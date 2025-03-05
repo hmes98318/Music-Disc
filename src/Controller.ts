@@ -16,7 +16,7 @@ export class Controller {
     constructor() {
         this.#bot = {
             shardId: -1,
-            blacklist: cst.blacklist,
+            blacklist: cst.config.blacklist,
             config: cst.config,
             logger: new Logger(cst.logger.format, cst.logger.logDir),
             sysInfo: {} as SystemInfo,

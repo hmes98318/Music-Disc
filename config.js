@@ -55,6 +55,8 @@ const config = {
         }
     },
 
+    blacklist                   : [],           // It must be the user ID (string[])
+
     // Web dashboard settings
     webDashboard: {
         enabled                 : true,

@@ -38,7 +38,7 @@ const registerExpressEvents = (bot: Bot, shardManager: ShardingManager, localNod
      */
     const verifyLogin = (req: any, res: any, next: any) => {
         const cookies = cookie.parse(req.headers.cookie as string || '');
-        const sessionId = cookies.sessionId;
+        const sessionId = cookies.sessionId || '';
         const session = sessionManager.getSession(sessionId);
 
         if (session) {
@@ -66,7 +66,7 @@ const registerExpressEvents = (bot: Bot, shardManager: ShardingManager, localNod
 
 
             const cookies = cookie.parse(req.headers.cookie as string || '');
-            const cookieSessionId = cookies.sessionId;
+            const cookieSessionId = cookies.sessionId || '';
 
             if (sessionManager.checkSession(cookieSessionId)) {
                 sessionManager.refreshSession(cookieSessionId);
@@ -140,7 +140,7 @@ const registerExpressEvents = (bot: Bot, shardManager: ShardingManager, localNod
     else {  // LoginType.USER
         app.get('/login', (req, res) => {
             const cookies = cookie.parse(req.headers.cookie as string || '');
-            const sessionId = cookies.sessionId;
+            const sessionId = cookies.sessionId || '';
             const session = sessionManager.getSession(sessionId);
 
             if (session) {
@@ -219,7 +219,7 @@ const registerExpressEvents = (bot: Bot, shardManager: ShardingManager, localNod
 
 
         const cookies = cookie.parse(req.headers.cookie as string || '');
-        const cookieSessionId = cookies.sessionId;
+        const cookieSessionId = cookies.sessionId || '';
 
         // Skip login in logged-in state (sessionId exists)
         if (sessionManager.checkSession(cookieSessionId)) {
@@ -252,7 +252,7 @@ const registerExpressEvents = (bot: Bot, shardManager: ShardingManager, localNod
 
     app.get('/api/logout', (req, res) => {
         const cookies = cookie.parse(req.headers.cookie as string || '');
-        const sessionId = cookies.sessionId;
+        const sessionId = cookies.sessionId || '';
 
         sessionManager.destroySession(sessionId);
         return res.redirect('/login');

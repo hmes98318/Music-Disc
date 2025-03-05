@@ -61,6 +61,8 @@ export const cst = {
             }
         ],
 
+        blacklist               : [],           // It must be the user ID (string[])
+
         // Web dashboard settings
         webDashboard: {
             enabled                 : true,
@@ -106,7 +108,7 @@ export const cst = {
             djCommand           : []                                    // DJ commands, only DJ role user can use
         }
     },
-    blacklist               : [],           // It must be the user ID (string[])
+
     // Console color
     color: {
         cyan    : '\x1B[36m',

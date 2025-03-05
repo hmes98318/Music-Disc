@@ -2,7 +2,7 @@ import { EmbedBuilder, HexColorString } from 'discord.js';
 import { formatBytes, msToTime, timestampToTime } from '../utils/functions/unitConverter.js';
 import type { Bot } from '../@types/index.js';
 
-import type { Info, NodeStats } from 'lavashark/typings/src/@types';
+import type { Info, NodeStats } from 'lavashark/typings/src/@types/Node.types.js';
 import type { SystemStatus } from '../@types/index.js';
 
 

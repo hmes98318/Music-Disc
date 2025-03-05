@@ -52,7 +52,6 @@ export type LoginType = keyof typeof LoginTypeEnum;
 
 export type Bot = {
     shardId: number;
-    blacklist: string[];
     config: Config;
     logger: Logger;
     sysInfo: SystemInfo;
@@ -70,6 +69,7 @@ export type Bot = {
 export type Config = {
     bot: BotConfig;
     nodeList: NodeOptions[];
+    blacklist: string[],
     webDashboard: WebDashboardConfig;
     localNode: LocalNodeConfig;
     command: CommandConfig;

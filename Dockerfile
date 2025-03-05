@@ -1,4 +1,4 @@
-FROM node:20.18.0-slim AS node_build
+FROM node:22.14.0-slim AS node_build
 
 WORKDIR /tmp
 
@@ -10,7 +10,7 @@ RUN npm ci && \
 
 ############################################################
 
-FROM node:20.18.0-slim
+FROM node:22.14.0-slim
 
 WORKDIR /bot
 
@@ -25,8 +25,7 @@ COPY --from=node_build /tmp/server /bot/server
 COPY --from=node_build /tmp/views /bot/views
 
 COPY --from=node_build /tmp/package*.json /bot
-COPY --from=node_build /tmp/nodelist.json /bot
-COPY --from=node_build /tmp/blacklist.json /bot
+COPY --from=node_build /tmp/config.js /bot
 
 
 ENTRYPOINT [ "node", "./src/index.js" ]
