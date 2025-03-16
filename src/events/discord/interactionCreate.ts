@@ -56,6 +56,26 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
         try {
             switch (interaction.customId) {
                 case 'Dashboard-PlayPause': {
+                    // Admin command
+                    if (bot.config.command.adminCommand.includes('pause') && bot.config.command.adminCommand.includes('resume')) {
+                        if (!bot.config.bot.admin.includes(interaction.user.id))
+                            return interaction.reply({ content: client.i18n.t('events:ERROR_REQUIRE_ADMIN'), ephemeral: true, components: [] })
+                                .catch((error) => {
+                                    bot.logger.emit('error', bot.shardId, `[messageCreate] Error reply: (${interaction.user.username} : ${interaction.customId})` + error);
+                                    return;
+                                });
+                    }
+                    // DJ command
+                    if (bot.config.command.djCommand.includes('pause') && bot.config.command.djCommand.includes('resume')) {
+                        if (!bot.config.bot.dj.includes(interaction.user.id))
+                            return interaction.reply({ content: client.i18n.t('events:ERROR_REQUIRE_DJ'), ephemeral: true, components: [] })
+                                .catch((error) => {
+                                    bot.logger.emit('error', bot.shardId, `[messageCreate] Error reply: (${interaction.user.username} : ${interaction.customId})` + error);
+                                    return;
+                                });
+                    }
+
+
                     const playing = !(player.paused);
 
                     if (playing) {
@@ -77,6 +97,26 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
                 }
 
                 case 'Dashboard-Skip': {
+                    // Admin command
+                    if (bot.config.command.adminCommand.includes('skip')) {
+                        if (!bot.config.bot.admin.includes(interaction.user.id))
+                            return interaction.reply({ content: client.i18n.t('events:ERROR_REQUIRE_ADMIN'), ephemeral: true, components: [] })
+                                .catch((error) => {
+                                    bot.logger.emit('error', bot.shardId, `[messageCreate] Error reply: (${interaction.user.username} : ${interaction.customId})` + error);
+                                    return;
+                                });
+                    }
+                    // DJ command
+                    if (bot.config.command.djCommand.includes('skip')) {
+                        if (!bot.config.bot.dj.includes(interaction.user.id))
+                            return interaction.reply({ content: client.i18n.t('events:ERROR_REQUIRE_DJ'), ephemeral: true, components: [] })
+                                .catch((error) => {
+                                    bot.logger.emit('error', bot.shardId, `[messageCreate] Error reply: (${interaction.user.username} : ${interaction.customId})` + error);
+                                    return;
+                                });
+                    }
+
+
                     const playing = !(player.paused);
                     const repeatMode = player.repeatMode;
 
@@ -101,6 +141,26 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
                 }
 
                 case 'Dashboard-Loop': {
+                    // Admin command
+                    if (bot.config.command.adminCommand.includes('loop')) {
+                        if (!bot.config.bot.admin.includes(interaction.user.id))
+                            return interaction.reply({ content: client.i18n.t('events:ERROR_REQUIRE_ADMIN'), ephemeral: true, components: [] })
+                                .catch((error) => {
+                                    bot.logger.emit('error', bot.shardId, `[messageCreate] Error reply: (${interaction.user.username} : ${interaction.customId})` + error);
+                                    return;
+                                });
+                    }
+                    // DJ command
+                    if (bot.config.command.djCommand.includes('loop')) {
+                        if (!bot.config.bot.dj.includes(interaction.user.id))
+                            return interaction.reply({ content: client.i18n.t('events:ERROR_REQUIRE_DJ'), ephemeral: true, components: [] })
+                                .catch((error) => {
+                                    bot.logger.emit('error', bot.shardId, `[messageCreate] Error reply: (${interaction.user.username} : ${interaction.customId})` + error);
+                                    return;
+                                });
+                    }
+
+
                     let mode = 0;
                     const methods = ['Off', 'Single', 'All'];
 
@@ -160,6 +220,26 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
                 }
 
                 case 'Dashboard-Stop': {
+                    // Admin command
+                    if (bot.config.command.adminCommand.includes('leave')) {
+                        if (!bot.config.bot.admin.includes(interaction.user.id))
+                            return interaction.reply({ content: client.i18n.t('events:ERROR_REQUIRE_ADMIN'), ephemeral: true, components: [] })
+                                .catch((error) => {
+                                    bot.logger.emit('error', bot.shardId, `[messageCreate] Error reply: (${interaction.user.username} : ${interaction.customId})` + error);
+                                    return;
+                                });
+                    }
+                    // DJ command
+                    if (bot.config.command.djCommand.includes('leave')) {
+                        if (!bot.config.bot.dj.includes(interaction.user.id))
+                            return interaction.reply({ content: client.i18n.t('events:ERROR_REQUIRE_DJ'), ephemeral: true, components: [] })
+                                .catch((error) => {
+                                    bot.logger.emit('error', bot.shardId, `[messageCreate] Error reply: (${interaction.user.username} : ${interaction.customId})` + error);
+                                    return;
+                                });
+                    }
+
+
                     if (bot.config.bot.autoLeave.enabled) {
                         player.destroy();
                     }
@@ -174,6 +254,26 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
                 }
 
                 case 'Dashboard-Shuffle': {
+                    // Admin command
+                    if (bot.config.command.adminCommand.includes('shuffle')) {
+                        if (!bot.config.bot.admin.includes(interaction.user.id))
+                            return interaction.reply({ content: client.i18n.t('events:ERROR_REQUIRE_ADMIN'), ephemeral: true, components: [] })
+                                .catch((error) => {
+                                    bot.logger.emit('error', bot.shardId, `[messageCreate] Error reply: (${interaction.user.username} : ${interaction.customId})` + error);
+                                    return;
+                                });
+                    }
+                    // DJ command
+                    if (bot.config.command.djCommand.includes('shuffle')) {
+                        if (!bot.config.bot.dj.includes(interaction.user.id))
+                            return interaction.reply({ content: client.i18n.t('events:ERROR_REQUIRE_DJ'), ephemeral: true, components: [] })
+                                .catch((error) => {
+                                    bot.logger.emit('error', bot.shardId, `[messageCreate] Error reply: (${interaction.user.username} : ${interaction.customId})` + error);
+                                    return;
+                                });
+                    }
+
+
                     player.queue.shuffle();
 
                     await interaction.reply({ content: client.i18n.t('events:MESSAGE_MUSIC_SHUFFLE'), ephemeral: true, components: [] });
