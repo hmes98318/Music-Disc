@@ -19,6 +19,7 @@ const config = {
         // OAUTH2 mode requires setting 'admin', 'clientSecret' value
         admin                   : [],                   // Admin users, It must be the user ID (string[])
         dj                      : [],                   // DJ users, It must be the user ID (string[])
+        djRoleId                : '',                   // DJ role ID, members with this role have DJ permissions (string)
 
         clientSecret            : '',
 
@@ -46,7 +47,7 @@ const config = {
 
         // Specify the text channel for receiving commands.
         // If this value is set, text messages from other channels will not be processed.
-        specifyMessageChannel   : null,         // Text channel ID
+        specifyMessageChannel   : '',           // Text channel ID
 
         // Language settings
         i18n: {

@@ -15,6 +15,7 @@ export const cst = {
             // OAUTH2 mode requires setting 'admin', 'clientSecret' value
             admin                   : [],                   // Admin users, It must be the user ID (string[])
             dj                      : [],                   // DJ users, It must be the user ID (string[])
+            djRoleId                : null,                 // DJ role ID, members with this role have DJ permissions
 
             clientSecret            : '',
     

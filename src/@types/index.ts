@@ -80,6 +80,7 @@ export type BotConfig = {
     slashCommand: boolean;
     admin: string[];
     dj: string[];
+    djRoleId: string | null;
     clientSecret: string;
     name: string;
     prefix: string;

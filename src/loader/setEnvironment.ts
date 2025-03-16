@@ -18,6 +18,9 @@ const setEnvironment = (defaultConfig: Config) => {
         dj: (Array.isArray(config.bot.dj) && config.bot.dj.length > 0)
             ? config.bot.dj
             : defaultConfig.bot.dj,
+        djRoleId: (/^\d+$/).test(String(config.bot.djRoleId))
+            ? String(config.bot.djRoleId)
+            : defaultConfig.bot.djRoleId,
 
         clientSecret: config.bot.clientSecret || defaultConfig.bot.clientSecret,
 
