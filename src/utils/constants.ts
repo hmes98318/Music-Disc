@@ -62,6 +62,11 @@ export const cst = {
             }
         ],
 
+        spotify: {
+            clientId: null,             // If you want to use Spotify to play songs, you need to set up Spotify credentials.
+            clientSecret: null          // https://developer.spotify.com/documentation/web-api
+        },
+
         blacklist               : [],           // It must be the user ID (string[])
 
         // Web dashboard settings

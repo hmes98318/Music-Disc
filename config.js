@@ -12,6 +12,11 @@ const config = {
         }
     ],
 
+    spotify: {
+        clientId: '',               // If you want to use Spotify to play songs, you need to set up Spotify credentials.
+        clientSecret: ''            // https://developer.spotify.com/documentation/web-api
+    },
+
     bot: {
         textCommand             : true,                 // Whether to enable text command
         slashCommand            : true,                 // Whether to enable slash command

@@ -54,10 +54,27 @@ class App {
 
 
         this.#client.commands = new Collection();
-        this.#client.lavashark = new LavaShark({
-            nodes: this.bot.config.nodeList,
-            sendWS: (guildId, payload) => { this.#client.guilds.cache.get(guildId)?.shard.send(payload); }
-        });
+
+        if (this.bot.config.spotify.clientId && this.bot.config.spotify.clientSecret) {
+            this.#client.lavashark = new LavaShark({
+                nodes: this.bot.config.nodeList,
+                sendWS: (guildId, payload) => { this.#client.guilds.cache.get(guildId)?.shard.send(payload); },
+                spotify: {
+                    clientId: this.bot.config.spotify.clientId,
+                    clientSecret: this.bot.config.spotify.clientSecret
+                }
+            });
+            
+            this.bot.logger.emit('log', this.bot.shardId, 'Spotify credentials configured.');
+        }
+        else {
+            this.#client.lavashark = new LavaShark({
+                nodes: this.bot.config.nodeList,
+                sendWS: (guildId, payload) => { this.#client.guilds.cache.get(guildId)?.shard.send(payload); }
+            });
+            
+            this.bot.logger.emit('log', this.bot.shardId, 'Spotify credentials not configured.');
+        }
     }
 
 

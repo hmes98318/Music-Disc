@@ -76,6 +76,12 @@ const setEnvironment = (defaultConfig: Config) => {
         ? config.nodeList
         : defaultConfig.nodeList;
 
+    // Spotify credentials
+    defaultConfig.spotify = {
+        clientId: config.spotify.clientId || defaultConfig.spotify.clientId,
+        clientSecret: config.spotify.clientSecret || defaultConfig.spotify.clientSecret
+    };
+
     defaultConfig.blacklist = (Array.isArray(config.blacklist) && config.blacklist.length > 0)
         ? config.blacklist
         : defaultConfig.blacklist;

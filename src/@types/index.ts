@@ -69,6 +69,7 @@ export type Bot = {
 export type Config = {
     bot: BotConfig;
     nodeList: NodeOptions[];
+    spotify: SpotifyConfig;
     blacklist: string[],
     webDashboard: WebDashboardConfig;
     localNode: LocalNodeConfig;
@@ -107,6 +108,11 @@ export type BotConfig = {
         defaultLocale: string;
     }
 };
+
+export type SpotifyConfig = {
+    clientId: string | null;
+    clientSecret: string | null;
+}
 
 export type WebDashboardConfig = {
     enabled: boolean;
