@@ -1,0 +1,19 @@
+{
+    "ERROR_GET_GUILD_DATA_CACHE": "❌ | ⚠ Sunucu verileri önbellekte alınamadı!",
+    "ERROR_NOT_IN_SAME_VOICE_CHANNEL": "❌ | Bot ile aynı ses kanalında bulunmuyorsunuz.",
+    "ERROR_NOT_IN_VOICE_CHANNEL": "❌ | Herhangi bir ses kanalına bağlı değilsiniz.",
+    "ERROR_NOT_PLAYING": "❌ | Şuan çalan bir parça bulunmuyor.",
+    "ERROR_REQUIRE_ADMIN": "❌ | Bu komut yönetici izinleri gerektirmektedir.",
+    "ERROR_REQUIRE_DJ": "❌ | Bu komut DJ izinleri gerektirmektedir.",
+    "ERROR_SEND_PRIVATE_MESSAGE": "❌ | Size özel mesaj gönderemiyorum.",
+    "ERROR_SLASH_NOT_ENABLE": "❌ | Slash ile çalışan komutlar aktif değil.",
+    "ERROR_TIME_EXPIRED": "❌ | Süre doldu.",
+    "MESSAGE_BOT_LEAVE_CHANNEL": "✅ | Bot kanaldan çıktı.",
+    "MESSAGE_MUSIC_SHUFFLE": "✅ | Kuyruk karıştırıldı.",
+    "MESSAGE_NOW_PLAYING_SUBTITLE": "Sanatçı : **{{author}}**\nSüre **{{label}}**\n",
+    "MESSAGE_NOW_PLAYING_TITLE": "Şuan Çalıyor: {{title}}\n\n",
+    "MESSAGE_SELECT_LOOP_MODE": "Döngü modunu seçiniz.",
+    "MESSAGE_SEND_PRIVATE_MESSAGE": "✅ | Parçanın adını size özel mesaj olarak gönderdim.",
+    "MESSAGE_SET_LOOP_MODE": "✅ | Döngü modunu belirle `{{mode}}`",
+    "MESSAGE_SPECIFIC_CHANNEL_WARN": "❌ | Bu kanalda komut kullanamazsınız! Lütfen <#{{channelId}}> metin kanalını kullanın."
+}
