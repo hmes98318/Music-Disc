@@ -341,7 +341,7 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
                     }
                     else {
                         tracksQueue = tracks.join('\n');
-                        tracksQueue += `\n\n----- Page ${page}/${player.setting.queuePage.maxPage} -----`;
+                        tracksQueue += client.i18n.t('events:MESSAGE_QUEUE_PAGE', { curPage: page, maxPage: player.setting.queuePage.maxPage });
                     }
 
                     const methods = ['Off', 'Single', 'All'];
@@ -392,7 +392,7 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
                     }
                     else {
                         tracksQueue = tracks.join('\n');
-                        tracksQueue += `\n\n----- Page ${page}/${player.setting.queuePage.maxPage} -----`;
+                        tracksQueue += client.i18n.t('events:MESSAGE_QUEUE_PAGE', { curPage: page, maxPage: player.setting.queuePage.maxPage });
                     }
 
                     const methods = ['Off', 'Single', 'All'];
