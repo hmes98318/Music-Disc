@@ -1,5 +1,5 @@
 {
-	"CONFIG_CLEAR_DESCRIPTION": "Kuyruktaki tüm parçaları temizle",
+    "CONFIG_CLEAR_DESCRIPTION": "Kuyruktaki tüm parçaları temizle",
     "CONFIG_CLEAR_USAGE": "clear",
     "CONFIG_DASHBOARD_DESCRIPTION": "Dashboard'u alta al",
     "CONFIG_DASHBOARD_USAGE": "dashboard",
