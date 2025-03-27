@@ -6,6 +6,8 @@ import {
     Client,
     Message
 } from 'discord.js';
+import i18next from 'i18next';
+
 import { embeds } from '../embeds/index.js';
 
 import type { Bot } from '../@types/index.js';
@@ -13,8 +15,8 @@ import type { Bot } from '../@types/index.js';
 
 export const name = 'nowplaying';
 export const aliases = ['np', 'save'];
-export const description = 'Show now playing song';
-export const usage = 'nowplaying';
+export const description = i18next.t('commands:CONFIG_NOW_PLAYING_DESCRIPTION');
+export const usage = i18next.t('commands:CONFIG_NOW_PLAYING_USAGE');
 export const voiceChannel = false;
 export const showHelp = true;
 export const sendTyping = true;

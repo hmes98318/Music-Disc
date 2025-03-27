@@ -1,18 +1,20 @@
+import i18next from 'i18next';
+
 import type { ChatInputCommandInteraction, Client, Message } from 'discord.js';
 import type { Bot } from '../@types/index.js';
 
 
 export const name = 'language';
 export const aliases = ['lang', 'locale'];
-export const description = 'Change the Bot locale';
-export const usage = 'language <locale>';
+export const description = i18next.t('commands:CONFIG_LANG_DESCRIPTION');
+export const usage = i18next.t('commands:CONFIG_LANG_USAGE');
 export const voiceChannel = false;
 export const showHelp = true;
 export const sendTyping = false;
 export const options = [
     {
         name: 'locale',
-        description: 'Locale name',
+        description: i18next.t('commands:CONFIG_LANG_OPTION_DESCRIPTION'),
         type: 3,
         required: false
     }

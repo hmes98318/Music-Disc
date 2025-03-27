@@ -1,3 +1,4 @@
+import i18next from 'i18next';
 import { embeds } from '../embeds/index.js';
 
 import type {
@@ -11,21 +12,21 @@ import type { Bot } from '../@types/index.js';
 
 export const name = 'remove';
 export const aliases = ['rm'];
-export const description = 'Select a song to remove from the playlist';
-export const usage = 'remove <track index number> [from index to index 2 track]';
+export const description = i18next.t('commands:CONFIG_REMOVE_DESCRIPTION');
+export const usage = i18next.t('commands:CONFIG_REMOVE_USAGE');
 export const voiceChannel = true;
 export const showHelp = true;
 export const sendTyping = true;
 export const options = [
     {
         name: 'index',
-        description: 'track index number',
+        description: i18next.t('commands:CONFIG_REMOVE_OPTION_DESCRIPTION'),
         type: 10,
         required: false
     },
     {
         name: 'index2',
-        description: 'from index to index 2 track',
+        description: i18next.t('commands:CONFIG_REMOVE_OPTION_DESCRIPTION_2'),
         type: 10,
         required: false
     }

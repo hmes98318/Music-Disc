@@ -1,3 +1,5 @@
+import i18next from 'i18next';
+
 import { dashboard } from '../dashboard/index.js';
 
 import type { ChatInputCommandInteraction, Client, Message } from 'discord.js';
@@ -6,15 +8,15 @@ import type { Bot } from '../@types/index.js';
 
 export const name = 'volume';
 export const aliases = ['v'];
-export const description = 'Configure bot volume';
-export const usage = 'v <0-100>';
+export const description = i18next.t('commands:CONFIG_VOLUME_DESCRIPTION');
+export const usage = i18next.t('commands:CONFIG_VOLUME_USAGE');
 export const voiceChannel = true;
 export const showHelp = true;
 export const sendTyping = true;
 export const options = [
     {
         name: 'volume',
-        description: 'The volume to set',
+        description: i18next.t('commands:CONFIG_VOLUME_OPTION_DESCRIPTION'),
         type: 4,
         required: true,
         min_value: 1

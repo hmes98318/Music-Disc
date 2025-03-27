@@ -1,3 +1,5 @@
+import i18next from 'i18next';
+
 import { dashboard } from '../dashboard/index.js';
 import { embeds } from '../embeds/index.js';
 import { isUserInBlacklist } from '../utils/functions/isUserInBlacklist.js';
@@ -9,15 +11,15 @@ import type { Bot } from '../@types/index.js';
 
 export const name = 'playfirst';
 export const aliases = ['pf', 'pp', 'prioritizePlay'];
-export const description = 'Enter your song link or song name to play first';
-export const usage = 'playfirst <URL/song name>';
+export const description = i18next.t('commands:CONFIG_PLAYFIRST_DESCRIPTION');
+export const usage = i18next.t('commands:CONFIG_PLAYFIRST_USAGE');
 export const voiceChannel = true;
 export const showHelp = true;
 export const sendTyping = true;
 export const options = [
     {
         name: 'playfirst',
-        description: 'The song link or song name to play first',
+        description: i18next.t('commands:CONFIG_PLAYFIRST_OPTION_DESCRIPTION'),
         type: 3,
         required: true
     }

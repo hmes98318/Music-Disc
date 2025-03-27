@@ -1,4 +1,6 @@
+import i18next from 'i18next';
 import { NodeState } from 'lavashark';
+
 import { embeds } from '../embeds/index.js';
 
 import type { ChatInputCommandInteraction, Client, Message } from 'discord.js';
@@ -7,15 +9,15 @@ import type { Bot } from '../@types/index.js';
 
 export const name = 'nodestatus';
 export const aliases = ['node', 'nodes', 'nodesstatus'];
-export const description = 'Show nodes active status';
-export const usage = 'node [node name]';
+export const description = i18next.t('commands:CONFIG_NODE_DESCRIPTION');
+export const usage = i18next.t('commands:CONFIG_NODE_USAGE');
 export const voiceChannel = false;
 export const showHelp = true;
 export const sendTyping = true;
 export const options = [
     {
         name: 'nodename',
-        description: 'The node name',
+        description: i18next.t('commands:CONFIG_NODE_OPTION_DESCRIPTION'),
         type: 3,
         required: false
     }

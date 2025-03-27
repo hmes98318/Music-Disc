@@ -8,6 +8,7 @@ import {
     StringSelectMenuBuilder,
     StringSelectMenuInteraction,
 } from 'discord.js';
+import i18next from 'i18next';
 
 import { dashboard } from '../dashboard/index.js';
 import { embeds } from '../embeds/index.js';
@@ -19,15 +20,15 @@ import type { Bot } from '../@types/index.js';
 
 export const name = 'search';
 export const aliases = ['find'];
-export const description = 'Enter song name to search';
-export const usage = 'search <URL/song name>';
+export const description = i18next.t('commands:CONFIG_SEARCH_DESCRIPTION');
+export const usage = i18next.t('commands:CONFIG_SEARCH_USAGE');
 export const voiceChannel = true;
 export const showHelp = true;
 export const sendTyping = true;
 export const options = [
     {
         name: 'search',
-        description: 'The song name',
+        description: i18next.t('commands:CONFIG_SEARCH_OPTION_DESCRIPTION'),
         type: 3,
         required: true
     }

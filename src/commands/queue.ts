@@ -6,6 +6,8 @@ import {
     Client,
     Message
 } from 'discord.js';
+import i18next from 'i18next';
+
 import { embeds } from '../embeds/index.js';
 import { cst } from '../utils/constants.js';
 
@@ -14,8 +16,8 @@ import type { Bot } from '../@types/index.js';
 
 export const name = 'queue';
 export const aliases = ['q', 'list'];
-export const description = 'Show currnet playlist';
-export const usage = 'queue';
+export const description = i18next.t('commands:CONFIG_QUEUE_DESCRIPTION');
+export const usage = i18next.t('commands:CONFIG_QUEUE_USAGE');
 export const voiceChannel = true;
 export const showHelp = true;
 export const sendTyping = false;

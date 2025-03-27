@@ -1,11 +1,13 @@
+import i18next from 'i18next';
+
 import type { ChatInputCommandInteraction, Client, Message } from 'discord.js';
 import type { Bot } from '../@types/index.js';
 
 
 export const name = 'clear';
 export const aliases = ['cls'];
-export const description = 'Clear all the music in the queue';
-export const usage = 'clear';
+export const description = i18next.t('commands:CONFIG_PLAY_DESCRIPTION');
+export const usage = i18next.t('commands:CONFIG_PLAY_USAGE');
 export const voiceChannel = true;
 export const showHelp = true;
 export const sendTyping = false;

@@ -1,3 +1,5 @@
+import i18next from 'i18next';
+
 import { timeToSeconds } from '../utils/functions/unitConverter.js';
 
 import type { ChatInputCommandInteraction, Client, Message } from 'discord.js';
@@ -6,15 +8,15 @@ import type { Bot } from '../@types/index.js';
 
 export const name = 'seek';
 export const aliases = [];
-export const description = 'Seeks to a certain time in the track';
-export const usage = 'seek <[hh]mm]ss/[hh:mm]:ss> (ex: 3m20s, 1:20:55)';
+export const description = i18next.t('commands:CONFIG_SEEK_DESCRIPTION');
+export const usage = i18next.t('commands:CONFIG_SEEK_USAGE');
 export const voiceChannel = true;
 export const showHelp = true;
 export const sendTyping = true;
 export const options = [
     {
         name: 'seek',
-        description: 'traget time (ex: 3m20s, 1:20:55)',
+        description: i18next.t('commands:CONFIG_SEEK_OPTION_DESCRIPTION'),
         type: 3,
         required: true
     }

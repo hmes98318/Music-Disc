@@ -1,11 +1,13 @@
+import i18next from 'i18next';
+
 import type { ChatInputCommandInteraction, Client, Message } from 'discord.js';
 import type { Bot } from '../@types/index.js';
 
 
 export const name = 'resume';
 export const aliases = [];
-export const description = 'Resume paused track';
-export const usage = 'resume';
+export const description = i18next.t('commands:CONFIG_RESUME_DESCRIPTION');
+export const usage = i18next.t('commands:CONFIG_RESUME_USAGE');
 export const voiceChannel = true;
 export const showHelp = true;
 export const sendTyping = false;

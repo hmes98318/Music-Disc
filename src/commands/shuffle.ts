@@ -1,11 +1,13 @@
+import i18next from 'i18next';
+
 import type { ChatInputCommandInteraction, Client, Message } from 'discord.js';
 import type { Bot } from '../@types/index.js';
 
 
 export const name = 'shuffle';
 export const aliases = ['random'];
-export const description = 'Shuffle Playlist';
-export const usage = 'shuffle';
+export const description = i18next.t('commands:CONFIG_SHUFFLE_DESCRIPTION');
+export const usage = i18next.t('commands:CONFIG_SHUFFLE_USAGE');
 export const voiceChannel = true;
 export const showHelp = true;
 export const sendTyping = false;

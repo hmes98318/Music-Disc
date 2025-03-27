@@ -3,27 +3,29 @@ import {
     Client,
     Message
 } from 'discord.js';
+import i18next from 'i18next';
+
 import type { Bot } from '../@types/index.js';
 
 
 export const name = 'move';
 export const aliases = ['mv', 'swap', 'change'];
-export const description = 'Swap the positions of two songs in the queue';
-export const usage = 'move <index1> <index2>';
+export const description = i18next.t('commands:CONFIG_MOVE_DESCRIPTION');
+export const usage = i18next.t('commands:CONFIG_MOVE_USAGE');
 export const voiceChannel = true;
 export const showHelp = true;
 export const sendTyping = true;
 export const options = [
     {
         name: 'moveindex1',
-        description: 'To swap song position 1',
+        description: i18next.t('commands:CONFIG_MOVE_OPTION_DESCRIPTION'),
         type: 4,
         required: true,
         min_value: 1
     },
     {
         name: 'moveindex2',
-        description: 'To swap song position 2',
+        description: i18next.t('commands:CONFIG_MOVE_OPTION_DESCRIPTION_2'),
         type: 4,
         required: true,
         min_value: 1

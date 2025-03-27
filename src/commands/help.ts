@@ -8,6 +8,8 @@ import {
     StringSelectMenuBuilder,
     StringSelectMenuInteraction
 } from 'discord.js';
+import i18next from 'i18next';
+
 import { embeds } from '../embeds/index.js';
 
 import type { Bot } from '../@types/index.js';
@@ -15,15 +17,15 @@ import type { Bot } from '../@types/index.js';
 
 export const name = 'help';
 export const aliases = ['h'];
-export const description = 'Get commands help';
-export const usage = 'help [command]';
+export const description = i18next.t('commands:CONFIG_HELP_DESCRIPTION');
+export const usage = i18next.t('commands:CONFIG_HELP_USAGE');
 export const voiceChannel = false;
 export const showHelp = true;
 export const sendTyping = true;
 export const options = [
     {
         name: 'command',
-        description: 'which command need help',
+        description: i18next.t('commands:CONFIG_HELP_OPTION_DESCRIPTION'),
         type: 3,
         required: false
     }

@@ -1,3 +1,4 @@
+import i18next from 'i18next';
 import { RepeatMode } from 'lavashark';
 
 import type { Client, Message, ChatInputCommandInteraction } from 'discord.js';
@@ -6,15 +7,15 @@ import type { Bot } from '../@types/index.js';
 
 export const name = 'loop';
 export const aliases = ['lp'];
-export const description = 'Turns the music loop mode on or off';
-export const usage = 'loop <off/one/all>';
+export const description = i18next.t('commands:CONFIG_LOOP_DESCRIPTION');
+export const usage = i18next.t('commands:CONFIG_LOOP_USAGE');
 export const voiceChannel = true;
 export const showHelp = true;
 export const sendTyping = true;
 export const options = [
     {
         name: 'mode',
-        description: 'The loop mode',
+        description: i18next.t('commands:CONFIG_LOOP_OPTION_DESCRIPTION'),
         type: 3,
         required: true,
         choices: [

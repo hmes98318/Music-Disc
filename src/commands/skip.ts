@@ -1,11 +1,13 @@
+import i18next from 'i18next';
+
 import type { ChatInputCommandInteraction, Client, Message } from 'discord.js';
 import type { Bot } from '../@types/index.js';
 
 
 export const name = 'skip';
 export const aliases = ['s'];
-export const description = 'Skip currnet track';
-export const usage = 'skip';
+export const description = i18next.t('commands:CONFIG_SKIP_DESCRIPTION');
+export const usage = i18next.t('commands:CONFIG_SKIP_USAGE');
 export const voiceChannel = true;
 export const showHelp = true;
 export const sendTyping = false;

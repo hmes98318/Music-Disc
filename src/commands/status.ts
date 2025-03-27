@@ -1,3 +1,5 @@
+import i18next from 'i18next';
+
 import { cst } from '../utils/constants.js';
 import { embeds } from '../embeds/index.js';
 import { uptime } from '../utils/functions/uptime.js';
@@ -9,8 +11,8 @@ import type { Bot, SystemStatus } from '../@types/index.js';
 
 export const name = 'status';
 export const aliases = ['info'];
-export const description = 'Show the bot status';
-export const usage = 'status';
+export const description = i18next.t('commands:CONFIG_STATUS_DESCRIPTION');
+export const usage = i18next.t('commands:CONFIG_STATUS_USAGE');
 export const voiceChannel = false;
 export const showHelp = true;
 export const sendTyping = true;

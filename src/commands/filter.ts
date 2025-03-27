@@ -8,6 +8,8 @@ import {
     StringSelectMenuBuilder,
     StringSelectMenuInteraction
 } from 'discord.js';
+import i18next from 'i18next';
+
 import { embeds } from '../embeds/index.js';
 import { filtersConfig } from '../utils/constants.js';
 
@@ -16,15 +18,15 @@ import type { Bot } from '../@types/index.js';
 
 export const name = 'filter';
 export const aliases = ['eq', 'equalizer'];
-export const description = 'Set music filter';
-export const usage = 'filter [effect name]';
+export const description = i18next.t('commands:CONFIG_FILTER_DESCRIPTION');
+export const usage = i18next.t('commands:CONFIG_FILTER_USAGE');
 export const voiceChannel = true;
 export const showHelp = true;
 export const sendTyping = true;
 export const options = [
     {
         name: 'filter',
-        description: 'Select the music filter mode you want to set.',
+        description: i18next.t('commands:CONFIG_FILTER_OPTION_DESCRIPTION'),
         type: 3,
         required: true,
         choices: [

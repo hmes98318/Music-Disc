@@ -1,3 +1,5 @@
+import i18next from 'i18next';
+
 import { embeds } from '../embeds/index.js';
 
 import type { ChatInputCommandInteraction, Client, Message } from 'discord.js';
@@ -6,8 +8,8 @@ import type { Bot } from '../@types/index.js';
 
 export const name = 'server';
 export const aliases = [];
-export const description = 'Show currently active servers';
-export const usage = 'server';
+export const description = i18next.t('commands:CONFIG_SERVER_DESCRIPTION');
+export const usage = i18next.t('commands:CONFIG_SERVER_USAGE');
 export const voiceChannel = false;
 export const showHelp = true;
 export const sendTyping = false;
