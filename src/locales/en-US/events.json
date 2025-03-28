@@ -12,7 +12,7 @@
     "MESSAGE_MUSIC_SHUFFLE": "✅ | Music shuffled.",
     "MESSAGE_NOW_PLAYING_SUBTITLE": "Author : **{{author}}**\nDuration **{{label}}**\n",
     "MESSAGE_NOW_PLAYING_TITLE": "Now Playing: {{title}}\n\n",
-    "MESSAGE_QUEUE_PAGE": "\n\n----- Page ${curPage}/${maxPage} -----",
+    "MESSAGE_QUEUE_PAGE": "\n\n----- Page {{curPage}}/{{maxPage}} -----",
     "MESSAGE_SELECT_LOOP_MODE": "Select song loop mode.",
     "MESSAGE_SEND_PRIVATE_MESSAGE": "✅ | I sent you the name of the music in a private message.",
     "MESSAGE_SET_LOOP_MODE": "✅ | Set loop to `{{mode}}`",
