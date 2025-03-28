@@ -12,7 +12,7 @@
     "MESSAGE_MUSIC_SHUFFLE": "✅ | Kuyruk karıştırıldı.",
     "MESSAGE_NOW_PLAYING_SUBTITLE": "Sanatçı : **{{author}}**\nSüre **{{label}}**\n",
     "MESSAGE_NOW_PLAYING_TITLE": "Şuan Çalıyor: {{title}}\n\n",
-	"MESSAGE_QUEUE_PAGE": "\n\n----- Sayfa ${curPage}/${maxPage} -----",
+	"MESSAGE_QUEUE_PAGE": "\n\n----- Sayfa {{curPage}}/{{maxPage}} -----",
     "MESSAGE_SELECT_LOOP_MODE": "Döngü modunu seçiniz.",
     "MESSAGE_SEND_PRIVATE_MESSAGE": "✅ | Parçanın adını size özel mesaj olarak gönderdim.",
     "MESSAGE_SET_LOOP_MODE": "✅ | Döngü modu `{{mode}}`",
