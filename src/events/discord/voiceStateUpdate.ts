@@ -1,4 +1,5 @@
 import { cst } from '../../utils/constants.js';
+import { dashboard } from '../../dashboard/index.js';
 
 import type { Client, VoiceBasedChannel, VoiceState } from 'discord.js';
 import type { Bot } from '../../@types/index.js';
@@ -43,9 +44,15 @@ export default async (bot: Bot, client: Client, oldState: VoiceState, newState: 
                     }
                 }
                 if (oldState.channel!.members.size <= 1 || checkBlacklistUsers(oldState.channel, blacklist)) {
-                    const timeoutID = setTimeout(() => {
-                        player.destroy();
-
+                    const timeoutID = setTimeout(async () => {
+                        if (bot.config.bot.autoLeave.enabled) {
+                            player.destroy();
+                        }
+                        else {
+                            player.queue.clear();
+                            await player.skip();
+                            await dashboard.destroy(bot, player);
+                        }
                     }, bot.config.bot.autoLeave.cooldown);
 
                     pool.set(oldState.guild.id, timeoutID);
@@ -69,9 +76,15 @@ export default async (bot: Bot, client: Client, oldState: VoiceState, newState: 
                 // When bot is in the target channel and only one member joined
                 // If there are two members or more (include bot) in the channel, it will not trigger
                 if (checkBlacklistUsers(newState.channel, blacklist)) {
-                    const timeoutID = setTimeout(() => {
-                        player.destroy();
-
+                    const timeoutID = setTimeout(async () => {
+                        if (bot.config.bot.autoLeave.enabled) {
+                            player.destroy();
+                        }
+                        else {
+                            player.queue.clear();
+                            await player.skip();
+                            await dashboard.destroy(bot, player);
+                        }
                     }, bot.config.bot.autoLeave.cooldown);
 
                     pool.set(newState.guild.id, timeoutID);
@@ -119,9 +132,15 @@ export default async (bot: Bot, client: Client, oldState: VoiceState, newState: 
                     }
                 }
                 if (oldState.channel!.members.size <= 1 || checkBlacklistUsers(oldState.channel, blacklist)) {
-                    const timeoutID = setTimeout(() => {
-                        player.destroy();
-
+                    const timeoutID = setTimeout(async () => {
+                        if (bot.config.bot.autoLeave.enabled) {
+                            player.destroy();
+                        }
+                        else {
+                            player.queue.clear();
+                            await player.skip();
+                            await dashboard.destroy(bot, player);
+                        }
                     }, bot.config.bot.autoLeave.cooldown);
 
                     pool.set(oldState.guild.id, timeoutID);
@@ -132,9 +151,15 @@ export default async (bot: Bot, client: Client, oldState: VoiceState, newState: 
                 // When bot is in the target channel and only one member joined
                 // If there are two members or more (include bot) in the channel, it will not trigger
                 if (checkBlacklistUsers(newState.channel, blacklist)) {
-                    const timeoutID = setTimeout(() => {
-                        player.destroy();
-
+                    const timeoutID = setTimeout(async () => {
+                        if (bot.config.bot.autoLeave.enabled) {
+                            player.destroy();
+                        }
+                        else {
+                            player.queue.clear();
+                            await player.skip();
+                            await dashboard.destroy(bot, player);
+                        }
                     }, bot.config.bot.autoLeave.cooldown);
 
                     pool.set(newState.guild.id, timeoutID);

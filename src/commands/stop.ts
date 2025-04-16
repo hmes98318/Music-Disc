@@ -1,13 +1,14 @@
 import i18next from 'i18next';
+import { dashboard } from '../dashboard/index.js';
 
 import type { ChatInputCommandInteraction, Client, Message } from 'discord.js';
 import type { Bot } from '../@types/index.js';
 
 
-export const name = 'leave';
+export const name = 'stop';
 export const aliases = [];
-export const description = i18next.t('commands:CONFIG_LEAVE_DESCRIPTION');
-export const usage = i18next.t('commands:CONFIG_LEAVE_USAGE');
+export const description = i18next.t('commands:CONFIG_STOP_DESCRIPTION');
+export const usage = i18next.t('commands:CONFIG_STOP_USAGE');
 export const voiceChannel = true;
 export const showHelp = true;
 export const sendTyping = false;
@@ -22,7 +23,9 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
     }
 
 
-    player.destroy();
+    player.queue.clear();
+    await player.skip();
+    await dashboard.destroy(bot, player);
 
     return message.react('👍');
 };
@@ -35,7 +38,9 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
     }
 
 
-    player.destroy();
+    player.queue.clear();
+    await player.skip();
+    await dashboard.destroy(bot, player);
 
-    return interaction.editReply(client.i18n.t('commands:MESSAGE_LEAVE_SUCCESS'));
+    return interaction.editReply(client.i18n.t('commands:MESSAGE_STOP_SUCCESS'));
 };
