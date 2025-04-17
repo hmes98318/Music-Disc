@@ -255,14 +255,15 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
 
                     if (bot.config.bot.autoLeave.enabled) {
                         player.destroy();
+                        await interaction.reply({ content: client.i18n.t('events:MESSAGE_BOT_LEAVE_CHANNEL'), ephemeral: true, components: [] });
                     }
                     else {
                         player.queue.clear();
                         await player.skip();
                         await dashboard.destroy(bot, player);
+                        await interaction.reply({ content: client.i18n.t('events:MESSAGE_BOT_STOP'), ephemeral: true, components: [] });
                     }
 
-                    await interaction.reply({ content: client.i18n.t('events:MESSAGE_BOT_LEAVE_CHANNEL'), ephemeral: true, components: [] });
                     break;
                 }
 
