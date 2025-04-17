@@ -534,6 +534,14 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
                     });
             }
 
+            if (bot.config.bot.specifyVoiceChannel && voiceChannel.id !== bot.config.bot.specifyVoiceChannel) {
+                return interaction.reply({ content: client.i18n.t('events:ERRPR_NOT_IN_SPECIFIC_VOICE_CHANNEL', { channelId: bot.config.bot.specifyVoiceChannel }), allowedMentions: { repliedUser: false } })
+                    .catch((error) => {
+                        bot.logger.emit('error', bot.shardId, `[interactionCreate] Error reply: (${interaction.user.username} : /${interaction.commandName})` + error);
+                        return;
+                    });
+            }
+
             if (interaction.guild?.members.me?.voice.channel && voiceChannel.id !== interaction.guild.members.me.voice.channelId) {
                 return interaction.reply({ content: client.i18n.t('events:ERROR_NOT_IN_SAME_VOICE_CHANNEL'), allowedMentions: { repliedUser: false } })
                     .catch((error) => {

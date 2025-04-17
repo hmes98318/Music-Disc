@@ -1,6 +1,7 @@
 {
     "ERROR_GET_GUILD_DATA_CACHE": "❌ | Unable to get guild data in cache.",
     "ERROR_NOT_IN_SAME_VOICE_CHANNEL": "❌ | You are not on the same audio channel as me.",
+    "ERRPR_NOT_IN_SPECIFIC_VOICE_CHANNEL": "Please join the specified voice channel <#{{channelId}}> and call me.",
     "ERROR_NOT_IN_VOICE_CHANNEL": "❌ | You are not connected to an audio channel.",
     "ERROR_NOT_PLAYING": "❌ | There is no music currently playing.",
     "ERROR_REQUIRE_ADMIN": "❌ | This command requires administrator privileges.",

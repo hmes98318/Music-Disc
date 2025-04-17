@@ -65,6 +65,12 @@ const setEnvironment = (defaultConfig: Config) => {
             ? String(config.bot.specifyMessageChannel)
             : defaultConfig.bot.specifyMessageChannel,
 
+        specifyVoiceChannel: (/^\d+$/).test(String(config.bot.specifyVoiceChannel))
+            ? String(config.bot.specifyVoiceChannel)
+            : defaultConfig.bot.specifyVoiceChannel,
+
+        startupAutoJoin: ((/^\d+$/).test(String(config.bot.specifyVoiceChannel)) && config.bot.startupAutoJoin),
+
         i18n: {
             localePath: config.bot.i18n.localePath || defaultConfig.bot.i18n.localePath,
             defaultLocale: config.bot.i18n.defaultLocale || defaultConfig.bot.i18n.defaultLocale

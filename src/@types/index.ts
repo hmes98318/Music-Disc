@@ -103,6 +103,8 @@ export type BotConfig = {
     };
     displayVoiceState: boolean;
     specifyMessageChannel: string | null;
+    specifyVoiceChannel: string | null;
+    startupAutoJoin: boolean;
     i18n: {
         localePath: string;
         defaultLocale: string;

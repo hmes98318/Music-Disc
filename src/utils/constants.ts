@@ -45,6 +45,14 @@ export const cst = {
             // If this value is set, text messages from other channels will not be processed.
             specifyMessageChannel   : null,         // Text channel ID
 
+            // Specify the voice channel to join.
+            // If this value is set, other voice channels will not be joined.
+            specifyVoiceChannel     : null,         // Vioce channel ID
+
+            // After starting the Bot, it will automatically join the specified voice channel and wait.
+            // The specifyVoiceChannel value needs to be set, otherwise it will be invalid.
+            startupAutoJoin         : false,
+
             // Language settings
             i18n: {
                 localePath          : '../../locales',
