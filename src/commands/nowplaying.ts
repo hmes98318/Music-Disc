@@ -7,7 +7,6 @@ import {
     Message
 } from 'discord.js';
 import i18next from 'i18next';
-
 import { embeds } from '../embeds/index.js';
 
 import type { Bot } from '../@types/index.js';
@@ -26,8 +25,8 @@ export const options = [];
 export const execute = async (bot: Bot, client: Client, message: Message) => {
     const player = client.lavashark.getPlayer(message.guild!.id);
 
-    if (!player) {
-        return message.reply({ content: client.i18n.t('commands:ERROR_NO_PLAYING'), allowedMentions: { repliedUser: false } });
+    if (!player || !player.playing) {
+        return message.reply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:ERROR_NO_PLAYING'))], allowedMentions: { repliedUser: false } });
     }
 
     const track = player.current;
@@ -50,8 +49,8 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
 export const slashExecute = async (bot: Bot, client: Client, interaction: ChatInputCommandInteraction) => {
     const player = client.lavashark.getPlayer(interaction.guild!.id);
 
-    if (!player) {
-        return interaction.reply({ content: client.i18n.t('commands:ERROR_NO_PLAYING'), allowedMentions: { repliedUser: false } });
+    if (!player || !player.playing) {
+        return interaction.editReply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:ERROR_NO_PLAYING'))], allowedMentions: { repliedUser: false } });
     }
 
     const track = player.current;

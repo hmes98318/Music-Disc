@@ -1,5 +1,6 @@
 import i18next from 'i18next';
 import { dashboard } from '../dashboard/index.js';
+import { embeds } from '../embeds/index.js';
 
 import type { ChatInputCommandInteraction, Client, Message } from 'discord.js';
 import type { Bot } from '../@types/index.js';
@@ -19,7 +20,7 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
     const player = client.lavashark.getPlayer(message.guild!.id);
 
     if (!player || !player.dashboard) {
-        return message.reply({ content: client.i18n.t('commands:ERROR_NO_PLAYING'), allowedMentions: { repliedUser: false } });
+        return message.reply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:ERROR_NO_PLAYING'))], allowedMentions: { repliedUser: false } });
     }
 
     try {
@@ -37,7 +38,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
     const player = client.lavashark.getPlayer(interaction.guild!.id);
 
     if (!player || !player.dashboard) {
-        return interaction.editReply({ content: client.i18n.t('commands:ERROR_NO_PLAYING'), allowedMentions: { repliedUser: false } });
+        return interaction.editReply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:ERROR_NO_PLAYING'))], allowedMentions: { repliedUser: false } });
     }
 
     try {
@@ -48,5 +49,5 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
 
     await dashboard.initial(bot, interaction, player);
     await dashboard.update(bot, player, player.current!);
-    return interaction.editReply(client.i18n.t('commands:MESSAGE_DASHBOARD_SUCCESS'));
+    return interaction.editReply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:MESSAGE_DASHBOARD_SUCCESS'))], allowedMentions: { repliedUser: false } });
 };

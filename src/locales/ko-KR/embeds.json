@@ -7,7 +7,7 @@
     "MESSAGE_BLACKLIST": "음성 채널에 블랙리스트에 등록된 사용자가 있습니다.",
     "MESSAGE_COMMAND": "Command **{{command}}**",
     "MESSAGE_FILTER": "`{{effectName}}`(으)로 재생 효과가 변경되었습니다.",
-    "NODE_STATUS_ARGS_ERROR": "❌ㅣ유효한 노드 이름을 입력하세요.",
+    "NODE_STATUS_ARGS_ERROR": "❌ 유효한 노드 이름을 입력하세요.",
     "NODE_STATUS_CPU_TITLE": "⚙️ CPU",
     "NODE_STATUS_CPU_VALUE": "**코어:** {{cores}}\n**시스템 로드:** {{systemLoad}}\n**Lavalink 로드:** {{lavalinkLoad}}",
     "NODE_STATUS_INFO_TITLE": "🏷️ 정보",

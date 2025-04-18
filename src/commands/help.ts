@@ -51,7 +51,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
             }));
         const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(select);
         const msg = await message.reply({
-            content: client.i18n.t('commands:MESSAGE_HELP_SELECT_LIST'),
+            embeds: [embeds.textMsg(bot, client.i18n.t('commands:MESSAGE_HELP_SELECT_LIST'))],
             components: [row.toJSON()],
             allowedMentions: { repliedUser: false }
         });
@@ -81,7 +81,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
         collector.on('end', async (collected: Collection<string, ButtonInteraction>, reason: string) => {
             if (reason == 'time' && collected.size == 0) {
                 await msg.edit({
-                    content: client.i18n.t('commands:ERROR_TIME_EXPIRED'),
+                    embeds: [embeds.textMsg(bot, client.i18n.t('commands:ERROR_TIME_EXPIRED'))],
                     components: [],
                     allowedMentions: { repliedUser: false }
                 })
@@ -107,7 +107,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
             }
         });
 
-        if (!found) return message.reply({ content: client.i18n.t('commands:MESSAGE_HELP_NOT_FOUND'), allowedMentions: { repliedUser: false } });
+        if (!found) return message.reply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:MESSAGE_HELP_NOT_FOUND'))], allowedMentions: { repliedUser: false } });
     }
 };
 
@@ -131,7 +131,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
             }));
         const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(select);
         const msg = await interaction.editReply({
-            content: client.i18n.t('commands:MESSAGE_HELP_SELECT_LIST'),
+            embeds: [embeds.textMsg(bot, client.i18n.t('commands:MESSAGE_HELP_SELECT_LIST'))],
             components: [row.toJSON()],
             allowedMentions: { repliedUser: false }
         });
@@ -161,7 +161,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
         collector.on('end', async (collected: Collection<string, ButtonInteraction>, reason: string) => {
             if (reason == 'time' && collected.size == 0) {
                 await msg.edit({
-                    content: client.i18n.t('commands:ERROR_TIME_EXPIRED'),
+                    embeds: [embeds.textMsg(bot, client.i18n.t('commands:ERROR_TIME_EXPIRED'))],
                     components: [],
                     allowedMentions: { repliedUser: false }
                 })
@@ -187,6 +187,6 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
             }
         });
 
-        if (!found) return interaction.editReply({ content: client.i18n.t('commands:MESSAGE_HELP_NOT_FOUND'), allowedMentions: { repliedUser: false } });
+        if (!found) return interaction.editReply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:MESSAGE_HELP_NOT_FOUND'))], allowedMentions: { repliedUser: false } });
     }
 };

@@ -1,4 +1,6 @@
 import i18next from 'i18next';
+
+import { embeds } from '../embeds/index.js';
 import { dashboard } from '../dashboard/index.js';
 
 import type { ChatInputCommandInteraction, Client, Message } from 'discord.js';
@@ -18,8 +20,8 @@ export const options = [];
 export const execute = async (bot: Bot, client: Client, message: Message) => {
     const player = client.lavashark.getPlayer(message.guild!.id);
 
-    if (!player) {
-        return message.reply({ content: client.i18n.t('commands:ERROR_NO_PLAYING'), allowedMentions: { repliedUser: false } });
+    if (!player || !player.playing) {
+        return message.reply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:ERROR_NO_PLAYING'))], allowedMentions: { repliedUser: false } });
     }
 
 
@@ -33,8 +35,8 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
 export const slashExecute = async (bot: Bot, client: Client, interaction: ChatInputCommandInteraction) => {
     const player = client.lavashark.getPlayer(interaction.guild!.id);
 
-    if (!player) {
-        return interaction.editReply({ content: client.i18n.t('commands:ERROR_NO_PLAYING'), allowedMentions: { repliedUser: false } });
+    if (!player || !player.playing) {
+        return interaction.editReply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:ERROR_NO_PLAYING'))], allowedMentions: { repliedUser: false } });
     }
 
 
@@ -42,5 +44,5 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
     await player.skip();
     await dashboard.destroy(bot, player);
 
-    return interaction.editReply(client.i18n.t('commands:MESSAGE_STOP_SUCCESS'));
+    return interaction.editReply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:MESSAGE_STOP_SUCCESS'))], allowedMentions: { repliedUser: false } });
 };

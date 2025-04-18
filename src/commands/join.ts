@@ -1,5 +1,6 @@
 import i18next from 'i18next';
 import { dashboard } from '../dashboard/index.js';
+import { embeds } from '../embeds/index.js';
 
 import type { ChatInputCommandInteraction, Client, Message } from 'discord.js';
 import type { Bot } from '../@types/index.js';
@@ -39,7 +40,7 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
         player.metadata = message;
     } catch (error) {
         bot.logger.emit('error', bot.shardId, 'Error joining channel: ' + error);
-        return message.reply({ content: client.i18n.t('commands:ERROR_PLAY_JOIN_CHANNEL'), allowedMentions: { repliedUser: false } });
+        return message.reply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:ERROR_PLAY_JOIN_CHANNEL'))], allowedMentions: { repliedUser: false } });
     }
 
     try {
@@ -80,7 +81,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
         player.filters.setVolume(curVolume);
     } catch (error) {
         bot.logger.emit('error', bot.shardId, 'Error joining channel: ' + error);
-        return interaction.editReply({ content: client.i18n.t('commands:ERROR_PLAY_JOIN_CHANNEL'), allowedMentions: { repliedUser: false } });
+        return interaction.editReply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:ERROR_PLAY_JOIN_CHANNEL'))], allowedMentions: { repliedUser: false } });
     }
 
     try {
@@ -90,5 +91,5 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
         await dashboard.destroy(bot, player);
     }
 
-    return interaction.editReply(client.i18n.t('commands:MESSAGE_JOIN_SUCCESS'));
+    return interaction.editReply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:MESSAGE_JOIN_SUCCESS'))], allowedMentions: { repliedUser: false } });
 };

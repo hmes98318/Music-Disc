@@ -7,7 +7,7 @@
     "MESSAGE_BLACKLIST": "Ses kanalında kara listeye alınmış kullanıcı(lar) bulunuyor.",
     "MESSAGE_COMMAND": "Komut **{{command}}**",
     "MESSAGE_FILTER": "Filtre modu seçiliyor **{{effectName}}**",
-    "NODE_STATUS_ARGS_ERROR": "❌ | Lütfen geçerli bir bağlantı noktası seçin.",
+    "NODE_STATUS_ARGS_ERROR": "❌ Lütfen geçerli bir bağlantı noktası seçin.",
     "NODE_STATUS_CPU_TITLE": "⚙️ CPU",
     "NODE_STATUS_CPU_VALUE": "Çekirdekler : **{{cores}}**\nSistem yükü : **{{systemLoad}}**\nLavalink yükü : **{{lavalinkLoad}}**",
     "NODE_STATUS_INFO_TITLE": "🏷️ Bilgi",

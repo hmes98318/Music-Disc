@@ -7,7 +7,7 @@
     "MESSAGE_BLACKLIST": "語音頻道中有被列入黑名單的用戶。",
     "MESSAGE_COMMAND": "指令 **{{command}}**",
     "MESSAGE_FILTER": "將效果模式設置為 **{{effectName}}**",
-    "NODE_STATUS_ARGS_ERROR": "❌ | 請輸入有效的節點名稱。",
+    "NODE_STATUS_ARGS_ERROR": "❌ 請輸入有效的節點名稱。",
     "NODE_STATUS_CPU_TITLE": "⚙️ CPU",
     "NODE_STATUS_CPU_VALUE": "核心數 : **{{cores}}**\n系統負載 : **{{systemLoad}}**\nLavalink 負載 : **{{lavalinkLoad}}**",
     "NODE_STATUS_INFO_TITLE": "🏷️ 資訊",

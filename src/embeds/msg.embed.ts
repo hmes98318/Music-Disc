@@ -13,6 +13,14 @@ const blacklist = (bot: Bot, userList: { name: string; value: string; }[]) => {
     return embed_;
 };
 
+const filterMsg = (bot: Bot, effectName: string) => {
+    const embed_ = new EmbedBuilder()
+        .setColor(bot.config.bot.embedsColor as HexColorString | number)
+        .setDescription(bot.i18n.t('embeds:MESSAGE_FILTER', { effectName: effectName }));
+
+    return embed_;
+};
+
 const help = (bot: Bot, command: string, description: string) => {
     const embed_ = new EmbedBuilder()
         .setColor(bot.config.bot.embedsColor as HexColorString | number)
@@ -22,12 +30,12 @@ const help = (bot: Bot, command: string, description: string) => {
     return embed_;
 };
 
-const filterMsg = (bot: Bot, effectName: string) => {
+const textMsg = (bot: Bot, message: string) => {
     const embed_ = new EmbedBuilder()
         .setColor(bot.config.bot.embedsColor as HexColorString | number)
-        .setDescription(bot.i18n.t('embeds:MESSAGE_FILTER', { effectName: effectName }));
+        .setDescription(message);
 
     return embed_;
 };
 
-export { blacklist, filterMsg, help };
+export { blacklist, filterMsg, help, textMsg };
