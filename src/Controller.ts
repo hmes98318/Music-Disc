@@ -1,4 +1,4 @@
-import { loadLocalNode, loadSite, setEnvironment } from './loader/index.js';
+import { loadControllerI18Next, loadLocalNode, loadSite, setEnvironment } from './loader/index.js';
 import { Logger } from './lib/Logger.js';
 import { LocalNodeController } from './lib/localnode/LocalNodeController.js';
 import { ShardingController } from './ShardingController.js';
@@ -46,6 +46,7 @@ export class Controller {
         this.#bot.sysInfo = await getSysInfo();
 
         return Promise.resolve()
+            .then(() => loadControllerI18Next(this.#bot))
             .then(async () => { if (this.#bot.config.localNode.enabled) await loadLocalNode(this.#bot, this.#localNodeController); })
             .then(() => this.#shardManager.spwan())
             .then(async () => { if (this.#bot.config.webDashboard.enabled) await loadSite(this.#bot, this.#shardManager.manager, this.#localNodeController); })
