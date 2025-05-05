@@ -46,7 +46,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
         }
         bot.logger.emit('log', bot.shardId, 'nodesStatus: ' + JSON.stringify(nodesStatus));
 
-        const nodeHealth = healthValue === 0 ? client.i18n.t('commands:MESSAGE_NODE_ALL_ACTIVE') : client.i18n.t('commands:MESSAGE_NODE_ALL_ACTIVE', { healthValue: healthValue });
+        const nodeHealth = healthValue === 0 ? client.i18n.t('commands:MESSAGE_NODE_ALL_ACTIVE') : client.i18n.t('commands:MESSAGE_NODE_UNHEALTHY', { healthValue: healthValue });
 
         return message.reply({
             embeds: [embeds.nodesStatus(bot, nodeHealth, nodesStatus)],
@@ -116,7 +116,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
         }
         bot.logger.emit('log', bot.shardId, 'nodesStatus: ' + JSON.stringify(nodesStatus));
 
-        const nodeHealth = healthValue === 0 ? client.i18n.t('commands:MESSAGE_NODE_ALL_ACTIVE') : client.i18n.t('commands:MESSAGE_NODE_ALL_ACTIVE', { healthValue: healthValue });
+        const nodeHealth = healthValue === 0 ? client.i18n.t('commands:MESSAGE_NODE_ALL_ACTIVE') : client.i18n.t('commands:MESSAGE_NODE_UNHEALTHY', { healthValue: healthValue });
 
         return interaction.editReply({
             embeds: [embeds.nodesStatus(bot, nodeHealth, nodesStatus)],

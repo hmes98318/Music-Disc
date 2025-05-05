@@ -41,7 +41,7 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
         }
     }
 
-    const nodeHealth = healthValue === 0 ? client.i18n.t('commands:MESSAGE_NODE_ALL_ACTIVE') : client.i18n.t('commands:MESSAGE_NODE_ALL_ACTIVE', { healthValue: healthValue });
+    const nodeHealth = healthValue === 0 ? client.i18n.t('commands:MESSAGE_NODE_ALL_ACTIVE') : client.i18n.t('commands:MESSAGE_NODE_UNHEALTHY', { healthValue: healthValue });
 
 
     const results = await client.shard!.broadcastEval(async (client) => {
@@ -121,7 +121,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
         }
     }
 
-    const nodeHealth = healthValue === 0 ? client.i18n.t('commands:MESSAGE_NODE_ALL_ACTIVE') : client.i18n.t('commands:MESSAGE_NODE_ALL_ACTIVE', { healthValue: healthValue });
+    const nodeHealth = healthValue === 0 ? client.i18n.t('commands:MESSAGE_NODE_ALL_ACTIVE') : client.i18n.t('commands:MESSAGE_NODE_UNHEALTHY', { healthValue: healthValue });
 
 
     const results = await client.shard!.broadcastEval(async (client) => {
