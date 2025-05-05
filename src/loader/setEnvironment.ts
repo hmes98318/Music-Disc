@@ -130,13 +130,13 @@ const setEnvironment = (defaultConfig: Config) => {
     };
 
     defaultConfig.command = {
-        disableCommand: (Array.isArray(config.command.disableCommand) && config.command.disableCommand.length > 0)
+        disableCommand: Array.isArray(config.command.disableCommand)
             ? config.command.disableCommand
             : defaultConfig.command.disableCommand,
-        adminCommand: (Array.isArray(config.command.adminCommand) && config.command.adminCommand.length > 0)
+        adminCommand: Array.isArray(config.command.adminCommand)
             ? config.command.adminCommand
             : defaultConfig.command.adminCommand,
-        djCommand: (Array.isArray(config.command.djCommand) && config.command.djCommand.length > 0)
+        djCommand: Array.isArray(config.command.djCommand)
             ? config.command.djCommand
             : defaultConfig.command.djCommand,
     };
