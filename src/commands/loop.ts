@@ -2,6 +2,7 @@ import i18next from 'i18next';
 import { RepeatMode } from 'lavashark';
 
 import { embeds } from '../embeds/index.js';
+import { CommandCategory } from '../@types/index.js';
 
 import type { Client, Message, ChatInputCommandInteraction } from 'discord.js';
 import type { Bot } from '../@types/index.js';
@@ -11,6 +12,7 @@ export const name = 'loop';
 export const aliases = ['lp'];
 export const description = i18next.t('commands:CONFIG_LOOP_DESCRIPTION');
 export const usage = i18next.t('commands:CONFIG_LOOP_USAGE');
+export const category = CommandCategory.MUSIC;
 export const voiceChannel = true;
 export const showHelp = true;
 export const sendTyping = true;

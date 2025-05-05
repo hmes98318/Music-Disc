@@ -7,7 +7,9 @@ import {
     Message
 } from 'discord.js';
 import i18next from 'i18next';
+
 import { embeds } from '../embeds/index.js';
+import { CommandCategory } from '../@types/index.js';
 
 import type { Bot } from '../@types/index.js';
 
@@ -16,6 +18,7 @@ export const name = 'nowplaying';
 export const aliases = ['np', 'save'];
 export const description = i18next.t('commands:CONFIG_NOW_PLAYING_DESCRIPTION');
 export const usage = i18next.t('commands:CONFIG_NOW_PLAYING_USAGE');
+export const category = CommandCategory.MUSIC;
 export const voiceChannel = false;
 export const showHelp = true;
 export const sendTyping = true;

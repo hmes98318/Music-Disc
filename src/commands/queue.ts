@@ -10,6 +10,7 @@ import i18next from 'i18next';
 
 import { embeds } from '../embeds/index.js';
 import { cst } from '../utils/constants.js';
+import { CommandCategory } from '../@types/index.js';
 
 import type { Bot } from '../@types/index.js';
 
@@ -18,6 +19,7 @@ export const name = 'queue';
 export const aliases = ['q', 'list'];
 export const description = i18next.t('commands:CONFIG_QUEUE_DESCRIPTION');
 export const usage = i18next.t('commands:CONFIG_QUEUE_USAGE');
+export const category = CommandCategory.MUSIC;
 export const voiceChannel = true;
 export const showHelp = true;
 export const sendTyping = false;

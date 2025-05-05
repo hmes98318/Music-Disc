@@ -11,6 +11,7 @@ import {
 import i18next from 'i18next';
 
 import { embeds } from '../embeds/index.js';
+import { CommandCategory } from '../@types/index.js';
 
 import type { Bot } from '../@types/index.js';
 
@@ -19,6 +20,7 @@ export const name = 'help';
 export const aliases = ['h'];
 export const description = i18next.t('commands:CONFIG_HELP_DESCRIPTION');
 export const usage = i18next.t('commands:CONFIG_HELP_USAGE');
+export const category = CommandCategory.UTILITY;
 export const voiceChannel = false;
 export const showHelp = true;
 export const sendTyping = true;
@@ -39,20 +41,33 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
         const title = client.user?.username;
         const commands = client.commands.filter(x => x.showHelp !== false);
 
-        const select = new StringSelectMenuBuilder()
-            .setCustomId('helpSelect')
-            .setPlaceholder(client.i18n.t('commands:MESSAGE_HELP_SELECT_MODE'))
-            .setOptions(commands.map(x => {
-                return {
-                    label: x.name,
-                    description: `Aliases: ${x.aliases[0] ? x.aliases.map((y: string) => y).join(', ') : x.name}`,
-                    value: x.name
-                };
-            }));
-        const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(select);
+        const musicCommands = commands.filter(x => x.category === CommandCategory.MUSIC);
+        const utilityCommands = commands.filter(x => x.category === CommandCategory.UTILITY);
+
+        const musicSelect = new StringSelectMenuBuilder()
+            .setCustomId('musicHelpSelect')
+            .setPlaceholder('Select a Music command')
+            .setOptions(musicCommands.map(x => ({
+                label: x.name,
+                description: `Aliases: ${x.aliases[0] ? x.aliases.join(', ') : 'None'}`,
+                value: x.name
+            })));
+
+        const utilitySelect = new StringSelectMenuBuilder()
+            .setCustomId('utilityHelpSelect')
+            .setPlaceholder('Select a Utility command')
+            .setOptions(utilityCommands.map(x => ({
+                label: x.name,
+                description: `Aliases: ${x.aliases[0] ? x.aliases.join(', ') : 'None'}`,
+                value: x.name
+            })));
+
+        const musicRow = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(musicSelect);
+        const utilityRow = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(utilitySelect);
+
         const msg = await message.reply({
             embeds: [embeds.textMsg(bot, client.i18n.t('commands:MESSAGE_HELP_SELECT_LIST'))],
-            components: [row.toJSON()],
+            components: [musicRow.toJSON(), utilityRow.toJSON()],
             allowedMentions: { repliedUser: false }
         });
 
@@ -62,7 +77,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
         });
 
         collector.on('collect', async (i: StringSelectMenuInteraction) => {
-            if (i.customId != 'helpSelect') return;
+            if (i.customId !== 'musicHelpSelect' && i.customId !== 'utilityHelpSelect') return;
 
             const cmd = commands.find(x => x.name === i.values[0]);
             const usage = `${cmd.description}\n\`\`\`${prefix}${cmd.usage}\`\`\``;
@@ -119,20 +134,33 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
         const title = client.user?.username;
         const commands = client.commands.filter(x => x.showHelp !== false);
 
-        const select = new StringSelectMenuBuilder()
-            .setCustomId('helpSelect')
-            .setPlaceholder(client.i18n.t('commands:MESSAGE_HELP_SELECT_MODE'))
-            .setOptions(commands.map(x => {
-                return {
-                    label: x.name,
-                    description: `Aliases: ${x.aliases[0] ? x.aliases.map((y: string) => y).join(', ') : x.name}`,
-                    value: x.name
-                };
-            }));
-        const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(select);
+        const musicCommands = commands.filter(x => x.category === CommandCategory.MUSIC);
+        const utilityCommands = commands.filter(x => x.category === CommandCategory.UTILITY);
+
+        const musicSelect = new StringSelectMenuBuilder()
+            .setCustomId('musicHelpSelect')
+            .setPlaceholder('Select a Music command')
+            .setOptions(musicCommands.map(x => ({
+                label: x.name,
+                description: `Aliases: ${x.aliases[0] ? x.aliases.join(', ') : 'None'}`,
+                value: x.name
+            })));
+
+        const utilitySelect = new StringSelectMenuBuilder()
+            .setCustomId('utilityHelpSelect')
+            .setPlaceholder('Select a Utility command')
+            .setOptions(utilityCommands.map(x => ({
+                label: x.name,
+                description: `Aliases: ${x.aliases[0] ? x.aliases.join(', ') : 'None'}`,
+                value: x.name
+            })));
+
+        const musicRow = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(musicSelect);
+        const utilityRow = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(utilitySelect);
+
         const msg = await interaction.editReply({
             embeds: [embeds.textMsg(bot, client.i18n.t('commands:MESSAGE_HELP_SELECT_LIST'))],
-            components: [row.toJSON()],
+            components: [musicRow.toJSON(), utilityRow.toJSON()],
             allowedMentions: { repliedUser: false }
         });
 
@@ -142,7 +170,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
         });
 
         collector.on('collect', async (i: StringSelectMenuInteraction) => {
-            if (i.customId != 'helpSelect') return;
+            if (i.customId !== 'musicHelpSelect' && i.customId !== 'utilityHelpSelect') return;
 
             const cmd = commands.find(x => x.name === i.values[0]);
             const usage = `${cmd.description}\n\`\`\`${prefix}${cmd.usage}\`\`\``;

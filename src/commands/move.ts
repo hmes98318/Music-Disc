@@ -4,7 +4,9 @@ import {
     Message
 } from 'discord.js';
 import i18next from 'i18next';
+
 import { embeds } from '../embeds/index.js';
+import { CommandCategory } from '../@types/index.js';
 
 import type { Bot } from '../@types/index.js';
 
@@ -13,6 +15,7 @@ export const name = 'move';
 export const aliases = ['mv', 'swap', 'change'];
 export const description = i18next.t('commands:CONFIG_MOVE_DESCRIPTION');
 export const usage = i18next.t('commands:CONFIG_MOVE_USAGE');
+export const category = CommandCategory.MUSIC;
 export const voiceChannel = true;
 export const showHelp = true;
 export const sendTyping = true;

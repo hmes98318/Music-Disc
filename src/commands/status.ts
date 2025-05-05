@@ -4,6 +4,7 @@ import { cst } from '../utils/constants.js';
 import { embeds } from '../embeds/index.js';
 import { uptime } from '../utils/functions/uptime.js';
 import { sysusage } from '../utils/functions/sysusage.js';
+import { CommandCategory } from '../@types/index.js';
 
 import type { ChatInputCommandInteraction, Client, Message } from 'discord.js';
 import type { Bot, SystemStatus } from '../@types/index.js';
@@ -13,6 +14,7 @@ export const name = 'status';
 export const aliases = ['info'];
 export const description = i18next.t('commands:CONFIG_STATUS_DESCRIPTION');
 export const usage = i18next.t('commands:CONFIG_STATUS_USAGE');
+export const category = CommandCategory.UTILITY;
 export const voiceChannel = false;
 export const showHelp = true;
 export const sendTyping = true;

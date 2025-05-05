@@ -1,6 +1,8 @@
 import i18next from 'i18next';
+
 import { dashboard } from '../dashboard/index.js';
 import { embeds } from '../embeds/index.js';
+import { CommandCategory } from '../@types/index.js';
 
 import type { ChatInputCommandInteraction, Client, Message } from 'discord.js';
 import type { Bot } from '../@types/index.js';
@@ -10,6 +12,7 @@ export const name = 'join';
 export const aliases = ['add', 'summon'];
 export const description = i18next.t('commands:CONFIG_JOIN_DESCRIPTION');
 export const usage = i18next.t('commands:CONFIG_JOIN_USAGE');
+export const category = CommandCategory.MUSIC;
 export const voiceChannel = true;
 export const showHelp = true;
 export const sendTyping = false;

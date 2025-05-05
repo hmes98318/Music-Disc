@@ -1,5 +1,7 @@
 import i18next from 'i18next';
+
 import { embeds } from '../embeds/index.js';
+import { CommandCategory } from '../@types/index.js';
 
 import type {
     ChatInputCommandInteraction,
@@ -14,6 +16,7 @@ export const name = 'remove';
 export const aliases = ['rm'];
 export const description = i18next.t('commands:CONFIG_REMOVE_DESCRIPTION');
 export const usage = i18next.t('commands:CONFIG_REMOVE_USAGE');
+export const category = CommandCategory.MUSIC;
 export const voiceChannel = true;
 export const showHelp = true;
 export const sendTyping = true;

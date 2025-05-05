@@ -12,6 +12,7 @@ import i18next from 'i18next';
 
 import { embeds } from '../embeds/index.js';
 import { filtersConfig } from '../utils/constants.js';
+import { CommandCategory } from '../@types/index.js';
 
 import type { Bot } from '../@types/index.js';
 
@@ -20,6 +21,7 @@ export const name = 'filter';
 export const aliases = ['eq', 'equalizer'];
 export const description = i18next.t('commands:CONFIG_FILTER_DESCRIPTION');
 export const usage = i18next.t('commands:CONFIG_FILTER_USAGE');
+export const category = CommandCategory.MUSIC;
 export const voiceChannel = true;
 export const showHelp = true;
 export const sendTyping = true;

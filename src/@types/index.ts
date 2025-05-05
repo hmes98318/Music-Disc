@@ -30,6 +30,11 @@ declare module 'lavashark' {
     }
 }
 
+export enum CommandCategory {
+    MUSIC = 'Music',
+    UTILITY = 'Utility',
+}
+
 export interface PlayerSetting {
     queuePage: QueuePage | null;
     volume: number | null;

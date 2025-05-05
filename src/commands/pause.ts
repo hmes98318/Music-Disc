@@ -1,5 +1,7 @@
 import i18next from 'i18next';
+
 import { embeds } from '../embeds/index.js';
+import { CommandCategory } from '../@types/index.js';
 
 import type { ChatInputCommandInteraction, Client, Message } from 'discord.js';
 import type { Bot } from '../@types/index.js';
@@ -9,6 +11,7 @@ export const name = 'pause';
 export const aliases = [];
 export const description = i18next.t('commands:CONFIG_PAUSE_DESCRIPTION');
 export const usage = i18next.t('commands:CONFIG_PAUSE_USAGE');
+export const category = CommandCategory.MUSIC;
 export const voiceChannel = true;
 export const showHelp = true;
 export const sendTyping = false;

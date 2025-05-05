@@ -13,7 +13,7 @@ import i18next from 'i18next';
 import { dashboard } from '../dashboard/index.js';
 import { embeds } from '../embeds/index.js';
 import { isUserInBlacklist } from '../utils/functions/isUserInBlacklist.js';
-import { LoadType } from '../@types/index.js';
+import { CommandCategory, LoadType } from '../@types/index.js';
 
 import type { Bot } from '../@types/index.js';
 
@@ -22,6 +22,7 @@ export const name = 'search';
 export const aliases = ['find'];
 export const description = i18next.t('commands:CONFIG_SEARCH_DESCRIPTION');
 export const usage = i18next.t('commands:CONFIG_SEARCH_USAGE');
+export const category = CommandCategory.MUSIC;
 export const voiceChannel = true;
 export const showHelp = true;
 export const sendTyping = true;
