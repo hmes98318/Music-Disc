@@ -15,6 +15,7 @@ export const cst = {
             // OAUTH2 mode requires setting 'admin', 'clientSecret' value
             admin                   : [],                   // Admin users, It must be the user ID (string[])
             dj                      : [],                   // DJ users, It must be the user ID (string[])
+            djRoleId                : null,                 // DJ role ID, members with this role have DJ permissions
 
             clientSecret            : '',
     
@@ -44,6 +45,14 @@ export const cst = {
             // If this value is set, text messages from other channels will not be processed.
             specifyMessageChannel   : null,         // Text channel ID
 
+            // Specify the voice channel to join.
+            // If this value is set, other voice channels will not be joined.
+            specifyVoiceChannel     : null,         // Vioce channel ID
+
+            // After starting the Bot, it will automatically join the specified voice channel and wait.
+            // The specifyVoiceChannel value needs to be set, otherwise it will be invalid.
+            startupAutoJoin         : false,
+
             // Language settings
             i18n: {
                 localePath          : '../../locales',
@@ -60,6 +69,11 @@ export const cst = {
                 password: 'youshallnotpass'
             }
         ],
+
+        spotify: {
+            clientId: null,             // If you want to use Spotify to play songs, you need to set up Spotify credentials.
+            clientSecret: null          // https://developer.spotify.com/documentation/web-api
+        },
 
         blacklist               : [],           // It must be the user ID (string[])
 

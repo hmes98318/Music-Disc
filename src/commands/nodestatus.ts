@@ -1,5 +1,8 @@
+import i18next from 'i18next';
 import { NodeState } from 'lavashark';
+
 import { embeds } from '../embeds/index.js';
+import { CommandCategory } from '../@types/index.js';
 
 import type { ChatInputCommandInteraction, Client, Message } from 'discord.js';
 import type { Bot } from '../@types/index.js';
@@ -7,15 +10,16 @@ import type { Bot } from '../@types/index.js';
 
 export const name = 'nodestatus';
 export const aliases = ['node', 'nodes', 'nodesstatus'];
-export const description = 'Show nodes active status';
-export const usage = 'node [node name]';
+export const description = i18next.t('commands:CONFIG_NODE_DESCRIPTION');
+export const usage = i18next.t('commands:CONFIG_NODE_USAGE');
+export const category = CommandCategory.UTILITY;
 export const voiceChannel = false;
 export const showHelp = true;
 export const sendTyping = true;
 export const options = [
     {
         name: 'nodename',
-        description: 'The node name',
+        description: i18next.t('commands:CONFIG_NODE_OPTION_DESCRIPTION'),
         type: 3,
         required: false
     }
@@ -44,7 +48,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
         }
         bot.logger.emit('log', bot.shardId, 'nodesStatus: ' + JSON.stringify(nodesStatus));
 
-        const nodeHealth = healthValue === 0 ? client.i18n.t('commands:MESSAGE_NODE_ALL_ACTIVE') : client.i18n.t('commands:MESSAGE_NODE_ALL_ACTIVE', { healthValue: healthValue });
+        const nodeHealth = healthValue === 0 ? client.i18n.t('commands:MESSAGE_NODE_ALL_ACTIVE') : client.i18n.t('commands:MESSAGE_NODE_UNHEALTHY', { healthValue: healthValue });
 
         return message.reply({
             embeds: [embeds.nodesStatus(bot, nodeHealth, nodesStatus)],
@@ -114,7 +118,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
         }
         bot.logger.emit('log', bot.shardId, 'nodesStatus: ' + JSON.stringify(nodesStatus));
 
-        const nodeHealth = healthValue === 0 ? client.i18n.t('commands:MESSAGE_NODE_ALL_ACTIVE') : client.i18n.t('commands:MESSAGE_NODE_ALL_ACTIVE', { healthValue: healthValue });
+        const nodeHealth = healthValue === 0 ? client.i18n.t('commands:MESSAGE_NODE_ALL_ACTIVE') : client.i18n.t('commands:MESSAGE_NODE_UNHEALTHY', { healthValue: healthValue });
 
         return interaction.editReply({
             embeds: [embeds.nodesStatus(bot, nodeHealth, nodesStatus)],

@@ -1,4 +1,7 @@
+import i18next from 'i18next';
+
 import { embeds } from '../embeds/index.js';
+import { CommandCategory } from '../@types/index.js';
 
 import type { ChatInputCommandInteraction, Client, Message } from 'discord.js';
 import type { Bot } from '../@types/index.js';
@@ -6,8 +9,9 @@ import type { Bot } from '../@types/index.js';
 
 export const name = 'ping';
 export const aliases = [];
-export const description = 'Get server ping';
-export const usage = 'ping';
+export const description = i18next.t('commands:CONFIG_PING_DESCRIPTION');
+export const usage = i18next.t('commands:CONFIG_PING_USAGE');
+export const category = CommandCategory.UTILITY;
 export const voiceChannel = false;
 export const showHelp = true;
 export const sendTyping = true;

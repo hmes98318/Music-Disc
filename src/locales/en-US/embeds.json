@@ -7,7 +7,7 @@
     "MESSAGE_BLACKLIST": "There are blacklisted user(s) in the voice channel.",
     "MESSAGE_COMMAND": "Command **{{command}}**",
     "MESSAGE_FILTER": "Set filter mode to **{{effectName}}**",
-    "NODE_STATUS_ARGS_ERROR": "❌ | Please enter a valid node name.",
+    "NODE_STATUS_ARGS_ERROR": "❌ Please enter a valid node name.",
     "NODE_STATUS_CPU_TITLE": "⚙️ CPU",
     "NODE_STATUS_CPU_VALUE": "Cores : **{{cores}}**\nSystem load : **{{systemLoad}}**\nLavalink load : **{{lavalinkLoad}}**",
     "NODE_STATUS_INFO_TITLE": "🏷️ INFO",

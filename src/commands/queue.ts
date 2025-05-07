@@ -6,16 +6,20 @@ import {
     Client,
     Message
 } from 'discord.js';
+import i18next from 'i18next';
+
 import { embeds } from '../embeds/index.js';
 import { cst } from '../utils/constants.js';
+import { CommandCategory } from '../@types/index.js';
 
 import type { Bot } from '../@types/index.js';
 
 
 export const name = 'queue';
 export const aliases = ['q', 'list'];
-export const description = 'Show currnet playlist';
-export const usage = 'queue';
+export const description = i18next.t('commands:CONFIG_QUEUE_DESCRIPTION');
+export const usage = i18next.t('commands:CONFIG_QUEUE_USAGE');
+export const category = CommandCategory.MUSIC;
 export const voiceChannel = true;
 export const showHelp = true;
 export const sendTyping = false;
@@ -25,8 +29,8 @@ export const options = [];
 export const execute = async (bot: Bot, client: Client, message: Message) => {
     const player = client.lavashark.getPlayer(message.guild!.id);
 
-    if (!player) {
-        return message.reply({ content: client.i18n.t('commands:ERROR_NO_PLAYING'), allowedMentions: { repliedUser: false } });
+    if (!player || !player.playing) {
+        return message.reply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:ERROR_NO_PLAYING'))], allowedMentions: { repliedUser: false } });
     }
 
 
@@ -87,8 +91,8 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
 export const slashExecute = async (bot: Bot, client: Client, interaction: ChatInputCommandInteraction) => {
     const player = client.lavashark.getPlayer(interaction.guild!.id);
 
-    if (!player) {
-        return interaction.editReply({ content: client.i18n.t('commands:ERROR_NO_PLAYING'), allowedMentions: { repliedUser: false } });
+    if (!player || !player.playing) {
+        return interaction.editReply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:ERROR_NO_PLAYING'))], allowedMentions: { repliedUser: false } });
     }
 
 

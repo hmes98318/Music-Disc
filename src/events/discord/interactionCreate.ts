@@ -5,6 +5,7 @@ import {
     ButtonStyle,
     Client,
     Collection,
+    GuildMember,
     Interaction,
     StringSelectMenuBuilder,
     StringSelectMenuInteraction
@@ -19,12 +20,11 @@ import type { Bot } from '../../@types/index.js';
 
 
 export default async (bot: Bot, client: Client, interaction: Interaction) => {
-
-    if (bot.config.blacklist && bot.config.blacklist.includes(interaction.user.id)) return;
+    if (!interaction.guild || !interaction.guild.members) return;
     if (interaction.user.bot) return;
 
+    if (bot.config.blacklist && bot.config.blacklist.includes(interaction.user.id)) return;
 
-    if (!interaction.guild || !interaction.guild.members) return;
 
     const guildMember = interaction.guild.members.cache.get(interaction.user.id);
     const voiceChannel = guildMember!.voice.channel;
@@ -53,9 +53,33 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
                 });
         }
 
+
         try {
             switch (interaction.customId) {
                 case 'Dashboard-PlayPause': {
+                    // Admin command
+                    if (bot.config.command.adminCommand.includes('pause') && bot.config.command.adminCommand.includes('resume')) {
+                        if (!bot.config.bot.admin.includes(interaction.user.id))
+                            return interaction.reply({ content: client.i18n.t('events:ERROR_REQUIRE_ADMIN'), ephemeral: true, components: [] })
+                                .catch((error) => {
+                                    bot.logger.emit('error', bot.shardId, `[messageCreate] Error reply: (${interaction.user.username} : ${interaction.customId})` + error);
+                                    return;
+                                });
+                    }
+                    // DJ command
+                    if (bot.config.command.djCommand.includes('pause') && bot.config.command.djCommand.includes('resume')) {
+                        if (
+                            (!bot.config.bot.admin.includes(interaction.user.id) && !bot.config.bot.dj.includes(interaction.user.id)) &&
+                            (bot.config.bot.djRoleId && !(interaction.member as GuildMember).roles.cache.has(bot.config.bot.djRoleId))
+                        ) {
+                            return interaction.reply({ content: client.i18n.t('events:ERROR_REQUIRE_DJ'), allowedMentions: { repliedUser: false } })
+                                .catch((error) => {
+                                    bot.logger.emit('error', bot.shardId, `[interactionCreate] Error reply: (${interaction.user.username} : /${interaction.customId})` + error);
+                                });
+                        }
+                    }
+
+
                     const playing = !(player.paused);
 
                     if (playing) {
@@ -77,6 +101,29 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
                 }
 
                 case 'Dashboard-Skip': {
+                    // Admin command
+                    if (bot.config.command.adminCommand.includes('skip')) {
+                        if (!bot.config.bot.admin.includes(interaction.user.id))
+                            return interaction.reply({ content: client.i18n.t('events:ERROR_REQUIRE_ADMIN'), ephemeral: true, components: [] })
+                                .catch((error) => {
+                                    bot.logger.emit('error', bot.shardId, `[messageCreate] Error reply: (${interaction.user.username} : ${interaction.customId})` + error);
+                                    return;
+                                });
+                    }
+                    // DJ command
+                    if (bot.config.command.djCommand.includes('skip')) {
+                        if (
+                            (!bot.config.bot.admin.includes(interaction.user.id) && !bot.config.bot.dj.includes(interaction.user.id)) &&
+                            (bot.config.bot.djRoleId && !(interaction.member as GuildMember).roles.cache.has(bot.config.bot.djRoleId))
+                        ) {
+                            return interaction.reply({ content: client.i18n.t('events:ERROR_REQUIRE_DJ'), allowedMentions: { repliedUser: false } })
+                                .catch((error) => {
+                                    bot.logger.emit('error', bot.shardId, `[interactionCreate] Error reply: (${interaction.user.username} : /${interaction.customId})` + error);
+                                });
+                        }
+                    }
+
+
                     const playing = !(player.paused);
                     const repeatMode = player.repeatMode;
 
@@ -101,6 +148,29 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
                 }
 
                 case 'Dashboard-Loop': {
+                    // Admin command
+                    if (bot.config.command.adminCommand.includes('loop')) {
+                        if (!bot.config.bot.admin.includes(interaction.user.id))
+                            return interaction.reply({ content: client.i18n.t('events:ERROR_REQUIRE_ADMIN'), ephemeral: true, components: [] })
+                                .catch((error) => {
+                                    bot.logger.emit('error', bot.shardId, `[messageCreate] Error reply: (${interaction.user.username} : ${interaction.customId})` + error);
+                                    return;
+                                });
+                    }
+                    // DJ command
+                    if (bot.config.command.djCommand.includes('loop')) {
+                        if (
+                            (!bot.config.bot.admin.includes(interaction.user.id) && !bot.config.bot.dj.includes(interaction.user.id)) &&
+                            (bot.config.bot.djRoleId && !(interaction.member as GuildMember).roles.cache.has(bot.config.bot.djRoleId))
+                        ) {
+                            return interaction.reply({ content: client.i18n.t('events:ERROR_REQUIRE_DJ'), allowedMentions: { repliedUser: false } })
+                                .catch((error) => {
+                                    bot.logger.emit('error', bot.shardId, `[interactionCreate] Error reply: (${interaction.user.username} : /${interaction.customId})` + error);
+                                });
+                        }
+                    }
+
+
                     let mode = 0;
                     const methods = ['Off', 'Single', 'All'];
 
@@ -160,20 +230,67 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
                 }
 
                 case 'Dashboard-Stop': {
+                    // Admin command
+                    if (bot.config.command.adminCommand.includes('leave')) {
+                        if (!bot.config.bot.admin.includes(interaction.user.id))
+                            return interaction.reply({ content: client.i18n.t('events:ERROR_REQUIRE_ADMIN'), ephemeral: true, components: [] })
+                                .catch((error) => {
+                                    bot.logger.emit('error', bot.shardId, `[messageCreate] Error reply: (${interaction.user.username} : ${interaction.customId})` + error);
+                                    return;
+                                });
+                    }
+                    // DJ command
+                    if (bot.config.command.djCommand.includes('leave')) {
+                        if (
+                            (!bot.config.bot.admin.includes(interaction.user.id) && !bot.config.bot.dj.includes(interaction.user.id)) &&
+                            (bot.config.bot.djRoleId && !(interaction.member as GuildMember).roles.cache.has(bot.config.bot.djRoleId))
+                        ) {
+                            return interaction.reply({ content: client.i18n.t('events:ERROR_REQUIRE_DJ'), allowedMentions: { repliedUser: false } })
+                                .catch((error) => {
+                                    bot.logger.emit('error', bot.shardId, `[interactionCreate] Error reply: (${interaction.user.username} : /${interaction.customId})` + error);
+                                });
+                        }
+                    }
+
+
                     if (bot.config.bot.autoLeave.enabled) {
                         player.destroy();
+                        await interaction.reply({ content: client.i18n.t('events:MESSAGE_BOT_LEAVE_CHANNEL'), ephemeral: true, components: [] });
                     }
                     else {
                         player.queue.clear();
                         await player.skip();
                         await dashboard.destroy(bot, player);
+                        await interaction.reply({ content: client.i18n.t('events:MESSAGE_BOT_STOP'), ephemeral: true, components: [] });
                     }
 
-                    await interaction.reply({ content: client.i18n.t('events:MESSAGE_BOT_LEAVE_CHANNEL'), ephemeral: true, components: [] });
                     break;
                 }
 
                 case 'Dashboard-Shuffle': {
+                    // Admin command
+                    if (bot.config.command.adminCommand.includes('shuffle')) {
+                        if (!bot.config.bot.admin.includes(interaction.user.id))
+                            return interaction.reply({ content: client.i18n.t('events:ERROR_REQUIRE_ADMIN'), ephemeral: true, components: [] })
+                                .catch((error) => {
+                                    bot.logger.emit('error', bot.shardId, `[messageCreate] Error reply: (${interaction.user.username} : ${interaction.customId})` + error);
+                                    return;
+                                });
+                    }
+                    // DJ command
+                    if (bot.config.command.djCommand.includes('shuffle')) {
+                        if (
+                            (!bot.config.bot.admin.includes(interaction.user.id) && !bot.config.bot.dj.includes(interaction.user.id)) &&
+                            (bot.config.bot.djRoleId && !(interaction.member as GuildMember).roles.cache.has(bot.config.bot.djRoleId))
+                        ) {
+                            return interaction.reply({ content: client.i18n.t('events:ERROR_REQUIRE_DJ'), allowedMentions: { repliedUser: false } })
+                                .catch((error) => {
+                                    bot.logger.emit('error', bot.shardId, `[interactionCreate] Error reply: (${interaction.user.username} : /${interaction.customId})` + error);
+                                });
+                        }
+                    }
+
+
                     player.queue.shuffle();
 
                     await interaction.reply({ content: client.i18n.t('events:MESSAGE_MUSIC_SHUFFLE'), ephemeral: true, components: [] });
@@ -225,7 +342,7 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
                     }
                     else {
                         tracksQueue = tracks.join('\n');
-                        tracksQueue += `\n\n----- Page ${page}/${player.setting.queuePage.maxPage} -----`;
+                        tracksQueue += client.i18n.t('events:MESSAGE_QUEUE_PAGE', { curPage: page, maxPage: player.setting.queuePage.maxPage });
                     }
 
                     const methods = ['Off', 'Single', 'All'];
@@ -276,7 +393,7 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
                     }
                     else {
                         tracksQueue = tracks.join('\n');
-                        tracksQueue += `\n\n----- Page ${page}/${player.setting.queuePage.maxPage} -----`;
+                        tracksQueue += client.i18n.t('events:MESSAGE_QUEUE_PAGE', { curPage: page, maxPage: player.setting.queuePage.maxPage });
                     }
 
                     const methods = ['Off', 'Single', 'All'];
@@ -396,17 +513,29 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
 
         // DJ command
         if (bot.config.command.djCommand.includes(cmd.name)) {
-            if (!bot.config.bot.admin.includes(interaction.user.id) && !bot.config.bot.dj.includes(interaction.user.id))
+            if (
+                (!bot.config.bot.admin.includes(interaction.user.id) && !bot.config.bot.dj.includes(interaction.user.id)) &&
+                (bot.config.bot.djRoleId && !(interaction.member as GuildMember).roles.cache.has(bot.config.bot.djRoleId))
+            ) {
                 return interaction.reply({ content: client.i18n.t('events:ERROR_REQUIRE_DJ'), allowedMentions: { repliedUser: false } })
+                    .catch((error) => {
+                        bot.logger.emit('error', bot.shardId, `[interactionCreate] Error reply: (${interaction.user.username} : /${interaction.commandName})` + error);
+                    });
+            }
+        }
+
+        // Check voice channel
+        if (cmd.voiceChannel) {
+            if (!voiceChannel) {
+                return interaction.reply({ content: client.i18n.t('events:ERROR_NOT_IN_VOICE_CHANNEL'), allowedMentions: { repliedUser: false } })
                     .catch((error) => {
                         bot.logger.emit('error', bot.shardId, `[interactionCreate] Error reply: (${interaction.user.username} : /${interaction.commandName})` + error);
                         return;
                     });
-        }
+            }
 
-        if (cmd.voiceChannel) {
-            if (!voiceChannel) {
-                return interaction.reply({ content: client.i18n.t('events:ERROR_NOT_IN_VOICE_CHANNEL'), allowedMentions: { repliedUser: false } })
+            if (bot.config.bot.specifyVoiceChannel && voiceChannel.id !== bot.config.bot.specifyVoiceChannel) {
+                return interaction.reply({ content: client.i18n.t('events:ERRPR_NOT_IN_SPECIFIC_VOICE_CHANNEL', { channelId: bot.config.bot.specifyVoiceChannel }), allowedMentions: { repliedUser: false } })
                     .catch((error) => {
                         bot.logger.emit('error', bot.shardId, `[interactionCreate] Error reply: (${interaction.user.username} : /${interaction.commandName})` + error);
                         return;

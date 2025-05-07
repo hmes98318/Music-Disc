@@ -1,4 +1,7 @@
+import i18next from 'i18next';
+
 import { embeds } from '../embeds/index.js';
+import { CommandCategory } from '../@types/index.js';
 
 import type {
     ChatInputCommandInteraction,
@@ -11,21 +14,22 @@ import type { Bot } from '../@types/index.js';
 
 export const name = 'remove';
 export const aliases = ['rm'];
-export const description = 'Select a song to remove from the playlist';
-export const usage = 'remove <track index number> [from index to index 2 track]';
+export const description = i18next.t('commands:CONFIG_REMOVE_DESCRIPTION');
+export const usage = i18next.t('commands:CONFIG_REMOVE_USAGE');
+export const category = CommandCategory.MUSIC;
 export const voiceChannel = true;
 export const showHelp = true;
 export const sendTyping = true;
 export const options = [
     {
         name: 'index',
-        description: 'track index number',
+        description: i18next.t('commands:CONFIG_REMOVE_OPTION_DESCRIPTION'),
         type: 10,
         required: false
     },
     {
         name: 'index2',
-        description: 'from index to index 2 track',
+        description: i18next.t('commands:CONFIG_REMOVE_OPTION_DESCRIPTION_2'),
         type: 10,
         required: false
     }
@@ -35,14 +39,14 @@ export const options = [
 export const execute = async (bot: Bot, client: Client, message: Message, args: string[]) => {
     const player = client.lavashark.getPlayer(message.guild!.id);
 
-    if (!player) {
-        return message.reply({ content: client.i18n.t('commands:ERROR_NO_PLAYING'), allowedMentions: { repliedUser: false } });
+    if (!player || !player.playing) {
+        return message.reply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:ERROR_NO_PLAYING'))], allowedMentions: { repliedUser: false } });
     }
 
     const tracks = player.queue.tracks.map((track, index) => { return `${++index}. \`${track.title}\``; });
 
     if (tracks.length < 1) {
-        return message.reply({ content: client.i18n.t('commands:MESSAGE_REMOVE_QUEUE_EMPTY'), allowedMentions: { repliedUser: false } });
+        return message.reply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:MESSAGE_REMOVE_QUEUE_EMPTY'))], allowedMentions: { repliedUser: false } });
     }
 
     let SUCCESS = false;
@@ -116,7 +120,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
             const index = parseInt(query.content);
 
             if (!index || index <= 0 || index > tracks.length) {
-                await message.reply({ content: client.i18n.t('commands:MESSAGE_REMOVE_CANCEL'), allowedMentions: { repliedUser: false } });
+                await message.reply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:MESSAGE_REMOVE_CANCEL'))], allowedMentions: { repliedUser: false } });
                 return collector.stop();
             }
 
@@ -137,8 +141,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
         collector.on('end', async (collected: ReadonlyCollection<string, Message<boolean>>, reason: string) => {
             if (reason == 'time' && collected.size == 0) {
                 await msg.edit({
-                    content: client.i18n.t('commands:ERROR_TIME_EXPIRED'),
-                    embeds: [],
+                    embeds: [embeds.textMsg(bot, client.i18n.t('commands:ERROR_TIME_EXPIRED'))],
                     allowedMentions: { repliedUser: false }
                 })
                     .catch(() => bot.logger.emit('discord', bot.shardId, 'Failed to edit deleted message.'));
@@ -150,14 +153,14 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
 export const slashExecute = async (bot: Bot, client: Client, interaction: ChatInputCommandInteraction) => {
     const player = client.lavashark.getPlayer(interaction.guild!.id);
 
-    if (!player) {
-        return interaction.editReply({ content: client.i18n.t('commands:ERROR_NO_PLAYING'), allowedMentions: { repliedUser: false } });
+    if (!player || !player.playing) {
+        return interaction.editReply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:ERROR_NO_PLAYING'))], allowedMentions: { repliedUser: false } });
     }
 
     const tracks = player.queue.tracks.map((track, index) => { return `${++index}. \`${track.title}\``; });
 
     if (tracks.length < 1) {
-        return interaction.editReply({ content: client.i18n.t('commands:MESSAGE_REMOVE_QUEUE_EMPTY'), allowedMentions: { repliedUser: false } });
+        return interaction.editReply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:MESSAGE_REMOVE_QUEUE_EMPTY'))], allowedMentions: { repliedUser: false } });
     }
 
     const index1 = interaction.options.getNumber('index');
@@ -169,7 +172,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
         SUCCESS = player.queue.remove(index! - 1);
 
         if (!SUCCESS) {
-            return interaction.editReply(client.i18n.t('commands:MESSAGE_REMOVE_FAIL'));
+            return interaction.editReply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:MESSAGE_REMOVE_FAIL'))], allowedMentions: { repliedUser: false } });
         }
         else {
             return interaction.editReply({
@@ -182,7 +185,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
         SUCCESS = player.queue.remove(index1 - 1, index2 - index1 + 1);
 
         if (!SUCCESS) {
-            return interaction.editReply(client.i18n.t('commands:MESSAGE_REMOVE_FAIL'));
+            return interaction.editReply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:MESSAGE_REMOVE_FAIL'))], allowedMentions: { repliedUser: false } });
         }
         else {
             const musicTitle = tracks.slice(index1 - 1, index2).join('\n');
@@ -228,7 +231,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
             const index = parseInt(query.content);
 
             if (!index || index <= 0 || index > tracks.length) {
-                await interaction.editReply({ content: client.i18n.t('commands:MESSAGE_REMOVE_CANCEL'), allowedMentions: { repliedUser: false } });
+                await interaction.editReply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:MESSAGE_REMOVE_CANCEL'))], allowedMentions: { repliedUser: false } });
                 return collector.stop();
             }
 
@@ -249,8 +252,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
         collector.on('end', async (collected: ReadonlyCollection<string, Message<boolean>>, reason: string) => {
             if (reason == 'time' && collected.size == 0) {
                 await msg.edit({
-                    content: client.i18n.t('commands:ERROR_TIME_EXPIRED'),
-                    embeds: [],
+                    embeds: [embeds.textMsg(bot, client.i18n.t('commands:ERROR_TIME_EXPIRED'))],
                     allowedMentions: { repliedUser: false }
                 })
                     .catch(() => bot.logger.emit('discord', bot.shardId, 'Failed to edit deleted message.'));

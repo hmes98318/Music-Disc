@@ -1,7 +1,10 @@
+import i18next from 'i18next';
+
 import { cst } from '../utils/constants.js';
 import { embeds } from '../embeds/index.js';
 import { uptime } from '../utils/functions/uptime.js';
 import { sysusage } from '../utils/functions/sysusage.js';
+import { CommandCategory } from '../@types/index.js';
 
 import type { ChatInputCommandInteraction, Client, Message } from 'discord.js';
 import type { Bot, SystemStatus } from '../@types/index.js';
@@ -9,8 +12,9 @@ import type { Bot, SystemStatus } from '../@types/index.js';
 
 export const name = 'status';
 export const aliases = ['info'];
-export const description = 'Show the bot status';
-export const usage = 'status';
+export const description = i18next.t('commands:CONFIG_STATUS_DESCRIPTION');
+export const usage = i18next.t('commands:CONFIG_STATUS_USAGE');
+export const category = CommandCategory.UTILITY;
 export const voiceChannel = false;
 export const showHelp = true;
 export const sendTyping = true;
@@ -39,7 +43,7 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
         }
     }
 
-    const nodeHealth = healthValue === 0 ? client.i18n.t('commands:MESSAGE_NODE_ALL_ACTIVE') : client.i18n.t('commands:MESSAGE_NODE_ALL_ACTIVE', { healthValue: healthValue });
+    const nodeHealth = healthValue === 0 ? client.i18n.t('commands:MESSAGE_NODE_ALL_ACTIVE') : client.i18n.t('commands:MESSAGE_NODE_UNHEALTHY', { healthValue: healthValue });
 
 
     const results = await client.shard!.broadcastEval(async (client) => {
@@ -119,7 +123,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
         }
     }
 
-    const nodeHealth = healthValue === 0 ? client.i18n.t('commands:MESSAGE_NODE_ALL_ACTIVE') : client.i18n.t('commands:MESSAGE_NODE_ALL_ACTIVE', { healthValue: healthValue });
+    const nodeHealth = healthValue === 0 ? client.i18n.t('commands:MESSAGE_NODE_ALL_ACTIVE') : client.i18n.t('commands:MESSAGE_NODE_UNHEALTHY', { healthValue: healthValue });
 
 
     const results = await client.shard!.broadcastEval(async (client) => {

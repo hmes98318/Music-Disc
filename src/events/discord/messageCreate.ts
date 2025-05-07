@@ -5,6 +5,9 @@ import type { Bot } from '../../@types/index.js';
 
 
 export default async (bot: Bot, client: Client, message: Message) => {
+    if (!message.guild || !message.member) return;
+
+
     const prefix = bot.config.bot.prefix;
 
     if (message.content.indexOf(prefix) !== 0) return;
@@ -29,42 +32,58 @@ export default async (bot: Bot, client: Client, message: Message) => {
 
     // Admin command
     if (bot.config.command.adminCommand.includes(cmd.name)) {
-        if (!bot.config.bot.admin.includes(message.author.id))
+        if (!bot.config.bot.admin.includes(message.author.id)) {
             return message.reply({ content: client.i18n.t('events:ERROR_REQUIRE_ADMIN'), allowedMentions: { repliedUser: false } })
                 .catch((error) => {
                     bot.logger.emit('error', bot.shardId, `[messageCreate] Error reply: (${message.author.username} : ${message.content})` + error);
                     return;
                 });
+        }
     }
 
     // DJ command
     if (bot.config.command.djCommand.includes(cmd.name)) {
-        if (!bot.config.bot.admin.includes(message.author.id) && !bot.config.bot.dj.includes(message.author.id))
+        if (
+            (!bot.config.bot.admin.includes(message.author.id) && !bot.config.bot.dj.includes(message.author.id)) &&
+            (bot.config.bot.djRoleId && !message.member.roles.cache.has(bot.config.bot.djRoleId))
+        ) {
             return message.reply({ content: client.i18n.t('events:ERROR_REQUIRE_DJ'), allowedMentions: { repliedUser: false } })
                 .catch((error) => {
                     bot.logger.emit('error', bot.shardId, `[messageCreate] Error reply: (${message.author.username} : ${message.content})` + error);
-                    return;
                 });
+        }
     }
 
+    // Check voice channel
     if (cmd.voiceChannel) {
-        if (!message.member?.voice.channel)
+        if (!message.member.voice.channel) {
             return message.reply({ content: client.i18n.t('events:ERROR_NOT_IN_VOICE_CHANNEL'), allowedMentions: { repliedUser: false } })
                 .catch((error) => {
                     bot.logger.emit('error', bot.shardId, `[messageCreate] Error reply: (${message.author.username} : ${message.content})` + error);
                     return;
                 });
+        }
 
-        if (message.guild?.members.me?.voice.channel && message.member.voice.channelId !== message.guild.members.me.voice.channelId)
+        if (bot.config.bot.specifyVoiceChannel && message.member.voice.channelId !== bot.config.bot.specifyVoiceChannel) {
+            return message.reply({ content: client.i18n.t('events:ERRPR_NOT_IN_SPECIFIC_VOICE_CHANNEL', { channelId: bot.config.bot.specifyVoiceChannel }), allowedMentions: { repliedUser: false } })
+                .catch((error) => {
+                    bot.logger.emit('error', bot.shardId, `[messageCreate] Error reply: (${message.author.username} : ${message.content})` + error);
+                    return;
+                });
+        }
+
+
+        if (message.guild.members.me?.voice.channel && message.member.voice.channelId !== message.guild.members.me.voice.channelId) {
             return message.reply({ content: client.i18n.t('events:ERROR_NOT_IN_SAME_VOICE_CHANNEL'), allowedMentions: { repliedUser: false } })
                 .catch((error) => {
                     bot.logger.emit('error', bot.shardId, `[messageCreate] Error reply: (${message.author.username} : ${message.content})` + error);
                     return;
                 });
+        }
     }
 
 
-    bot.logger.emit('discord', bot.shardId, `[messageCreate] (${cst.color.grey}${message.guild?.name}${cst.color.white}) ${message.author.username} : ${message.content}`);
+    bot.logger.emit('discord', bot.shardId, `[messageCreate] (${cst.color.grey}${message.guild.name}${cst.color.white}) ${message.author.username} : ${message.content}`);
 
     let guild;
 

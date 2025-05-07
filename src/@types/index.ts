@@ -30,6 +30,11 @@ declare module 'lavashark' {
     }
 }
 
+export enum CommandCategory {
+    MUSIC = 'Music',
+    UTILITY = 'Utility',
+}
+
 export interface PlayerSetting {
     queuePage: QueuePage | null;
     volume: number | null;
@@ -69,6 +74,7 @@ export type Bot = {
 export type Config = {
     bot: BotConfig;
     nodeList: NodeOptions[];
+    spotify: SpotifyConfig;
     blacklist: string[],
     webDashboard: WebDashboardConfig;
     localNode: LocalNodeConfig;
@@ -80,6 +86,7 @@ export type BotConfig = {
     slashCommand: boolean;
     admin: string[];
     dj: string[];
+    djRoleId: string | null;
     clientSecret: string;
     name: string;
     prefix: string;
@@ -101,11 +108,18 @@ export type BotConfig = {
     };
     displayVoiceState: boolean;
     specifyMessageChannel: string | null;
+    specifyVoiceChannel: string | null;
+    startupAutoJoin: boolean;
     i18n: {
         localePath: string;
         defaultLocale: string;
     }
 };
+
+export type SpotifyConfig = {
+    clientId: string | null;
+    clientSecret: string | null;
+}
 
 export type WebDashboardConfig = {
     enabled: boolean;

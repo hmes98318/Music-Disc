@@ -8,23 +8,27 @@ import {
     StringSelectMenuBuilder,
     StringSelectMenuInteraction
 } from 'discord.js';
+import i18next from 'i18next';
+
 import { embeds } from '../embeds/index.js';
 import { filtersConfig } from '../utils/constants.js';
+import { CommandCategory } from '../@types/index.js';
 
 import type { Bot } from '../@types/index.js';
 
 
 export const name = 'filter';
 export const aliases = ['eq', 'equalizer'];
-export const description = 'Set music filter';
-export const usage = 'filter [effect name]';
+export const description = i18next.t('commands:CONFIG_FILTER_DESCRIPTION');
+export const usage = i18next.t('commands:CONFIG_FILTER_USAGE');
+export const category = CommandCategory.MUSIC;
 export const voiceChannel = true;
 export const showHelp = true;
 export const sendTyping = true;
 export const options = [
     {
         name: 'filter',
-        description: 'Select the music filter mode you want to set.',
+        description: i18next.t('commands:CONFIG_FILTER_OPTION_DESCRIPTION'),
         type: 3,
         required: true,
         choices: [
@@ -43,8 +47,8 @@ export const options = [
 export const execute = async (bot: Bot, client: Client, message: Message, args: string[]) => {
     const player = client.lavashark.getPlayer(message.guild!.id);
 
-    if (!player) {
-        return message.reply({ content: client.i18n.t('commands:ERROR_NO_PLAYING'), allowedMentions: { repliedUser: false } });
+    if (!player || !player.playing) {
+        return message.reply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:ERROR_NO_PLAYING'))], allowedMentions: { repliedUser: false } });
     }
 
 
@@ -64,7 +68,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
 
         const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(select);
         const msg = await message.reply({
-            content: client.i18n.t('commands:MESSAGE_FILTER_SELECT_LIST'),
+            embeds: [embeds.textMsg(bot, client.i18n.t('commands:MESSAGE_FILTER_SELECT_LIST'))],
             components: [row.toJSON()],
             allowedMentions: { repliedUser: false }
         });
@@ -85,8 +89,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
             else {
                 if (!Object.keys(filtersConfig).includes(effectName)) {
                     return message.reply({
-                        content: client.i18n.t('commands:MESSAGE_FILTER_NOT_FOUND'),
-                        embeds: [],
+                        embeds: [embeds.textMsg(bot, client.i18n.t('commands:MESSAGE_FILTER_NOT_FOUND'))],
                         allowedMentions: { repliedUser: false }
                     });
                 }
@@ -99,7 +102,6 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
 
             i.deferUpdate();
             await msg.edit({
-                content: '',
                 embeds: [embeds.filterMsg(bot, effectName)],
                 components: [],
                 allowedMentions: { repliedUser: false }
@@ -112,7 +114,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
         collector.on('end', async (collected: Collection<string, ButtonInteraction>, reason: string) => {
             if (reason === 'time' && collected.size === 0) {
                 await msg.edit({
-                    content: client.i18n.t('commands:ERROR_TIME_EXPIRED'),
+                    embeds: [embeds.textMsg(bot, client.i18n.t('commands:ERROR_TIME_EXPIRED'))],
                     components: [],
                     allowedMentions: { repliedUser: false }
                 })
@@ -127,7 +129,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
             player.filters.clear();
         }
         else if (!Object.keys(filtersConfig).includes(effectName)) {
-            return message.reply({ content: client.i18n.t('commands:MESSAGE_FILTER_NOT_FOUND'), allowedMentions: { repliedUser: false } });
+            return message.reply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:MESSAGE_FILTER_NOT_FOUND'))], allowedMentions: { repliedUser: false } });
         }
 
 
@@ -140,8 +142,8 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
 export const slashExecute = async (bot: Bot, client: Client, interaction: ChatInputCommandInteraction) => {
     const player = client.lavashark.getPlayer(interaction.guild!.id);
 
-    if (!player) {
-        return interaction.editReply({ content: client.i18n.t('commands:ERROR_NO_PLAYING'), allowedMentions: { repliedUser: false } });
+    if (!player || !player.playing) {
+        return interaction.editReply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:ERROR_NO_PLAYING'))], allowedMentions: { repliedUser: false } });
     }
 
 
@@ -156,7 +158,6 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
 
 
     return interaction.editReply({
-        content: '',
         embeds: [embeds.filterMsg(bot, effectName ?? 'unknown')],
         components: [],
         allowedMentions: { repliedUser: false }
