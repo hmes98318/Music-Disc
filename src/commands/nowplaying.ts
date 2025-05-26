@@ -29,7 +29,7 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
     const player = client.lavashark.getPlayer(message.guild!.id);
 
     if (!player || !player.playing) {
-        return message.reply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:ERROR_NO_PLAYING'))], allowedMentions: { repliedUser: false } });
+        return message.reply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('commands:ERROR_NO_PLAYING'))], allowedMentions: { repliedUser: false } });
     }
 
     const track = player.current;
@@ -53,7 +53,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
     const player = client.lavashark.getPlayer(interaction.guild!.id);
 
     if (!player || !player.playing) {
-        return interaction.editReply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:ERROR_NO_PLAYING'))], allowedMentions: { repliedUser: false } });
+        return interaction.editReply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('commands:ERROR_NO_PLAYING'))], allowedMentions: { repliedUser: false } });
     }
 
     const track = player.current;

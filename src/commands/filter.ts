@@ -48,7 +48,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
     const player = client.lavashark.getPlayer(message.guild!.id);
 
     if (!player || !player.playing) {
-        return message.reply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:ERROR_NO_PLAYING'))], allowedMentions: { repliedUser: false } });
+        return message.reply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('commands:ERROR_NO_PLAYING'))], allowedMentions: { repliedUser: false } });
     }
 
 
@@ -89,7 +89,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
             else {
                 if (!Object.keys(filtersConfig).includes(effectName)) {
                     return message.reply({
-                        embeds: [embeds.textMsg(bot, client.i18n.t('commands:MESSAGE_FILTER_NOT_FOUND'))],
+                        embeds: [embeds.textErrorMsg(bot, client.i18n.t('commands:MESSAGE_FILTER_NOT_FOUND'))],
                         allowedMentions: { repliedUser: false }
                     });
                 }
@@ -114,7 +114,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
         collector.on('end', async (collected: Collection<string, ButtonInteraction>, reason: string) => {
             if (reason === 'time' && collected.size === 0) {
                 await msg.edit({
-                    embeds: [embeds.textMsg(bot, client.i18n.t('commands:ERROR_TIME_EXPIRED'))],
+                    embeds: [embeds.textErrorMsg(bot, client.i18n.t('commands:ERROR_TIME_EXPIRED'))],
                     components: [],
                     allowedMentions: { repliedUser: false }
                 })
@@ -129,7 +129,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
             player.filters.clear();
         }
         else if (!Object.keys(filtersConfig).includes(effectName)) {
-            return message.reply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:MESSAGE_FILTER_NOT_FOUND'))], allowedMentions: { repliedUser: false } });
+            return message.reply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('commands:MESSAGE_FILTER_NOT_FOUND'))], allowedMentions: { repliedUser: false } });
         }
 
 
@@ -143,7 +143,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
     const player = client.lavashark.getPlayer(interaction.guild!.id);
 
     if (!player || !player.playing) {
-        return interaction.editReply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:ERROR_NO_PLAYING'))], allowedMentions: { repliedUser: false } });
+        return interaction.editReply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('commands:ERROR_NO_PLAYING'))], allowedMentions: { repliedUser: false } });
     }
 
 

@@ -32,20 +32,20 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
     const player = client.lavashark.getPlayer(message.guild!.id);
 
     if (!player || !player.playing) {
-        return message.reply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:ERROR_NO_PLAYING'))], allowedMentions: { repliedUser: false } });
+        return message.reply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('commands:ERROR_NO_PLAYING'))], allowedMentions: { repliedUser: false } });
     }
 
     await message.react('👍');
     const vol = parseInt(args[0], 10);
 
     if (!vol) {
-        return message.reply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:MESSAGE_VOLUME_ARGS_ERROR', { volume: player.volume, maxVolume: maxVolume }))], allowedMentions: { repliedUser: false } });
+        return message.reply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('commands:MESSAGE_VOLUME_ARGS_ERROR', { volume: player.volume, maxVolume: maxVolume }))], allowedMentions: { repliedUser: false } });
     }
     if (player.volume === vol) {
-        return message.reply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:MESSAGE_VOLUME_SAME'))], allowedMentions: { repliedUser: false } });
+        return message.reply({ embeds: [embeds.textWarningMsg(bot, client.i18n.t('commands:MESSAGE_VOLUME_SAME'))], allowedMentions: { repliedUser: false } });
     }
     if (vol < 0 || vol > maxVolume) {
-        return message.reply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:MESSAGE_VOLUME_ARGS_ERROR_2', { maxVolume: maxVolume }))], allowedMentions: { repliedUser: false } });
+        return message.reply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('commands:MESSAGE_VOLUME_ARGS_ERROR_2', { maxVolume: maxVolume }))], allowedMentions: { repliedUser: false } });
     }
 
 
@@ -54,7 +54,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
 
     await dashboard.update(bot, player, player.current!);
 
-    return message.reply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:MESSAGE_VOLUME_SUCCESS', { volume: vol, maxVolume: maxVolume }))], allowedMentions: { repliedUser: false } });
+    return message.reply({ embeds: [embeds.textSuccessMsg(bot, client.i18n.t('commands:MESSAGE_VOLUME_SUCCESS', { volume: vol, maxVolume: maxVolume }))], allowedMentions: { repliedUser: false } });
 };
 
 export const slashExecute = async (bot: Bot, client: Client, interaction: ChatInputCommandInteraction) => {
@@ -63,19 +63,19 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
     const player = client.lavashark.getPlayer(interaction.guild!.id);
 
     if (!player || !player.playing) {
-        return interaction.editReply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:ERROR_NO_PLAYING'))], allowedMentions: { repliedUser: false } });
+        return interaction.editReply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('commands:ERROR_NO_PLAYING'))], allowedMentions: { repliedUser: false } });
     }
 
     const vol = Math.floor(interaction.options.getInteger('volume')!);
 
     if (!vol) {
-        return interaction.editReply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:MESSAGE_VOLUME_ARGS_ERROR', { volume: player.volume, maxVolume: maxVolume }))], allowedMentions: { repliedUser: false } });
+        return interaction.editReply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('commands:MESSAGE_VOLUME_ARGS_ERROR', { volume: player.volume, maxVolume: maxVolume }))], allowedMentions: { repliedUser: false } });
     }
     if (player.volume === vol) {
-        return interaction.editReply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:MESSAGE_VOLUME_SAME'))], allowedMentions: { repliedUser: false } });
+        return interaction.editReply({ embeds: [embeds.textWarningMsg(bot, client.i18n.t('commands:MESSAGE_VOLUME_SAME'))], allowedMentions: { repliedUser: false } });
     }
     if (vol < 0 || vol > maxVolume) {
-        return interaction.editReply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:MESSAGE_VOLUME_ARGS_ERROR_2', { maxVolume: maxVolume }))], allowedMentions: { repliedUser: false } });
+        return interaction.editReply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('commands:MESSAGE_VOLUME_ARGS_ERROR_2', { maxVolume: maxVolume }))], allowedMentions: { repliedUser: false } });
     }
 
 
@@ -84,5 +84,5 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
 
     await dashboard.update(bot, player, player.current!);
 
-    return interaction.editReply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:MESSAGE_VOLUME_SUCCESS', { volume: vol, maxVolume: maxVolume }))], allowedMentions: { repliedUser: false } });
+    return interaction.editReply({ embeds: [embeds.textSuccessMsg(bot, client.i18n.t('commands:MESSAGE_VOLUME_SUCCESS', { volume: vol, maxVolume: maxVolume }))], allowedMentions: { repliedUser: false } });
 };

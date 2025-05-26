@@ -96,7 +96,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
         collector.on('end', async (collected: Collection<string, ButtonInteraction>, reason: string) => {
             if (reason == 'time' && collected.size == 0) {
                 await msg.edit({
-                    embeds: [embeds.textMsg(bot, client.i18n.t('commands:ERROR_TIME_EXPIRED'))],
+                    embeds: [embeds.textErrorMsg(bot, client.i18n.t('commands:ERROR_TIME_EXPIRED'))],
                     components: [],
                     allowedMentions: { repliedUser: false }
                 })
@@ -122,7 +122,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
             }
         });
 
-        if (!found) return message.reply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:MESSAGE_HELP_NOT_FOUND'))], allowedMentions: { repliedUser: false } });
+        if (!found) return message.reply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('commands:MESSAGE_HELP_NOT_FOUND'))], allowedMentions: { repliedUser: false } });
     }
 };
 
@@ -189,7 +189,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
         collector.on('end', async (collected: Collection<string, ButtonInteraction>, reason: string) => {
             if (reason == 'time' && collected.size == 0) {
                 await msg.edit({
-                    embeds: [embeds.textMsg(bot, client.i18n.t('commands:ERROR_TIME_EXPIRED'))],
+                    embeds: [embeds.textErrorMsg(bot, client.i18n.t('commands:ERROR_TIME_EXPIRED'))],
                     components: [],
                     allowedMentions: { repliedUser: false }
                 })
@@ -215,6 +215,6 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
             }
         });
 
-        if (!found) return interaction.editReply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:MESSAGE_HELP_NOT_FOUND'))], allowedMentions: { repliedUser: false } });
+        if (!found) return interaction.editReply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('commands:MESSAGE_HELP_NOT_FOUND'))], allowedMentions: { repliedUser: false } });
     }
 };

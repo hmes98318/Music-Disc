@@ -38,7 +38,12 @@ const setEnvironment = (defaultConfig: Config) => {
             state: config.bot.activity.state || defaultConfig.bot.activity.state,
             url: config.bot.activity.url || defaultConfig.bot.activity.url,
         },
-        embedsColor: config.bot.embedsColor || defaultConfig.bot.embedsColor,
+        embedsColors: {
+            message: config.bot.embedsColors.message || defaultConfig.bot.embedsColors.message,
+            success: config.bot.embedsColors.success || defaultConfig.bot.embedsColors.success,
+            error: config.bot.embedsColors.error || defaultConfig.bot.embedsColors.error,
+            warning: config.bot.embedsColors.warning || defaultConfig.bot.embedsColors.warning
+        },
 
         // Volume settings
         volume: {

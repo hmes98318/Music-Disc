@@ -38,7 +38,7 @@ export const options = [
 
 export const execute = async (bot: Bot, client: Client, message: Message, args: string[]) => {
     if (!args[0]) {
-        return message.reply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:MESSAGE_PLAY_ARGS_ERROR'))], allowedMentions: { repliedUser: false } });
+        return message.reply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('commands:MESSAGE_PLAY_ARGS_ERROR'))], allowedMentions: { repliedUser: false } });
     }
 
     const str = args.join(' ');
@@ -46,10 +46,10 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
 
     if (res.loadType === LoadType.ERROR) {
         bot.logger.emit('error', bot.shardId, `Search Error: ${JSON.stringify(res)}`);
-        return message.reply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:ERROR_PLAY_SEARCH', { reason: (res as any).data?.message }))], allowedMentions: { repliedUser: false } });
+        return message.reply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('commands:ERROR_PLAY_SEARCH', { reason: (res as any).data?.message }))], allowedMentions: { repliedUser: false } });
     }
     else if (res.loadType === LoadType.EMPTY) {
-        return message.reply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:MESSAGE_PLAY_SEARCH_NO_MATCH'))], allowedMentions: { repliedUser: false } });
+        return message.reply({ embeds: [embeds.textWarningMsg(bot, client.i18n.t('commands:MESSAGE_PLAY_SEARCH_NO_MATCH'))], allowedMentions: { repliedUser: false } });
     }
 
 
@@ -86,7 +86,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
         player.filters.setVolume(curVolume);
     } catch (error) {
         bot.logger.emit('error', bot.shardId, 'Error joining channel: ' + error);
-        return message.reply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:ERROR_PLAY_JOIN_CHANNEL'))], allowedMentions: { repliedUser: false } });
+        return message.reply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('commands:ERROR_PLAY_JOIN_CHANNEL'))], allowedMentions: { repliedUser: false } });
     }
 
     try {
@@ -106,12 +106,12 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
             await player.play()
                 .catch(async (error) => {
                     bot.logger.emit('error', bot.shardId, 'Error playing track: ' + error);
-                    await message.reply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:ERROR_PLAY_MUSIC', { reason: JSON.stringify(error) }))], allowedMentions: { repliedUser: false } });
+                    await message.reply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('commands:ERROR_PLAY_MUSIC', { reason: JSON.stringify(error) }))], allowedMentions: { repliedUser: false } });
                     return player.destroy();
                 });
         }
 
-        return message.reply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:MESSAGE_PLAY_MUSIC_ADD'))], allowedMentions: { repliedUser: false } });
+        return message.reply({ embeds: [embeds.textSuccessMsg(bot, client.i18n.t('commands:MESSAGE_PLAY_MUSIC_ADD'))], allowedMentions: { repliedUser: false } });
     }
     else if (res.tracks.length === 1) {
         const track = res.tracks[0];
@@ -122,14 +122,14 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
             await player.play()
                 .catch(async (error) => {
                     bot.logger.emit('error', bot.shardId, 'Error playing track: ' + error);
-                    await message.reply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:ERROR_PLAY_MUSIC', { reason: JSON.stringify(error) }))], allowedMentions: { repliedUser: false } });
+                    await message.reply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('commands:ERROR_PLAY_MUSIC', { reason: JSON.stringify(error) }))], allowedMentions: { repliedUser: false } });
                     return player.destroy();
                 });
 
             player.filters.setVolume(bot.config.bot.volume.default);
         }
 
-        return message.reply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:MESSAGE_PLAY_MUSIC_ADD'))], allowedMentions: { repliedUser: false } });
+        return message.reply({ embeds: [embeds.textSuccessMsg(bot, client.i18n.t('commands:MESSAGE_PLAY_MUSIC_ADD'))], allowedMentions: { repliedUser: false } });
     }
     else {
         const select = new StringSelectMenuBuilder()
@@ -161,7 +161,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
                     .catch(async (error) => {
                         bot.logger.emit('error', bot.shardId, 'Error playing track: ' + error);
                         await message.reply({
-                            embeds: [embeds.textMsg(bot, client.i18n.t('commands:ERROR_PLAY_MUSIC', { reason: JSON.stringify(error) }))],
+                            embeds: [embeds.textErrorMsg(bot, client.i18n.t('commands:ERROR_PLAY_MUSIC', { reason: JSON.stringify(error) }))],
                             components: [],
                             allowedMentions: { repliedUser: false }
                         });
@@ -173,7 +173,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
 
             i.deferUpdate();
             return message.reply({
-                embeds: [embeds.textMsg(bot, client.i18n.t('commands:MESSAGE_PLAY_MUSIC_ADD'))],
+                embeds: [embeds.textSuccessMsg(bot, client.i18n.t('commands:MESSAGE_PLAY_MUSIC_ADD'))],
                 components: [],
                 allowedMentions: { repliedUser: false }
             });
@@ -186,7 +186,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
                 }
 
                 await msg.edit({
-                    embeds: [embeds.textMsg(bot, client.i18n.t('commands:ERROR_TIME_EXPIRED'))],
+                    embeds: [embeds.textErrorMsg(bot, client.i18n.t('commands:ERROR_TIME_EXPIRED'))],
                     components: [],
                     allowedMentions: { repliedUser: false }
                 });
@@ -201,10 +201,10 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
 
     if (res.loadType === LoadType.ERROR) {
         bot.logger.emit('error', bot.shardId, `Search Error: ${JSON.stringify(res)}`);
-        return interaction.editReply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:ERROR_PLAY_SEARCH', { reason: (res as any).data?.message }))], allowedMentions: { repliedUser: false } });
+        return interaction.editReply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('commands:ERROR_PLAY_SEARCH', { reason: (res as any).data?.message }))], allowedMentions: { repliedUser: false } });
     }
     else if (res.loadType === LoadType.EMPTY) {
-        return interaction.editReply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:MESSAGE_PLAY_SEARCH_NO_MATCH'))], allowedMentions: { repliedUser: false } });
+        return interaction.editReply({ embeds: [embeds.textWarningMsg(bot, client.i18n.t('commands:MESSAGE_PLAY_SEARCH_NO_MATCH'))], allowedMentions: { repliedUser: false } });
     }
 
 
@@ -244,7 +244,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
         player.filters.setVolume(curVolume);
     } catch (error) {
         bot.logger.emit('error', bot.shardId, 'Error joining channel: ' + error);
-        return interaction.editReply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:ERROR_PLAY_JOIN_CHANNEL'))], allowedMentions: { repliedUser: false } });
+        return interaction.editReply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('commands:ERROR_PLAY_JOIN_CHANNEL'))], allowedMentions: { repliedUser: false } });
     }
 
     try {
@@ -263,12 +263,12 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
             await player.play()
                 .catch(async (error) => {
                     bot.logger.emit('error', bot.shardId, 'Error playing track: ' + error);
-                    await interaction.editReply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:ERROR_PLAY_MUSIC', { reason: JSON.stringify(error) }))], allowedMentions: { repliedUser: false } });
+                    await interaction.editReply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('commands:ERROR_PLAY_MUSIC', { reason: JSON.stringify(error) }))], allowedMentions: { repliedUser: false } });
                     return player.destroy();
                 });
         }
 
-        return interaction.editReply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:MESSAGE_PLAY_MUSIC_ADD'))], allowedMentions: { repliedUser: false } });
+        return interaction.editReply({ embeds: [embeds.textSuccessMsg(bot, client.i18n.t('commands:MESSAGE_PLAY_MUSIC_ADD'))], allowedMentions: { repliedUser: false } });
     }
     else if (res.tracks.length === 1) {
         const track = res.tracks[0];
@@ -279,14 +279,14 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
             await player.play()
                 .catch(async (error) => {
                     bot.logger.emit('error', bot.shardId, 'Error playing track: ' + error);
-                    await interaction.editReply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:ERROR_PLAY_MUSIC', { reason: JSON.stringify(error) }))], allowedMentions: { repliedUser: false } });
+                    await interaction.editReply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('commands:ERROR_PLAY_MUSIC', { reason: JSON.stringify(error) }))], allowedMentions: { repliedUser: false } });
                     return player.destroy();
                 });
 
             player.filters.setVolume(bot.config.bot.volume.default);
         }
 
-        return interaction.editReply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:MESSAGE_PLAY_MUSIC_ADD'))], allowedMentions: { repliedUser: false } });
+        return interaction.editReply({ embeds: [embeds.textSuccessMsg(bot, client.i18n.t('commands:MESSAGE_PLAY_MUSIC_ADD'))], allowedMentions: { repliedUser: false } });
     }
     else {
         const select = new StringSelectMenuBuilder()
@@ -317,7 +317,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
                     .catch(async (error) => {
                         bot.logger.emit('error', bot.shardId, 'Error playing track: ' + error);
                         await interaction.editReply({
-                            embeds: [embeds.textMsg(bot, client.i18n.t('commands:ERROR_PLAY_MUSIC', { reason: JSON.stringify(error) }))],
+                            embeds: [embeds.textErrorMsg(bot, client.i18n.t('commands:ERROR_PLAY_MUSIC', { reason: JSON.stringify(error) }))],
                             components: [],
                             allowedMentions: { repliedUser: false }
                         });
@@ -329,7 +329,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
 
             i.deferUpdate();
             await msg.edit({
-                embeds: [embeds.textMsg(bot, client.i18n.t('commands:MESSAGE_PLAY_MUSIC_ADD'))],
+                embeds: [embeds.textSuccessMsg(bot, client.i18n.t('commands:MESSAGE_PLAY_MUSIC_ADD'))],
                 components: [],
                 allowedMentions: { repliedUser: false }
             });
@@ -342,7 +342,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
                 }
 
                 await msg.edit({
-                    embeds: [embeds.textMsg(bot, client.i18n.t('commands:ERROR_TIME_EXPIRED'))],
+                    embeds: [embeds.textErrorMsg(bot, client.i18n.t('commands:ERROR_TIME_EXPIRED'))],
                     components: [],
                     allowedMentions: { repliedUser: false }
                 });

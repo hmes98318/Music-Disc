@@ -44,13 +44,13 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
     const player = client.lavashark.getPlayer(message.guild!.id);
 
     if (!player || !player.playing) {
-        return message.reply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:ERROR_NO_PLAYING'))], allowedMentions: { repliedUser: false } });
+        return message.reply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('commands:ERROR_NO_PLAYING'))], allowedMentions: { repliedUser: false } });
     }
 
     let mode = null;
     const methods = ['OFF', 'SINGLE', 'ALL'];
 
-    if (!args[0]) return message.reply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:ERROR_LOOP_COMMAND', { command: `${bot.config.bot.prefix}${usage}` }))], allowedMentions: { repliedUser: false } });
+    if (!args[0]) return message.reply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('commands:ERROR_LOOP_COMMAND', { command: `${bot.config.bot.prefix}${usage}` }))], allowedMentions: { repliedUser: false } });
 
     switch (args[0].toLowerCase()) {
         case 'off': {
@@ -71,12 +71,12 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
             break;
         }
         default: {
-            return message.reply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:ERROR_LOOP_COMMAND', { command: `${bot.config.bot.prefix}${usage}` }))], allowedMentions: { repliedUser: false } });
+            return message.reply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('commands:ERROR_LOOP_COMMAND', { command: `${bot.config.bot.prefix}${usage}` }))], allowedMentions: { repliedUser: false } });
         }
     }
 
     await message.react('👍');
-    return message.reply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:MESSAGE_LOOP_MODE', { mode: methods[mode] }))], allowedMentions: { repliedUser: false } });
+    return message.reply({ embeds: [embeds.textSuccessMsg(bot, client.i18n.t('commands:MESSAGE_LOOP_MODE', { mode: methods[mode] }))], allowedMentions: { repliedUser: false } });
 };
 
 
@@ -84,7 +84,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
     const player = client.lavashark.getPlayer(interaction.guild!.id);
 
     if (!player || !player.playing) {
-        return interaction.editReply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:ERROR_NO_PLAYING'))], allowedMentions: { repliedUser: false } });
+        return interaction.editReply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('commands:ERROR_NO_PLAYING'))], allowedMentions: { repliedUser: false } });
     }
 
     let mode = null;
@@ -107,9 +107,9 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
             break;
         }
         default: {
-            return interaction.editReply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:ERROR_LOOP_COMMAND', { command: `${bot.config.bot.prefix}${usage}` }))], allowedMentions: { repliedUser: false } });
+            return interaction.editReply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('commands:ERROR_LOOP_COMMAND', { command: `${bot.config.bot.prefix}${usage}` }))], allowedMentions: { repliedUser: false } });
         }
     }
 
-    return interaction.editReply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:MESSAGE_LOOP_MODE', { mode: methods[mode] }))], allowedMentions: { repliedUser: false } });
+    return interaction.editReply({ embeds: [embeds.textSuccessMsg(bot, client.i18n.t('commands:MESSAGE_LOOP_MODE', { mode: methods[mode] }))], allowedMentions: { repliedUser: false } });
 };

@@ -88,8 +88,6 @@
     "MESSAGE_LOOP_MODE": "✅ Set loop to `{{mode}}`.",
     "MESSAGE_MOVE_SUCCESS": "✅ The song order was swapped successfully.",
     "MESSAGE_MOVE_WRONG_INDEX": "❌ Please enter a valid index range. (1 - {{max}})",
-    "MESSAGE_NODE_ALL_ACTIVE": "All nodes are active",
-    "MESSAGE_NODE_UNHEALTHY": "⚠️ There are {{healthValue}} nodes disconnected",
     "MESSAGE_NOW_PLAYING_BUTTOMTITLE": "\nand {{length}} other songs",
     "MESSAGE_NOW_PLAYING_SAVE_BUTTON": "Save Song",
     "MESSAGE_NOW_PLAYING_SUBTITLE": "Author : **{{author}}**\nDuration **{{label}}**\n",

@@ -43,7 +43,7 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
         player.metadata = message;
     } catch (error) {
         bot.logger.emit('error', bot.shardId, 'Error joining channel: ' + error);
-        return message.reply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:ERROR_PLAY_JOIN_CHANNEL'))], allowedMentions: { repliedUser: false } });
+        return message.reply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('commands:ERROR_PLAY_JOIN_CHANNEL'))], allowedMentions: { repliedUser: false } });
     }
 
     try {
@@ -84,7 +84,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
         player.filters.setVolume(curVolume);
     } catch (error) {
         bot.logger.emit('error', bot.shardId, 'Error joining channel: ' + error);
-        return interaction.editReply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:ERROR_PLAY_JOIN_CHANNEL'))], allowedMentions: { repliedUser: false } });
+        return interaction.editReply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('commands:ERROR_PLAY_JOIN_CHANNEL'))], allowedMentions: { repliedUser: false } });
     }
 
     try {
@@ -94,5 +94,5 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
         await dashboard.destroy(bot, player);
     }
 
-    return interaction.editReply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:MESSAGE_JOIN_SUCCESS'))], allowedMentions: { repliedUser: false } });
+    return interaction.editReply({ embeds: [embeds.textSuccessMsg(bot, client.i18n.t('commands:MESSAGE_JOIN_SUCCESS'))], allowedMentions: { repliedUser: false } });
 };

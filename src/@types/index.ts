@@ -97,7 +97,12 @@ export type BotConfig = {
         state?: string;
         url?: string;
     }
-    embedsColor: string;
+    embedsColors: {
+        message: string;
+        success: string;
+        error: string;
+        warning: string;
+    };
     volume: {
         default: number;
         max: number;

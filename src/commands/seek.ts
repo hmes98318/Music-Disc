@@ -30,14 +30,14 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
     const player = client.lavashark.getPlayer(message.guild!.id);
 
     if (!player || !player.playing) {
-        return message.reply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:ERROR_NO_PLAYING'))], allowedMentions: { repliedUser: false } });
+        return message.reply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('commands:ERROR_NO_PLAYING'))], allowedMentions: { repliedUser: false } });
     }
 
     const str = args.join(' ');
     const tragetTime = timeToSeconds(str);
 
     if (!tragetTime) {
-        return message.reply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:MESSAGE_SEEK_ARGS_ERROR'))], allowedMentions: { repliedUser: false } });
+        return message.reply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('commands:MESSAGE_SEEK_ARGS_ERROR'))], allowedMentions: { repliedUser: false } });
     }
 
     const tragetTimeMs = tragetTime * 1000;
@@ -46,10 +46,10 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
     await player.seek(tragetTimeMs);
 
     if (tragetTimeMs >= player.current!.duration.value) {
-        return message.reply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:MESSAGE_SEEK_SKIP', { duration: player.current!.duration.label }))], allowedMentions: { repliedUser: false } });
+        return message.reply({ embeds: [embeds.textWarningMsg(bot, client.i18n.t('commands:MESSAGE_SEEK_SKIP', { duration: player.current!.duration.label }))], allowedMentions: { repliedUser: false } });
     }
     else {
-        return message.reply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:MESSAGE_SEEK_SUCCESS', { duration: str }))], allowedMentions: { repliedUser: false } });
+        return message.reply({ embeds: [embeds.textSuccessMsg(bot, client.i18n.t('commands:MESSAGE_SEEK_SUCCESS', { duration: str }))], allowedMentions: { repliedUser: false } });
     }
 };
 
@@ -57,14 +57,14 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
     const player = client.lavashark.getPlayer(interaction.guild!.id);
 
     if (!player || !player.playing) {
-        return interaction.editReply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:ERROR_NO_PLAYING'))], allowedMentions: { repliedUser: false } });
+        return interaction.editReply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('commands:ERROR_NO_PLAYING'))], allowedMentions: { repliedUser: false } });
     }
 
     const str = interaction.options.getString('seek');
     const tragetTime = timeToSeconds(str!);
 
     if (!tragetTime) {
-        return interaction.editReply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:MESSAGE_SEEK_ARGS_ERROR'))], allowedMentions: { repliedUser: false } });
+        return interaction.editReply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('commands:MESSAGE_SEEK_ARGS_ERROR'))], allowedMentions: { repliedUser: false } });
     }
 
     const tragetTimeMs = tragetTime * 1000;
@@ -72,9 +72,9 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
     await player.seek(tragetTimeMs);
 
     if (tragetTimeMs >= player.current!.duration.value) {
-        return interaction.editReply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:MESSAGE_SEEK_SKIP', { duration: player.current!.duration.label }))], allowedMentions: { repliedUser: false } });
+        return interaction.editReply({ embeds: [embeds.textWarningMsg(bot, client.i18n.t('commands:MESSAGE_SEEK_SKIP', { duration: player.current!.duration.label }))], allowedMentions: { repliedUser: false } });
     }
     else {
-        return interaction.editReply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:MESSAGE_SEEK_SUCCESS', { duration: str }))], allowedMentions: { repliedUser: false } });
+        return interaction.editReply({ embeds: [embeds.textSuccessMsg(bot, client.i18n.t('commands:MESSAGE_SEEK_SUCCESS', { duration: str }))], allowedMentions: { repliedUser: false } });
     }
 };
