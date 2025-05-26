@@ -88,8 +88,6 @@
     "MESSAGE_LOOP_MODE": "✅ `{{mode}}`(으)로 설정되었습니다.",
     "MESSAGE_MOVE_SUCCESS": "✅ 음악 순서가 성공적으로 변경되었습니다.",
     "MESSAGE_MOVE_WRONG_INDEX": "❌ 유효한 범위를 입력하세요. (1 - {{max}})",
-    "MESSAGE_NODE_ALL_ACTIVE": "모든 노드가 활성화되었습니다.",
-    "MESSAGE_NODE_UNHEALTHY": "⚠️ {{healthValue}}의 연결이 끊어졌습니다.",
     "MESSAGE_NOW_PLAYING_BUTTOMTITLE": "\nand {{length}} other songs",
     "MESSAGE_NOW_PLAYING_SAVE_BUTTON": "음악 저장",
     "MESSAGE_NOW_PLAYING_SUBTITLE": "**아티스트:** {{author}}\n**길이:** {{label}}\n",

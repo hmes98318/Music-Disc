@@ -28,7 +28,12 @@ export const cst = {
                 state               : undefined,
                 url                 : undefined,
             },
-            embedsColor             : '#FFFFFF',
+            embedsColors: {
+                message             : '#FFFFFF',            // Message embed color
+                success             : '#FFFFFF',            // Success embed color
+                error               : '#FF0000',            // Error embed color
+                warning             : '#FFFF00',            // Warning embed color
+            },
             volume: {
                 default             : 50,
                 max                 : 100,

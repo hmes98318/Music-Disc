@@ -86,8 +86,6 @@
     "MESSAGE_LOOP_MODE": "✅ Döngü seçildi. `{{mode}}`.",
     "MESSAGE_MOVE_SUCCESS": "✅ Parça sıralaması başarıyla değiştirildi.",
     "MESSAGE_MOVE_WRONG_INDEX": "❌ Geçerli bir parça numarası aralığı belirtin. (1 - {{max}})",
-    "MESSAGE_NODE_ALL_ACTIVE": "Tüm bağlantı noktaları etkin",
-    "MESSAGE_NODE_UNHEALTHY": "⚠️  {{healthValue}} tane bağlantı noktasının bağlantısı kesildi",
     "MESSAGE_NOW_PLAYING_BUTTOMTITLE": "\nand {{length}} diğer parçalar",
     "MESSAGE_NOW_PLAYING_SAVE_BUTTON": "Parçayı kaydet",
     "MESSAGE_NOW_PLAYING_SUBTITLE": "Sanatçı : **{{author}}**\nSüre **{{label}}**\n",

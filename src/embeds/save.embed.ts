@@ -4,7 +4,7 @@ import type { Bot } from '../@types/index.js';
 
 const save = (bot: Bot, title: string, subtitle: string, url: string, thumbnail: string) => {
     const embed_ = new EmbedBuilder()
-        .setColor(bot.config.bot.embedsColor as HexColorString | number)
+        .setColor(bot.config.bot.embedsColors.message as HexColorString | number)
         .setTitle(title)
         .setURL(url)
         .setThumbnail(thumbnail)

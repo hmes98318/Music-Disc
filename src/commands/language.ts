@@ -36,7 +36,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
     }
     if (!bot.lang.languages.includes(locale)) {
         return message.reply({
-            embeds: [embeds.textMsg(bot, client.i18n.t('commands:MESSAGE_LANG_ARGS_ERROR', { langList: bot.lang.languages.map(lang => `\`${lang}\``).join(', ') }))],
+            embeds: [embeds.textErrorMsg(bot, client.i18n.t('commands:MESSAGE_LANG_ARGS_ERROR', { langList: bot.lang.languages.map(lang => `\`${lang}\``).join(', ') }))],
             allowedMentions: { repliedUser: false }
         });
     }
@@ -59,7 +59,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
     }
     if (!bot.lang.languages.includes(locale)) {
         return interaction.editReply({
-            embeds: [embeds.textMsg(bot, client.i18n.t('commands:MESSAGE_LANG_ARGS_ERROR', { langList: bot.lang.languages.map(lang => `\`${lang}\``).join(', ') }))],
+            embeds: [embeds.textErrorMsg(bot, client.i18n.t('commands:MESSAGE_LANG_ARGS_ERROR', { langList: bot.lang.languages.map(lang => `\`${lang}\``).join(', ') }))],
             allowedMentions: { repliedUser: false }
         });
     }
@@ -67,5 +67,8 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
 
     await client.i18n.changeLanguage(locale);
 
-    return interaction.editReply(client.i18n.t('commands:MESSAGE_LANG_SUCCESS', { locale: locale }));
+    return interaction.editReply({
+        embeds: [embeds.textSuccessMsg(bot, client.i18n.t('commands:MESSAGE_LANG_SUCCESS', { locale: locale }))],
+        allowedMentions: { repliedUser: false }
+    });
 };

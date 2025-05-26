@@ -28,22 +28,20 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
 
     const nodes = client.lavashark.nodes;
     const nodesStatus = [];
-    let healthValue = 0;
+    let unhealthValue = 0;
 
     for (let i = 0; i < nodes.length; i++) {
         const node = nodes[i];
         const ping = pingList[i];
 
         if (ping === -1) {
-            healthValue++;
+            unhealthValue++;
             nodesStatus.push({ name: `❌ ${node.identifier}`, value: '**DISCONNECTED**' });
         }
         else {
             nodesStatus.push({ name: `✅ ${node.identifier}`, value: `ping: **${ping}ms**` });
         }
     }
-
-    const nodeHealth = healthValue === 0 ? client.i18n.t('commands:MESSAGE_NODE_ALL_ACTIVE') : client.i18n.t('commands:MESSAGE_NODE_UNHEALTHY', { healthValue: healthValue });
 
 
     const results = await client.shard!.broadcastEval(async (client) => {
@@ -95,7 +93,7 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
     return message.reply({
         embeds: [
             embeds.botStatus(bot, systemStatus),
-            embeds.nodesStatus(bot, nodeHealth, nodesStatus)
+            embeds.nodesStatus(bot, unhealthValue, nodesStatus)
         ],
         allowedMentions: { repliedUser: false }
     });
@@ -108,22 +106,20 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
 
     const nodes = client.lavashark.nodes;
     const nodesStatus = [];
-    let healthValue = 0;
+    let unhealthValue = 0;
 
     for (let i = 0; i < nodes.length; i++) {
         const node = nodes[i];
         const ping = pingList[i];
 
         if (ping === -1) {
-            healthValue++;
+            unhealthValue++;
             nodesStatus.push({ name: `❌ ${node.identifier}`, value: '**DISCONNECTED**' });
         }
         else {
             nodesStatus.push({ name: `✅ ${node.identifier}`, value: `ping: **${ping}ms**` });
         }
     }
-
-    const nodeHealth = healthValue === 0 ? client.i18n.t('commands:MESSAGE_NODE_ALL_ACTIVE') : client.i18n.t('commands:MESSAGE_NODE_UNHEALTHY', { healthValue: healthValue });
 
 
     const results = await client.shard!.broadcastEval(async (client) => {
@@ -175,7 +171,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
     return interaction.editReply({
         embeds: [
             embeds.botStatus(bot, systemStatus),
-            embeds.nodesStatus(bot, nodeHealth, nodesStatus)
+            embeds.nodesStatus(bot, unhealthValue, nodesStatus)
         ],
         allowedMentions: { repliedUser: false }
     });

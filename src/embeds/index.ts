@@ -1,5 +1,5 @@
 import { connected, dashboard, disconnect } from './dashboard.embed.js';
-import { blacklist, filterMsg, help, textMsg } from './msg.embed.js';
+import { blacklist, filterMsg, help, textMsg, textErrorMsg, textSuccessMsg, textWarningMsg } from './msg.embed.js';
 import { ping } from './ping.embed.js';
 import { addTrack, addPlaylist, queue } from './queue.embed.js';
 import { removeList, removeTrack } from './remove.embed.js';
@@ -29,6 +29,9 @@ const embeds = {
     save,
     server,
     textMsg,
+    textErrorMsg,
+    textSuccessMsg,
+    textWarningMsg,
     validNodeName,
 };
 

@@ -12,7 +12,7 @@ const botStatus = (bot: Bot, systemStatus: SystemStatus) => {
     const heapUsage = `${systemStatus.heap.percent}  \`${systemStatus.heap.detail}\``;
 
     const embed_ = new EmbedBuilder()
-        .setColor(bot.config.bot.embedsColor as HexColorString | number)
+        .setColor(bot.config.bot.embedsColors.message as HexColorString | number)
         .setTitle(`${bot.config.bot.name} ${bot.sysInfo.bot_version}`)
         .setURL('https://github.com/hmes98318/Music-Disc')
         .setDescription(bot.i18n.t('embeds:STATUS_DESCRIPTION', { serverCount: systemStatus.serverCount, playingCount: systemStatus.playing }))
@@ -28,7 +28,7 @@ const botStatus = (bot: Bot, systemStatus: SystemStatus) => {
 
 const maintainNotice = (bot: Bot) => {
     const embed_ = new EmbedBuilder()
-        .setColor(bot.config.bot.embedsColor as HexColorString | number)
+        .setColor(bot.config.bot.embedsColors.warning as HexColorString | number)
         .setTitle(bot.i18n.t('embeds:MAINTAIN_TITLE'))
         .setDescription(bot.i18n.t('embeds:MAINTAIN_DESCRIPTION'))
         .setTimestamp();
@@ -36,11 +36,14 @@ const maintainNotice = (bot: Bot) => {
     return embed_;
 };
 
-const nodesStatus = (bot: Bot, nodeHealth: string, nodesStatus: { name: string; value: string; }[]) => {
+const nodesStatus = (bot: Bot, unhealthValue: number, nodesStatus: { name: string; value: string; }[]) => {
+    const healthString = unhealthValue > 0 ? bot.i18n.t('embeds:NODE_UNHEALTHY', { unhealthValue: unhealthValue }) : bot.i18n.t('embeds:NODE_ALL_ACTIVE');
+    const embedColor = unhealthValue > 0 ? bot.config.bot.embedsColors.warning : bot.config.bot.embedsColors.success;
+
     const embed_ = new EmbedBuilder()
-        .setColor(bot.config.bot.embedsColor as HexColorString | number)
+        .setColor(embedColor as HexColorString | number)
         .setTitle(bot.i18n.t('embeds:NODE_STATUS_TITLE'))
-        .setDescription(`**${nodeHealth}**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━`)
+        .setDescription(`**${healthString}**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━`)
         .addFields(nodesStatus)
         .setTimestamp();
 
@@ -49,7 +52,7 @@ const nodesStatus = (bot: Bot, nodeHealth: string, nodesStatus: { name: string; 
 
 const nodeStatus = (bot: Bot, nodeName: string, nodeInfo: Info, nodeStats: NodeStats, nodePing: number) => {
     const embed_ = new EmbedBuilder()
-        .setColor(bot.config.bot.embedsColor as HexColorString | number)
+        .setColor(bot.config.bot.embedsColors.success as HexColorString | number)
         .setTitle(bot.i18n.t('embeds:NODE_STATUS_TITLE_2', { nodeName: nodeName }))
         .setDescription(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━`)
         .addFields(
@@ -64,7 +67,7 @@ const nodeStatus = (bot: Bot, nodeName: string, nodeInfo: Info, nodeStats: NodeS
 
 const nodeDisconnected = (bot: Bot, nodeName: string) => {
     const embed_ = new EmbedBuilder()
-        .setColor(bot.config.bot.embedsColor as HexColorString | number)
+        .setColor(bot.config.bot.embedsColors.error as HexColorString | number)
         .setTitle(bot.i18n.t('embeds:NODE_STATUS_TITLE_2', { nodeName: nodeName }))
         .setDescription(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n❌ | **DISCONNECTED**`)
         .setTimestamp();
@@ -74,7 +77,7 @@ const nodeDisconnected = (bot: Bot, nodeName: string) => {
 
 const validNodeName = (bot: Bot, nodesName: string) => {
     const embed_ = new EmbedBuilder()
-        .setColor(bot.config.bot.embedsColor as HexColorString | number)
+        .setColor(bot.config.bot.embedsColors.error as HexColorString | number)
         .setTitle(bot.i18n.t('embeds:NODE_STATUS_ARGS_ERROR'))
         .setDescription(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n${nodesName}`)
         .setTimestamp();

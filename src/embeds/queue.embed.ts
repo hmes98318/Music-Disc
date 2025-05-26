@@ -4,7 +4,7 @@ import type { Bot } from '../@types/index.js';
 
 const addTrack = (bot: Bot, title: string, subtitle: string, url: string, thumbnail: string) => {
     const embed_ = new EmbedBuilder()
-        .setColor(bot.config.bot.embedsColor as HexColorString | number)
+        .setColor(bot.config.bot.embedsColors.message as HexColorString | number)
         .setTitle(title)
         .setURL(url)
         .setThumbnail(thumbnail)
@@ -16,7 +16,7 @@ const addTrack = (bot: Bot, title: string, subtitle: string, url: string, thumbn
 
 const addPlaylist = (bot: Bot, title: string, subtitle: string, url: string, thumbnail: string) => {
     const embed_ = new EmbedBuilder()
-        .setColor(bot.config.bot.embedsColor as HexColorString | number)
+        .setColor(bot.config.bot.embedsColors.message as HexColorString | number)
         .setTitle(title)
         .setURL(url)
         .setThumbnail(thumbnail)
@@ -28,7 +28,7 @@ const addPlaylist = (bot: Bot, title: string, subtitle: string, url: string, thu
 
 const queue = (bot: Bot, nowPlaying: string, queueList: string, repeatMode: string) => {
     const embed_ = new EmbedBuilder()
-        .setColor(bot.config.bot.embedsColor as HexColorString | number)
+        .setColor(bot.config.bot.embedsColors.message as HexColorString | number)
         .setTitle(bot.i18n.t('embeds:QUEUE_LIST_TITLE'))
         .addFields({ name: nowPlaying, value: queueList })
         .setTimestamp()

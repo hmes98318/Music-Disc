@@ -41,12 +41,12 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
     const player = client.lavashark.getPlayer(message.guild!.id);
 
     if (!player || !player.playing) {
-        return message.reply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:ERROR_NO_PLAYING'))], allowedMentions: { repliedUser: false } });
+        return message.reply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('commands:ERROR_NO_PLAYING'))], allowedMentions: { repliedUser: false } });
     }
 
 
     if (!player.queue.size) {
-        return message.reply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:ERROR_NO_MUSIC_IN_QUEUE'))], allowedMentions: { repliedUser: false } });
+        return message.reply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('commands:ERROR_NO_MUSIC_IN_QUEUE'))], allowedMentions: { repliedUser: false } });
     }
 
 
@@ -54,14 +54,14 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
     const index2 = parseInt(args[1], 10);
 
     if (isNaN(index1) || isNaN(index2)) {
-        return message.reply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:MESSAGE_MOVE_WRONG_INDEX', { max: player.queue.size }))], allowedMentions: { repliedUser: false } });
+        return message.reply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('commands:MESSAGE_MOVE_WRONG_INDEX', { max: player.queue.size }))], allowedMentions: { repliedUser: false } });
     }
 
 
     const isSuccess = player.queue.move(index1 - 1, index2 - 1);
 
     if (!isSuccess) {
-        return message.reply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:MESSAGE_MOVE_WRONG_INDEX', { max: player.queue.size }))], allowedMentions: { repliedUser: false } });
+        return message.reply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('commands:MESSAGE_MOVE_WRONG_INDEX', { max: player.queue.size }))], allowedMentions: { repliedUser: false } });
     }
 
 
@@ -73,12 +73,12 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
     const player = client.lavashark.getPlayer(interaction.guild!.id);
 
     if (!player || !player.playing) {
-        return interaction.editReply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:ERROR_NO_PLAYING'))], allowedMentions: { repliedUser: false } });
+        return interaction.editReply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('commands:ERROR_NO_PLAYING'))], allowedMentions: { repliedUser: false } });
     }
 
 
     if (!player.queue.size) {
-        return interaction.editReply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:ERROR_NO_MUSIC_IN_QUEUE'))], allowedMentions: { repliedUser: false } });
+        return interaction.editReply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('commands:ERROR_NO_MUSIC_IN_QUEUE'))], allowedMentions: { repliedUser: false } });
     }
 
 
@@ -88,9 +88,9 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
     const isSuccess = player.queue.move(index1 - 1, index2 - 1);
 
     if (!isSuccess) {
-        return interaction.editReply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:MESSAGE_MOVE_WRONG_INDEX', { max: player.queue.size }))], allowedMentions: { repliedUser: false } });
+        return interaction.editReply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('commands:MESSAGE_MOVE_WRONG_INDEX', { max: player.queue.size }))], allowedMentions: { repliedUser: false } });
     }
 
 
-    return interaction.editReply({ embeds: [embeds.textMsg(bot, client.i18n.t('commands:MESSAGE_MOVE_SUCCESS'))], allowedMentions: { repliedUser: false } });
+    return interaction.editReply({ embeds: [embeds.textSuccessMsg(bot, client.i18n.t('commands:MESSAGE_MOVE_SUCCESS'))], allowedMentions: { repliedUser: false } });
 };

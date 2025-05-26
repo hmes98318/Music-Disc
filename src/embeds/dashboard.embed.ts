@@ -4,7 +4,7 @@ import type { Bot } from '../@types/index.js';
 
 const connected = (bot: Bot) => {
     const embed_ = new EmbedBuilder()
-        .setColor(bot.config.bot.embedsColor as HexColorString | number)
+        .setColor(bot.config.bot.embedsColors.success as HexColorString | number)
         .setDescription(bot.i18n.t('embeds:DASHBOARD_VOICE_CHANNEL_CONNECT_SUCCESS'));
 
     return embed_;
@@ -12,7 +12,7 @@ const connected = (bot: Bot) => {
 
 const disconnect = (bot: Bot) => {
     const embed_ = new EmbedBuilder()
-        .setColor(bot.config.bot.embedsColor as HexColorString | number)
+        .setColor(bot.config.bot.embedsColors.message as HexColorString | number)
         .setDescription(bot.i18n.t('embeds:DASHBOARD_FINISH_PLAYING'));
 
     return embed_;
@@ -20,7 +20,7 @@ const disconnect = (bot: Bot) => {
 
 const dashboard = (bot: Bot, status: string, title: string, subtitle: string, url: string, thumbnail: string) => {
     const embed_ = new EmbedBuilder()
-        .setColor(bot.config.bot.embedsColor as HexColorString | number)
+        .setColor(bot.config.bot.embedsColors.message as HexColorString | number)
         .setTitle(title)
         .setURL(url)
         .setThumbnail(thumbnail)
