@@ -4,7 +4,7 @@
 
 <a href="https://github.com/hmes98318/Music-Disc/releases"><img alt="GitHub package.json version" src="https://img.shields.io/github/package-json/v/hmes98318/Music-Disc?style=for-the-badge"></a> 
 <a href="https://discord.js.org/"><img src="https://img.shields.io/badge/Discord.JS-v14-blue?style=for-the-badge&logo=DISCORD" /></a> 
-<a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node.JS->=18.x-brightgreen?style=for-the-badge&logo=Node.js"></a> 
+<a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node.JS-v22-brightgreen?style=for-the-badge&logo=Node.js"></a> 
 <a href="https://github.com/hmes98318/Music-Disc/blob/main/LICENSE"><img alt="GitHub" src="https://img.shields.io/github/license/hmes98318/Music-Disc?style=for-the-badge&color=brightgreen"></a>  
 
 A discord music bot, supports **YouTube**, **Spotify**, **SoundCloud**, **Deezer** streams and web dashboard.  
@@ -28,7 +28,7 @@ If you encounter any issues or would like to contribute to the community, please
 
 ### Clone the latest version of the repository
 ```
-git clone -b v3.1.0 https://github.com/hmes98318/Music-Disc.git
+git clone https://github.com/hmes98318/Music-Disc.git
 ```
 or [**click here**](https://github.com/hmes98318/Music-Disc/releases) to download  
 
@@ -41,16 +41,17 @@ npm ci
 
 
 ### Add Lavalink node
-Edit the [`nodelist.json`](./nodelist.json) file to add a [Lavalink](https://github.com/lavalink-devs/Lavalink) node.  
+At least one Lavalink node is required to operate.  
+Edit the [`nodelist.json`](./nodelist.json) file to add the [Lavalink](https://github.com/lavalink-devs/Lavalink) node.  
 Only supports Lavalink **v4** nodes, **v4.0.8** or higher is recommended.  
  * Use [public node](https://lavalink-list.darrennathanael.com/)  
  * or [host your own](https://blog.darrennathanael.com/post/how-to-lavalink/)  
- * or enable [local node setup](https://musicdisc.ggwp.tw/docs/Environment-variables-description#local-node)  
+ * or enable [local node setup](https://musicdisc.ggwp.tw/docs/Configuration-description#local-lavalink-node)  
 
 Please refer to this [**documentation**](https://lavashark.js.org/docs/server-config) for detailed information.  
 
-```json
-[
+```js
+nodeList: [
     {
         "id": "Node 1",
         "hostname": "localhost",
@@ -61,60 +62,16 @@ Please refer to this [**documentation**](https://lavashark.js.org/docs/server-co
 ```
 
 
-### Configure environment
-Refer to [**.env.example**](./.env.example) and edit the **.env** fileEdit the file.  
-```env
+### Configure Bot
+Edit the [`.env`](https://github.com/hmes98318/Music-Disc/blob/main/.env) file to set the bot token.  
+```bash
 # Discord Bot Token
 BOT_TOKEN = "your_token"
-
-# Admin of the bot (User ID)
-# For multiple admins, separate their user IDs with commas.
-# OAUTH2 mode requires setting BOT_ADMIN, BOT_CLIENT_SECRET value
-BOT_ADMIN = ""              
-BOT_CLIENT_SECRET = ""
-
-# Bot settings
-BOT_NAME = "Music Disc"
-BOT_PREFIX = "+"
-BOT_STATUS = "online"
-BOT_PLAYING = "+help | music"
-BOT_EMBEDS_COLOR = "#FFFFFF"
-BOT_SLASH_COMMAND = true
-
-
-# Volume settings
-DEFAULT_VOLUME = 50
-MAX_VOLUME = 100
-
-# Auto leave channel settings
-AUTO_LEAVE = true
-AUTO_LEAVE_COOLDOWN = 5000
-
-# Show voice channel updates
-DISPLAY_VOICE_STATE = true
-
-
-# Web dashboard settings
-ENABLE_SITE = true
-SITE_PORT = 33333
-SITE_LOGIN_TYPE = "USER"   # "USER" | "OAUTH2"
-
-# USER mode settings
-SITE_USERNAME = "admin"
-SITE_PASSWORD = "000"
-
-# OAUTH2 mode settings
-SITE_OAUTH2_LINK = ""   # Your OAuth2 authentication link
-SITE_OAUTH2_REDIRECT_URI = "http://localhost:33333/login"   # Redirect link after OAuth2 authentication is complete
-
-
-# Local Lavalink node
-ENABLE_LOCAL_NODE = false
-LOCAL_NODE_AUTO_RESTART = true
-# LOCAL_NODE_DOWNLOAD_LINK = ""
 ```
 
-* [**Environment variables detailed description**](https://musicdisc.ggwp.tw/docs/Environment-variables-description)
+Edit [`config.js`](https://github.com/hmes98318/Music-Disc/blob/main/config.js) to configure other parameters of the bot.  
+
+* [**Env & config.js detailed description**](https://musicdisc.ggwp.tw/docs/Configuration-description)
 
 
 ### Running the script 
@@ -132,6 +89,9 @@ If you don't have any available nodes, you need to first start the server contai
 
 ### Start with Docker Compose
 Please put your **token** into the `BOT_TOKEN` variable.  
+Edit [`config.js`](https://github.com/hmes98318/Music-Disc/blob/main/config.js) to configure other parameters of the bot.  
+* [**Env & config.js detailed description**](https://musicdisc.ggwp.tw/docs/Configuration-description)
+
 ```yml
 services:
   music-disc:
@@ -141,47 +101,15 @@ services:
     environment:
       TZ: "Asia/Taipei"
       BOT_TOKEN: "your_token"
-
-      # OAUTH2 mode requires setting BOT_ADMIN, BOT_CLIENT_SECRET value
-      BOT_ADMIN: ""
-      BOT_CLIENT_SECRET: ""
-
-      BOT_NAME: "Music Disc"
-      BOT_PREFIX: "+"
-      BOT_PLAYING: "+help | music"
-      BOT_EMBEDS_COLOR: "#FFFFFF"
-      BOT_SLASH_COMMAND: true
-
-      DEFAULT_VOLUME: 50
-      MAX_VOLUME: 100
-
-      AUTO_LEAVE: "true"
-      AUTO_LEAVE_COOLDOWN: 5000
-      DISPLAY_VOICE_STATE: "true"
-
-      # Web dashboard settings
-      ENABLE_SITE: true
-      SITE_PORT: 33333
-      SITE_LOGIN_TYPE: "USER"   # "OAUTH2" | "USER"
-      # USER mode settings
-      SITE_USERNAME: "admin"
-      SITE_PASSWORD: "password"
-      # OAUTH2 mode settings
-      SITE_OAUTH2_LINK: ""      # Your OAuth2 authentication link
-      SITE_OAUTH2_REDIRECT_URI: "http://localhost:33333/login"   # Redirect link after OAuth2 authentication is complete
-
-      # Local Lavalink node
-      ENABLE_LOCAL_NODE: false
-      LOCAL_NODE_AUTO_RESTART: true
     volumes:
-      - ./server:/bot/server    # localnode configuration file
-      - ./nodelist.json:/bot/nodelist.json
-      - ./blacklist.json:/bot/blacklist.json
+      - ./config.js:/bot/config.js              # Bot config
+      - ./logs:/bot/logs                        # Bot logs
+      - ./server:/bot/server                    # localnode configuration file
     ports:
       - 33333:33333
 ```
 
-#### Start the container  
+#### Start the docker compose  
 ```
 docker compose up -d
 ```
@@ -196,30 +124,28 @@ docker run -d \
   --restart always \
   -e TZ="Asia/Taipei" \
   -e BOT_TOKEN="your_token" \
-  -e BOT_ADMIN="" \
-  -e BOT_CLIENT_SECRET="" \
-  -e BOT_NAME="Music Disc" \
-  -e BOT_PREFIX="+" \
-  -e BOT_PLAYING="+help | music" \
-  -e BOT_EMBEDS_COLOR="#FFFFFF" \
-  -e BOT_SLASH_COMMAND="#true" \
-  -e DEFAULT_VOLUME=50 \
-  -e MAX_VOLUME=100 \
-  -e AUTO_LEAVE="true" \
-  -e AUTO_LEAVE_COOLDOWN=5000 \
-  -e DISPLAY_VOICE_STATE="true" \
-  -e ENABLE_SITE=true \
-  -e SITE_PORT=33333 \
-  -e SITE_LOGIN_TYPE="USER" \
-  -e SITE_USERNAME="admin" \
-  -e SITE_PASSWORD="password" \
-  -e SITE_OAUTH2_LINK="" \
-  -e SITE_OAUTH2_REDIRECT_URI="http://localhost:33333/login" \
-  -e ENABLE_LOCAL_NODE=false \
-  -e LOCAL_NODE_AUTO_RESTART=true \
+  -v $(pwd)/config.js:/bot/config.js \
+  -v $(pwd)/logs:/bot/logs \
   -v $(pwd)/server:/bot/server \
-  -v $(pwd)/nodelist.json:/bot/nodelist.json \
-  -v $(pwd)/blacklist.json:/bot/blacklist.json \
   -p 33333:33333 \
   hmes98318/music-disc:latest
 ```
+
+## Development
+
+### Contributing
+If you'd like to contribute to the development of Music Disc, please follow these steps:
+
+1. Fork the repository
+2. Create a new branch from the **dev** branch (all development work happens on the dev branch)
+3. Make your changes
+4. Submit a pull request to the **dev** branch
+
+Please note that the main branch is only updated for releases.
+
+### Translations
+Music Disc supports multiple languages. If you want to contribute translations:
+
+1. Read the translation guidelines in [src/locales/README.md](./src/locales/README.md)
+2. Follow the IETF language tag format (e.g. `en-US`)
+3. Ensure all translation keys from the default `en-US` templates are included
