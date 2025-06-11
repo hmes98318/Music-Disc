@@ -42,7 +42,7 @@ npm ci
 
 ### Add Lavalink node
 At least one Lavalink node is required to operate.  
-Edit the [`nodelist.json`](./nodelist.json) file to add the [Lavalink](https://github.com/lavalink-devs/Lavalink) node.  
+Edit the [`config.js`](./config.js) file to add the [Lavalink](https://github.com/lavalink-devs/Lavalink) node.  
 Only supports Lavalink **v4** nodes, **v4.0.8** or higher is recommended.  
  * Use [public node](https://lavalink-list.darrennathanael.com/)  
  * or [host your own](https://blog.darrennathanael.com/post/how-to-lavalink/)  
@@ -63,7 +63,7 @@ nodeList: [
 
 
 ### Configure Bot
-Edit the [`.env`](https://github.com/hmes98318/Music-Disc/blob/main/.env) file to set the bot token.  
+Edit the [`.env`](https://github.com/hmes98318/Music-Disc/blob/main/.env.example) file to set the bot token.  
 ```bash
 # Discord Bot Token
 BOT_TOKEN = "your_token"
