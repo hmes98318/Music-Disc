@@ -33,7 +33,18 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
     }
 
     const str = args.join(' ');
-    const res = await client.lavashark.search(str);
+    let res;
+
+    try {
+        res = await client.lavashark.search(str);
+    } catch (error) {
+        console.error(error);
+        bot.logger.emit('error', bot.shardId, `Search Error: ${error}`);
+        return message.reply({
+            embeds: [embeds.textErrorMsg(bot, client.i18n.t('commands:ERROR_PLAY_SEARCH', { reason: error instanceof Error ? error.message : String(error) }))],
+            allowedMentions: { repliedUser: false }
+        });
+    }
 
     if (res.loadType === LoadType.ERROR) {
         bot.logger.emit('error', bot.shardId, `Search Error: ${JSON.stringify(res)}`);
@@ -110,7 +121,23 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
 
 export const slashExecute = async (bot: Bot, client: Client, interaction: ChatInputCommandInteraction) => {
     const str = interaction.options.getString('play');
-    const res = await client.lavashark.search(str!);
+    let res;
+
+    if (!str) {
+        return interaction.editReply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('commands:MESSAGE_PLAY_ARGS_ERROR'))], allowedMentions: { repliedUser: false } });
+    }
+
+
+    try {
+        res = await client.lavashark.search(str);
+    } catch (error) {
+        console.error(error);
+        bot.logger.emit('error', bot.shardId, `Search Error: ${error}`);
+        return interaction.editReply({
+            embeds: [embeds.textErrorMsg(bot, client.i18n.t('commands:ERROR_PLAY_SEARCH', { reason: error instanceof Error ? error.message : String(error) }))],
+            allowedMentions: { repliedUser: false }
+        });
+    }
 
     if (res.loadType === LoadType.ERROR) {
         bot.logger.emit('error', bot.shardId, `Search Error: ${JSON.stringify(res)}`);
