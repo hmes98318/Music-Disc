@@ -1,6 +1,7 @@
 import { Client, Message, ChannelType } from 'discord.js';
 import { cst } from '../../utils/constants.js';
 import { embeds } from '../../embeds/index.js';
+import { PermissionManager } from '../../lib/PermissionManager.js';
 
 import type { Bot } from '../../@types/index.js';
 
@@ -44,10 +45,8 @@ export default async (bot: Bot, client: Client, message: Message) => {
 
     // DJ command
     if (bot.config.command.djCommand.includes(cmd.name)) {
-        if (
-            (!bot.config.bot.admin.includes(message.author.id) && !bot.config.bot.dj.includes(message.author.id)) &&
-            (bot.config.bot.djRoleId && !message.member.roles.cache.has(bot.config.bot.djRoleId))
-        ) {
+        const player = client.lavashark.getPlayer(message.guild.id);
+        if (!PermissionManager.hasDJCommandPermission(bot, message.author.id, message.member, player || undefined)) {
             return message.reply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('events:ERROR_REQUIRE_DJ'))], allowedMentions: { repliedUser: false } })
                 .catch((error) => {
                     bot.logger.emit('error', bot.shardId, `[messageCreate] Error reply: (${message.author.username} : ${message.content})` + error);

@@ -13,7 +13,8 @@ import i18next from 'i18next';
 import { dashboard } from '../dashboard/index.js';
 import { embeds } from '../embeds/index.js';
 import { isUserInBlacklist } from '../utils/functions/isUserInBlacklist.js';
-import { CommandCategory, LoadType } from '../@types/index.js';
+import { DJManager } from '../lib/DjManager.js';
+import { CommandCategory, DJModeEnum, LoadType } from '../@types/index.js';
 
 import type { Bot } from '../@types/index.js';
 
@@ -105,6 +106,11 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
         if (!player.dashboard) await dashboard.initial(bot, message, player);
     } catch (error) {
         await dashboard.destroy(bot, player);
+    }
+
+    // Set first user as DJ in dynamic mode
+    if (bot.config.bot.djMode === DJModeEnum.DYNAMIC && !DJManager.hasDJSet(player)) {
+        DJManager.addDJ(player, message.author.id);
     }
 
     await message.react('👍');
@@ -279,6 +285,11 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
         if (!player.dashboard) await dashboard.initial(bot, interaction, player);
     } catch (error) {
         await dashboard.destroy(bot, player);
+    }
+
+    // Set first user as DJ in dynamic mode
+    if (bot.config.bot.djMode === DJModeEnum.DYNAMIC && !DJManager.hasDJSet(player)) {
+        DJManager.addDJ(player, interaction.user.id);
     }
 
 

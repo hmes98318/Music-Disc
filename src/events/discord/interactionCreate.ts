@@ -15,6 +15,7 @@ import { RepeatMode } from 'lavashark';
 import { cst } from '../../utils/constants.js';
 import { embeds } from '../../embeds/index.js';
 import { dashboard } from '../../dashboard/index.js';
+import { PermissionManager } from '../../lib/PermissionManager.js';
 
 import type { Bot } from '../../@types/index.js';
 
@@ -68,10 +69,7 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
                     }
                     // DJ command
                     if (bot.config.command.djCommand.includes('pause') && bot.config.command.djCommand.includes('resume')) {
-                        if (
-                            (!bot.config.bot.admin.includes(interaction.user.id) && !bot.config.bot.dj.includes(interaction.user.id)) &&
-                            (bot.config.bot.djRoleId && !(interaction.member as GuildMember).roles.cache.has(bot.config.bot.djRoleId))
-                        ) {
+                        if (!PermissionManager.hasDJCommandPermission(bot, interaction.user.id, interaction.member as GuildMember, player)) {
                             return interaction.reply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('events:ERROR_REQUIRE_DJ'))], allowedMentions: { repliedUser: false } })
                                 .catch((error) => {
                                     bot.logger.emit('error', bot.shardId, `[interactionCreate] Error reply: (${interaction.user.username} : /${interaction.customId})` + error);
@@ -112,10 +110,7 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
                     }
                     // DJ command
                     if (bot.config.command.djCommand.includes('skip')) {
-                        if (
-                            (!bot.config.bot.admin.includes(interaction.user.id) && !bot.config.bot.dj.includes(interaction.user.id)) &&
-                            (bot.config.bot.djRoleId && !(interaction.member as GuildMember).roles.cache.has(bot.config.bot.djRoleId))
-                        ) {
+                        if (!PermissionManager.hasDJCommandPermission(bot, interaction.user.id, interaction.member as GuildMember, player)) {
                             return interaction.reply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('events:ERROR_REQUIRE_DJ'))], allowedMentions: { repliedUser: false } })
                                 .catch((error) => {
                                     bot.logger.emit('error', bot.shardId, `[interactionCreate] Error reply: (${interaction.user.username} : /${interaction.customId})` + error);
@@ -159,10 +154,7 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
                     }
                     // DJ command
                     if (bot.config.command.djCommand.includes('loop')) {
-                        if (
-                            (!bot.config.bot.admin.includes(interaction.user.id) && !bot.config.bot.dj.includes(interaction.user.id)) &&
-                            (bot.config.bot.djRoleId && !(interaction.member as GuildMember).roles.cache.has(bot.config.bot.djRoleId))
-                        ) {
+                        if (!PermissionManager.hasDJCommandPermission(bot, interaction.user.id, interaction.member as GuildMember, player)) {
                             return interaction.reply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('events:ERROR_REQUIRE_DJ'))], allowedMentions: { repliedUser: false } })
                                 .catch((error) => {
                                     bot.logger.emit('error', bot.shardId, `[interactionCreate] Error reply: (${interaction.user.username} : /${interaction.customId})` + error);
@@ -241,10 +233,7 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
                     }
                     // DJ command
                     if (bot.config.command.djCommand.includes('leave')) {
-                        if (
-                            (!bot.config.bot.admin.includes(interaction.user.id) && !bot.config.bot.dj.includes(interaction.user.id)) &&
-                            (bot.config.bot.djRoleId && !(interaction.member as GuildMember).roles.cache.has(bot.config.bot.djRoleId))
-                        ) {
+                        if (!PermissionManager.hasDJCommandPermission(bot, interaction.user.id, interaction.member as GuildMember, player)) {
                             return interaction.reply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('events:ERROR_REQUIRE_DJ'))], allowedMentions: { repliedUser: false } })
                                 .catch((error) => {
                                     bot.logger.emit('error', bot.shardId, `[interactionCreate] Error reply: (${interaction.user.username} : /${interaction.customId})` + error);
@@ -279,10 +268,7 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
                     }
                     // DJ command
                     if (bot.config.command.djCommand.includes('shuffle')) {
-                        if (
-                            (!bot.config.bot.admin.includes(interaction.user.id) && !bot.config.bot.dj.includes(interaction.user.id)) &&
-                            (bot.config.bot.djRoleId && !(interaction.member as GuildMember).roles.cache.has(bot.config.bot.djRoleId))
-                        ) {
+                        if (!PermissionManager.hasDJCommandPermission(bot, interaction.user.id, interaction.member as GuildMember, player)) {
                             return interaction.reply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('events:ERROR_REQUIRE_DJ'))], allowedMentions: { repliedUser: false } })
                                 .catch((error) => {
                                     bot.logger.emit('error', bot.shardId, `[interactionCreate] Error reply: (${interaction.user.username} : /${interaction.customId})` + error);
@@ -513,10 +499,8 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
 
         // DJ command
         if (bot.config.command.djCommand.includes(cmd.name)) {
-            if (
-                (!bot.config.bot.admin.includes(interaction.user.id) && !bot.config.bot.dj.includes(interaction.user.id)) &&
-                (bot.config.bot.djRoleId && !(interaction.member as GuildMember).roles.cache.has(bot.config.bot.djRoleId))
-            ) {
+            const player = client.lavashark.getPlayer(interaction.guild!.id);
+            if (!PermissionManager.hasDJCommandPermission(bot, interaction.user.id, interaction.member as GuildMember, player || undefined)) {
                 return interaction.reply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('events:ERROR_REQUIRE_DJ'))], allowedMentions: { repliedUser: false } })
                     .catch((error) => {
                         bot.logger.emit('error', bot.shardId, `[interactionCreate] Error reply: (${interaction.user.username} : /${interaction.commandName})` + error);

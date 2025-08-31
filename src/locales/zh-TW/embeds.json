@@ -1,6 +1,7 @@
 {
     "DASHBOARD_FINISH_PLAYING": "音樂播放已結束",
     "DASHBOARD_SUBTITLE": "作者 : **{{author}}**\n時長 : **{{duration}}**\n────────────────────\n音量: `{{volume}}%` | 循環模式: `{{repeatMode}}`",
+    "DASHBOARD_DJ_INFO": "\n────────────────────\n**DJ:** {{djDisplay}}",
     "DASHBOARD_VOICE_CHANNEL_CONNECT_SUCCESS": "已成功連接語音頻道。",
     "MAINTAIN_DESCRIPTION": "機器人將於幾分鐘內開始維護。在此期間，部分功能可能暫時無法使用。",
     "MAINTAIN_TITLE": "⚠️ 維護通知 ⚠️",

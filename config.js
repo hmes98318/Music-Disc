@@ -23,8 +23,15 @@ const config = {
 
         // OAUTH2 mode requires setting 'admin', 'clientSecret' value
         admin                   : [],                   // Admin users, It must be the user ID (string[])
+
+        /**
+         * DYNAMIC mode: The first user to execute a command becomes the DJ
+         * STATIC mode: The DJ is determined by the config file
+         */
+        djMode                  : 'DYNAMIC',            // DJ mode: 'STATIC' (config.js based) or 'DYNAMIC' (first user to execute command based)
         dj                      : [],                   // DJ users, It must be the user ID (string[])
         djRoleId                : '',                   // DJ role ID, members with this role have DJ permissions (string)
+        djLeaveCooldown         : 5000,                 // Automatically assign a cooldown time (ms) to a new DJ after the DJ leaves in DYNAMIC mode (default: 5000ms)
 
         clientSecret            : '',
 
@@ -119,7 +126,7 @@ const config = {
     command: {
         disableCommand: [],                                 // Disabled commands, all enabled by default
         adminCommand: ['language','server', 'status'],      // Admin commands, only Admin role user can use
-        djCommand: []                                       // DJ commands, only DJ role user can use
+        djCommand: ['dj', 'filter']                         // DJ commands, only DJ role user can use
     }
 };
 

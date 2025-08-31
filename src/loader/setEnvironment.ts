@@ -1,6 +1,7 @@
 import { ActivityType } from 'discord.js';
 import { hashGenerator } from '../lib/hashGenerator.js';
 import { config } from '../../config.js';
+import { DJModeEnum } from './../@types/index.js';
 
 import type { Config } from './../@types/index.js';
 
@@ -21,6 +22,12 @@ const setEnvironment = (defaultConfig: Config) => {
         djRoleId: (/^\d+$/).test(String(config.bot.djRoleId))
             ? String(config.bot.djRoleId)
             : defaultConfig.bot.djRoleId,
+        djMode: Object.values(DJModeEnum).includes(config.bot.djMode as any)
+            ? config.bot.djMode
+            : defaultConfig.bot.djMode,
+        djLeaveCooldown: isNumber(config.bot.djLeaveCooldown)
+            ? config.bot.djLeaveCooldown
+            : defaultConfig.bot.djLeaveCooldown,
 
         clientSecret: config.bot.clientSecret || defaultConfig.bot.clientSecret,
 
