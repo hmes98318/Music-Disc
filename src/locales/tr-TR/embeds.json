@@ -1,6 +1,7 @@
 {
     "DASHBOARD_FINISH_PLAYING": "Kuyruk sonlandı.",
     "DASHBOARD_SUBTITLE": "Sanatçı : **{{author}}**\nSüre **{{duration}}**\n────────────────────\nSes Yüksekliği: `{{volume}}%` | Döngü: `{{repeatMode}}`",
+    "DASHBOARD_DJ_INFO": "\n────────────────────\n**DJ:** {{djDisplay}}",
     "DASHBOARD_VOICE_CHANNEL_CONNECT_SUCCESS": "Ses bağlantısı başarıyla yapıldı.",
     "MAINTAIN_DESCRIPTION": "Bot birkaç dakika içinde bakım moduna alınacaktır. Bu süre boyunca bazı özellikler geçici olarak kullanılamayabilir.",
     "MAINTAIN_TITLE": "⚠️ Bakım Notu ⚠️",

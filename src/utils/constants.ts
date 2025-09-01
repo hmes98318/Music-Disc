@@ -1,5 +1,5 @@
 import { ActivityType, ClientPresenceStatus } from 'discord.js';
-import { LoginType } from '../@types/index.js';
+import { LoginType, DJModeEnum } from '../@types/index.js';
 
 
 /**
@@ -14,8 +14,15 @@ export const cst = {
     
             // OAUTH2 mode requires setting 'admin', 'clientSecret' value
             admin                   : [],                   // Admin users, It must be the user ID (string[])
+
+            /**
+             * DYNAMIC mode: The first user to execute a command becomes the DJ
+             * STATIC mode: The DJ is determined by the config file
+             */
+            djMode                  : DJModeEnum.DYNAMIC,   // DJ mode: 'STATIC' (config.js based) or 'DYNAMIC' (first user to execute command based)
             dj                      : [],                   // DJ users, It must be the user ID (string[])
             djRoleId                : null,                 // DJ role ID, members with this role have DJ permissions
+            djLeaveCooldown         : 5000,                 // Automatically assign a cooldown time (ms) to a new DJ after the DJ leaves in DYNAMIC mode (default: 5000ms)
 
             clientSecret            : '',
     
@@ -124,7 +131,7 @@ export const cst = {
         command: {
             disableCommand      : [],                                   // Disabled commands, all enabled by default
             adminCommand        : ['language','server', 'status'],      // Admin commands, only Admin role user can use
-            djCommand           : []                                    // DJ commands, only DJ role user can use
+            djCommand           : ['dj']                                // DJ commands, only DJ role user can use
         }
     },
 

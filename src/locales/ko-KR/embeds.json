@@ -1,6 +1,7 @@
 {
     "DASHBOARD_FINISH_PLAYING": "모든 음악이 재생되었습니다.",
     "DASHBOARD_SUBTITLE": "**아티스트:** {{author}}\n**길이:** {{duration}}\n────────────────────\n**음량:** `{{volume}}%`ㅣ**반복:** `{{repeatMode}}`",
+    "DASHBOARD_DJ_INFO": "\n────────────────────\n**DJ:** {{djDisplay}}",
     "DASHBOARD_VOICE_CHANNEL_CONNECT_SUCCESS": "음성채팅에 성공적으로 연결했습니다.",
     "MAINTAIN_DESCRIPTION": "몇 분 후에 봇이 점검을 시작합니다. 일부 기능을 일시적으로 사용하지 못할 수 있습니다.",
     "MAINTAIN_TITLE": "⚠️ 유지보수 안내 ⚠️",
