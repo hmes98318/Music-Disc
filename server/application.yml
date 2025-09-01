@@ -33,7 +33,7 @@ plugins:
 lavalink:
   plugins:
     # https://github.com/lavalink-devs/youtube-source
-    - dependency: "dev.lavalink.youtube:youtube-plugin:1.13.2"
+    - dependency: "dev.lavalink.youtube:youtube-plugin:1.13.5"
       repository: "https://maven.lavalink.dev/releases"
   server:
     password: "youshallnotpass"

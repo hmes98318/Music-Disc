@@ -119,7 +119,7 @@ const config = {
     localNode: {
         enabled             : false,
         autoRestart         : true,
-        // downloadLink        : 'https://github.com/lavalink-devs/Lavalink/releases/download/4.0.8/Lavalink.jar'
+        // downloadLink        : 'https://github.com/lavalink-devs/Lavalink/releases/download/4.1.1/Lavalink.jar'
     },
 
     // Command permission settings

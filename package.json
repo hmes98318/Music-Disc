@@ -23,13 +23,13 @@
     "dependencies": {
         "body-parser": "^2.2.0",
         "cookie": "^1.0.2",
-        "discord.js": "~14.19.3",
-        "dotenv": "^16.5.0",
+        "discord.js": "~14.22.1",
+        "dotenv": "^17.2.1",
         "express": "^4.21.2",
-        "i18next": "^24.2.2",
+        "i18next": "^25.4.2",
         "i18next-fs-backend": "^2.6.0",
         "lavashark": "^2.3.0",
-        "undici": "^7.10.0"
+        "undici": "^7.15.0"
     },
     "devDependencies": {
         "@eslint/js": "^9.21.0",
@@ -37,7 +37,7 @@
         "@types/node": "^22.15.21",
         "eslint": "^9.21.0",
         "globals": "^16.0.0",
-        "tsx": "^4.19.3",
+        "tsx": "^4.20.5",
         "typescript": "~5.7.3",
         "typescript-eslint": "^8.25.0"
     },
