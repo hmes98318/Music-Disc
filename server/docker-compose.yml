@@ -1,6 +1,6 @@
 services:
     lavalink:
-        image: fredboat/lavalink:4.0.8 # pin the image version to Lavalink v3
+        image: fredboat/lavalink:4.1.1 # pin the image version to Lavalink v4
         container_name: lavalink_v4
         restart: unless-stopped
         environment:
