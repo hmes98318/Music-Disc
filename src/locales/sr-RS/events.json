@@ -1,0 +1,19 @@
+{
+  "ERROR_GET_GUILD_DATA_CACHE": "❌ | Nije moguće preuzeti podatke o gildi iz keša.",
+  "ERROR_NOT_IN_SAME_VOICE_CHANNEL": "❌ | Niste na istom audio kanalu kao ja.",
+  "ERROR_NOT_IN_VOICE_CHANNEL": "❌ | Niste povezani na audio kanal.",
+  "ERROR_NOT_PLAYING": "❌ | Trenutno se ne reprodukuje nijedna muzika.",
+  "ERROR_REQUIRE_ADMIN": "❌ | Ova komanda zahteva administratorske privilegije.",
+  "ERROR_REQUIRE_DJ": "❌ | Ova komanda zahteva DJ privilegije.",
+  "ERROR_SEND_PRIVATE_MESSAGE": "❌ | Ne mogu da vam pošaljem privatnu poruku.",
+  "ERROR_SLASH_NOT_ENABLE": "❌ | Komanda sa kosom crtom nije omogućena.",
+  "ERROR_TIME_EXPIRED": "❌ | Vreme je isteklo.",
+  "MESSAGE_BOT_LEAVE_CHANNEL": "✅ | Bot je napustio kanal.",
+  "MESSAGE_MUSIC_SHUFFLE": "✅ | Muzika izmešana.",
+  "MESSAGE_NOW_PLAYING_SUBTITLE": "Autor: **{{author}}**\nTrajanje **{{label}}**\n",
+  "MESSAGE_NOW_PLAYING_TITLE": "Sada se reprodukuje: {{title}}\n\n",
+  "MESSAGE_SELECT_LOOP_MODE": "Izaberite režim petlje pesme.",
+  "MESSAGE_SEND_PRIVATE_MESSAGE": "✅ | Poslao sam vam naziv muzike u privatnoj poruci.",
+  "MESSAGE_SET_LOOP_MODE": "✅ | Postavljena petlja na `{{mode}}`",
+  "MESSAGE_SPECIFIC_CHANNEL_WARN": "❌ | Ne možete izvršavati komande u ovom kanalu. Molim koristite tekstualni kanal <#{{channelId}}>."
+}
