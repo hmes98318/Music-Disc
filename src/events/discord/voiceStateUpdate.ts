@@ -18,6 +18,9 @@ const checkBlacklistUsers = (channel: VoiceBasedChannel | null, blacklist: strin
 
 
 export default async (bot: Bot, client: Client, oldState: VoiceState, newState: VoiceState) => {
+    // If the channel ID is the same, the function immediately terminates since it involves a state change such as muting or screen sharing.
+    if (oldState.channelId === newState.channelId) return;
+
     const display = bot.config.bot.displayVoiceState ?? true;
     const blacklist = bot.config.blacklist || [];
 
