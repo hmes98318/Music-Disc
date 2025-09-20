@@ -63,6 +63,8 @@
     "CONFIG_SKIP_USAGE": "skip",
     "CONFIG_STATUS_DESCRIPTION": "顯示機器人狀態",
     "CONFIG_STATUS_USAGE": "status",
+    "CONFIG_STOP_DESCRIPTION": "停止當前播放的音樂並清空隊列，但不離開頻道",
+    "CONFIG_STOP_USAGE": "stop",
     "CONFIG_VOLUME_DESCRIPTION": "更改機器人音量",
     "CONFIG_VOLUME_USAGE": "v <0-100>",
     "CONFIG_VOLUME_OPTION_DESCRIPTION": "設定的音量",
@@ -122,8 +124,10 @@
     "MESSAGE_SHUFFLE_SUCCESS": "✅ 音樂已隨機播放。",
     "MESSAGE_SKIP_FAIL": "❌ 跳過音樂失敗。",
     "MESSAGE_SKIP_SUCCESS": "✅ 音樂已跳過。",
+    "MESSAGE_STOP_SUCCESS": "✅ 音樂已停止。",
     "MESSAGE_VOLUME_ARGS_ERROR": "目前音量：**{{volume}}** 🔊\n**若要更改音量，請輸入 `1` 至 `{{maxVolume}}` 之間的數字。**",
     "MESSAGE_VOLUME_ARGS_ERROR_2": "❌ **請輸入 `1` 至 `{{maxVolume}}` 之間的數字來更改音量。**",
+    "MESSAGE_VOLUME_SELECT": "目前音量：**{{volume}}%** 🔊\n**請選擇想要設定的音量：**",
     "MESSAGE_VOLUME_SAME": "❌ 您想更改的音量已是目前音量。",
     "MESSAGE_VOLUME_SUCCESS": "🔊 **{{volume}}**/**{{maxVolume}}**%"
 }

@@ -124,6 +124,7 @@
     "MESSAGE_SKIP_SUCCESS": "✅ Parça atlandı.",
     "MESSAGE_VOLUME_ARGS_ERROR": "Ses seviyesi: **{{volume}}** 🔊\n**Ses seviyesini değiştirmek için `1` den `{{maxVolume}}` 'e kadar bir sayı belirleyin.**",
     "MESSAGE_VOLUME_ARGS_ERROR_2": "❌ **Ses yüksekliğini değiştirmek için `1` den `{{maxVolume}}` 'e kadar bir sayı girin .**",
+    "MESSAGE_VOLUME_SELECT": "Ses seviyesi: **{{volume}}%** 🔊\n**Ayarlamak istediğiniz ses seviyesini seçin:**",
     "MESSAGE_VOLUME_SAME": "❌ Bot şuan zaten bu ses seviyesinde çalıyor.",
     "MESSAGE_VOLUME_SUCCESS": "🔊 **{{volume}}**/**{{maxVolume}}**%"
 }
