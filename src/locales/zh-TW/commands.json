@@ -124,6 +124,7 @@
     "MESSAGE_SKIP_SUCCESS": "✅ 音樂已跳過。",
     "MESSAGE_VOLUME_ARGS_ERROR": "目前音量：**{{volume}}** 🔊\n**若要更改音量，請輸入 `1` 至 `{{maxVolume}}` 之間的數字。**",
     "MESSAGE_VOLUME_ARGS_ERROR_2": "❌ **請輸入 `1` 至 `{{maxVolume}}` 之間的數字來更改音量。**",
+    "MESSAGE_VOLUME_SELECT": "目前音量：**{{volume}}%** 🔊\n**請選擇想要設定的音量：**",
     "MESSAGE_VOLUME_SAME": "❌ 您想更改的音量已是目前音量。",
     "MESSAGE_VOLUME_SUCCESS": "🔊 **{{volume}}**/**{{maxVolume}}**%"
 }

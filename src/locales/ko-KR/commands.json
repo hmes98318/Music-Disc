@@ -127,6 +127,7 @@
     "MESSAGE_STOP_SUCCESS": "✅ 음악을 멈췄습니다.",
     "MESSAGE_VOLUME_ARGS_ERROR": "**현재 음량:** 🔊 {{volume}}%\n음량을 변경하려면 `1`에서 `{{maxVolume}}` 사이의 숫자를 입력합니다.",
     "MESSAGE_VOLUME_ARGS_ERROR_2": "❌ 음량을 변경하려면 `1`에서 `{{maxVolume}}` 사이의 숫자를 입력합니다.",
+    "MESSAGE_VOLUME_SELECT": "**현재 음량:** 🔊 {{volume}}%\n**설정할 음량을 선택하세요:**",
     "MESSAGE_VOLUME_SAME": "❌ 변경하려는 음량은 이미 현재 볼륨입니다.",
     "MESSAGE_VOLUME_SUCCESS": "🔊 **{{volume}}%**로 변경되었습니다!"
 }
