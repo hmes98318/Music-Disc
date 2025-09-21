@@ -6,7 +6,6 @@ import type { Bot } from '../../@types/index.js';
 
 
 export default async (bot: Bot, client: Client) => {
-    // Get system info and prepare for logging
     bot.sysInfo = await getSysInfo();
 
     const release = {
@@ -16,7 +15,6 @@ export default async (bot: Bot, client: Client) => {
         shark: `LavaShark:  ${cst.color.cyan}${bot.sysInfo.shark_version}${cst.color.white}`,
     };
 
-    // Log version information
     bot.logger.emit('log', bot.shardId, `+-----------------------+`);
     bot.logger.emit('log', bot.shardId, `| ${release.bot.padEnd(30, ' ')} |`);
     bot.logger.emit('log', bot.shardId, `| ${release.nodejs.padEnd(30, ' ')} |`);
@@ -25,7 +23,6 @@ export default async (bot: Bot, client: Client) => {
     bot.logger.emit('log', bot.shardId, `+-----------------------+`);
 
 
-    // Register slash commands if enabled
     if (bot.config.bot.slashCommand) {
         bot.logger.emit('log', bot.shardId, 'Enable slash command.');
         client.application?.commands.set(client.commands.map(cmd => {
@@ -41,7 +38,7 @@ export default async (bot: Bot, client: Client) => {
     }
 
 
-    // Auto join voice channel after Lavashark node connection
+    // Auto join voice channel after startup
     client.lavashark.once('nodeConnect', async () => {
         if ((bot.shardId + 1 >= (client.shard?.count ?? 1)) && bot.config.bot.startupAutoJoin) {
             const channel = await client.channels.fetch(bot.config.bot.specifyVoiceChannel ?? '0');
@@ -54,6 +51,7 @@ export default async (bot: Bot, client: Client) => {
                 bot.config.bot.startupAutoJoin = false;
                 return;
             }
+
 
             // Creates the audio player
             const player = client.lavashark.createPlayer({
@@ -70,6 +68,7 @@ export default async (bot: Bot, client: Client) => {
                 };
             }
 
+
             try {
                 // Connects to the voice channel
                 await player.connect();
@@ -80,8 +79,9 @@ export default async (bot: Bot, client: Client) => {
         }
     });
 
-    // Start Lavashark and set bot presence
     client.lavashark.start(String(client.user?.id));
+
+    // Set client status & activity
     client.user?.setStatus(bot.config.bot.status as ClientPresenceStatus);
     client.user?.setActivity({
         name: bot.config.bot.activity.name,
@@ -98,12 +98,13 @@ export default async (bot: Bot, client: Client) => {
             state: bot.config.bot.activity.state,
             url: bot.config.bot.activity.url
         });
-    }, 10 * 60 * 1000); // every 10 minutes
+    }, 10 * 60 * 1000); // 10 minutes
 
 
-    // Check specified message channel ID
+    // Check specify message channel ID
     if (bot.config.bot.specifyMessageChannel) {
         const channel = await client.channels.fetch(bot.config.bot.specifyMessageChannel);
+
         if (!channel) {
             bot.logger.emit('log', bot.shardId, `The specified message channel not found, set to disabled. (${bot.config.bot.specifyMessageChannel})`);
             bot.config.bot.specifyMessageChannel = null;
@@ -113,17 +114,20 @@ export default async (bot: Bot, client: Client) => {
         }
     }
 
-    // Check specified voice channel ID
+    // Check specify voice channel ID
     if (bot.config.bot.specifyVoiceChannel) {
         const channel = await client.channels.fetch(bot.config.bot.specifyVoiceChannel);
+
         if (!channel) {
             bot.logger.emit('log', bot.shardId, `The specified voice channel not found, set to disabled. (${bot.config.bot.specifyVoiceChannel})`);
             bot.logger.emit('log', bot.shardId, `The specifyVoiceChannel value is incorrect, set startupAutoJoin to disabled.`);
+
             bot.config.bot.specifyVoiceChannel = null;
             bot.config.bot.startupAutoJoin = false;
         }
         else {
             bot.logger.emit('log', bot.shardId, `Set specify voice channel : ${(channel as any).name || 'Unknown channel'} (${bot.config.bot.specifyVoiceChannel})`);
+
             if (bot.config.bot.startupAutoJoin) {
                 bot.logger.emit('log', bot.shardId, `Set startupAutoJoin Enabled.`);
             }
@@ -133,8 +137,11 @@ export default async (bot: Bot, client: Client) => {
         }
     }
 
-    // Log final setup information
+    // Set admin user IDs
     bot.logger.emit('log', bot.shardId, `Set admin as user ID : ${JSON.stringify(bot.config.bot.admin)}`);
+    // Log login information
     bot.logger.emit('discord', bot.shardId, `>>> Logged in as ${client.user?.username}`);
+
+    // Shard launch complete
     bot.logger.emit('log', bot.shardId, `${cst.color.green}*** Launched shard ${bot.shardId + 1} / ${client.shard?.count} ***${cst.color.white}`);
 };
