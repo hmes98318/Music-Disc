@@ -49,6 +49,7 @@ export default async (bot: Bot, client: Client) => {
 
                 bot.config.bot.specifyVoiceChannel = null;
                 bot.config.bot.startupAutoJoin = false;
+
                 return;
             }
 
@@ -80,8 +81,6 @@ export default async (bot: Bot, client: Client) => {
     });
 
     client.lavashark.start(String(client.user?.id));
-
-    // Set client status & activity
     client.user?.setStatus(bot.config.bot.status as ClientPresenceStatus);
     client.user?.setActivity({
         name: bot.config.bot.activity.name,
@@ -137,11 +136,10 @@ export default async (bot: Bot, client: Client) => {
         }
     }
 
-    // Set admin user IDs
+
     bot.logger.emit('log', bot.shardId, `Set admin as user ID : ${JSON.stringify(bot.config.bot.admin)}`);
-    // Log login information
     bot.logger.emit('discord', bot.shardId, `>>> Logged in as ${client.user?.username}`);
 
-    // Shard launch complete
+
     bot.logger.emit('log', bot.shardId, `${cst.color.green}*** Launched shard ${bot.shardId + 1} / ${client.shard?.count} ***${cst.color.white}`);
 };
