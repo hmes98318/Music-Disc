@@ -8,6 +8,7 @@ import { cst } from './../utils/constants.js';
 import type { Client } from 'discord.js';
 import type { Bot } from './../@types/index.js';
 
+
 const loadDiscordEvents = (bot: Bot, client: Client) => {
     return new Promise<void>(async (resolve, reject) => {
         const __filename = fileURLToPath(import.meta.url);
@@ -23,23 +24,18 @@ const loadDiscordEvents = (bot: Bot, client: Client) => {
                 const filePath = 'file://' + path.resolve(`${__dirname}/../events/discord/${file}`);
                 const eventModule = await import(filePath);
                 const event = eventModule.default;
-
-                const fileBaseName = file.split('.')[0];
-
-                // The ready event is mapped to clientReady.
-                const eventName = fileBaseName === "ready" ? "clientReady" : fileBaseName;
+                const eventName = file.split('.')[0];
 
                 if (!bot.config.bot.textCommand && eventName === Events.MessageCreate) {
                     continue;
                 }
 
                 client.on(eventName, event.bind(null, bot, client));
-                bot.logger.emit('log', bot.shardId, `| Loaded event ${eventName.padEnd(17, ' ')} |`);
+                bot.logger.emit('log', bot.shardId, `| Loaded event ${file.split('.')[0].padEnd(17, ' ')} |`);
             } catch (error) {
                 reject(error);
             }
         }
-
         bot.logger.emit('log', bot.shardId, `+--------------------------------+`);
         bot.logger.emit('log', bot.shardId, `${cst.color.grey}-- loading Discord Events finished --${cst.color.white}`);
 
