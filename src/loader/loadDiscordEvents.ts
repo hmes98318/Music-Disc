@@ -24,11 +24,14 @@ const loadDiscordEvents = (bot: Bot, client: Client) => {
                 const filePath = 'file://' + path.resolve(`${__dirname}/../events/discord/${file}`);
                 const eventModule = await import(filePath);
                 const event = eventModule.default;
-                const eventName = file.split('.')[0];
+                let eventName = file.split('.')[0];
 
                 if (!bot.config.bot.textCommand && eventName === Events.MessageCreate) {
                     continue;
                 }
+
+                // Map 'ready' to 'clientReady' for Discord.js v15+ compatibility
+                if (eventName === 'ready') eventName = 'clientReady';
 
                 client.on(eventName, event.bind(null, bot, client));
                 bot.logger.emit('log', bot.shardId, `| Loaded event ${file.split('.')[0].padEnd(17, ' ')} |`);
