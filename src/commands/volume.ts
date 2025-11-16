@@ -8,7 +8,7 @@ import {
 import i18next from 'i18next';
 
 import { embeds } from '../embeds/index.js';
-import { CommandCategory } from '../@types/index.js';
+import { CommandCategory, VolumeButtonId } from '../@types/index.js';
 
 import type { ChatInputCommandInteraction, Client, Message } from 'discord.js';
 import type { Bot } from '../@types/index.js';
@@ -80,9 +80,16 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
         });
 
         collector.on('collect', async (i: ButtonInteraction) => {
-            if (!i.customId.startsWith('volume-')) return;
+            // Map customId to volume value
+            const volumeMap: Record<string, number> = {
+                [VolumeButtonId.Volume25]: 25,
+                [VolumeButtonId.Volume50]: 50,
+                [VolumeButtonId.Volume75]: 75,
+                [VolumeButtonId.Volume100]: 100,
+            };
 
-            const newVolume = parseInt(i.customId.split('-')[1], 10);
+            const newVolume = volumeMap[i.customId];
+            if (newVolume === undefined) return;
 
             if (player.volume === newVolume) {
                 await i.update({
@@ -164,22 +171,22 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
         const currentVolume = player.volume;
 
         const volume25Button = new ButtonBuilder()
-            .setCustomId('volume-25')
+            .setCustomId(VolumeButtonId.Volume25)
             .setLabel('25%')
             .setStyle(currentVolume === 25 ? ButtonStyle.Success : ButtonStyle.Secondary);
 
         const volume50Button = new ButtonBuilder()
-            .setCustomId('volume-50')
+            .setCustomId(VolumeButtonId.Volume50)
             .setLabel('50%')
             .setStyle(currentVolume === 50 ? ButtonStyle.Success : ButtonStyle.Secondary);
 
         const volume75Button = new ButtonBuilder()
-            .setCustomId('volume-75')
+            .setCustomId(VolumeButtonId.Volume75)
             .setLabel('75%')
             .setStyle(currentVolume === 75 ? ButtonStyle.Success : ButtonStyle.Secondary);
 
         const volume100Button = new ButtonBuilder()
-            .setCustomId('volume-100')
+            .setCustomId(VolumeButtonId.Volume100)
             .setLabel('100%')
             .setStyle(currentVolume === 100 ? ButtonStyle.Success : ButtonStyle.Secondary);
 
@@ -198,9 +205,16 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
         });
 
         collector.on('collect', async (i: ButtonInteraction) => {
-            if (!i.customId.startsWith('volume-')) return;
+            // Map customId to volume value
+            const volumeMap: Record<string, number> = {
+                [VolumeButtonId.Volume25]: 25,
+                [VolumeButtonId.Volume50]: 50,
+                [VolumeButtonId.Volume75]: 75,
+                [VolumeButtonId.Volume100]: 100,
+            };
 
-            const newVolume = parseInt(i.customId.split('-')[1], 10);
+            const newVolume = volumeMap[i.customId];
+            if (newVolume === undefined) return;
 
             if (player.volume === newVolume) {
                 await i.update({

@@ -30,3 +30,13 @@ export enum QueueButtonId {
 export enum MusicButtonId {
     Save = 'music-save',
 }
+
+/**
+ * Volume control button IDs
+ */
+export enum VolumeButtonId {
+    Volume25 = 'volume-25',
+    Volume50 = 'volume-50',
+    Volume75 = 'volume-75',
+    Volume100 = 'volume-100',
+}
