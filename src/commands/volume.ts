@@ -7,7 +7,6 @@ import {
 } from 'discord.js';
 import i18next from 'i18next';
 
-import { dashboard } from '../dashboard/index.js';
 import { embeds } from '../embeds/index.js';
 import { CommandCategory } from '../@types/index.js';
 
@@ -104,7 +103,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
             player.setting.volume = newVolume;
             player.filters.setVolume(newVolume);
 
-            await dashboard.update(bot, player, player.current!);
+            await client.dashboard.update(player, player.current!);
 
             await i.update({
                 embeds: [embeds.textSuccessMsg(bot, client.i18n.t('commands:MESSAGE_VOLUME_SUCCESS', { volume: newVolume, maxVolume: maxVolume }))],
@@ -144,7 +143,7 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
     player.setting.volume = vol;
     player.filters.setVolume(vol);
 
-    await dashboard.update(bot, player, player.current!);
+    await client.dashboard.update(player, player.current!);
 
     return message.reply({ embeds: [embeds.textSuccessMsg(bot, client.i18n.t('commands:MESSAGE_VOLUME_SUCCESS', { volume: vol, maxVolume: maxVolume }))], allowedMentions: { repliedUser: false } });
 };
@@ -222,7 +221,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
             player.setting.volume = newVolume;
             player.filters.setVolume(newVolume);
 
-            await dashboard.update(bot, player, player.current!);
+            await client.dashboard.update(player, player.current!);
 
             await i.update({
                 embeds: [embeds.textSuccessMsg(bot, client.i18n.t('commands:MESSAGE_VOLUME_SUCCESS', { volume: newVolume, maxVolume: maxVolume }))],
@@ -261,7 +260,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
     player.setting.volume = vol;
     player.filters.setVolume(vol);
 
-    await dashboard.update(bot, player, player.current!);
+    await client.dashboard.update(player, player.current!);
 
     return interaction.editReply({ embeds: [embeds.textSuccessMsg(bot, client.i18n.t('commands:MESSAGE_VOLUME_SUCCESS', { volume: vol, maxVolume: maxVolume }))], allowedMentions: { repliedUser: false } });
 };

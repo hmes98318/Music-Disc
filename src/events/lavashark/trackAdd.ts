@@ -1,4 +1,3 @@
-import { dashboard } from '../../dashboard/index.js';
 import { embeds } from '../../embeds/index.js';
 
 import type { Client, Message } from 'discord.js';
@@ -6,7 +5,7 @@ import type { Player, Track } from 'lavashark';
 import type { Bot } from '../../@types/index.js';
 
 
-export default async (bot: Bot, _client: Client, player: Player, tracks: Track | Track[]) => {
+export default async (bot: Bot, client: Client, player: Player, tracks: Track | Track[]) => {
     if (player.playing) {
         if (Array.isArray(tracks)) { // PLAYLIST_LOADED
             const playlist = tracks as unknown as Track[];
@@ -22,12 +21,12 @@ export default async (bot: Bot, _client: Client, player: Player, tracks: Track |
         }
 
         try {
-            await player.dashboard?.delete();
+            await player.dashboardMsg?.delete();
         } catch (error) {
             bot.logger.emit('error', bot.shardId, 'Dashboard delete error:' + error);
         }
 
-        await dashboard.initial(bot, (player.metadata as Message), player);
-        await dashboard.update(bot, player, player.current!);
+        await client.dashboard.initialize((player.metadata as Message), player);
+        await client.dashboard.update(player, player.current!);
     }
 };

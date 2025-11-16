@@ -10,6 +10,7 @@ import {
     setEnvironment
 } from './loader/index.js';
 import { Logger } from './lib/Logger.js';
+import { DashboardManager } from './lib/DashboardManager.js';
 import { cst } from './utils/constants.js';
 
 import type { Bot, SystemInfo } from './@types/index.js';
@@ -75,6 +76,10 @@ class App {
 
             this.bot.logger.emit('log', this.bot.shardId, 'Spotify credentials not configured.');
         }
+
+        // Initialize dashboard manager
+        this.#client.dashboard = new DashboardManager(this.bot, this.#client);
+        this.bot.logger.emit('log', this.bot.shardId, 'Dashboard manager initialized.');
     }
 
 

@@ -1,5 +1,4 @@
 import { cst } from '../../utils/constants.js';
-import { dashboard } from '../../dashboard/index.js';
 import { DJManager } from '../../lib/DjManager.js';
 import { DJModeEnum } from '../../@types/index.js';
 
@@ -64,7 +63,7 @@ export default async (bot: Bot, client: Client, oldState: VoiceState, newState: 
                         else {
                             player.queue.clear();
                             await player.skip();
-                            await dashboard.destroy(bot, player);
+                            await client.dashboard.destroy(player);
                         }
                     }, bot.config.bot.autoLeave.cooldown);
 
@@ -107,7 +106,7 @@ export default async (bot: Bot, client: Client, oldState: VoiceState, newState: 
                         else {
                             player.queue.clear();
                             await player.skip();
-                            await dashboard.destroy(bot, player);
+                            await client.dashboard.destroy(player);
                         }
                     }, bot.config.bot.autoLeave.cooldown);
 
@@ -171,7 +170,7 @@ export default async (bot: Bot, client: Client, oldState: VoiceState, newState: 
                         else {
                             player.queue.clear();
                             await player.skip();
-                            await dashboard.destroy(bot, player);
+                            await client.dashboard.destroy(player);
                         }
                     }, bot.config.bot.autoLeave.cooldown);
 
@@ -198,7 +197,7 @@ export default async (bot: Bot, client: Client, oldState: VoiceState, newState: 
                         else {
                             player.queue.clear();
                             await player.skip();
-                            await dashboard.destroy(bot, player);
+                            await client.dashboard.destroy(player);
                         }
                     }, bot.config.bot.autoLeave.cooldown);
 

@@ -1,6 +1,5 @@
 import i18next from 'i18next';
 
-import { dashboard } from '../dashboard/index.js';
 import { embeds } from '../embeds/index.js';
 import { isUserInBlacklist } from '../utils/functions/isUserInBlacklist.js';
 import { DJManager } from '../lib/DjManager.js';
@@ -93,9 +92,9 @@ export const execute = async (bot: Bot, client: Client, message: Message, args: 
 
     try {
         // Intial dashboard
-        if (!player.dashboard) await dashboard.initial(bot, message, player);
+        if (!player.dashboardMsg) await client.dashboard.initialize(message, player);
     } catch (error) {
-        await dashboard.destroy(bot, player);
+        await client.dashboard.destroy(player);
     }
 
     // Set first user as DJ in dynamic mode
@@ -195,9 +194,9 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
 
     try {
         // Intial dashboard
-        if (!player.dashboard) await dashboard.initial(bot, interaction, player);
+        if (!player.dashboardMsg) await client.dashboard.initialize(interaction, player);
     } catch (error) {
-        await dashboard.destroy(bot, player);
+        await client.dashboard.destroy(player);
     }
 
     // Set first user as DJ in dynamic mode

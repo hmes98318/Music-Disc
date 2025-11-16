@@ -9,7 +9,7 @@ import {
 import i18next from 'i18next';
 
 import { embeds } from '../embeds/index.js';
-import { CommandCategory } from '../@types/index.js';
+import { CommandCategory, MusicButtonId } from '../@types/index.js';
 
 import type { Bot } from '../@types/index.js';
 
@@ -36,7 +36,7 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
     const subtitle = client.i18n.t('commands:MESSAGE_NOW_PLAYING_SUBTITLE', { author: track?.author, label: track?.duration.label });
 
     const saveButton = new ButtonBuilder()
-        .setCustomId('musicSave')
+        .setCustomId(MusicButtonId.Save)
         .setLabel(client.i18n.t('commands:MESSAGE_NOW_PLAYING_SAVE_BUTTON'))
         .setStyle(ButtonStyle.Success);
     const row = new ActionRowBuilder<ButtonBuilder>()
@@ -60,7 +60,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
     const subtitle = client.i18n.t('commands:MESSAGE_NOW_PLAYING_SUBTITLE', { author: track?.author, label: track?.duration.label });
 
     const saveButton = new ButtonBuilder()
-        .setCustomId('musicSave')
+        .setCustomId(MusicButtonId.Save)
         .setLabel(client.i18n.t('commands:MESSAGE_NOW_PLAYING_SAVE_BUTTON'))
         .setStyle(ButtonStyle.Success);
     const row = new ActionRowBuilder<ButtonBuilder>()

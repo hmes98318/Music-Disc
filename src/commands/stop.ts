@@ -1,6 +1,5 @@
 import i18next from 'i18next';
 
-import { dashboard } from '../dashboard/index.js';
 import { embeds } from '../embeds/index.js';
 import { CommandCategory } from '../@types/index.js';
 
@@ -29,7 +28,7 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
 
     player.queue.clear();
     await player.skip();
-    await dashboard.destroy(bot, player);
+    await client.dashboard.destroy(player);
 
     return message.react('👍');
 };
@@ -44,7 +43,7 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
 
     player.queue.clear();
     await player.skip();
-    await dashboard.destroy(bot, player);
+    await client.dashboard.destroy(player);
 
     return interaction.editReply({ embeds: [embeds.textSuccessMsg(bot, client.i18n.t('commands:MESSAGE_STOP_SUCCESS'))], allowedMentions: { repliedUser: false } });
 };

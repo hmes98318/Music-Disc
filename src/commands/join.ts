@@ -1,6 +1,5 @@
 import i18next from 'i18next';
 
-import { dashboard } from '../dashboard/index.js';
 import { embeds } from '../embeds/index.js';
 import { CommandCategory } from '../@types/index.js';
 
@@ -48,9 +47,9 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
 
     try {
         // Intial dashboard
-        if (!player.dashboard) await dashboard.initial(bot, message, player);
+        if (!player.dashboardMsg) await client.dashboard.initialize(message, player);
     } catch (error) {
-        await dashboard.destroy(bot, player);
+        await client.dashboard.destroy(player);
     }
 
     return message.react('👍');
@@ -89,9 +88,9 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
 
     try {
         // Intial dashboard
-        if (!player.dashboard) await dashboard.initial(bot, interaction, player);
+        if (!player.dashboardMsg) await client.dashboard.initialize(interaction, player);
     } catch (error) {
-        await dashboard.destroy(bot, player);
+        await client.dashboard.destroy(player);
     }
 
     return interaction.editReply({ embeds: [embeds.textSuccessMsg(bot, client.i18n.t('commands:MESSAGE_JOIN_SUCCESS'))], allowedMentions: { repliedUser: false } });

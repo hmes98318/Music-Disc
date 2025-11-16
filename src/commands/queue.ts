@@ -1,7 +1,4 @@
 import {
-    ActionRowBuilder,
-    ButtonBuilder,
-    ButtonStyle,
     ChatInputCommandInteraction,
     Client,
     Message
@@ -9,7 +6,7 @@ import {
 import i18next from 'i18next';
 
 import { embeds } from '../embeds/index.js';
-import { cst } from '../utils/constants.js';
+import { ButtonsBuilder } from '../lib/builders/ButtonsBuilder.js';
 import { CommandCategory } from '../@types/index.js';
 
 import type { Bot } from '../@types/index.js';
@@ -52,10 +49,21 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
 
     const nowplaying = client.i18n.t('commands:MESSAGE_NOW_PLAYING_TITLE', { title: player.current?.title });
     let tracksQueue = '';
-    const tracks = player.queue.tracks.slice(startIdx, endIdx)
-        .map((track, index) => {
-            return `${startIdx + index + 1}. \`${track.title}\``;
+    const queueTracks = player.queue.tracks.slice(startIdx, endIdx);
+
+    // Build track list with length check
+    let maxTitleLength = 100;   // Initial max title length
+    const buildTrackList = (titleLength: number) => {
+        return queueTracks.map((track, index) => {
+            let title = track.title;
+            if (title.length > titleLength) {
+                title = title.substring(0, titleLength) + '...';
+            }
+            return `${startIdx + index + 1}. [${title}](${track.uri}) - \`${track.duration.label}\``;
         });
+    };
+
+    let tracks = buildTrackList(maxTitleLength);
 
     if (tracks.length < 1) {
         tracksQueue = '------------------------------';
@@ -64,19 +72,34 @@ export const execute = async (bot: Bot, client: Client, message: Message) => {
         tracksQueue = tracks.join('\n');
     }
     else {
-        tracksQueue = tracks.join('\n');
-        tracksQueue += `\n\n----- Page ${page}/${player.setting.queuePage.maxPage} -----`;
+        tracksQueue = tracks.join('\n') +
+            `\n\n${client.i18n.t('events:MESSAGE_QUEUE_PAGE', { curPage: page, maxPage: player.setting.queuePage.maxPage })}`;
+    }
+
+    // Check if exceeds Discord's 1024 character limit and shorten if needed
+    while (tracksQueue.length > 1024 && maxTitleLength > 10) {
+        maxTitleLength -= 10;
+        tracks = buildTrackList(maxTitleLength);
+
+        if (tracks.length === player.queue.tracks.length) {
+            tracksQueue = tracks.join('\n');
+        }
+        else {
+            tracksQueue = tracks.join('\n') +
+                `\n\n${client.i18n.t('events:MESSAGE_QUEUE_PAGE', { curPage: page, maxPage: player.setting.queuePage.maxPage })}`;
+        }
+    }
+
+    // Final fallback: if still too long, truncate the string
+    if (tracksQueue.length > 1024) {
+        tracksQueue = tracksQueue.substring(0, 1021) + '...';
     }
 
 
     const methods = ['OFF', 'SINGLE', 'ALL'];
     const repeatMode = player.repeatMode;
 
-    const prevButton = new ButtonBuilder().setCustomId('queuelist-prev').setEmoji(cst.button.prev).setStyle(ButtonStyle.Secondary);
-    const nextButton = new ButtonBuilder().setCustomId('queuelist-next').setEmoji(cst.button.next).setStyle(ButtonStyle.Secondary);
-    const delButton = new ButtonBuilder().setCustomId('queuelist-delete').setLabel(cst.button.delete).setStyle(ButtonStyle.Primary);
-    const clsButton = new ButtonBuilder().setCustomId('queuelist-clear').setLabel(cst.button.clear).setStyle(ButtonStyle.Danger);
-    const row = new ActionRowBuilder<ButtonBuilder>().addComponents(prevButton, nextButton, delButton, clsButton);
+    const row = ButtonsBuilder.createQueueButtons();
 
     player.setting.queuePage.msg = await message.reply({
         embeds: [embeds.queue(bot, nowplaying, tracksQueue, methods[repeatMode])],
@@ -114,10 +137,21 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
 
     const nowplaying = client.i18n.t('commands:MESSAGE_NOW_PLAYING_TITLE', { title: player.current?.title });
     let tracksQueue = '';
-    const tracks = player.queue.tracks.slice(startIdx, endIdx)
-        .map((track, index) => {
-            return `${startIdx + index + 1}. \`${track.title}\``;
+    const queueTracks = player.queue.tracks.slice(startIdx, endIdx);
+
+    // Build track list with length check
+    let maxTitleLength = 100;   // Initial max title length
+    const buildTrackList = (titleLength: number) => {
+        return queueTracks.map((track, index) => {
+            let title = track.title;
+            if (title.length > titleLength) {
+                title = title.substring(0, titleLength) + '...';
+            }
+            return `${startIdx + index + 1}. [${title}](${track.uri}) - \`${track.duration.label}\``;
         });
+    };
+
+    let tracks = buildTrackList(maxTitleLength);
 
     if (tracks.length < 1) {
         tracksQueue = '------------------------------';
@@ -126,19 +160,34 @@ export const slashExecute = async (bot: Bot, client: Client, interaction: ChatIn
         tracksQueue = tracks.join('\n');
     }
     else {
-        tracksQueue = tracks.join('\n');
-        tracksQueue += `\n\n----- Page ${page}/${player.setting.queuePage.maxPage} -----`;
+        tracksQueue = tracks.join('\n') +
+            `\n\n${client.i18n.t('events:MESSAGE_QUEUE_PAGE', { curPage: page, maxPage: player.setting.queuePage.maxPage })}`;
+    }
+
+    // Check if exceeds Discord's 1024 character limit and shorten if needed
+    while (tracksQueue.length > 1024 && maxTitleLength > 10) {
+        maxTitleLength -= 10;
+        tracks = buildTrackList(maxTitleLength);
+
+        if (tracks.length === player.queue.tracks.length) {
+            tracksQueue = tracks.join('\n');
+        }
+        else {
+            tracksQueue = tracks.join('\n') +
+                `\n\n${client.i18n.t('events:MESSAGE_QUEUE_PAGE', { curPage: page, maxPage: player.setting.queuePage.maxPage })}`;
+        }
+    }
+
+    // Final fallback: if still too long, truncate the string
+    if (tracksQueue.length > 1024) {
+        tracksQueue = tracksQueue.substring(0, 1021) + '...';
     }
 
 
     const methods = ['OFF', 'SINGLE', 'ALL'];
     const repeatMode = player.repeatMode;
 
-    const prevButton = new ButtonBuilder().setCustomId('queuelist-prev').setEmoji(cst.button.prev).setStyle(ButtonStyle.Secondary);
-    const nextButton = new ButtonBuilder().setCustomId('queuelist-next').setEmoji(cst.button.next).setStyle(ButtonStyle.Secondary);
-    const delButton = new ButtonBuilder().setCustomId('queuelist-delete').setLabel(cst.button.delete).setStyle(ButtonStyle.Primary);
-    const clsButton = new ButtonBuilder().setCustomId('queuelist-clear').setLabel(cst.button.clear).setStyle(ButtonStyle.Danger);
-    const row = new ActionRowBuilder<ButtonBuilder>().addComponents(prevButton, nextButton, delButton, clsButton);
+    const row = ButtonsBuilder.createQueueButtons();
 
     player.setting.queuePage.msg = await interaction.editReply({
         embeds: [embeds.queue(bot, nowplaying, tracksQueue, methods[repeatMode])],

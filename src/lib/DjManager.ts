@@ -1,6 +1,5 @@
 import i18next from 'i18next';
 
-import { dashboard } from '../dashboard/index.js';
 import { embeds } from '../embeds/index.js';
 import { DJModeEnum } from '../@types/index.js';
 
@@ -175,7 +174,7 @@ export class DJManager {
 
             // Send message to dashboard channel
             try {
-                const dashboardChannel = player.dashboard?.channel;
+                const dashboardChannel = player.dashboardMsg?.channel;
                 if (dashboardChannel && 'send' in dashboardChannel) {
                     await dashboardChannel.send({
                         embeds: [embeds.textSuccessMsg(bot, i18next.t('commands:MESSAGE_DJ_AUTO_SELECT', { userId: newDJ.user.id }))]
@@ -187,8 +186,8 @@ export class DJManager {
 
             // Update dashboard to reflect new DJ
             try {
-                if (player.current && player.dashboard) {
-                    await dashboard.update(bot, player, player.current);
+                if (player.current && player.dashboardMsg) {
+                    await client.dashboard.update(player, player.current);
                 }
             } catch (error) {
                 bot.logger.emit('error', bot.shardId, 'Error updating dashboard after auto DJ selection: ' + error);

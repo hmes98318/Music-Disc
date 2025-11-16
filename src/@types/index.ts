@@ -11,7 +11,10 @@ import type { NodeOptions } from 'lavashark/typings/src/@types/index.js';
 
 import type { Language } from '../lib/i18n/Language.js';
 import type { Logger } from '../lib/Logger.js';
+import type { DashboardManager } from '../lib/DashboardManager.js';
 import type { IPBlockerConfig, SessionManagerConfig } from './SessionManager.types.js';
+
+export * from './ButtonIds.types.js';
 
 
 declare module 'discord.js' {
@@ -19,12 +22,13 @@ declare module 'discord.js' {
         commands: Collection<unknown, any>,
         lavashark: LavaShark,
         i18n: i18n;
+        dashboard: DashboardManager;
     }
 }
 
 declare module 'lavashark' {
     export interface Player {
-        dashboard: Message<boolean> | null;
+        dashboardMsg: Message<boolean> | null;      // Dashboard message for this player
         metadata: Message<boolean> | ChatInputCommandInteraction | null;
         setting: PlayerSetting;
         djUsers?: Set<string>;              // Dynamic DJ users for this guild
