@@ -146,17 +146,21 @@ export const cst = {
     },
     // Dashboard button icon
     button: {
-        play        : '<:w_play:1106270709644271656>',
-        pause       : '<:w_pause:1106270708243386428>',
-        skip        : '<:w_skip:1106270714664849448>',
-        back        : '<:w_back:1106270704049061928>',
-        stop        : '<:w_stop:1106272001909346386>',
-        loop        : '<:w_loop:1106270705575792681>',
-        shuffle     : '<:w_shuffle:1106270712542531624>',
-        prev        : '<:w_prev:1153665768093921280>',
-        next        : '<:w_next:1153665809990815874>',
-        delete      : 'Delete Message',
-        clear       : 'Clear Queue'
+        emoji: {
+            play        : '<:w_play:1106270709644271656>',
+            pause       : '<:w_pause:1106270708243386428>',
+            skip        : '<:w_skip:1106270714664849448>',
+            back        : '<:w_back:1106270704049061928>',
+            stop        : '<:w_stop:1106272001909346386>',
+            loop        : '<:w_loop:1106270705575792681>',
+            shuffle     : '<:w_shuffle:1106270712542531624>',
+            prev        : '<:w_prev:1153665768093921280>',
+            next        : '<:w_next:1153665809990815874>',
+        },
+        label: {
+            delete      : 'Delete Message',
+            clear       : 'Clear Queue'
+        }
     },
     // Logger
     logger: {
