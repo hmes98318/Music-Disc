@@ -3,6 +3,7 @@ import { Client, GuildMember, Interaction } from 'discord.js';
 import { cst } from '../../utils/constants.js';
 import { embeds } from '../../embeds/index.js';
 import { PermissionManager } from '../../lib/PermissionManager.js';
+import { CommandContext } from '../../commands/base/CommandContext.js';
 import { PlayPauseButtonHandler } from '../../lib/handlers/PlayPauseButtonHandler.js';
 import { SkipButtonHandler } from '../../lib/handlers/SkipButtonHandler.js';
 import { LoopButtonHandler } from '../../lib/handlers/LoopButtonHandler.js';
@@ -109,6 +110,7 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
     }
     else {
         if (!interaction.isCommand() || !interaction.inGuild()) return;
+        if (!interaction.isChatInputCommand()) return;  // Only handle chat input commands
 
         if (!bot.config.bot.slashCommand) {
             return interaction.reply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('events:ERROR_SLASH_NOT_ENABLE'))], allowedMentions: { repliedUser: false } })
@@ -123,6 +125,8 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
 
         if (!cmd) return;
 
+        const metadata = cmd.getMetadata(bot);
+
         if (bot.config.bot.specifyMessageChannel && bot.config.bot.specifyMessageChannel !== interaction.channelId) {
             return interaction.reply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('events:MESSAGE_SPECIFIC_CHANNEL_WARN', { channelId: bot.config.bot.specifyMessageChannel }))], allowedMentions: { repliedUser: false } })
                 .catch((error) => {
@@ -132,7 +136,7 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
         }
 
         // Admin command
-        if (bot.config.command.adminCommand.includes(cmd.name)) {
+        if (bot.config.command.adminCommand.includes(metadata.name)) {
             if (!bot.config.bot.admin.includes(interaction.user.id))
                 return interaction.reply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('events:ERROR_REQUIRE_ADMIN'))], allowedMentions: { repliedUser: false } })
                     .catch((error) => {
@@ -142,7 +146,7 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
         }
 
         // DJ command
-        if (bot.config.command.djCommand.includes(cmd.name)) {
+        if (bot.config.command.djCommand.includes(metadata.name)) {
             const player = client.lavashark.getPlayer(interaction.guild!.id);
             if (!PermissionManager.hasDJCommandPermission(bot, interaction.user.id, interaction.member as GuildMember, player || undefined)) {
                 return interaction.reply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('events:ERROR_REQUIRE_DJ'))], allowedMentions: { repliedUser: false } })
@@ -153,7 +157,7 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
         }
 
         // Check voice channel
-        if (cmd.voiceChannel) {
+        if (metadata.voiceChannel) {
             if (!voiceChannel) {
                 return interaction.reply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('events:ERROR_NOT_IN_VOICE_CHANNEL'))], allowedMentions: { repliedUser: false } })
                     .catch((error) => {
@@ -208,6 +212,8 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
             bot.logger.emit('error', bot.shardId, '[interactionCreate] Error deferReply: ' + error);
         }
 
-        cmd.slashExecute(bot, client, interaction);
+        // Create command context and execute
+        const context = new CommandContext(interaction);
+        await cmd.execute(bot, client, context);
     }
 };

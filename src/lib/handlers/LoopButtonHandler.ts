@@ -44,7 +44,7 @@ export class LoopButtonHandler extends DashboardButtonHandler {
             components: [row]
         });
 
-        const collector = (interaction.channel as any).createMessageComponentCollector({
+        const collector = interaction.channel!.createMessageComponentCollector({
             time: 20000,
             max: 1,
             filter: (i: any) => i.user.id === interaction.user.id

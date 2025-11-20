@@ -40,3 +40,13 @@ export enum VolumeButtonId {
     Volume75 = 'volume-75',
     Volume100 = 'volume-100',
 }
+
+/**
+ * Select menu button IDs
+ */
+export enum SelectButtonId {
+    Filter = 'select-filter',
+    Music = 'select-music',
+    HelpMusic = 'select-help-music',
+    HelpUtility = 'select-help-utility',
+}

@@ -25,13 +25,18 @@ export default async (bot: Bot, client: Client) => {
 
     if (bot.config.bot.slashCommand) {
         bot.logger.emit('log', bot.shardId, 'Enable slash command.');
-        client.application?.commands.set(client.commands.map(cmd => {
+
+        const commands = client.commands.getAll();
+        const slashCommands = commands.map(cmd => {
+            const metadata = cmd.getMetadata(bot);
             return {
-                name: cmd.name,
-                description: cmd.description,
-                options: cmd.options
+                name: metadata.name,
+                description: metadata.description,
+                options: metadata.options
             };
-        }));
+        });
+
+        await client.application?.commands.set(slashCommands);
     }
     else {
         bot.logger.emit('log', bot.shardId, 'Disable slash command.');

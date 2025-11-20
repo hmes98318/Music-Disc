@@ -2,6 +2,7 @@ import { Client, Message, ChannelType } from 'discord.js';
 import { cst } from '../../utils/constants.js';
 import { embeds } from '../../embeds/index.js';
 import { PermissionManager } from '../../lib/PermissionManager.js';
+import { CommandContext } from '../../commands/base/CommandContext.js';
 
 import type { Bot } from '../../@types/index.js';
 
@@ -17,10 +18,12 @@ export default async (bot: Bot, client: Client, message: Message) => {
 
 
     const args = message.content.slice(prefix.length).trim().split(/ +/g);
-    const command = String(args.shift()).toLowerCase();
-    const cmd = client.commands.get(command) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(command));
+    const commandName = String(args.shift()).toLowerCase();
+    const cmd = client.commands.get(commandName);
 
     if (!cmd) return;
+
+    const metadata = cmd.getMetadata(bot);
 
     if (bot.config.blacklist && bot.config.blacklist.includes(message.author.id)) return;
 
@@ -33,7 +36,7 @@ export default async (bot: Bot, client: Client, message: Message) => {
     }
 
     // Admin command
-    if (bot.config.command.adminCommand.includes(cmd.name)) {
+    if (bot.config.command.adminCommand.includes(metadata.name)) {
         if (!bot.config.bot.admin.includes(message.author.id)) {
             return message.reply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('events:ERROR_REQUIRE_ADMIN'))], allowedMentions: { repliedUser: false } })
                 .catch((error) => {
@@ -44,7 +47,7 @@ export default async (bot: Bot, client: Client, message: Message) => {
     }
 
     // DJ command
-    if (bot.config.command.djCommand.includes(cmd.name)) {
+    if (bot.config.command.djCommand.includes(metadata.name)) {
         const player = client.lavashark.getPlayer(message.guild.id);
         if (!PermissionManager.hasDJCommandPermission(bot, message.author.id, message.member, player || undefined)) {
             return message.reply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('events:ERROR_REQUIRE_DJ'))], allowedMentions: { repliedUser: false } })
@@ -55,7 +58,7 @@ export default async (bot: Bot, client: Client, message: Message) => {
     }
 
     // Check voice channel
-    if (cmd.voiceChannel) {
+    if (metadata.voiceChannel) {
         if (!message.member.voice.channel) {
             return message.reply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('events:ERROR_NOT_IN_VOICE_CHANNEL'))], allowedMentions: { repliedUser: false } })
                 .catch((error) => {
@@ -103,7 +106,7 @@ export default async (bot: Bot, client: Client, message: Message) => {
         return message.reply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('events:ERROR_GET_GUILD_DATA_CACHE'))], allowedMentions: { repliedUser: false } });
     }
 
-
-    if (cmd.sendTyping) message.channel.sendTyping();
-    cmd.execute(bot, client, message, args);
+    // Create command context and execute
+    const context = new CommandContext(message, args);
+    await cmd.execute(bot, client, context);
 };

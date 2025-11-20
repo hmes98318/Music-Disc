@@ -1,4 +1,4 @@
-import { Client, Collection, GatewayIntentBits } from 'discord.js';
+import { Client, GatewayIntentBits } from 'discord.js';
 import { LavaShark } from 'lavashark';
 
 import {
@@ -52,9 +52,6 @@ class App {
         else {
             this.bot.logger.emit('log', this.bot.shardId, 'No blacklist entries found.');
         }
-
-
-        this.#client.commands = new Collection();
 
         if (this.bot.config.spotify.clientId && this.bot.config.spotify.clientSecret) {
             this.#client.lavashark = new LavaShark({

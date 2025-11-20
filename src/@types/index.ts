@@ -2,7 +2,6 @@ import type {
     ActivityType,
     ChatInputCommandInteraction,
     ClientPresenceStatus,
-    Collection,
     Message
 } from 'discord.js';
 import type { i18n } from 'i18next';
@@ -12,14 +11,16 @@ import type { NodeOptions } from 'lavashark/typings/src/@types/index.js';
 import type { Language } from '../lib/i18n/Language.js';
 import type { Logger } from '../lib/Logger.js';
 import type { DashboardManager } from '../lib/DashboardManager.js';
+import type { CommandRegistry } from '../commands/base/CommandRegistry.js';
 import type { IPBlockerConfig, SessionManagerConfig } from './SessionManager.types.js';
 
 export * from './ButtonIds.types.js';
+export * from './BaseCommand.types.js';
 
 
 declare module 'discord.js' {
     export interface Client {
-        commands: Collection<unknown, any>,
+        commands: CommandRegistry,
         lavashark: LavaShark,
         i18n: i18n;
         dashboard: DashboardManager;
@@ -34,11 +35,6 @@ declare module 'lavashark' {
         djUsers?: Set<string>;              // Dynamic DJ users for this guild
         djLeaveTimeout?: NodeJS.Timeout;    // Timeout for DJ leave cooldown
     }
-}
-
-export enum CommandCategory {
-    MUSIC = 'Music',
-    UTILITY = 'Utility',
 }
 
 export enum DJModeEnum {
