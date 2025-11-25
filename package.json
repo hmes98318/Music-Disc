@@ -21,7 +21,7 @@
     },
     "homepage": "https://github.com/hmes98318/Music-Disc#readme",
     "dependencies": {
-        "body-parser": "^2.2.0",
+        "body-parser": "^2.2.1",
         "cookie": "^1.0.2",
         "discord.js": "~14.22.1",
         "dotenv": "^17.2.2",
