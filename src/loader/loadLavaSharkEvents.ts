@@ -1,41 +1,50 @@
-import path from 'path';
-import * as fs from 'fs';
-import { fileURLToPath } from 'url';
-
-import { cst } from './../utils/constants.js';
+import { LavaSharkEventRegistry } from '../events/lavashark/base/LavaSharkEventRegistry.js';
+import { registerAllLavaSharkEvents } from '../events/lavashark/index.js';
+import { cst } from '../utils/constants.js';
 
 import type { Client } from 'discord.js';
-import type { LavaSharkEvents } from 'lavashark/typings/src/@types/LavaShark.types.js';
-import type { Bot } from './../@types/index.js';
+import type { Bot } from '../@types/index.js';
 
 
-const loadLavaSharkEvents = (bot: Bot, client: Client) => {
-    return new Promise<void>(async (resolve, reject) => {
-        const __filename = fileURLToPath(import.meta.url);
-        const __dirname = path.dirname(__filename);
+/**
+ * Load and register all LavaShark events
+ * Uses the registry pattern to manage event handlers
+ * 
+ * @param bot Bot instance
+ * @param client Discord client instance
+ */
+const loadLavaSharkEvents = (bot: Bot, client: Client): Promise<void> => {
+    return new Promise<void>((resolve, reject) => {
+        try {
+            bot.logger.emit('log', bot.shardId, `-> loading LavaShark Events ......`);
 
-        bot.logger.emit('log', bot.shardId, `-> loading LavaShark Events ......`);
+            // Create registry and register all events
+            const registry = new LavaSharkEventRegistry();
+            registerAllLavaSharkEvents(registry, bot);
 
-        const files = fs.readdirSync(`${__dirname}/../events/lavashark/`);
+            // Get all events and register listeners
+            const events = registry.getAll();
 
-        bot.logger.emit('log', bot.shardId, `+--------------------------------+`);
-        for (const file of files) {
-            try {
-                const filePath = 'file://' + path.resolve(`${__dirname}/../events/lavashark/${file}`);
-                const eventModule = await import(filePath);
-                const event = eventModule.default;
-                const eventName = file.split('.')[0] as keyof LavaSharkEvents;
+            bot.logger.emit('log', bot.shardId, `+--------------------------------+`);
 
-                client.lavashark.on(eventName, event.bind(null, bot, client));
-                bot.logger.emit('log', bot.shardId, `| Loaded event ${file.split('.')[0].padEnd(17, ' ')} |`);
-            } catch (error) {
-                reject(error);
+            // Register each event with LavaShark
+            for (const event of events) {
+                const eventName = event.getEventName();
+
+                // Bind the event handler to LavaShark
+                client.lavashark.on(eventName, event.execute.bind(event, bot, client));
+
+                bot.logger.emit('log', bot.shardId, `| Loaded event ${eventName.padEnd(17, ' ')} |`);
             }
-        }
-        bot.logger.emit('log', bot.shardId, `+--------------------------------+`);
-        bot.logger.emit('log', bot.shardId, `${cst.color.grey}-- loading LavaShark Events finished --${cst.color.white}`);
 
-        resolve();
+            bot.logger.emit('log', bot.shardId, `+--------------------------------+`);
+            bot.logger.emit('log', bot.shardId, `${cst.color.grey}-- loading LavaShark Events finished --${cst.color.white}`);
+
+            resolve();
+        } catch (error) {
+            bot.logger.emit('error', bot.shardId, `Failed to load LavaShark events: ${error}`);
+            reject(error);
+        }
     });
 };
 
