@@ -19,7 +19,7 @@ import type { Bot } from '../../@types/index.js';
  * @param registry - LavaShark event registry instance
  * @param bot - Bot instance
  */
-export function registerAllLavaSharkEvents(registry: LavaSharkEventRegistry, bot: Bot): void {
+export function registerAllLavaSharkEvents(registry: LavaSharkEventRegistry, _bot: Bot): void {
     // Node events
     registry.register(new ErrorEvent());
     registry.register(new NodeConnectEvent());

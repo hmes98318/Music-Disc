@@ -187,9 +187,6 @@ export class CommandValidator {
         guildId: string,
         userId: string
     ): Promise<ValidationResult> {
-        const username = source instanceof Message ? source.author.username : source.user.username;
-        const content = source instanceof Message ? source.content : `/${source.commandName}`;
-
         let guild;
 
         // Ensure guild data is in cache

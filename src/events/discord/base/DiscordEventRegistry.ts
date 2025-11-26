@@ -11,7 +11,7 @@ export class DiscordEventRegistry {
     /**
      * Register an event
      */
-    public register(event: BaseDiscordEvent, bot: Bot): void {
+    public register(event: BaseDiscordEvent, _bot: Bot): void {
         const eventName = event.getEventName();
 
         // Register event
