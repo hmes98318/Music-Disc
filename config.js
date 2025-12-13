@@ -5,16 +5,16 @@ const config = {
     // Lavalink node list
     nodeList: [
         {
-            id: 'Node 1',
-            hostname: 'localhost',
-            port: 2333,
-            password: 'youshallnotpass'
+            id: 'Main',
+            hostname: 'lavalinkv4.serenetia.com',
+            port: 80,
+            password: 'https://dsc.gg/ajidevserver'
         }
     ],
 
     spotify: {
-        clientId: '',               // If you want to use Spotify to play songs, you need to set up Spotify credentials.
-        clientSecret: ''            // https://developer.spotify.com/documentation/web-api
+        clientId: '47afff587fc44d83b62ec5df8b5b2a71',               // If you want to use Spotify to play songs, you need to set up Spotify credentials.
+        clientSecret: '01401bca9f744dcd946debdfc23f95cc'            // https://developer.spotify.com/documentation/web-api
     },
 
     bot: {
@@ -22,7 +22,7 @@ const config = {
         slashCommand            : true,                 // Whether to enable slash command
 
         // OAUTH2 mode requires setting 'admin', 'clientSecret' value
-        admin                   : [],                   // Admin users, It must be the user ID (string[])
+        admin                   : [884770455439953950],                   // Admin users, It must be the user ID (string[])
 
         /**
          * DYNAMIC mode: The first user to execute a command becomes the DJ
@@ -35,12 +35,12 @@ const config = {
 
         clientSecret            : '',
 
-        name                    : 'Music Disc',
-        prefix                  : '+',                  // Text command prefix
+        name                    : 'Pate',
+        prefix                  : '5',                  // Text command prefix
         status                  : 'online',             // 'online' | 'idle' | 'dnd'
         activity: {
             type                : 0,                    // https://discord.com/developers/docs/topics/gateway-events#activity-object-activity-types
-            name                : '+help | music',
+            name                : 'Pate Iu Em <3',
             // state               : '',
             // url                 : '',                // The streaming type currently only supports Twitch and YouTube. Only https://twitch.tv/ and https://youtube.com/ urls will work.
         },
