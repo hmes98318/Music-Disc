@@ -25,7 +25,7 @@
         "cookie": "^1.0.2",
         "discord.js": "~14.22.1",
         "dotenv": "^17.2.2",
-        "express": "^4.21.2",
+        "express": "^4.22.1",
         "i18next": "^25.4.2",
         "i18next-fs-backend": "^2.6.0",
         "lavashark": "^2.3.1",
