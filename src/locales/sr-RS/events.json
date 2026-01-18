@@ -1,0 +1,22 @@
+{
+    "ERROR_GET_GUILD_DATA_CACHE": "❌ Ne mogu da dobijem podatke servera iz keša.",
+    "ERROR_NOT_IN_SAME_VOICE_CHANNEL": "❌ Nisi na istom govornom kanalu kao ja.",
+    "ERRPR_NOT_IN_SPECIFIC_VOICE_CHANNEL": "Molim te pridruži se određenom govornom kanalu <#{{channelId}}> i pozovi me.",
+    "ERROR_NOT_IN_VOICE_CHANNEL": "❌ Nisi povezan na govorni kanal.",
+    "ERROR_NOT_PLAYING": "❌ Trenutno se ne pušta muzika.",
+    "ERROR_REQUIRE_ADMIN": "❌ Ova komanda zahteva administratorske privilegije.",
+    "ERROR_REQUIRE_DJ": "❌ Ova komanda zahteva DJ privilegije.",
+    "ERROR_SEND_PRIVATE_MESSAGE": "❌ Ne mogu da ti pošaljem privatnu poruku.",
+    "ERROR_SLASH_NOT_ENABLE": "❌ Slash komanda nije omogućena.",
+    "ERROR_TIME_EXPIRED": "❌ Vreme je isteklo.",
+    "MESSAGE_BOT_LEAVE_CHANNEL": "✅ Bot je napustio kanal.",
+    "MESSAGE_BOT_STOP": "✅ Bot je zaustavljen.",
+    "MESSAGE_MUSIC_SHUFFLE": "✅ Muzika izmešana.",
+    "MESSAGE_NOW_PLAYING_SUBTITLE": "Autor : **{{author}}**\nTrajanje **{{label}}**\n",
+    "MESSAGE_NOW_PLAYING_TITLE": "Trenutno svira: {{title}}\n\n",
+    "MESSAGE_QUEUE_PAGE": "\n\n----- Strana {{curPage}}/{{maxPage}} -----",
+    "MESSAGE_SELECT_LOOP_MODE": "Izaberi režim ponavljanja pesme.",
+    "MESSAGE_SEND_PRIVATE_MESSAGE": "✅ Poslao sam ti naziv muzike u privatnoj poruci.",
+    "MESSAGE_SET_LOOP_MODE": "✅ Ponavljanje postavljeno na `{{mode}}`",
+    "MESSAGE_SPECIFIC_CHANNEL_WARN": "❌ Ne možeš izvršavati komande u ovom kanalu. Molim te koristi <#{{channelId}}> tekstualni kanal."
+}
