@@ -88,7 +88,6 @@ export type Config = {
     webDashboard: WebDashboardConfig;
     localNode: LocalNodeConfig;
     command: CommandConfig;
-    maxQueuedSongs: MaxQueuedSongsConfig;
 };
 
 export type BotConfig = {
@@ -130,7 +129,8 @@ export type BotConfig = {
     i18n: {
         localePath: string;
         defaultLocale: string;
-    }
+    };
+    maxQueuedSongs: MaxQueuedSongsConfig;
 };
 
 export type SpotifyConfig = {

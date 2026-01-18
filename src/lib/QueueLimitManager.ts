@@ -18,7 +18,7 @@ export class QueueLimitManager {
      * @returns The maximum number of songs allowed for this user
      */
     public static getUserLimit(bot: Bot, userId: string, member: GuildMember | null, player?: Player): number {
-        const config = bot.config.maxQueuedSongs;
+        const config = bot.config.bot.maxQueuedSongs;
 
         // If feature is disabled, return unlimited (Infinity)
         if (!config.enabled) {

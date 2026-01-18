@@ -86,6 +86,19 @@ const setEnvironment = (defaultConfig: Config) => {
         i18n: {
             localePath: config.bot.i18n.localePath || defaultConfig.bot.i18n.localePath,
             defaultLocale: config.bot.i18n.defaultLocale || defaultConfig.bot.i18n.defaultLocale
+        },
+
+        maxQueuedSongs: {
+            enabled: config.bot.maxQueuedSongs?.enabled ?? defaultConfig.bot.maxQueuedSongs.enabled,
+            default: isNumber(config.bot.maxQueuedSongs?.default)
+                ? config.bot.maxQueuedSongs.default
+                : defaultConfig.bot.maxQueuedSongs.default,
+            djs: isNumber(config.bot.maxQueuedSongs?.djs)
+                ? config.bot.maxQueuedSongs.djs
+                : defaultConfig.bot.maxQueuedSongs.djs,
+            roles: (config.bot.maxQueuedSongs?.roles && typeof config.bot.maxQueuedSongs.roles === 'object')
+                ? config.bot.maxQueuedSongs.roles
+                : defaultConfig.bot.maxQueuedSongs.roles
         }
     };
 
@@ -155,18 +168,6 @@ const setEnvironment = (defaultConfig: Config) => {
         skipDjBypass: config.command.skipDjBypass ?? defaultConfig.command.skipDjBypass,
     };
 
-    defaultConfig.maxQueuedSongs = {
-        enabled: config.maxQueuedSongs?.enabled ?? defaultConfig.maxQueuedSongs.enabled,
-        default: isNumber(config.maxQueuedSongs?.default)
-            ? config.maxQueuedSongs.default
-            : defaultConfig.maxQueuedSongs.default,
-        djs: isNumber(config.maxQueuedSongs?.djs)
-            ? config.maxQueuedSongs.djs
-            : defaultConfig.maxQueuedSongs.djs,
-        roles: (config.maxQueuedSongs?.roles && typeof config.maxQueuedSongs.roles === 'object')
-            ? config.maxQueuedSongs.roles
-            : defaultConfig.maxQueuedSongs.roles
-    };
 };
 
 export { setEnvironment };
