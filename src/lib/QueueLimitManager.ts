@@ -88,6 +88,27 @@ export class QueueLimitManager {
     }
 
     /**
+     * Get the total number of songs currently in the queue (all users)
+     * @param player - Player instance
+     * @returns Total number of songs in the queue
+     */
+    public static getTotalQueueSize(player: Player): number {
+        let count = 0;
+
+        // Count all songs in the queue
+        if (player.queue && player.queue.tracks) {
+            count = player.queue.tracks.length;
+        }
+
+        // Add current track if playing
+        if (player.current) {
+            count++;
+        }
+
+        return count;
+    }
+
+    /**
      * Check if user can add more songs to the queue
      * @param bot - Bot instance
      * @param player - Player instance
@@ -102,17 +123,36 @@ export class QueueLimitManager {
         userId: string,
         member: GuildMember | null,
         songsToAdd: number = 1
-    ): { canAdd: boolean; currentCount: number; limit: number; availableSlots: number } {
+    ): { canAdd: boolean; currentCount: number; limit: number; availableSlots: number; globalLimitReached?: boolean } {
+        const config = bot.config.bot.maxQueuedSongs;
         const limit = this.getUserLimit(bot, userId, member, player);
         const currentCount = this.countUserSongsInQueue(player, userId);
         const availableSlots = limit === Infinity ? Infinity : Math.max(0, limit - currentCount);
+        
+        // Check global limit first
+        if (config.enabled && config.global) {
+            const totalQueueSize = this.getTotalQueueSize(player);
+            const globalAvailableSlots = Math.max(0, config.global - totalQueueSize);
+            
+            if (globalAvailableSlots < songsToAdd) {
+                return {
+                    canAdd: false,
+                    currentCount,
+                    limit,
+                    availableSlots: Math.min(availableSlots === Infinity ? globalAvailableSlots : availableSlots, globalAvailableSlots),
+                    globalLimitReached: true
+                };
+            }
+        }
+
         const canAdd = limit === Infinity || (currentCount + songsToAdd) <= limit;
 
         return {
             canAdd,
             currentCount,
             limit,
-            availableSlots
+            availableSlots,
+            globalLimitReached: false
         };
     }
 

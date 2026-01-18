@@ -139,5 +139,7 @@
     "MESSAGE_VOLUME_SAME": "❌ Bot şuan zaten bu ses seviyesinde çalıyor.",
     "MESSAGE_VOLUME_SUCCESS": "🔊 **{{volume}}**/**{{maxVolume}}**%",
     "ERROR_QUEUE_LIMIT_REACHED": "❌ Kuyruk sınırınıza ulaştınız! Şu anda kuyrukta **{{current}}** parça var (limit: **{{limit}}**). Daha fazla eklemek için bazı parçaların bitmesini bekleyin.",
-    "MESSAGE_PLAYLIST_PARTIAL": "⚠️ Çalma listesi kısmen eklendi: **{{added}}** parça eklendi, **{{skipped}}** parça kuyruk limitiniz nedeniyle atlandı (**{{current}}/{{limit}}**)."
+    "ERROR_GLOBAL_QUEUE_LIMIT_REACHED": "❌ Genel kuyruk sınırına ulaşıldı! Kuyrukta şu anda **{{total}}** parça var (genel limit: **{{limit}}**). Daha fazla eklemek için bazı parçaların bitmesini bekleyin.",
+    "MESSAGE_PLAYLIST_PARTIAL": "⚠️ Çalma listesi kısmen eklendi: **{{added}}** parça eklendi, **{{skipped}}** parça kuyruk limitiniz nedeniyle atlandı (**{{current}}/{{limit}}**).",
+    "MESSAGE_PLAYLIST_PARTIAL_GLOBAL": "⚠️ Çalma listesi kısmen eklendi: **{{added}}** parça eklendi, **{{skipped}}** parça genel kuyruk limiti nedeniyle atlandı (**{{total}}/{{limit}}**)."
 }

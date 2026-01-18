@@ -139,5 +139,7 @@
     "MESSAGE_VOLUME_SAME": "❌ Jačina zvuka koju želiš da promeniš je već trenutna jačina zvuka.",
     "MESSAGE_VOLUME_SUCCESS": "🔊 **{{volume}}**/**{{maxVolume}}**%",
     "ERROR_QUEUE_LIMIT_REACHED": "❌ Dostigao si limit reda! Trenutno imaš **{{current}}** pesama u redu (limit: **{{limit}}**). Molim te sačekaj da se neke pesme završe pre dodavanja novih.",
-    "MESSAGE_PLAYLIST_PARTIAL": "⚠️ Lista pesama delimično dodata: **{{added}}** pesama dodato, **{{skipped}}** pesama preskočeno zbog limita reda (**{{current}}/{{limit}}**)."
+    "ERROR_GLOBAL_QUEUE_LIMIT_REACHED": "❌ Globalni limit reda je dostignut! Red trenutno ima **{{total}}** pesama (globalni limit: **{{limit}}**). Molim te sačekaj da se neke pesme završe pre dodavanja novih.",
+    "MESSAGE_PLAYLIST_PARTIAL": "⚠️ Lista pesama delimično dodata: **{{added}}** pesama dodato, **{{skipped}}** pesama preskočeno zbog limita reda (**{{current}}/{{limit}}**).",
+    "MESSAGE_PLAYLIST_PARTIAL_GLOBAL": "⚠️ Lista pesama delimično dodata: **{{added}}** pesama dodato, **{{skipped}}** pesama preskočeno zbog globalnog limita reda (**{{total}}/{{limit}}**)."
 }

@@ -27,6 +27,11 @@ export class TrackAddEvent extends BaseLavaSharkEvent<'trackAdd'> {
             await this.#handleTrackAdd(bot, client, player, tracks);
         }
 
+        // Save queue state to persistence
+        if (bot.config.queuePersistence.enabled && (client as any).queuePersistence) {
+            await (client as any).queuePersistence.saveQueue(player);
+        }
+
         // Refresh dashboard
         try {
             if (player.dashboardMsg) await player.dashboardMsg.delete();

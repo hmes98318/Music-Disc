@@ -139,5 +139,7 @@
     "MESSAGE_VOLUME_SAME": "❌ 您想更改的音量已是目前音量。",
     "MESSAGE_VOLUME_SUCCESS": "🔊 **{{volume}}**/**{{maxVolume}}**%",
     "ERROR_QUEUE_LIMIT_REACHED": "❌ 您已達到播放清單上限！您目前有 **{{current}}** 首歌在清單中（上限：**{{limit}}**）。請等待一些歌曲播放完畢後再添加更多。",
-    "MESSAGE_PLAYLIST_PARTIAL": "⚠️ 播放清單部分新增：已新增 **{{added}}** 首，由於播放清單上限已跳過 **{{skipped}}** 首（**{{current}}/{{limit}}**）。"
+    "ERROR_GLOBAL_QUEUE_LIMIT_REACHED": "❌ 已達到全域播放清單上限！清單目前有 **{{total}}** 首歌（全域上限：**{{limit}}**）。請等待一些歌曲播放完畢後再添加更多。",
+    "MESSAGE_PLAYLIST_PARTIAL": "⚠️ 播放清單部分新增：已新增 **{{added}}** 首，由於播放清單上限已跳過 **{{skipped}}** 首（**{{current}}/{{limit}}**）。",
+    "MESSAGE_PLAYLIST_PARTIAL_GLOBAL": "⚠️ 播放清單部分新增：已新增 **{{added}}** 首，由於全域播放清單上限已跳過 **{{skipped}}** 首（**{{total}}/{{limit}}**）。"
 }

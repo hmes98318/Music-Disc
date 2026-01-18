@@ -88,6 +88,7 @@ export type Config = {
     webDashboard: WebDashboardConfig;
     localNode: LocalNodeConfig;
     command: CommandConfig;
+    queuePersistence: QueuePersistenceConfig;
 };
 
 export type BotConfig = {
@@ -131,6 +132,7 @@ export type BotConfig = {
         defaultLocale: string;
     };
     maxQueuedSongs: MaxQueuedSongsConfig;
+    fairQueue: boolean;
 };
 
 export type SpotifyConfig = {
@@ -170,9 +172,15 @@ export type CommandConfig = {
 
 export type MaxQueuedSongsConfig = {
     enabled: boolean;
+    global: number;
     default: number;
     djs: number;
     roles: Record<string, number>;
+};
+
+export type QueuePersistenceConfig = {
+    enabled: boolean;
+    path: string;
 };
 
 

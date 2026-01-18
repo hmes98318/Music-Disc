@@ -11,6 +11,7 @@ import {
 } from './loader/index.js';
 import { Logger } from './lib/Logger.js';
 import { DashboardManager } from './lib/DashboardManager.js';
+import { QueuePersistence } from './lib/QueuePersistence.js';
 import { cst } from './utils/constants.js';
 
 import type { Bot, SystemInfo } from './@types/index.js';
@@ -77,6 +78,12 @@ class App {
         // Initialize dashboard manager
         this.#client.dashboard = new DashboardManager(this.bot, this.#client);
         this.bot.logger.emit('log', this.bot.shardId, 'Dashboard manager initialized.');
+
+        // Initialize queue persistence
+        if (this.bot.config.queuePersistence.enabled) {
+            (this.#client as any).queuePersistence = new QueuePersistence(this.bot);
+            (this.#client as any).queuePersistence.initialize();
+        }
     }
 
 
@@ -91,9 +98,38 @@ class App {
                 this.bot.logger.emit('log', this.bot.shardId, cst.color.green + '*** All loaded successfully ***' + cst.color.white);
                 this.#client.login(process.env.BOT_TOKEN);
 
+                // Restore persisted queues after bot is ready
+                if (this.bot.config.queuePersistence.enabled) {
+                    this.#client.once('ready', () => {
+                        this.#restorePersistedQueues();
+                    });
+                }
+
                 this.#setShutdownSignalHandlers();
                 this.bot.logger.emit('log', this.bot.shardId, 'pid: ' + process.pid);
             });
+    }
+
+    /**
+     * Restore persisted queues from database
+     * @private
+     */
+    async #restorePersistedQueues(): Promise<void> {
+        try {
+            const queuePersistence = (this.#client as any).queuePersistence;
+            if (!queuePersistence) return;
+
+            // Wait a bit for bot to be fully ready
+            await new Promise(resolve => setTimeout(resolve, 3000));
+
+            const queues = queuePersistence.loadQueues(this.#client);
+            
+            for (const queueData of queues) {
+                await queuePersistence.restoreQueue(this.#client, queueData);
+            }
+        } catch (error) {
+            this.bot.logger.emit('error', this.bot.shardId, `Failed to restore persisted queues: ${error}`);
+        }
     }
 
 
@@ -131,6 +167,12 @@ class App {
                 this.bot.logger.emit('log', this.bot.shardId, 'Closing discord.js connection...');
                 await this.#client.destroy();
                 this.bot.logger.emit('log', this.bot.shardId, 'Discord.js connection closed.');
+
+                // Close queue persistence database
+                if (this.bot.config.queuePersistence.enabled && (this.#client as any).queuePersistence) {
+                    this.bot.logger.emit('log', this.bot.shardId, 'Closing queue persistence database...');
+                    (this.#client as any).queuePersistence.close();
+                }
 
                 clearTimeout(timeout);
                 this.bot.logger.emit('log', this.bot.shardId, 'Server closed gracefully.');

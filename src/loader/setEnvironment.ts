@@ -90,6 +90,9 @@ const setEnvironment = (defaultConfig: Config) => {
 
         maxQueuedSongs: {
             enabled: config.bot.maxQueuedSongs?.enabled ?? defaultConfig.bot.maxQueuedSongs.enabled,
+            global: isNumber(config.bot.maxQueuedSongs?.global)
+                ? config.bot.maxQueuedSongs.global
+                : defaultConfig.bot.maxQueuedSongs.global,
             default: isNumber(config.bot.maxQueuedSongs?.default)
                 ? config.bot.maxQueuedSongs.default
                 : defaultConfig.bot.maxQueuedSongs.default,
@@ -99,7 +102,9 @@ const setEnvironment = (defaultConfig: Config) => {
             roles: (config.bot.maxQueuedSongs?.roles && typeof config.bot.maxQueuedSongs.roles === 'object')
                 ? config.bot.maxQueuedSongs.roles
                 : defaultConfig.bot.maxQueuedSongs.roles
-        }
+        },
+
+        fairQueue: config.bot.fairQueue ?? defaultConfig.bot.fairQueue
     };
 
     // Lavalink node list
@@ -166,6 +171,11 @@ const setEnvironment = (defaultConfig: Config) => {
             : defaultConfig.command.djCommand,
         skipOnlyRequester: config.command.skipOnlyRequester ?? defaultConfig.command.skipOnlyRequester,
         skipDjBypass: config.command.skipDjBypass ?? defaultConfig.command.skipDjBypass,
+    };
+
+    defaultConfig.queuePersistence = {
+        enabled: config.queuePersistence?.enabled ?? defaultConfig.queuePersistence.enabled,
+        path: config.queuePersistence?.path || defaultConfig.queuePersistence.path
     };
 
 };

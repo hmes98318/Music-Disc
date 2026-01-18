@@ -139,5 +139,7 @@
     "MESSAGE_VOLUME_SAME": "❌ The volume you want to change is already the current volume.",
     "MESSAGE_VOLUME_SUCCESS": "🔊 **{{volume}}**/**{{maxVolume}}**%",
     "ERROR_QUEUE_LIMIT_REACHED": "❌ You have reached your queue limit! You currently have **{{current}}** songs in the queue (limit: **{{limit}}**). Please wait for some songs to finish before adding more.",
-    "MESSAGE_PLAYLIST_PARTIAL": "⚠️ Playlist partially added: **{{added}}** songs added, **{{skipped}}** songs skipped due to your queue limit (**{{current}}/{{limit}}**)."
+    "ERROR_GLOBAL_QUEUE_LIMIT_REACHED": "❌ The global queue limit has been reached! The queue currently has **{{total}}** songs (global limit: **{{limit}}**). Please wait for some songs to finish before adding more.",
+    "MESSAGE_PLAYLIST_PARTIAL": "⚠️ Playlist partially added: **{{added}}** songs added, **{{skipped}}** songs skipped due to your queue limit (**{{current}}/{{limit}}**).",
+    "MESSAGE_PLAYLIST_PARTIAL_GLOBAL": "⚠️ Playlist partially added: **{{added}}** songs added, **{{skipped}}** songs skipped due to the global queue limit (**{{total}}/{{limit}}**)."
 }
