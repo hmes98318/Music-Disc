@@ -91,6 +91,7 @@
     "MESSAGE_DJ_LIST_ROLE_DJS": "Rol tabanlı DJ'ler",
     "MESSAGE_DJ_LIST_DYNAMIC_DJS": "Dinamik DJ'ler",
     "MESSAGE_DJ_LIST_NONE": "Yapılandırılmış DJ yok.",
+    "MESSAGE_DJ_LIST_ERROR": "❌ DJ listesi yüklenemedi. Lütfen tekrar deneyin.",
     "MESSAGE_DJ_ROLE_NOT_SET": "DJ rolü yapılandırılmamış",
     "MESSAGE_FILTER_NOT_FOUND": "❌ Efekt bulunamadı.",
     "MESSAGE_FILTER_SELECT_LIST": "Belirlemek istediğiniz filtreyi seçin ⬇️",

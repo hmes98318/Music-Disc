@@ -91,6 +91,7 @@
     "MESSAGE_DJ_LIST_ROLE_DJS": "DJ-evi sa rolom",
     "MESSAGE_DJ_LIST_DYNAMIC_DJS": "Dinamički DJ-evi",
     "MESSAGE_DJ_LIST_NONE": "Nema konfigurisanih DJ-eva.",
+    "MESSAGE_DJ_LIST_ERROR": "❌ Nije uspelo učitavanje liste DJ-eva. Pokušaj ponovo.",
     "MESSAGE_DJ_ROLE_NOT_SET": "DJ rola nije konfigurisana",
     "MESSAGE_FILTER_NOT_FOUND": "❌ Naziv efekta nije pronađen.",
     "MESSAGE_FILTER_SELECT_LIST": "Izaberi režim muzičkog filtera koji želiš da podesiš. ⬇️",

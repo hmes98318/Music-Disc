@@ -94,39 +94,44 @@ export class DjCommand extends BaseCommand {
     }
 
     private async showDJList(bot: Bot, client: Client, context: CommandContext, player: Player | null): Promise<void> {
-        const djInfo = await DJManager.getDJInfo(bot, client, context.guild!, player || undefined);
-        
-        let description = i18next.t('commands:MESSAGE_DJ_LIST_TITLE') + '\\n\\n';
-        
-        // Add admins
-        if (djInfo.admins.length > 0) {
-            description += `**${i18next.t('commands:MESSAGE_DJ_LIST_ADMINS')}**\\n`;
-            description += djInfo.admins.map(id => `<@${id}>`).join(', ') + '\\n\\n';
+        try {
+            const djInfo = await DJManager.getDJInfo(bot, client, context.guild!, player || undefined);
+            
+            let description = i18next.t('commands:MESSAGE_DJ_LIST_TITLE') + '\n\n';
+            
+            // Add admins
+            if (djInfo.admins.length > 0) {
+                description += `**${i18next.t('commands:MESSAGE_DJ_LIST_ADMINS')}**\n`;
+                description += djInfo.admins.map(id => `<@${id}>`).join(', ') + '\n\n';
+            }
+            
+            // Add role-based DJs
+            if (djInfo.roleDJs.length > 0) {
+                description += `**${i18next.t('commands:MESSAGE_DJ_LIST_ROLE_DJS')}**\n`;
+                description += djInfo.roleDJs.map(id => `<@${id}>`).join(', ') + '\n\n';
+            }
+            
+            // Add dynamic DJs
+            if (djInfo.dynamicDJs.length > 0) {
+                description += `**${i18next.t('commands:MESSAGE_DJ_LIST_DYNAMIC_DJS')}**\n`;
+                description += djInfo.dynamicDJs.map(id => `<@${id}>`).join(', ') + '\n\n';
+            }
+            
+            // Add DJ role info
+            if (bot.config.bot.djRoleId) {
+                description += `**DJ Role:** <@&${bot.config.bot.djRoleId}>\n`;
+            } else {
+                description += i18next.t('commands:MESSAGE_DJ_ROLE_NOT_SET') + '\n';
+            }
+            
+            if (djInfo.admins.length === 0 && djInfo.roleDJs.length === 0 && djInfo.dynamicDJs.length === 0) {
+                description = i18next.t('commands:MESSAGE_DJ_LIST_NONE');
+            }
+            
+            await context.replySuccess(bot, description);
+        } catch (error) {
+            bot.logger.emit('error', bot.shardId, `Error showing DJ list: ${error}`);
+            await context.replyError(bot, i18next.t('commands:MESSAGE_DJ_LIST_ERROR'));
         }
-        
-        // Add role-based DJs
-        if (djInfo.roleDJs.length > 0) {
-            description += `**${i18next.t('commands:MESSAGE_DJ_LIST_ROLE_DJS')}**\\n`;
-            description += djInfo.roleDJs.map(id => `<@${id}>`).join(', ') + '\\n\\n';
-        }
-        
-        // Add dynamic DJs
-        if (djInfo.dynamicDJs.length > 0) {
-            description += `**${i18next.t('commands:MESSAGE_DJ_LIST_DYNAMIC_DJS')}**\\n`;
-            description += djInfo.dynamicDJs.map(id => `<@${id}>`).join(', ') + '\\n\\n';
-        }
-        
-        // Add DJ role info
-        if (bot.config.bot.djRoleId) {
-            description += `**DJ Role:** <@&${bot.config.bot.djRoleId}>\\n`;
-        } else {
-            description += i18next.t('commands:MESSAGE_DJ_ROLE_NOT_SET') + '\\n';
-        }
-        
-        if (djInfo.admins.length === 0 && djInfo.roleDJs.length === 0 && djInfo.dynamicDJs.length === 0) {
-            description = i18next.t('commands:MESSAGE_DJ_LIST_NONE');
-        }
-        
-        await context.replySuccess(bot, description);
     }
 }

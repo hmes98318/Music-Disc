@@ -91,6 +91,7 @@
     "MESSAGE_DJ_LIST_ROLE_DJS": "Role-based DJs",
     "MESSAGE_DJ_LIST_DYNAMIC_DJS": "Dynamic DJs",
     "MESSAGE_DJ_LIST_NONE": "No DJs configured.",
+    "MESSAGE_DJ_LIST_ERROR": "❌ Failed to load DJ list. Please try again.",
     "MESSAGE_DJ_ROLE_NOT_SET": "No DJ role configured",
     "MESSAGE_FILTER_NOT_FOUND": "❌ The effect name not found.",
     "MESSAGE_FILTER_SELECT_LIST": "Select the music filter mode you want to set. ⬇️",

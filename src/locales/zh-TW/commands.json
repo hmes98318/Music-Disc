@@ -91,6 +91,7 @@
     "MESSAGE_DJ_LIST_ROLE_DJS": "基於身分組的 DJ",
     "MESSAGE_DJ_LIST_DYNAMIC_DJS": "動態 DJ",
     "MESSAGE_DJ_LIST_NONE": "未配置 DJ。",
+    "MESSAGE_DJ_LIST_ERROR": "❌ 無法載入 DJ 列表。請再試一次。",
     "MESSAGE_DJ_ROLE_NOT_SET": "未配置 DJ 身分組",
     "MESSAGE_FILTER_NOT_FOUND": "❌ 找不到效果名稱。",
     "MESSAGE_FILTER_SELECT_LIST": "選擇您要設置的音樂效果模式。⬇️",
