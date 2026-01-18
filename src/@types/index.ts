@@ -88,6 +88,7 @@ export type Config = {
     webDashboard: WebDashboardConfig;
     localNode: LocalNodeConfig;
     command: CommandConfig;
+    maxQueuedSongs: MaxQueuedSongsConfig;
 };
 
 export type BotConfig = {
@@ -165,6 +166,13 @@ export type CommandConfig = {
     djCommand: string[];
     skipOnlyRequester: boolean;
     skipDjBypass: boolean;
+};
+
+export type MaxQueuedSongsConfig = {
+    enabled: boolean;
+    default: number;
+    djs: number;
+    roles: Record<string, number>;
 };
 
 

@@ -134,6 +134,14 @@ export const cst = {
             djCommand           : ['dj'],                               // DJ commands, only DJ role user can use
             skipOnlyRequester   : true,                                 // If true, only the song requester can skip (admins can always skip)
             skipDjBypass        : true                                  // If true, DJs can skip regardless of skipOnlyRequester setting
+        },
+
+        // Max queued songs per user settings
+        maxQueuedSongs: {
+            enabled             : true,                                 // Enable/disable this feature
+            default             : 5,                                    // Default limit for users without special roles
+            djs                 : 50,                                   // Limit for DJ role users
+            roles               : {}                                    // Custom limits per role ID
         }
     },
 

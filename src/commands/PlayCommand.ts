@@ -5,8 +5,9 @@ import { CommandCategory, DJModeEnum, LoadType } from '../@types/index.js';
 import { embeds } from '../embeds/index.js';
 import { isUserInBlacklist } from '../utils/functions/isUserInBlacklist.js';
 import { DJManager } from '../lib/DjManager.js';
+import { QueueLimitManager } from '../lib/QueueLimitManager.js';
 
-import type { Client } from 'discord.js';
+import type { Client, GuildMember } from 'discord.js';
 import type { Player } from 'lavashark';
 import type { CommandContext } from './base/CommandContext.js';
 import type { Bot, CommandMetadata } from '../@types/index.js';
@@ -88,8 +89,16 @@ export class PlayCommand extends BaseCommand {
         const player = await this.#createPlayer(bot, client, context);
         if (!player) return;
 
+        // Check queue limits before adding tracks
+        const member = context.isMessage()
+            ? context.getMessage().member
+            : context.getInteraction().guild!.members.cache.get(context.user.id);
+
+        const limitCheck = await this.#checkQueueLimits(bot, client, context, player, res, member);
+        if (!limitCheck.canAdd) return;
+
         // Add tracks to queue
-        await this.#addTracksToQueue(bot, client, context, player, res);
+        await this.#addTracksToQueue(bot, client, context, player, res, limitCheck.tracksToAdd);
 
         // React to indicate success (text commands only)
         if (context.isMessage()) {
@@ -151,15 +160,77 @@ export class PlayCommand extends BaseCommand {
     }
 
     /**
+     * Check queue limits before adding tracks
+     * @private
+     */
+    async #checkQueueLimits(
+        bot: Bot,
+        client: Client,
+        context: CommandContext,
+        player: Player,
+        res: any,
+        member: GuildMember | null | undefined
+    ): Promise<{ canAdd: boolean; tracksToAdd: number; isPartial: boolean }> {
+        const userId = context.user.id;
+        const guildMember = member as GuildMember | null;
+
+        // For single track
+        if (res.loadType !== LoadType.PLAYLIST) {
+            const checkResult = QueueLimitManager.canAddSongs(bot, player, userId, guildMember, 1);
+            
+            if (!checkResult.canAdd) {
+                await context.replyError(bot, client.i18n.t('commands:ERROR_QUEUE_LIMIT_REACHED', {
+                    current: checkResult.currentCount,
+                    limit: checkResult.limit
+                }));
+                return { canAdd: false, tracksToAdd: 0, isPartial: false };
+            }
+
+            return { canAdd: true, tracksToAdd: 1, isPartial: false };
+        }
+
+        // For playlist
+        const playlistSize = res.tracks.length;
+        const playlistCheck = QueueLimitManager.calculatePlaylistAddition(bot, player, userId, guildMember, playlistSize);
+
+        if (playlistCheck.limitReached) {
+            await context.replyError(bot, client.i18n.t('commands:ERROR_QUEUE_LIMIT_REACHED', {
+                current: QueueLimitManager.countUserSongsInQueue(player, userId),
+                limit: QueueLimitManager.getUserLimit(bot, userId, guildMember, player)
+            }));
+            return { canAdd: false, tracksToAdd: 0, isPartial: false };
+        }
+
+        // Partial playlist addition
+        if (playlistCheck.willSkipCount > 0) {
+            const currentCount = QueueLimitManager.countUserSongsInQueue(player, userId);
+            const limit = QueueLimitManager.getUserLimit(bot, userId, guildMember, player);
+            
+            await context.replyWarning(bot, client.i18n.t('commands:MESSAGE_PLAYLIST_PARTIAL', {
+                added: playlistCheck.canAddCount,
+                skipped: playlistCheck.willSkipCount,
+                current: currentCount + playlistCheck.canAddCount,
+                limit: limit
+            }));
+            
+            return { canAdd: true, tracksToAdd: playlistCheck.canAddCount, isPartial: true };
+        }
+
+        return { canAdd: true, tracksToAdd: playlistSize, isPartial: false };
+    }
+
+    /**
      * Add tracks to queue and start playing if needed
      * @private
      */
-    async #addTracksToQueue(bot: Bot, client: Client, context: CommandContext, player: Player, res: any): Promise<void> {
+    async #addTracksToQueue(bot: Bot, client: Client, context: CommandContext, player: Player, res: any, tracksToAdd?: number): Promise<void> {
         const requester = context.isMessage() ? context.getMessage().author : context.getInteraction().user;
         const curVolume = player.setting.volume ?? bot.config.bot.volume.default;
 
         if (res.loadType === LoadType.PLAYLIST) {
-            player.addTracks(res.tracks, requester as any);
+            // Add only the allowed number of tracks from playlist
+            const tracks = tracksToAdd !== undefined ? res.tracks.slice(0, tracksToAdd) : res.tracks;
+            player.addTracks(tracks, requester as any);
         }
         else {
             const track = res.tracks[0];

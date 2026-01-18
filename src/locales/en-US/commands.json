@@ -128,7 +128,9 @@
     "MESSAGE_STOP_SUCCESS": "✅ Music stopped.",
     "MESSAGE_VOLUME_ARGS_ERROR": "Current volume: **{{volume}}** 🔊\n**To change the volume, with `1` to `{{maxVolume}}` Type a number between.**",
     "MESSAGE_VOLUME_ARGS_ERROR_2": "❌ **Type a number from `1` to `{{maxVolume}}` to change the volume .**",
-    "MESSAGE_VOLUME_SELECT": "Current volume: **{{volume}}%** 🔊\n**Please select the volume you want to set:**",
+    "MESSAGE_VOLUME_SELECT": "Current volume: **{{volume}}%** 🔊\\n**Please select the volume you want to set:**",
     "MESSAGE_VOLUME_SAME": "❌ The volume you want to change is already the current volume.",
-    "MESSAGE_VOLUME_SUCCESS": "🔊 **{{volume}}**/**{{maxVolume}}**%"
+    "MESSAGE_VOLUME_SUCCESS": "🔊 **{{volume}}**/**{{maxVolume}}**%",
+    "ERROR_QUEUE_LIMIT_REACHED": "❌ You have reached your queue limit! You currently have **{{current}}** songs in the queue (limit: **{{limit}}**). Please wait for some songs to finish before adding more.",
+    "MESSAGE_PLAYLIST_PARTIAL": "⚠️ Playlist partially added: **{{added}}** songs added, **{{skipped}}** songs skipped due to your queue limit (**{{current}}/{{limit}}**)."
 }

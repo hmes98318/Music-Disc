@@ -128,7 +128,9 @@
     "MESSAGE_STOP_SUCCESS": "✅ 音樂已停止。",
     "MESSAGE_VOLUME_ARGS_ERROR": "目前音量：**{{volume}}** 🔊\n**若要更改音量，請輸入 `1` 至 `{{maxVolume}}` 之間的數字。**",
     "MESSAGE_VOLUME_ARGS_ERROR_2": "❌ **請輸入 `1` 至 `{{maxVolume}}` 之間的數字來更改音量。**",
-    "MESSAGE_VOLUME_SELECT": "目前音量：**{{volume}}%** 🔊\n**請選擇想要設定的音量：**",
+    "MESSAGE_VOLUME_SELECT": "目前音量：**{{volume}}%** 🔊\\n**請選擇想要設定的音量：**",
     "MESSAGE_VOLUME_SAME": "❌ 您想更改的音量已是目前音量。",
-    "MESSAGE_VOLUME_SUCCESS": "🔊 **{{volume}}**/**{{maxVolume}}**%"
+    "MESSAGE_VOLUME_SUCCESS": "🔊 **{{volume}}**/**{{maxVolume}}**%",
+    "ERROR_QUEUE_LIMIT_REACHED": "❌ 您已達到播放清單上限！您目前有 **{{current}}** 首歌在清單中（上限：**{{limit}}**）。請等待一些歌曲播放完畢後再添加更多。",
+    "MESSAGE_PLAYLIST_PARTIAL": "⚠️ 播放清單部分新增：已新增 **{{added}}** 首，由於播放清單上限已跳過 **{{skipped}}** 首（**{{current}}/{{limit}}**）。"
 }

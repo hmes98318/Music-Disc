@@ -12,8 +12,9 @@ import { CommandCategory, DJModeEnum, LoadType, SelectButtonId } from '../@types
 import { embeds } from '../embeds/index.js';
 import { isUserInBlacklist } from '../utils/functions/isUserInBlacklist.js';
 import { DJManager } from '../lib/DjManager.js';
+import { QueueLimitManager } from '../lib/QueueLimitManager.js';
 
-import type { Client } from 'discord.js';
+import type { Client, GuildMember } from 'discord.js';
 import type { Player } from 'lavashark';
 import type { CommandContext } from './base/CommandContext.js';
 import type { Bot, CommandMetadata } from '../@types/index.js';
@@ -95,6 +96,11 @@ export class SearchCommand extends BaseCommand {
         const player = await this.#createPlayer(bot, client, context);
         if (!player) return;
 
+        // Get member for queue limit checks
+        const member = context.isMessage()
+            ? context.getMessage().member
+            : context.getInteraction().guild!.members.cache.get(context.user.id);
+
         // React to indicate success (text commands only)
         if (context.isMessage()) {
             await context.react('👍');
@@ -102,13 +108,13 @@ export class SearchCommand extends BaseCommand {
 
         // Handle different load types
         if (res.loadType === LoadType.PLAYLIST) {
-            await this.#handlePlaylist(bot, client, context, player, res);
+            await this.#handlePlaylist(bot, client, context, player, res, member);
         }
         else if (res.tracks.length === 1) {
-            await this.#handleSingleTrack(bot, client, context, player, res);
+            await this.#handleSingleTrack(bot, client, context, player, res, member);
         }
         else {
-            await this.#handleMusicSelection(bot, client, context, player, res);
+            await this.#handleMusicSelection(bot, client, context, player, res, member);
         }
     }
 
@@ -166,11 +172,28 @@ export class SearchCommand extends BaseCommand {
      * Handle playlist load type
      * @private
      */
-    async #handlePlaylist(bot: Bot, client: Client, context: CommandContext, player: Player, res: any): Promise<void> {
+    async #handlePlaylist(bot: Bot, client: Client, context: CommandContext, player: Player, res: any, member: GuildMember | null | undefined): Promise<void> {
+        const userId = context.user.id;
+        const guildMember = member as GuildMember | null;
+        const playlistSize = res.tracks.length;
+        
+        // Check queue limits for playlist
+        const playlistCheck = QueueLimitManager.calculatePlaylistAddition(bot, player, userId, guildMember, playlistSize);
+
+        if (playlistCheck.limitReached) {
+            await context.replyError(bot, client.i18n.t('commands:ERROR_QUEUE_LIMIT_REACHED', {
+                current: QueueLimitManager.countUserSongsInQueue(player, userId),
+                limit: QueueLimitManager.getUserLimit(bot, userId, guildMember, player)
+            }));
+            return;
+        }
+
         const requester = context.isMessage() ? context.getMessage().author : context.getInteraction().user;
         const curVolume = player.setting.volume ?? bot.config.bot.volume.default;
 
-        player.addTracks(res.tracks, requester as any);
+        // Add only allowed tracks
+        const tracksToAdd = playlistCheck.canAddCount < playlistSize ? res.tracks.slice(0, playlistCheck.canAddCount) : res.tracks;
+        player.addTracks(tracksToAdd, requester as any);
 
         if (!player.playing) {
             player.filters.setVolume(curVolume);
@@ -182,14 +205,41 @@ export class SearchCommand extends BaseCommand {
                 });
         }
 
-        await context.replySuccess(bot, client.i18n.t('commands:MESSAGE_PLAY_MUSIC_ADD'));
+        // Show appropriate message
+        if (playlistCheck.willSkipCount > 0) {
+            const currentCount = QueueLimitManager.countUserSongsInQueue(player, userId);
+            const limit = QueueLimitManager.getUserLimit(bot, userId, guildMember, player);
+            
+            await context.replyWarning(bot, client.i18n.t('commands:MESSAGE_PLAYLIST_PARTIAL', {
+                added: playlistCheck.canAddCount,
+                skipped: playlistCheck.willSkipCount,
+                current: currentCount,
+                limit: limit
+            }));
+        } else {
+            await context.replySuccess(bot, client.i18n.t('commands:MESSAGE_PLAY_MUSIC_ADD'));
+        }
     }
 
     /**
      * Handle single track
      * @private
      */
-    async #handleSingleTrack(bot: Bot, client: Client, context: CommandContext, player: Player, res: any): Promise<void> {
+    async #handleSingleTrack(bot: Bot, client: Client, context: CommandContext, player: Player, res: any, member: GuildMember | null | undefined): Promise<void> {
+        const userId = context.user.id;
+        const guildMember = member as GuildMember | null;
+        
+        // Check queue limits for single track
+        const checkResult = QueueLimitManager.canAddSongs(bot, player, userId, guildMember, 1);
+        
+        if (!checkResult.canAdd) {
+            await context.replyError(bot, client.i18n.t('commands:ERROR_QUEUE_LIMIT_REACHED', {
+                current: checkResult.currentCount,
+                limit: checkResult.limit
+            }));
+            return;
+        }
+
         const requester = context.isMessage() ? context.getMessage().author : context.getInteraction().user;
         const curVolume = player.setting.volume ?? bot.config.bot.volume.default;
         const track = res.tracks[0];
@@ -213,7 +263,10 @@ export class SearchCommand extends BaseCommand {
      * Handle interactive music selection
      * @private
      */
-    async #handleMusicSelection(bot: Bot, client: Client, context: CommandContext, player: Player, res: any): Promise<void> {
+    async #handleMusicSelection(bot: Bot, client: Client, context: CommandContext, player: Player, res: any, member: GuildMember | null | undefined): Promise<void> {
+        const userId = context.user.id;
+        const guildMember = member as GuildMember | null;
+
         const select = new StringSelectMenuBuilder()
             .setCustomId(SelectButtonId.Music)
             .setPlaceholder(client.i18n.t('commands:MESSAGE_PLAY_SELECT_TITLE'))
@@ -235,6 +288,21 @@ export class SearchCommand extends BaseCommand {
 
         collector.on('collect', async (i: StringSelectMenuInteraction) => {
             if (i.customId != SelectButtonId.Music) return;
+
+            // Check queue limits before adding selected track
+            const checkResult = QueueLimitManager.canAddSongs(bot, player, userId, guildMember, 1);
+            
+            if (!checkResult.canAdd) {
+                await i.deferUpdate();
+                await msg.edit({
+                    embeds: [embeds.textErrorMsg(bot, client.i18n.t('commands:ERROR_QUEUE_LIMIT_REACHED', {
+                        current: checkResult.currentCount,
+                        limit: checkResult.limit
+                    }))],
+                    components: []
+                });
+                return;
+            }
 
             const requester = context.isMessage() ? context.getMessage().author : context.getInteraction().user;
             const curVolume = player.setting.volume ?? bot.config.bot.volume.default;

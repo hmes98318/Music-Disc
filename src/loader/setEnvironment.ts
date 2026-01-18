@@ -154,6 +154,19 @@ const setEnvironment = (defaultConfig: Config) => {
         skipOnlyRequester: config.command.skipOnlyRequester ?? defaultConfig.command.skipOnlyRequester,
         skipDjBypass: config.command.skipDjBypass ?? defaultConfig.command.skipDjBypass,
     };
+
+    defaultConfig.maxQueuedSongs = {
+        enabled: config.maxQueuedSongs?.enabled ?? defaultConfig.maxQueuedSongs.enabled,
+        default: isNumber(config.maxQueuedSongs?.default)
+            ? config.maxQueuedSongs.default
+            : defaultConfig.maxQueuedSongs.default,
+        djs: isNumber(config.maxQueuedSongs?.djs)
+            ? config.maxQueuedSongs.djs
+            : defaultConfig.maxQueuedSongs.djs,
+        roles: (config.maxQueuedSongs?.roles && typeof config.maxQueuedSongs.roles === 'object')
+            ? config.maxQueuedSongs.roles
+            : defaultConfig.maxQueuedSongs.roles
+    };
 };
 
 export { setEnvironment };

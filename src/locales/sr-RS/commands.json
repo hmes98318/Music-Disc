@@ -128,7 +128,9 @@
     "MESSAGE_STOP_SUCCESS": "✅ Muzika zaustavljena.",
     "MESSAGE_VOLUME_ARGS_ERROR": "Trenutna jačina zvuka: **{{volume}}** 🔊\n**Da bi promenio jačinu zvuka, unesi broj između `1` i `{{maxVolume}}`.**",
     "MESSAGE_VOLUME_ARGS_ERROR_2": "❌ **Unesi broj od `1` do `{{maxVolume}}` da bi promenio jačinu zvuka.**",
-    "MESSAGE_VOLUME_SELECT": "Trenutna jačina zvuka: **{{volume}}%** 🔊\n**Molim te izaberi jačinu zvuka koju želiš da podesiš:**",
+    "MESSAGE_VOLUME_SELECT": "Trenutna jačina zvuka: **{{volume}}%** 🔊\\n**Molim te izaberi jačinu zvuka koju želiš da podesiš:**",
     "MESSAGE_VOLUME_SAME": "❌ Jačina zvuka koju želiš da promeniš je već trenutna jačina zvuka.",
-    "MESSAGE_VOLUME_SUCCESS": "🔊 **{{volume}}**/**{{maxVolume}}**%"
+    "MESSAGE_VOLUME_SUCCESS": "🔊 **{{volume}}**/**{{maxVolume}}**%",
+    "ERROR_QUEUE_LIMIT_REACHED": "❌ Dostigao si limit reda! Trenutno imaš **{{current}}** pesama u redu (limit: **{{limit}}**). Molim te sačekaj da se neke pesme završe pre dodavanja novih.",
+    "MESSAGE_PLAYLIST_PARTIAL": "⚠️ Lista pesama delimično dodata: **{{added}}** pesama dodato, **{{skipped}}** pesama preskočeno zbog limita reda (**{{current}}/{{limit}}**)."
 }
