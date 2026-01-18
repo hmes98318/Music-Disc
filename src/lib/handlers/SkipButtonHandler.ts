@@ -1,8 +1,9 @@
 import { RepeatMode } from 'lavashark';
 import { DashboardButtonHandler } from './DashboardButtonHandler.js';
 import { ButtonsBuilder } from '../builders/ButtonsBuilder.js';
+import { PermissionManager } from '../PermissionManager.js';
 
-import type { Client, ButtonInteraction } from 'discord.js';
+import type { Client, ButtonInteraction, GuildMember } from 'discord.js';
 import type { Player } from 'lavashark';
 import type { Bot } from '../../@types/index.js';
 
@@ -20,6 +21,32 @@ export class SkipButtonHandler extends DashboardButtonHandler {
         // Check skip permission
         if (!this.checkPermission(bot, interaction, 'skip', player)) {
             return;
+        }
+
+        // Check if skipOnlyRequester is enabled
+        if (bot.config.command.skipOnlyRequester) {
+            const currentTrack = player.current;
+            const userId = interaction.user.id;
+            
+            // Check if user is the requester
+            const isRequester = currentTrack?.requester?.id === userId;
+            
+            // Check if user is admin (admins can always skip)
+            const isAdmin = bot.config.bot.admin.includes(userId);
+            
+            // Check if user is DJ and skipDjBypass is enabled
+            const member = interaction.member as GuildMember | null;
+            const isDJ = PermissionManager.hasDJCommandPermission(bot, userId, member, player);
+            const canDJBypass = bot.config.command.skipDjBypass && isDJ;
+            
+            // Deny skip if user is not requester and doesn't have bypass permissions
+            if (!isRequester && !isAdmin && !canDJBypass) {
+                await interaction.reply({
+                    content: client.i18n.t('commands:ERROR_SKIP_NOT_REQUESTER'),
+                    ephemeral: true
+                });
+                return;
+            }
         }
 
         const repeatMode = player.repeatMode;

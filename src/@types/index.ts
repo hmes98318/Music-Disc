@@ -163,6 +163,8 @@ export type CommandConfig = {
     disableCommand: string[];
     adminCommand: string[];
     djCommand: string[];
+    skipOnlyRequester: boolean;
+    skipDjBypass: boolean;
 };
 
 

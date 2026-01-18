@@ -151,6 +151,8 @@ const setEnvironment = (defaultConfig: Config) => {
         djCommand: Array.isArray(config.command.djCommand)
             ? config.command.djCommand
             : defaultConfig.command.djCommand,
+        skipOnlyRequester: config.command.skipOnlyRequester ?? defaultConfig.command.skipOnlyRequester,
+        skipDjBypass: config.command.skipDjBypass ?? defaultConfig.command.skipDjBypass,
     };
 };
 

@@ -131,7 +131,9 @@ export const cst = {
         command: {
             disableCommand      : [],                                   // Disabled commands, all enabled by default
             adminCommand        : ['language','server', 'status'],      // Admin commands, only Admin role user can use
-            djCommand           : ['dj']                                // DJ commands, only DJ role user can use
+            djCommand           : ['dj'],                               // DJ commands, only DJ role user can use
+            skipOnlyRequester   : true,                                 // If true, only the song requester can skip (admins can always skip)
+            skipDjBypass        : true                                  // If true, DJs can skip regardless of skipOnlyRequester setting
         }
     },
 
