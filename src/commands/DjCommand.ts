@@ -6,6 +6,7 @@ import { CommandCategory, DJModeEnum } from '../@types/index.js';
 import { DJManager } from '../lib/DjManager.js';
 
 import type { Client, GuildMember } from 'discord.js';
+import type { Player } from 'lavashark';
 import type { CommandContext } from './base/CommandContext.js';
 import type { Bot, CommandMetadata } from '../@types/index.js';
 
@@ -26,7 +27,7 @@ export class DjCommand extends BaseCommand {
                     name: 'user',
                     description: i18next.t('commands:CONFIG_DJ_OPTION_DESCRIPTION'),
                     type: ApplicationCommandOptionType.User,
-                    required: true
+                    required: false
                 }
             ]
         };
@@ -36,24 +37,26 @@ export class DjCommand extends BaseCommand {
         const member = context.member as GuildMember;
         const player = client.lavashark.getPlayer(context.guild!.id);
 
-        // Check permission
-        if (!DJManager.isDJ(bot, context.user.id, member, player || undefined) &&
-            !bot.config.bot.admin.includes(context.user.id)) {
-            await context.replyError(bot, i18next.t('commands:MESSAGE_DJ_NO_PERMISSION'));
-            return;
-        }
-
         // Get target user
         let targetUser;
         if (context.isMessage()) {
             targetUser = context.getMessage().mentions.users.first();
-            if (!targetUser) {
-                await context.replyError(bot, i18next.t('commands:MESSAGE_DJ_MENTION_USER'));
-                return;
-            }
         }
         else {
-            targetUser = context.getInteraction().options.getUser('user', true);
+            targetUser = context.getInteraction().options.getUser('user', false);
+        }
+
+        // If no user provided, show DJ list
+        if (!targetUser) {
+            await this.showDJList(bot, client, context, player);
+            return;
+        }
+
+        // Check permission for adding DJ
+        if (!DJManager.isDJ(bot, context.user.id, member, player || undefined) &&
+            !bot.config.bot.admin.includes(context.user.id)) {
+            await context.replyError(bot, i18next.t('commands:MESSAGE_DJ_NO_PERMISSION'));
+            return;
         }
 
         // Validate user
@@ -88,5 +91,42 @@ export class DjCommand extends BaseCommand {
                 userId: targetUser.id
             }));
         }
+    }
+
+    private async showDJList(bot: Bot, client: Client, context: CommandContext, player: Player | null): Promise<void> {
+        const djInfo = await DJManager.getDJInfo(bot, client, context.guild!, player || undefined);
+        
+        let description = i18next.t('commands:MESSAGE_DJ_LIST_TITLE') + '\\n\\n';
+        
+        // Add admins
+        if (djInfo.admins.length > 0) {
+            description += `**${i18next.t('commands:MESSAGE_DJ_LIST_ADMINS')}**\\n`;
+            description += djInfo.admins.map(id => `<@${id}>`).join(', ') + '\\n\\n';
+        }
+        
+        // Add role-based DJs
+        if (djInfo.roleDJs.length > 0) {
+            description += `**${i18next.t('commands:MESSAGE_DJ_LIST_ROLE_DJS')}**\\n`;
+            description += djInfo.roleDJs.map(id => `<@${id}>`).join(', ') + '\\n\\n';
+        }
+        
+        // Add dynamic DJs
+        if (djInfo.dynamicDJs.length > 0) {
+            description += `**${i18next.t('commands:MESSAGE_DJ_LIST_DYNAMIC_DJS')}**\\n`;
+            description += djInfo.dynamicDJs.map(id => `<@${id}>`).join(', ') + '\\n\\n';
+        }
+        
+        // Add DJ role info
+        if (bot.config.bot.djRoleId) {
+            description += `**DJ Role:** <@&${bot.config.bot.djRoleId}>\\n`;
+        } else {
+            description += i18next.t('commands:MESSAGE_DJ_ROLE_NOT_SET') + '\\n';
+        }
+        
+        if (djInfo.admins.length === 0 && djInfo.roleDJs.length === 0 && djInfo.dynamicDJs.length === 0) {
+            description = i18next.t('commands:MESSAGE_DJ_LIST_NONE');
+        }
+        
+        await context.replySuccess(bot, description);
     }
 }

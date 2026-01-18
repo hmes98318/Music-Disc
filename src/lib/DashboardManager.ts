@@ -111,7 +111,8 @@ export class DashboardManager {
         // Add DJ info in DYNAMIC mode
         if (this.#bot.config.bot.djMode === DJModeEnum.DYNAMIC) {
             try {
-                const djDisplay = await DJManager.getDJDisplayString(this.#bot, this.#client, player);
+                const guild = this.#client.guilds.cache.get(player.guildId);
+                const djDisplay = await DJManager.getDJDisplayString(this.#bot, this.#client, guild, player);
                 subtitle += this.#bot.i18n.t('embeds:DASHBOARD_DJ_INFO', { djDisplay });
             } catch (_) {
                 // Ignore errors in DJ display
