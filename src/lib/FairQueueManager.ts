@@ -31,51 +31,54 @@ export class FairQueueManager {
             return;
         }
 
-        // Get list of users currently in voice channel (optional filter)
+        // Get list of users currently in voice channel (for filtering)
         const activeUserIds = voiceChannel 
             ? Array.from(voiceChannel.members.filter(m => !m.user.bot).keys())
             : null;
 
-        // Group tracks by user ID
+        // Build ordered list of unique users based on first appearance in queue
+        // This preserves the original request order for fair rotation
+        const userOrder: string[] = [];
         const tracksByUser = new Map<string, (Track | any)[]>();
+        
         for (const track of player.queue.tracks) {
             const userId = track.requester?.id;
             if (!userId) continue;
 
-            // If we're filtering by active users, skip users not in voice channel
+            // If filtering by active users, skip users not in voice channel
             if (activeUserIds && !activeUserIds.includes(userId)) {
                 continue;
             }
 
             if (!tracksByUser.has(userId)) {
                 tracksByUser.set(userId, []);
+                userOrder.push(userId); // Add to order list on first appearance
             }
             tracksByUser.get(userId)!.push(track);
         }
 
         // If only one user has songs in queue, no reordering needed
-        if (tracksByUser.size <= 1) {
+        if (userOrder.length <= 1) {
             return;
         }
 
-        // Find next user in rotation (not the last played user)
-        const userIds = Array.from(tracksByUser.keys());
-        let nextUserId: string | null = null;
-
-        // Try to find a user different from the last one
-        for (const userId of userIds) {
-            if (userId !== lastPlayedUserId) {
-                nextUserId = userId;
-                break;
-            }
+        // Find the last played user's position in the rotation order
+        // If they're not in the current queue (all their songs played), start from beginning
+        let lastUserIndex = userOrder.indexOf(lastPlayedUserId);
+        if (lastUserIndex === -1) {
+            lastUserIndex = userOrder.length - 1; // Will wrap to index 0
         }
 
-        // If all songs are from the same user, no reordering needed
-        if (!nextUserId) {
+        // Get the NEXT user in rotation (proper round-robin)
+        const nextUserIndex = (lastUserIndex + 1) % userOrder.length;
+        const nextUserId = userOrder[nextUserIndex];
+
+        // If the next user is the same as last played (shouldn't happen with 2+ users), skip
+        if (nextUserId === lastPlayedUserId) {
             return;
         }
 
-        // Reorder queue: Move first song from nextUserId to front
+        // Move the first song from the next user to the front of the queue
         const nextUserTracks = tracksByUser.get(nextUserId)!;
         const trackToMove = nextUserTracks[0];
         
@@ -89,7 +92,7 @@ export class FairQueueManager {
             player.queue.tracks.unshift(trackToMove as any);
             
             bot.logger.emit('log', bot.shardId, 
-                `[FairQueue] Reordered queue: moved track from user ${nextUserId} to front (was at position ${trackIndex})`
+                `[FairQueue] Reordered queue: moved track from user ${nextUserId} to front (was at position ${trackIndex}, rotation: ${userOrder.join(' -> ')})`
             );
         }
     }

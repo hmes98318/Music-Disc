@@ -51,8 +51,10 @@ export class QueueCommand extends BaseCommand {
         const startIdx = (page - 1) * 10;
         const endIdx = page * 10;
 
-        const nowplaying = client.i18n.t('commands:MESSAGE_NOW_PLAYING_TITLE', {
-            title: player.current?.title
+        const requesterName = player.current?.requester?.username || client.i18n.t('commands:UNKNOWN_USER');
+        const nowplaying = client.i18n.t('commands:MESSAGE_NOW_PLAYING_TITLE_WITH_REQUESTER', {
+            title: player.current?.title,
+            requester: requesterName
         });
 
         const queueTracks = player.queue.tracks.slice(startIdx, endIdx);
@@ -93,7 +95,8 @@ export class QueueCommand extends BaseCommand {
                 if (title.length > titleLength) {
                     title = title.substring(0, titleLength) + '...';
                 }
-                return `${startIdx + index + 1}. [${title}](${track.uri}) - \`${track.duration.label}\``;
+                const requesterName = track.requester?.username || client.i18n.t('commands:UNKNOWN_USER');
+                return `${startIdx + index + 1}. [${title}](${track.uri}) - \`${track.duration.label}\` | ${requesterName}`;
             });
         };
 

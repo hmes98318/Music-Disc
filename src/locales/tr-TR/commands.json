@@ -112,6 +112,8 @@
     "MESSAGE_NOW_PLAYING_SAVE_BUTTON": "Parçayı kaydet",
     "MESSAGE_NOW_PLAYING_SUBTITLE": "Sanatçı : **{{author}}**\nSüre **{{label}}**\n",
     "MESSAGE_NOW_PLAYING_TITLE": "Şuan çalıyor: {{title}}\n\n",
+    "MESSAGE_NOW_PLAYING_TITLE_WITH_REQUESTER": "🎵 Şu an çalıyor: {{title}} | {{requester}} tarafından istendi",
+    "UNKNOWN_USER": "Bilinmiyor",
     "MESSAGE_PAUSE_FAIL": "❌ Parça durdurulamadı.",
     "MESSAGE_PAUSE_MUSIC_PAUSED": "⏸️ Parça duraklatıldı.",
     "MESSAGE_PAUSE_SUCCESS": "⏸️ Parça duraklatıldı.",

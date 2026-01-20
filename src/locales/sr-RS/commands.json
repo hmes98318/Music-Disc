@@ -112,6 +112,8 @@
     "MESSAGE_NOW_PLAYING_SAVE_BUTTON": "Sačuvaj pesmu",
     "MESSAGE_NOW_PLAYING_SUBTITLE": "Autor : **{{author}}**\nTrajanje **{{label}}**\n",
     "MESSAGE_NOW_PLAYING_TITLE": "Trenutno svira: {{title}}\n\n",
+    "MESSAGE_NOW_PLAYING_TITLE_WITH_REQUESTER": "🎵 Sada svira: {{title}} | Zatražio/la {{requester}}",
+    "UNKNOWN_USER": "Nepoznato",
     "MESSAGE_PAUSE_FAIL": "❌ Pauziranje muzike nije uspelo.",
     "MESSAGE_PAUSE_MUSIC_PAUSED": "⏸️ Muzika je pauzirana.",
     "MESSAGE_PAUSE_SUCCESS": "⏸️ Muzika pauzirana.",

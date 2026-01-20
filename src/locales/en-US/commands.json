@@ -112,6 +112,8 @@
     "MESSAGE_NOW_PLAYING_SAVE_BUTTON": "Save Song",
     "MESSAGE_NOW_PLAYING_SUBTITLE": "Author : **{{author}}**\nDuration **{{label}}**\n",
     "MESSAGE_NOW_PLAYING_TITLE": "Now Playing: {{title}}\n\n",
+    "MESSAGE_NOW_PLAYING_TITLE_WITH_REQUESTER": "🎵 Now Playing: {{title}} | Requested by {{requester}}",
+    "UNKNOWN_USER": "Unknown",
     "MESSAGE_PAUSE_FAIL": "❌ Music pause failed.",
     "MESSAGE_PAUSE_MUSIC_PAUSED": "⏸️ The music has been paused.",
     "MESSAGE_PAUSE_SUCCESS": "⏸️ Music paused.",

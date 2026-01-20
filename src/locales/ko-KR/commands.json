@@ -112,6 +112,8 @@
     "MESSAGE_NOW_PLAYING_SAVE_BUTTON": "음악 저장",
     "MESSAGE_NOW_PLAYING_SUBTITLE": "**아티스트:** {{author}}\n**길이:** {{label}}\n",
     "MESSAGE_NOW_PLAYING_TITLE": "**재생중:** {{title}}\n\n",
+    "MESSAGE_NOW_PLAYING_TITLE_WITH_REQUESTER": "🎵 현재 재생 중: {{title}} | {{requester}} 요청",
+    "UNKNOWN_USER": "알 수 없음",
     "MESSAGE_PAUSE_FAIL": "❌ 음악 일시 중지에 실패했습니다.",
     "MESSAGE_PAUSE_MUSIC_PAUSED": "⏸️ 음악이 일시정지되었습니다.",
     "MESSAGE_PAUSE_SUCCESS": "⏸️ 음악이 일시정지되었습니다.",

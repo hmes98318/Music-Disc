@@ -112,6 +112,8 @@
     "MESSAGE_NOW_PLAYING_SAVE_BUTTON": "儲存歌曲",
     "MESSAGE_NOW_PLAYING_SUBTITLE": "作者：**{{author}}**\n時長：**{{label}}**\n",
     "MESSAGE_NOW_PLAYING_TITLE": "正在播放：{{title}}\n\n",
+    "MESSAGE_NOW_PLAYING_TITLE_WITH_REQUESTER": "🎵 正在播放: {{title}} | 由 {{requester}} 點播",
+    "UNKNOWN_USER": "未知",
     "MESSAGE_PAUSE_FAIL": "❌ 暫停音樂失敗。",
     "MESSAGE_PAUSE_MUSIC_PAUSED": "⏸️ 音樂已暫停。",
     "MESSAGE_PAUSE_SUCCESS": "⏸️ 音樂已暫停。",
