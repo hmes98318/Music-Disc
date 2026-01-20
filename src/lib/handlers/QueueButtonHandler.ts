@@ -1,7 +1,8 @@
 import { ButtonsBuilder } from '../builders/ButtonsBuilder.js';
 import { embeds } from '../../embeds/index.js';
+import { PermissionManager } from '../PermissionManager.js';
 
-import type { Client, ButtonInteraction } from 'discord.js';
+import type { Client, ButtonInteraction, GuildMember } from 'discord.js';
 import type { Player } from 'lavashark';
 import type { Bot } from '../../@types/index.js';
 
@@ -81,6 +82,29 @@ export class QueueButtonHandler {
         interaction: ButtonInteraction,
         player: Player
     ): Promise<void> {
+        // Check admin permission
+        if (bot.config.command.adminCommand.includes('clear')) {
+            if (!bot.config.bot.admin.includes(interaction.user.id)) {
+                await interaction.reply({
+                    content: client.i18n.t('events:ERROR_REQUIRE_ADMIN'),
+                    ephemeral: true
+                });
+                return;
+            }
+        }
+
+        // Check DJ permission
+        if (bot.config.command.djCommand.includes('clear')) {
+            const member = interaction.member as GuildMember;
+            if (!PermissionManager.hasDJCommandPermission(bot, interaction.user.id, member, player)) {
+                await interaction.reply({
+                    content: client.i18n.t('events:ERROR_REQUIRE_DJ'),
+                    ephemeral: true
+                });
+                return;
+            }
+        }
+
         player.queue.clear();
 
         if (player.setting.queuePage) {

@@ -94,7 +94,7 @@ const config = {
         },
 
         // Fair queue rotation (round-robin)
-        fairQueue           : false             // When enabled, rotates queue to play songs from different users in turn
+        fairQueue               : false         // When enabled, rotates queue to play songs from different users in turn
     },
 
     blacklist                   : [],           // It must be the user ID (string[])
