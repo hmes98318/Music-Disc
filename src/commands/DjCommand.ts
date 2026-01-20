@@ -5,7 +5,7 @@ import { BaseCommand } from './base/BaseCommand.js';
 import { CommandCategory, DJModeEnum } from '../@types/index.js';
 import { DJManager } from '../lib/DjManager.js';
 
-import type { Client, GuildMember } from 'discord.js';
+import type { Client } from 'discord.js';
 import type { Player } from 'lavashark';
 import type { CommandContext } from './base/CommandContext.js';
 import type { Bot, CommandMetadata } from '../@types/index.js';
@@ -34,7 +34,6 @@ export class DjCommand extends BaseCommand {
     }
 
     protected async run(bot: Bot, client: Client, context: CommandContext): Promise<void> {
-        const member = context.member as GuildMember;
         const player = client.lavashark.getPlayer(context.guild!.id);
 
         // Get target user
@@ -52,10 +51,9 @@ export class DjCommand extends BaseCommand {
             return;
         }
 
-        // Check permission for adding DJ
-        if (!DJManager.isDJ(bot, context.user.id, member, player || undefined) &&
-            !bot.config.bot.admin.includes(context.user.id)) {
-            await context.replyError(bot, i18next.t('commands:MESSAGE_DJ_NO_PERMISSION'));
+        // Check permission for adding DJ - only admins can add/remove DJs
+        if (!bot.config.bot.admin.includes(context.user.id)) {
+            await context.replyError(bot, i18next.t('commands:MESSAGE_DJ_ADMIN_ONLY'));
             return;
         }
 

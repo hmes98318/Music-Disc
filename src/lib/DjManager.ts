@@ -99,15 +99,17 @@ export class DJManager {
         const roleDJs: string[] = [];
         if (bot.config.bot.djRoleId && guild) {
             try {
-                const members = await guild.members.fetch();
-                members.forEach((member: any) => {
-                    if (member.roles.cache.has(bot.config.bot.djRoleId!) && 
-                        !admins.includes(member.user.id) && 
-                        !staticDJs.includes(member.user.id) &&
-                        !dynamicDJs.includes(member.user.id)) {
-                        roleDJs.push(member.user.id);
-                    }
-                });
+                const djRole = guild.roles.cache.get(bot.config.bot.djRoleId);
+                if (djRole) {
+                    // Use role.members which is already cached for smaller roles
+                    djRole.members.forEach((member: any) => {
+                        if (!admins.includes(member.user.id) && 
+                            !staticDJs.includes(member.user.id) &&
+                            !dynamicDJs.includes(member.user.id)) {
+                            roleDJs.push(member.user.id);
+                        }
+                    });
+                }
             } catch (error) {
                 bot.logger.emit('error', bot.shardId, 'Error fetching guild members for DJ role check: ' + error);
             }
@@ -208,7 +210,7 @@ export class DJManager {
         }
 
         // Check if there are still DJs in the voice channel
-        if (this.hasDJInChannel(player, voiceChannel)) {
+        if (this.hasDJInChannel(bot, player, voiceChannel)) {
             return; // Don't auto-select if there are still DJs in the channel
         }
 
@@ -254,11 +256,30 @@ export class DJManager {
     /**
      * Check if there are any DJs in the voice channel (for dynamic mode)
      */
-    public static hasDJInChannel(player: Player, voiceChannel: VoiceBasedChannel): boolean {
+    public static hasDJInChannel(bot: Bot, player: Player, voiceChannel: VoiceBasedChannel): boolean {
+        // Check for admins in the channel
+        const hasAdmin = voiceChannel.members.some(member =>
+            !member.user.bot && bot.config.bot.admin.includes(member.user.id)
+        );
+        if (hasAdmin) {
+            return true;
+        }
+
+        // Check for role-based DJs in the channel
+        if (bot.config.bot.djRoleId) {
+            const hasRoleDJ = voiceChannel.members.some(member => 
+                !member.user.bot && member.roles.cache.has(bot.config.bot.djRoleId!)
+            );
+            if (hasRoleDJ) {
+                return true;
+            }
+        }
+        
+        // Check for dynamic DJs
         if (!player.djUsers) {
             return false;
         }
-
+        
         return voiceChannel.members.some(member =>
             player.djUsers!.has(member.user.id) && !member.user.bot
         );

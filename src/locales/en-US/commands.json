@@ -79,6 +79,7 @@
     "MESSAGE_CLEAR_SUCCESS": "✅ Queue cleared.",
     "MESSAGE_DASHBOARD_SUCCESS": "✅ Dashboard updated.",
     "MESSAGE_DJ_NO_PERMISSION": "You need DJ or Admin permissions to add DJs.",
+    "MESSAGE_DJ_ADMIN_ONLY": "Only administrators can add or remove DJs.",
     "MESSAGE_DJ_MENTION_USER": "Please mention a user to add as DJ.",
     "MESSAGE_DJ_NO_BOTS": "Cannot add bots as DJ.",
     "MESSAGE_DJ_STATIC_MODE": "DJ permissions are managed through configuration in STATIC mode.",

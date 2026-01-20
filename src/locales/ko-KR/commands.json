@@ -79,6 +79,7 @@
     "MESSAGE_CLEAR_SUCCESS": "✅ 재생목록이 초기화되었습니다.",
     "MESSAGE_DASHBOARD_SUCCESS": "✅ 대시보드가 업데이트되었습니다.",
     "MESSAGE_DJ_NO_PERMISSION": "DJ를 추가하려면 DJ 또는 관리자 권한이 필요합니다.",
+    "MESSAGE_DJ_ADMIN_ONLY": "관리자만 DJ를 추가하거나 제거할 수 있습니다.",
     "MESSAGE_DJ_MENTION_USER": "DJ로 추가할 사용자를 멘션해주세요.",
     "MESSAGE_DJ_NO_BOTS": "봇을 DJ로 추가할 수 없습니다.",
     "MESSAGE_DJ_STATIC_MODE": "고정 모드에서는 설정을 통해 DJ 권한이 관리됩니다.",

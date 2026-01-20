@@ -79,6 +79,7 @@
     "MESSAGE_CLEAR_SUCCESS": "✅ Red je obrisan.",
     "MESSAGE_DASHBOARD_SUCCESS": "✅ Kontrolna tabla je ažurirana.",
     "MESSAGE_DJ_NO_PERMISSION": "Trebaš DJ ili Admin dozvole da bi dodao DJ-eve.",
+    "MESSAGE_DJ_ADMIN_ONLY": "Samo administratori mogu dodati ili ukloniti DJ-eve.",
     "MESSAGE_DJ_MENTION_USER": "Molim te označi korisnika da bi ga dodao kao DJ-a.",
     "MESSAGE_DJ_NO_BOTS": "Ne mogu se dodati botovi kao DJ-evi.",
     "MESSAGE_DJ_STATIC_MODE": "DJ dozvole se upravljaju kroz konfiguraciju u STATIC režimu.",

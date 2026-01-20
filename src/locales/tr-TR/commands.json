@@ -79,6 +79,7 @@
     "MESSAGE_CLEAR_SUCCESS": "✅ Kuyruk temizlendi.",
     "MESSAGE_DASHBOARD_SUCCESS": "✅ Arayüz güncellendi.",
     "MESSAGE_DJ_NO_PERMISSION": "DJ eklemek için DJ veya Yönetici izinlerine ihtiyacınız var.",
+    "MESSAGE_DJ_ADMIN_ONLY": "Sadece yöneticiler DJ ekleyebilir veya kaldırabilir.",
     "MESSAGE_DJ_MENTION_USER": "DJ olarak eklemek için bir kullanıcıdan bahsedin.",
     "MESSAGE_DJ_NO_BOTS": "Botlar DJ olarak eklenemez.",
     "MESSAGE_DJ_STATIC_MODE": "STATİK modunda DJ izinleri yapılandırma yoluyla yönetilir.",

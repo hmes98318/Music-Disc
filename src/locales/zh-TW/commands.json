@@ -79,6 +79,7 @@
     "MESSAGE_CLEAR_SUCCESS": "✅ 播放清單已清空。",
     "MESSAGE_DASHBOARD_SUCCESS": "✅ 控制面板已更新。",
     "MESSAGE_DJ_NO_PERMISSION": "您需要 DJ 或管理員權限才能添加 DJ。",
+    "MESSAGE_DJ_ADMIN_ONLY": "只有管理員可以添加或移除 DJ。",
     "MESSAGE_DJ_MENTION_USER": "請提及要添加為 DJ 的使用者。",
     "MESSAGE_DJ_NO_BOTS": "無法將機器人添加為 DJ。",
     "MESSAGE_DJ_STATIC_MODE": "在靜態模式下，DJ 權限通過配置文件管理。",
