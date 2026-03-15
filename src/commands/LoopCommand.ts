@@ -50,7 +50,7 @@ export class LoopCommand extends BaseCommand {
         const metadata = this.getMetadata(bot);
 
         if (!player || !player.playing) {
-            await context.replyError(bot, client.i18n.t('commands:ERROR_NO_PLAYING'));
+            await context.replyEphemeralError(bot, client.i18n.t('commands:ERROR_NO_PLAYING'));
             return;
         }
 
@@ -60,7 +60,7 @@ export class LoopCommand extends BaseCommand {
             : context.args.join(' ');
 
         if (!modeParam) {
-            await context.replyError(bot, client.i18n.t('commands:ERROR_LOOP_COMMAND', {
+            await context.replyEphemeralError(bot, client.i18n.t('commands:ERROR_LOOP_COMMAND', {
                 command: `${bot.config.bot.prefix}${metadata.usage}`
             }));
             return;
@@ -88,7 +88,7 @@ export class LoopCommand extends BaseCommand {
                 break;
             }
             default: {
-                await context.replyError(bot, client.i18n.t('commands:ERROR_LOOP_COMMAND', {
+                await context.replyEphemeralError(bot, client.i18n.t('commands:ERROR_LOOP_COMMAND', {
                     command: `${bot.config.bot.prefix}${metadata.usage}`
                 }));
                 return;

@@ -17,6 +17,11 @@ export class TrackEndEvent extends BaseLavaSharkEvent<'trackEnd'> {
     }
 
     public async execute(bot: Bot, client: Client, player: Player, _track: Track, _reason: any): Promise<void> {
+        // Store last played track for /playlast command
+        if (_track) {
+            client.lastPlayedTracks.set(player.guildId, _track);
+        }
+
         try {
             // Get voice channel
             const guild = client.guilds.cache.get(player.guildId);

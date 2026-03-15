@@ -33,7 +33,7 @@ export class NowPlayingCommand extends BaseCommand {
         const player = client.lavashark.getPlayer(context.guild!.id);
 
         if (!player || !player.playing) {
-            await context.replyError(bot, client.i18n.t('commands:ERROR_NO_PLAYING'));
+            await context.replyEphemeralError(bot, client.i18n.t('commands:ERROR_NO_PLAYING'));
             return;
         }
 

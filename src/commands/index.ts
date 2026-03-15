@@ -24,7 +24,9 @@ import { DashboardCommand } from './DashboardCommand.js';
 import { VolumeCommand } from './VolumeCommand.js';
 import { SearchCommand } from './SearchCommand.js';
 import { PlayFirstCommand } from './PlayFirstCommand.js';
+import { BlacklistCommand } from './BlacklistCommand.js';
 import { PlayCommand } from './PlayCommand.js';
+import { PlayLastCommand } from './PlayLastCommand.js';
 
 import type { CommandRegistry } from './base/CommandRegistry.js';
 import type { Bot } from '../@types/index.js';
@@ -46,6 +48,9 @@ export function registerAllCommands(registry: CommandRegistry, bot: Bot): void {
     registry.register(new StatusCommand(), bot);
     registry.register(new NodeStatusCommand(), bot);
 
+    // Admin commands
+    registry.register(new BlacklistCommand(), bot);
+
     // Music commands
     registry.register(new PauseCommand(), bot);
     registry.register(new SkipCommand(), bot);
@@ -66,5 +71,6 @@ export function registerAllCommands(registry: CommandRegistry, bot: Bot): void {
     registry.register(new VolumeCommand(), bot);
     registry.register(new SearchCommand(), bot);
     registry.register(new PlayFirstCommand(), bot);
+    registry.register(new PlayLastCommand(), bot);
     registry.register(new PlayCommand(), bot);
 }

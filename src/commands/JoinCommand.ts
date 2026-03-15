@@ -54,7 +54,7 @@ export class JoinCommand extends BaseCommand {
             player.filters.setVolume(curVolume);
         } catch (error) {
             bot.logger.emit('error', bot.shardId, 'Error joining channel: ' + error);
-            await context.replyError(bot, client.i18n.t('commands:ERROR_PLAY_JOIN_CHANNEL'));
+            await context.replyEphemeralError(bot, client.i18n.t('commands:ERROR_PLAY_JOIN_CHANNEL'));
             return;
         }
 

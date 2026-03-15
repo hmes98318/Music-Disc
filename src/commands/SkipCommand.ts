@@ -31,31 +31,31 @@ export class SkipCommand extends BaseCommand {
         const player = client.lavashark.getPlayer(context.guildId!);
 
         if (!player || !player.playing) {
-            await context.replyError(bot, client.i18n.t('commands:ERROR_NO_PLAYING'));
+            await context.replyEphemeralError(bot, client.i18n.t('commands:ERROR_NO_PLAYING'));
             return;
         }
 
-        // Check if skipOnlyRequester is enabled
-        if (bot.config.command.skipOnlyRequester) {
+        // Check if skip is restricted to requester only
+        if (bot.config.command.requesterOnly.includes('skip')) {
             const currentTrack = player.current;
             const userId = context.isMessage() ? context.getMessage().author.id : context.getInteraction().user.id;
-            
+
             // Check if user is the requester
             const isRequester = currentTrack?.requester?.id === userId;
-            
+
             // Check if user is admin (admins can always skip)
             const isAdmin = bot.config.bot.admin.includes(userId);
-            
-            // Check if user is DJ and skipDjBypass is enabled
-            const member = context.isMessage() 
+
+            // Check if user is DJ and DJ bypass is enabled for skip
+            const member = context.isMessage()
                 ? context.getMessage().member as GuildMember | null
                 : context.getInteraction().member as GuildMember | null;
             const isDJ = PermissionManager.hasDJCommandPermission(bot, userId, member, player);
-            const canDJBypass = bot.config.command.skipDjBypass && isDJ;
-            
+            const canDJBypass = bot.config.command.requesterDjBypass.includes('skip') && isDJ;
+
             // Deny skip if user is not requester and doesn't have bypass permissions
             if (!isRequester && !isAdmin && !canDJBypass) {
-                await context.replyError(bot, client.i18n.t('commands:ERROR_SKIP_NOT_REQUESTER'));
+                await context.replyEphemeralError(bot, client.i18n.t('commands:ERROR_SKIP_NOT_REQUESTER'));
                 return;
             }
         }

@@ -1,7 +1,8 @@
 {
     "DASHBOARD_FINISH_PLAYING": "Music has finished playing",
     "DASHBOARD_SUBTITLE": "Author : **{{author}}**\nDuration **{{duration}}**\n────────────────────\nVolume: `{{volume}}%` | Loop: `{{repeatMode}}`",
-    "DASHBOARD_DJ_INFO": "\n────────────────────\n**DJ:** {{djDisplay}}",
+    "DASHBOARD_REQUESTER_INFO": "\n────────────────────\n**Requester:** <@{{requesterId}}>",
+    "DASHBOARD_DJ_INFO": "\n**Dynamic DJ:** {{djDisplay}}",
     "DASHBOARD_VOICE_CHANNEL_CONNECT_SUCCESS": "Voice channel connected successfully.",
     "MAINTAIN_DESCRIPTION": "The bot will begin maintenance in a few minutes. During this time, some features may be temporarily unavailable.",
     "MAINTAIN_TITLE": "⚠️ Maintenance Notice ⚠️",

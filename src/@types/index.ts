@@ -5,11 +5,12 @@ import type {
     Message
 } from 'discord.js';
 import type { i18n } from 'i18next';
-import type { LavaShark } from 'lavashark';
+import type { LavaShark, Track } from 'lavashark';
 import type { NodeOptions } from 'lavashark/typings/src/@types/index.js';
 
 import type { Language } from '../lib/i18n/Language.js';
 import type { Logger } from '../lib/Logger.js';
+import type { BlacklistManager } from '../lib/BlacklistManager.js';
 import type { DashboardManager } from '../lib/DashboardManager.js';
 import type { CommandRegistry } from '../commands/base/CommandRegistry.js';
 import type { IPBlockerConfig, SessionManagerConfig } from './SessionManager.types.js';
@@ -24,6 +25,7 @@ declare module 'discord.js' {
         lavashark: LavaShark,
         i18n: i18n;
         dashboard: DashboardManager;
+        lastPlayedTracks: Map<string, Track>;
     }
 }
 
@@ -75,6 +77,7 @@ export type Bot = {
     },
     i18n: i18n;
     lang: Language;
+    blacklistManager?: BlacklistManager;
 }
 
 /**
@@ -133,6 +136,7 @@ export type BotConfig = {
     };
     maxQueuedSongs: MaxQueuedSongsConfig;
     fairQueue: boolean;
+    voiceStatusEmojis: string[];
 };
 
 export type SpotifyConfig = {
@@ -166,8 +170,8 @@ export type CommandConfig = {
     disableCommand: string[];
     adminCommand: string[];
     djCommand: string[];
-    skipOnlyRequester: boolean;
-    skipDjBypass: boolean;
+    requesterOnly: string[];
+    requesterDjBypass: string[];
 };
 
 export type MaxQueuedSongsConfig = {

@@ -29,7 +29,7 @@ export class QueueCommand extends BaseCommand {
         const player = client.lavashark.getPlayer(context.guild!.id);
 
         if (!player || !player.playing) {
-            await context.replyError(bot, client.i18n.t('commands:ERROR_NO_PLAYING'));
+            await context.replyEphemeralError(bot, client.i18n.t('commands:ERROR_NO_PLAYING'));
             return;
         }
 
@@ -40,32 +40,26 @@ export class QueueCommand extends BaseCommand {
             } catch (_) { }
         }
 
-        // Initialize queue page
+        // Initialize queue page (5 songs per page)
         player.setting.queuePage = {
-            maxPage: Math.ceil(player.queue.tracks.length / 10),
+            maxPage: Math.max(1, Math.ceil(player.queue.tracks.length / 5)),
             curPage: 1,
             msg: null
         };
 
         const page = player.setting.queuePage.curPage;
-        const startIdx = (page - 1) * 10;
-        const endIdx = page * 10;
-
-        const requesterName = player.current?.requester?.username || client.i18n.t('commands:UNKNOWN_USER');
-        const nowplaying = client.i18n.t('commands:MESSAGE_NOW_PLAYING_TITLE_WITH_REQUESTER', {
-            title: player.current?.title,
-            requester: requesterName
-        });
+        const startIdx = (page - 1) * 5;
+        const endIdx = page * 5;
 
         const queueTracks = player.queue.tracks.slice(startIdx, endIdx);
-        const tracksQueue = this.#buildTracksQueue(client, queueTracks, startIdx, page, player.setting.queuePage.maxPage, player.queue.tracks.length);
+        const description = this.#buildQueueDescription(client, player, queueTracks, startIdx, page, player.setting.queuePage.maxPage, player.queue.tracks.length);
 
         const methods = ['OFF', 'SINGLE', 'ALL'];
         const repeatMode = player.repeatMode;
         const row = ButtonsBuilder.createQueueButtons();
 
         player.setting.queuePage.msg = await context.reply({
-            embeds: [embeds.queue(bot, nowplaying, tracksQueue, methods[repeatMode])],
+            embeds: [embeds.queue(bot, description, methods[repeatMode])],
             components: [row],
             allowedMentions: { repliedUser: false },
         });
@@ -76,63 +70,63 @@ export class QueueCommand extends BaseCommand {
     }
 
     /**
-     * Build tracks queue string with auto-shortening for Discord's limit
+     * Build queue description with now playing + queue entries
      * @private
      */
-    #buildTracksQueue(
+    #buildQueueDescription(
         client: Client,
+        player: any,
         queueTracks: any[],
         startIdx: number,
         curPage: number,
         maxPage: number,
         totalTracks: number
     ): string {
-        let maxTitleLength = 100;
+        let maxTitleLength = 80;
 
-        const buildTrackList = (titleLength: number) => {
-            return queueTracks.map((track, index) => {
-                let title = track.title;
-                if (title.length > titleLength) {
-                    title = title.substring(0, titleLength) + '...';
-                }
-                const requesterName = track.requester?.username || client.i18n.t('commands:UNKNOWN_USER');
-                return `${startIdx + index + 1}. [${title}](${track.uri}) - \`${track.duration.label}\` | ${requesterName}`;
-            });
+        const buildDescription = (titleLength: number): string => {
+            const nowPlayingTitle = player.current?.title || 'Unknown';
+            const truncatedNP = nowPlayingTitle.length > titleLength
+                ? nowPlayingTitle.substring(0, titleLength) + '...'
+                : nowPlayingTitle;
+
+            let desc = `**Now Playing:**\n${truncatedNP}\n${'─'.repeat(20)}\n`;
+
+            if (queueTracks.length < 1) {
+                desc += '\n*No songs in queue*';
+            } else {
+                desc += '\n**Queue:**\n';
+                const entries = queueTracks.map((track: any, index: number) => {
+                    let title = track.title;
+                    if (title.length > titleLength) {
+                        title = title.substring(0, titleLength) + '...';
+                    }
+                    const requesterId = track.requester?.id;
+                    const requesterMention = requesterId ? `<@${requesterId}>` : (track.requester?.username || client.i18n.t('commands:UNKNOWN_USER'));
+                    return `${startIdx + index + 1}. ${title}\n   \`${track.duration.label}\` | ${requesterMention}`;
+                });
+                desc += entries.join('\n');
+            }
+
+            if (totalTracks > 0 && maxPage > 1) {
+                desc += `\n\n${client.i18n.t('events:MESSAGE_QUEUE_PAGE', { curPage, maxPage })}`;
+            }
+
+            return desc;
         };
 
-        let tracks = buildTrackList(maxTitleLength);
-        let tracksQueue = '';
+        let description = buildDescription(maxTitleLength);
 
-        if (tracks.length < 1) {
-            tracksQueue = '------------------------------';
-        }
-        else if (tracks.length === totalTracks) {
-            tracksQueue = tracks.join('\n');
-        }
-        else {
-            tracksQueue = tracks.join('\n') +
-                `\n\n${client.i18n.t('events:MESSAGE_QUEUE_PAGE', { curPage, maxPage })}`;
-        }
-
-        // Check if exceeds Discord's 1024 character limit and shorten if needed
-        while (tracksQueue.length > 1024 && maxTitleLength > 10) {
+        // Shorten if exceeds Discord's description limit
+        while (description.length > 4000 && maxTitleLength > 10) {
             maxTitleLength -= 10;
-            tracks = buildTrackList(maxTitleLength);
-
-            if (tracks.length === totalTracks) {
-                tracksQueue = tracks.join('\n');
-            }
-            else {
-                tracksQueue = tracks.join('\n') +
-                    `\n\n${client.i18n.t('events:MESSAGE_QUEUE_PAGE', { curPage, maxPage })}`;
-            }
+            description = buildDescription(maxTitleLength);
         }
 
-        // Final fallback: if still too long, truncate the string
-        if (tracksQueue.length > 1024) {
-            tracksQueue = tracksQueue.substring(0, 1021) + '...';
+        if (description.length > 4096) {
+            description = description.substring(0, 4093) + '...';
         }
 
-        return tracksQueue;
+        return description;
     }
 }

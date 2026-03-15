@@ -50,7 +50,7 @@ export class FilterCommand extends BaseCommand {
         const player = client.lavashark.getPlayer(context.guild!.id);
 
         if (!player || !player.playing) {
-            await context.replyError(bot, client.i18n.t('commands:ERROR_NO_PLAYING'));
+            await context.replyEphemeralError(bot, client.i18n.t('commands:ERROR_NO_PLAYING'));
             return;
         }
 
@@ -168,7 +168,7 @@ export class FilterCommand extends BaseCommand {
         }
         else {
             if (!Object.keys(filtersConfig).includes(effectName)) {
-                await context.replyError(bot, client.i18n.t('commands:MESSAGE_FILTER_NOT_FOUND'));
+                await context.replyEphemeralError(bot, client.i18n.t('commands:MESSAGE_FILTER_NOT_FOUND'));
                 return;
             }
 

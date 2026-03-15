@@ -108,8 +108,14 @@ export class DashboardManager {
             repeatMode: repeatModeLabel
         });
 
-        // Add DJ info in DYNAMIC mode
-        if (this.#bot.config.bot.djMode === DJModeEnum.DYNAMIC) {
+        // Add requester info
+        const requesterId = track.requester?.id;
+        if (requesterId) {
+            subtitle += this.#bot.i18n.t('embeds:DASHBOARD_REQUESTER_INFO', { requesterId });
+        }
+
+        // Add Dynamic DJ info (only if DYNAMIC mode AND a DJ is assigned)
+        if (this.#bot.config.bot.djMode === DJModeEnum.DYNAMIC && player.djUsers && player.djUsers.size > 0) {
             try {
                 const guild = this.#client.guilds.cache.get(player.guildId);
                 const djDisplay = await DJManager.getDJDisplayString(this.#bot, this.#client, guild, player);

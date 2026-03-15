@@ -45,7 +45,7 @@ export class LanguageCommand extends BaseCommand {
 
         // Validate language
         if (!bot.lang.languages.includes(locale)) {
-            await context.replyError(bot, client.i18n.t('commands:MESSAGE_LANG_ARGS_ERROR', {
+            await context.replyEphemeralError(bot, client.i18n.t('commands:MESSAGE_LANG_ARGS_ERROR', {
                 langList: bot.lang.languages.map(lang => `\`${lang}\``).join(', ')
             }));
             return;

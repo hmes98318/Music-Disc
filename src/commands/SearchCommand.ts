@@ -49,7 +49,7 @@ export class SearchCommand extends BaseCommand {
             : context.getStringOption('search');
 
         if (!str) {
-            await context.replyError(bot, client.i18n.t('commands:MESSAGE_PLAY_ARGS_ERROR'));
+            await context.replyEphemeralError(bot, client.i18n.t('commands:MESSAGE_PLAY_ARGS_ERROR'));
             return;
         }
 
@@ -60,7 +60,7 @@ export class SearchCommand extends BaseCommand {
         } catch (error) {
             console.error(error);
             bot.logger.emit('error', bot.shardId, `Search Error: ${error}`);
-            await context.replyError(bot, client.i18n.t('commands:ERROR_PLAY_SEARCH', {
+            await context.replyEphemeralError(bot, client.i18n.t('commands:ERROR_PLAY_SEARCH', {
                 reason: error instanceof Error ? error.message : String(error)
             }));
             return;
@@ -69,13 +69,13 @@ export class SearchCommand extends BaseCommand {
         // Handle search results
         if (res.loadType === LoadType.ERROR) {
             bot.logger.emit('error', bot.shardId, `Search Error: ${JSON.stringify(res)}`);
-            await context.replyError(bot, client.i18n.t('commands:ERROR_PLAY_SEARCH', {
+            await context.replyEphemeralError(bot, client.i18n.t('commands:ERROR_PLAY_SEARCH', {
                 reason: (res as any).data?.message
             }));
             return;
         }
         else if (res.loadType === LoadType.EMPTY) {
-            await context.replyWarning(bot, client.i18n.t('commands:MESSAGE_PLAY_SEARCH_NO_MATCH'));
+            await context.replyEphemeralError(bot, client.i18n.t('commands:MESSAGE_PLAY_SEARCH_NO_MATCH'));
             return;
         }
 
@@ -84,7 +84,7 @@ export class SearchCommand extends BaseCommand {
             ? context.getMessage().member?.voice.channel
             : context.getInteraction().guild!.members.cache.get(context.user.id)?.voice.channel;
 
-        const validBlackist = isUserInBlacklist(voiceChannel, bot.config.blacklist);
+        const validBlackist = isUserInBlacklist(voiceChannel, bot.config.blacklist, bot.blacklistManager);
         if (validBlackist.length > 0) {
             await context.reply({
                 embeds: [embeds.blacklist(bot, validBlackist)]
@@ -148,7 +148,7 @@ export class SearchCommand extends BaseCommand {
             player.metadata = metadata;
         } catch (error) {
             bot.logger.emit('error', bot.shardId, 'Error joining channel: ' + error);
-            await context.replyError(bot, client.i18n.t('commands:ERROR_PLAY_JOIN_CHANNEL'));
+            await context.replyEphemeralError(bot, client.i18n.t('commands:ERROR_PLAY_JOIN_CHANNEL'));
             return null;
         }
 
@@ -181,7 +181,7 @@ export class SearchCommand extends BaseCommand {
         const playlistCheck = QueueLimitManager.calculatePlaylistAddition(bot, player, userId, guildMember, playlistSize);
 
         if (playlistCheck.limitReached) {
-            await context.replyError(bot, client.i18n.t('commands:ERROR_QUEUE_LIMIT_REACHED', {
+            await context.replyEphemeralError(bot, client.i18n.t('commands:ERROR_QUEUE_LIMIT_REACHED', {
                 current: QueueLimitManager.countUserSongsInQueue(player, userId),
                 limit: QueueLimitManager.getUserLimit(bot, userId, guildMember, player)
             }));
@@ -233,7 +233,7 @@ export class SearchCommand extends BaseCommand {
         const checkResult = QueueLimitManager.canAddSongs(bot, player, userId, guildMember, 1);
         
         if (!checkResult.canAdd) {
-            await context.replyError(bot, client.i18n.t('commands:ERROR_QUEUE_LIMIT_REACHED', {
+            await context.replyEphemeralError(bot, client.i18n.t('commands:ERROR_QUEUE_LIMIT_REACHED', {
                 current: checkResult.currentCount,
                 limit: checkResult.limit
             }));

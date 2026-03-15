@@ -74,10 +74,16 @@ export const cst = {
             // Max queued songs per user settings
             maxQueuedSongs: {
                 enabled             : true,                                 // Enable/disable this feature
+                global              : 100,                                  // Global maximum queue size
                 default             : 5,                                    // Default limit for users without special roles
                 djs                 : 50,                                   // Limit for DJ role users
                 roles               : {}                                    // Custom limits per role ID
-            }
+            },
+
+            fairQueue               : false,
+
+            // Voice channel status emojis
+            voiceStatusEmojis       : ['🎵']
         },
 
         // Lavalink node list
@@ -140,8 +146,8 @@ export const cst = {
             disableCommand      : [],                                   // Disabled commands, all enabled by default
             adminCommand        : ['language','server', 'status'],      // Admin commands, only Admin role user can use
             djCommand           : ['dj'],                               // DJ commands, only DJ role user can use
-            skipOnlyRequester   : true,                                 // If true, only the song requester can skip (admins can always skip)
-            skipDjBypass        : true                                  // If true, DJs can skip regardless of skipOnlyRequester setting
+            requesterOnly       : ['skip'],                              // Commands restricted to the song requester
+            requesterDjBypass   : ['skip']                              // Commands DJs can bypass requesterOnly on
         }
     },
 

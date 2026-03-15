@@ -45,7 +45,7 @@ export class VolumeCommand extends BaseCommand {
         const player = client.lavashark.getPlayer(context.guild!.id);
 
         if (!player || !player.playing) {
-            await context.replyError(bot, client.i18n.t('commands:ERROR_NO_PLAYING'));
+            await context.replyEphemeralError(bot, client.i18n.t('commands:ERROR_NO_PLAYING'));
             return;
         }
 
@@ -171,12 +171,12 @@ export class VolumeCommand extends BaseCommand {
         }
 
         if (player.volume === vol) {
-            await context.replyWarning(bot, client.i18n.t('commands:MESSAGE_VOLUME_SAME'));
+            await context.replyEphemeralError(bot, client.i18n.t('commands:MESSAGE_VOLUME_SAME'));
             return;
         }
 
         if (vol < 0 || vol > maxVolume) {
-            await context.replyError(bot, client.i18n.t('commands:MESSAGE_VOLUME_ARGS_ERROR_2', { maxVolume }));
+            await context.replyEphemeralError(bot, client.i18n.t('commands:MESSAGE_VOLUME_ARGS_ERROR_2', { maxVolume }));
             return;
         }
 
