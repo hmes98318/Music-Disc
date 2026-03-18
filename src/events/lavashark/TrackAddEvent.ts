@@ -47,12 +47,15 @@ export class TrackAddEvent extends BaseLavaSharkEvent<'trackAdd'> {
      * Handle playlist addition
      * @private
      */
-    async #handlePlaylistAdd(bot: Bot, _client: Client, player: Player, playlist: Track[]): Promise<void> {
+    async #handlePlaylistAdd(bot: Bot, client: Client, player: Player, playlist: Track[]): Promise<void> {
         const firstTrack = playlist[0];
 
         if (!firstTrack) return;
 
-        const subtitle = `Author : **${firstTrack.author}**\nDuration **${firstTrack.duration.label}**\n`;
+        const subtitle = client.i18n.t('events:MESSAGE_NOW_PLAYING_SUBTITLE', {
+            author: firstTrack.author,
+            label: firstTrack.duration.label
+        });
 
         await (player.metadata?.channel as any).send({
             embeds: [embeds.addPlaylist(bot, firstTrack.title, subtitle, firstTrack.uri, firstTrack.thumbnail!)]
@@ -64,7 +67,10 @@ export class TrackAddEvent extends BaseLavaSharkEvent<'trackAdd'> {
      * @private
      */
     async #handleTrackAdd(bot: Bot, client: Client, player: Player, track: Track): Promise<void> {
-        const subtitle = `Author : **${track.author}**\nDuration **${track.duration.label}**\n`;
+        const subtitle = client.i18n.t('events:MESSAGE_NOW_PLAYING_SUBTITLE', {
+            author: track.author,
+            label: track.duration.label
+        });
 
         await (player.metadata?.channel as any).send({
             embeds: [embeds.addTrack(bot, track.title, subtitle, track.uri, track.thumbnail!)]

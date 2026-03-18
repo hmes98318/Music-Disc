@@ -24,8 +24,8 @@ export class TrackStartEvent extends BaseLavaSharkEvent<'trackStart'> {
             const emojis = bot.config.bot.voiceStatusEmojis;
             if (emojis.length > 0) {
                 const emoji = emojis[Math.floor(Math.random() * emojis.length)];
-                const title = track.title.length > 80 ? track.title.substring(0, 77) + '...' : track.title;
-                await setVoiceChannelStatus(bot, client, player.voiceChannelId, `${emoji} ${title}`);
+                const statusText = this.#formatVoiceStatus(track.author, track.title);
+                await setVoiceChannelStatus(bot, client, player.voiceChannelId, `${emoji} ${statusText}`);
             }
         }
 
@@ -33,5 +33,34 @@ export class TrackStartEvent extends BaseLavaSharkEvent<'trackStart'> {
         if (bot.config.queuePersistence.enabled && (client as any).queuePersistence) {
             await (client as any).queuePersistence.saveQueue(player);
         }
+    }
+
+    /**
+     * Format voice channel status text with author and title.
+     * Shows "Author - Title" when the author is available and meaningful,
+     * otherwise just the title. Truncates to fit voice status limits.
+     */
+    #formatVoiceStatus(author: string | undefined, title: string): string {
+        const MAX_LENGTH = 80;
+        const hasAuthor = author
+            && author.trim() !== ''
+            && author.toLowerCase() !== 'unknown'
+            && author.toLowerCase() !== title.toLowerCase();
+
+        let statusText: string;
+
+        if (hasAuthor) {
+            const combined = `${author} - ${title}`;
+            statusText = combined.length > MAX_LENGTH
+                ? combined.substring(0, MAX_LENGTH - 3) + '...'
+                : combined;
+        }
+        else {
+            statusText = title.length > MAX_LENGTH
+                ? title.substring(0, MAX_LENGTH - 3) + '...'
+                : title;
+        }
+
+        return statusText;
     }
 }
