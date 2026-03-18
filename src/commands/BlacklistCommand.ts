@@ -2,8 +2,6 @@ import i18next from 'i18next';
 
 import { BaseCommand } from './base/BaseCommand.js';
 import { CommandCategory } from '../@types/index.js';
-import { embeds } from '../embeds/index.js';
-
 import type { Client } from 'discord.js';
 import type { CommandContext } from './base/CommandContext.js';
 import type { Bot, CommandMetadata } from '../@types/index.js';

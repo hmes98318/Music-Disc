@@ -12,7 +12,7 @@
     "MESSAGE_BOT_LEAVE_CHANNEL": "✅ Bot left.",
     "MESSAGE_BOT_STOP": "✅ Bot stopped.",
     "MESSAGE_MUSIC_SHUFFLE": "✅ Music shuffled.",
-    "MESSAGE_NOW_PLAYING_SUBTITLE": "Author : **{{author}}**\nDuration **{{label}}**\n",
+    "MESSAGE_NOW_PLAYING_SUBTITLE": "Author: **{{author}}**\nDuration: **{{label}}**\n",
     "MESSAGE_NOW_PLAYING_TITLE": "Now Playing: {{title}}\n\n",
     "MESSAGE_QUEUE_PAGE": "\n\n----- Page {{curPage}}/{{maxPage}} -----",
     "MESSAGE_SELECT_LOOP_MODE": "Select song loop mode.",

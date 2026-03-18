@@ -124,9 +124,9 @@ export class DJManager {
     public static async getDJDisplayString(bot: Bot, client: Client, guild: any, player?: Player): Promise<string> {
         const djInfo = await this.getDJInfo(bot, client, guild, player);
         const displayNames: string[] = [];
-        
+
         // Add admins with "Admin" indicator
-        for (const userId of djInfo.admins.slice(0, 2)) {
+        for (const userId of djInfo.admins) {
             try {
                 const user = await client.users.fetch(userId);
                 displayNames.push(`<@${user.id}> (Admin)`);
@@ -134,10 +134,9 @@ export class DJManager {
                 displayNames.push(`Unknown User (Admin)`);
             }
         }
-        
+
         // Add role-based DJs with "Role" indicator
-        const remainingSlots = 3 - displayNames.length;
-        for (const userId of djInfo.roleDJs.slice(0, remainingSlots)) {
+        for (const userId of djInfo.roleDJs) {
             try {
                 const user = await client.users.fetch(userId);
                 displayNames.push(`<@${user.id}> (Role)`);
@@ -145,10 +144,9 @@ export class DJManager {
                 displayNames.push(`Unknown User (Role)`);
             }
         }
-        
+
         // Add dynamic DJs with "DJ" indicator
-        const remainingSlots2 = 3 - displayNames.length;
-        for (const userId of djInfo.dynamicDJs.slice(0, remainingSlots2)) {
+        for (const userId of djInfo.dynamicDJs) {
             try {
                 const user = await client.users.fetch(userId);
                 displayNames.push(`<@${user.id}> (DJ)`);
@@ -161,13 +159,7 @@ export class DJManager {
             return 'None';
         }
 
-        let result = displayNames.join(', ');
-        const totalDJs = djInfo.admins.length + djInfo.roleDJs.length + djInfo.dynamicDJs.length;
-        if (totalDJs > 3) {
-            result += '...';
-        }
-
-        return result;
+        return displayNames.join(', ');
     }
 
     /**

@@ -126,7 +126,7 @@
     "MESSAGE_MOVE_WRONG_INDEX": "❌ Please enter a valid index range. (1 - {{max}})",
     "MESSAGE_NOW_PLAYING_BUTTOMTITLE": "\nand {{length}} other songs",
     "MESSAGE_NOW_PLAYING_SAVE_BUTTON": "Save Song",
-    "MESSAGE_NOW_PLAYING_SUBTITLE": "Author : **{{author}}**\nDuration **{{label}}**\n",
+    "MESSAGE_NOW_PLAYING_SUBTITLE": "Author: **{{author}}**\nDuration: **{{label}}**\n",
     "MESSAGE_NOW_PLAYING_TITLE": "Now Playing: {{title}}\n\n",
     "MESSAGE_NOW_PLAYING_TITLE_WITH_REQUESTER": "🎵 Now Playing: {{title}} | Requested by {{requester}}",
     "UNKNOWN_USER": "Unknown",

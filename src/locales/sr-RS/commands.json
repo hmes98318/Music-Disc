@@ -110,7 +110,7 @@
     "MESSAGE_MOVE_WRONG_INDEX": "❌ Molim te unesi važeći raspon indeksa. (1 - {{max}})",
     "MESSAGE_NOW_PLAYING_BUTTOMTITLE": "\ni još {{length}} pesama",
     "MESSAGE_NOW_PLAYING_SAVE_BUTTON": "Sačuvaj pesmu",
-    "MESSAGE_NOW_PLAYING_SUBTITLE": "Autor : **{{author}}**\nTrajanje **{{label}}**\n",
+    "MESSAGE_NOW_PLAYING_SUBTITLE": "Autor: **{{author}}**\nTrajanje: **{{label}}**\n",
     "MESSAGE_NOW_PLAYING_TITLE": "Trenutno svira: {{title}}\n\n",
     "MESSAGE_NOW_PLAYING_TITLE_WITH_REQUESTER": "🎵 Sada svira: {{title}} | Zatražio/la {{requester}}",
     "UNKNOWN_USER": "Nepoznato",

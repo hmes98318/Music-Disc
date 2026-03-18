@@ -110,7 +110,7 @@
     "MESSAGE_MOVE_WRONG_INDEX": "❌ Geçerli bir parça numarası aralığı belirtin. (1 - {{max}})",
     "MESSAGE_NOW_PLAYING_BUTTOMTITLE": "\nand {{length}} diğer parçalar",
     "MESSAGE_NOW_PLAYING_SAVE_BUTTON": "Parçayı kaydet",
-    "MESSAGE_NOW_PLAYING_SUBTITLE": "Sanatçı : **{{author}}**\nSüre **{{label}}**\n",
+    "MESSAGE_NOW_PLAYING_SUBTITLE": "Sanatçı: **{{author}}**\nSüre: **{{label}}**\n",
     "MESSAGE_NOW_PLAYING_TITLE": "Şuan çalıyor: {{title}}\n\n",
     "MESSAGE_NOW_PLAYING_TITLE_WITH_REQUESTER": "🎵 Şu an çalıyor: {{title}} | {{requester}} tarafından istendi",
     "UNKNOWN_USER": "Bilinmiyor",

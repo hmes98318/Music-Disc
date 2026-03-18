@@ -12,7 +12,7 @@
     "MESSAGE_BOT_LEAVE_CHANNEL": "✅ Bot je napustio kanal.",
     "MESSAGE_BOT_STOP": "✅ Bot je zaustavljen.",
     "MESSAGE_MUSIC_SHUFFLE": "✅ Muzika izmešana.",
-    "MESSAGE_NOW_PLAYING_SUBTITLE": "Autor : **{{author}}**\nTrajanje **{{label}}**\n",
+    "MESSAGE_NOW_PLAYING_SUBTITLE": "Autor: **{{author}}**\nTrajanje: **{{label}}**\n",
     "MESSAGE_NOW_PLAYING_TITLE": "Trenutno svira: {{title}}\n\n",
     "MESSAGE_QUEUE_PAGE": "\n\n----- Strana {{curPage}}/{{maxPage}} -----",
     "MESSAGE_SELECT_LOOP_MODE": "Izaberi režim ponavljanja pesme.",

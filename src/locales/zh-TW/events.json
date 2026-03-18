@@ -12,7 +12,7 @@
     "MESSAGE_BOT_LEAVE_CHANNEL": "✅ 機器人已離開頻道。",
     "MESSAGE_BOT_STOP": "✅ 機器人已停止。",
     "MESSAGE_MUSIC_SHUFFLE": "✅ 音樂已隨機播放。",
-    "MESSAGE_NOW_PLAYING_SUBTITLE": "作者 : **{{author}}**\n時長 : **{{label}}**\n",
+    "MESSAGE_NOW_PLAYING_SUBTITLE": "作者: **{{author}}**\n時長: **{{label}}**\n",
     "MESSAGE_NOW_PLAYING_TITLE": "正在播放: {{title}}\n\n",
     "MESSAGE_QUEUE_PAGE": "\n\n----- 第 {{curPage}}/{{maxPage}} 頁 -----",
     "MESSAGE_SELECT_LOOP_MODE": "選擇歌曲循環模式。",
