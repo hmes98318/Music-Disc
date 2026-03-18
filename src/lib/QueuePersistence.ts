@@ -105,17 +105,15 @@ export class QueuePersistence {
         }
 
         try {
-            // Don't save empty queues
-            if (!player.queue || player.queue.tracks.length === 0) {
-                // Remove existing queue from database if it exists
+            // Save as long as player.current exists (even if queue.tracks is empty)
+            if (!player.current) {
                 this.deleteQueue(player.guildId);
                 return;
             }
 
-            // Serialize tracks (filter out unresolved tracks)
-            const serializedTracks: SerializedTrack[] = player.queue.tracks
-                .filter((track): track is Track => 'encoded' in track)
-                .map(track => ({
+            const serializeTrack = (track: Track): SerializedTrack | null => {
+                if (!('encoded' in track)) return null;
+                return {
                     track: track.encoded,
                     info: {
                         identifier: track.identifier,
@@ -129,7 +127,24 @@ export class QueuePersistence {
                     },
                     requesterId: track.requester?.id || '',
                     requesterTag: track.requester?.tag || ''
-                }));
+                };
+            };
+
+            // Include current track at front of saved tracks list
+            const serializedTracks: SerializedTrack[] = [];
+
+            const currentSerialized = serializeTrack(player.current);
+            if (currentSerialized) {
+                serializedTracks.push(currentSerialized);
+            }
+
+            // Append queue tracks
+            for (const track of player.queue.tracks) {
+                if ('encoded' in track) {
+                    const s = serializeTrack(track as Track);
+                    if (s) serializedTracks.push(s);
+                }
+            }
 
             const queueData: PersistedQueue = {
                 guildId: player.guildId,
@@ -261,22 +276,50 @@ export class QueuePersistence {
                 });
             }
 
-            // Restore tracks - Use lavashark's search to properly load tracks
-            // Note: This is a simplified approach. For production, you may want to use the encoded track string
-            // to restore tracks directly if lavashark supports it
+            // Restore tracks - try encoded track string first, fall back to URI search
             for (const serializedTrack of queueData.tracks) {
                 try {
-                    const result = await client.lavashark.search(serializedTrack.info.uri);
-                    if (result.tracks.length > 0) {
+                    let result = null;
+
+                    // Try loading by encoded track string first
+                    try {
+                        result = await client.lavashark.search(serializedTrack.track);
+                    } catch (_) {
+                        // Encoded string failed, will try fallback
+                    }
+
+                    // Fallback: search by URI
+                    if (!result || result.tracks.length === 0) {
+                        try {
+                            result = await client.lavashark.search(serializedTrack.info.uri);
+                        } catch (_) {
+                            // URI search failed, will try title search
+                        }
+                    }
+
+                    // Final fallback: search by title + author
+                    if (!result || result.tracks.length === 0) {
+                        try {
+                            result = await client.lavashark.search(`ytsearch:${serializedTrack.info.title} ${serializedTrack.info.author}`);
+                        } catch (_) {
+                            // All methods failed
+                        }
+                    }
+
+                    if (result && result.tracks.length > 0) {
                         const track = result.tracks[0];
                         track.requester = {
                             id: serializedTrack.requesterId,
                             tag: serializedTrack.requesterTag
                         } as any;
                         player.queue.add(track);
+                    } else {
+                        this.bot.logger.emit('log', this.bot.shardId,
+                            `[QueuePersistence] Could not restore track "${serializedTrack.info.title}", skipping`
+                        );
                     }
                 } catch (error) {
-                    this.bot.logger.emit('error', this.bot.shardId, 
+                    this.bot.logger.emit('error', this.bot.shardId,
                         `[QueuePersistence] Failed to restore track ${serializedTrack.info.title}: ${error}`
                     );
                 }

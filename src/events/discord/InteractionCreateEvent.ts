@@ -31,7 +31,8 @@ export class InteractionCreateEvent extends BaseDiscordEvent<Events.InteractionC
         // Basic validation
         if (!interaction.guild || !interaction.guild.members) return;
         if (interaction.user.bot) return;
-        if (bot.config.blacklist && bot.config.blacklist.includes(interaction.user.id)) return;
+        const isBlacklisted = bot.config.blacklist.includes(interaction.user.id) || (bot.blacklistManager?.has(interaction.user.id) ?? false);
+        if (isBlacklisted) return;
 
         if (interaction.isButton()) {
             await this.#handleButtonInteraction(bot, client, interaction);

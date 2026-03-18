@@ -104,7 +104,11 @@ const setEnvironment = (defaultConfig: Config) => {
                 : defaultConfig.bot.maxQueuedSongs.roles
         },
 
-        fairQueue: config.bot.fairQueue ?? defaultConfig.bot.fairQueue
+        fairQueue: config.bot.fairQueue ?? defaultConfig.bot.fairQueue,
+
+        voiceStatusEmojis: Array.isArray(config.bot.voiceStatusEmojis)
+            ? config.bot.voiceStatusEmojis
+            : defaultConfig.bot.voiceStatusEmojis
     };
 
     // Lavalink node list
@@ -169,8 +173,12 @@ const setEnvironment = (defaultConfig: Config) => {
         djCommand: Array.isArray(config.command.djCommand)
             ? config.command.djCommand
             : defaultConfig.command.djCommand,
-        skipOnlyRequester: config.command.skipOnlyRequester ?? defaultConfig.command.skipOnlyRequester,
-        skipDjBypass: config.command.skipDjBypass ?? defaultConfig.command.skipDjBypass,
+        requesterOnly: Array.isArray(config.command.requesterOnly)
+            ? config.command.requesterOnly
+            : defaultConfig.command.requesterOnly,
+        requesterDjBypass: Array.isArray(config.command.requesterDjBypass)
+            ? config.command.requesterDjBypass
+            : defaultConfig.command.requesterDjBypass,
     };
 
     defaultConfig.queuePersistence = {

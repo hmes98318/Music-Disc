@@ -170,6 +170,23 @@ export class CommandContext {
     }
 
     /**
+     * Reply with an ephemeral error message (for slash commands, denial/negation messages)
+     * Falls back to regular reply for text commands (cannot be ephemeral)
+     */
+    public async replyEphemeralError(bot: Bot, message: string): Promise<void> {
+        if (this.isInteraction()) {
+            const interaction = this.getInteraction();
+            try { await interaction.deleteReply(); } catch (_) { /* ignore */ }
+            await interaction.followUp({
+                ephemeral: true,
+                embeds: [embeds.textErrorMsg(bot, message)]
+            });
+        } else {
+            await this.replyError(bot, message);
+        }
+    }
+
+    /**
      * Reply with a warning message
      */
     public async replyWarning(bot: Bot, message: string): Promise<Message> {

@@ -10,6 +10,7 @@ import {
     setEnvironment
 } from './loader/index.js';
 import { Logger } from './lib/Logger.js';
+import { BlacklistManager } from './lib/BlacklistManager.js';
 import { DashboardManager } from './lib/DashboardManager.js';
 import { QueuePersistence } from './lib/QueuePersistence.js';
 import { cst } from './utils/constants.js';
@@ -79,6 +80,13 @@ class App {
         this.#client.dashboard = new DashboardManager(this.bot, this.#client);
         this.bot.logger.emit('log', this.bot.shardId, 'Dashboard manager initialized.');
 
+        // Initialize last played tracks map
+        this.#client.lastPlayedTracks = new Map();
+
+        // Initialize dynamic blacklist manager
+        this.bot.blacklistManager = new BlacklistManager(this.bot);
+        this.bot.blacklistManager.initialize();
+
         // Initialize queue persistence
         if (this.bot.config.queuePersistence.enabled) {
             (this.#client as any).queuePersistence = new QueuePersistence(this.bot);
@@ -119,8 +127,8 @@ class App {
             const queuePersistence = (this.#client as any).queuePersistence;
             if (!queuePersistence) return;
 
-            // Wait a bit for bot to be fully ready
-            await new Promise(resolve => setTimeout(resolve, 3000));
+            // Wait for bot and Lavalink nodes to be fully ready
+            await new Promise(resolve => setTimeout(resolve, 5000));
 
             const queues = queuePersistence.loadQueues(this.#client);
             
@@ -147,6 +155,14 @@ class App {
             }, 30 * 1000);
 
             try {
+                // Save all active queues before shutdown
+                if (this.bot.config.queuePersistence.enabled && (this.#client as any).queuePersistence) {
+                    this.bot.logger.emit('log', this.bot.shardId, 'Saving active queues before shutdown...');
+                    for (const player of this.#client.lavashark.players.values()) {
+                        await (this.#client as any).queuePersistence.saveQueue(player);
+                    }
+                }
+
                 // Close the lavashark players connections
                 this.bot.logger.emit('log', this.bot.shardId, 'Closing voice channel connection...');
                 await Promise.allSettled(
@@ -172,6 +188,12 @@ class App {
                 if (this.bot.config.queuePersistence.enabled && (this.#client as any).queuePersistence) {
                     this.bot.logger.emit('log', this.bot.shardId, 'Closing queue persistence database...');
                     (this.#client as any).queuePersistence.close();
+                }
+
+                // Close blacklist manager database
+                if (this.bot.blacklistManager) {
+                    this.bot.logger.emit('log', this.bot.shardId, 'Closing blacklist database...');
+                    this.bot.blacklistManager.close();
                 }
 
                 clearTimeout(timeout);

@@ -11,7 +11,7 @@ import type { Bot } from '../../@types/index.js';
  * Handler for queue-related button interactions
  */
 export class QueueButtonHandler {
-    private static readonly QUEUE_PAGE_SIZE = 10;
+    private static readonly QUEUE_PAGE_SIZE = 5;
     private static readonly LOOP_MODES = ['Off', 'Single', 'All'];
 
     /**
@@ -86,7 +86,7 @@ export class QueueButtonHandler {
         if (bot.config.command.adminCommand.includes('clear')) {
             if (!bot.config.bot.admin.includes(interaction.user.id)) {
                 await interaction.reply({
-                    content: client.i18n.t('events:ERROR_REQUIRE_ADMIN'),
+                    embeds: [embeds.textErrorMsg(bot, client.i18n.t('events:ERROR_REQUIRE_ADMIN'))],
                     ephemeral: true
                 });
                 return;
@@ -98,7 +98,7 @@ export class QueueButtonHandler {
             const member = interaction.member as GuildMember;
             if (!PermissionManager.hasDJCommandPermission(bot, interaction.user.id, member, player)) {
                 await interaction.reply({
-                    content: client.i18n.t('events:ERROR_REQUIRE_DJ'),
+                    embeds: [embeds.textErrorMsg(bot, client.i18n.t('events:ERROR_REQUIRE_DJ'))],
                     ephemeral: true
                 });
                 return;
@@ -131,63 +131,60 @@ export class QueueButtonHandler {
         const page = player.setting.queuePage.curPage;
         const startIdx = (page - 1) * this.QUEUE_PAGE_SIZE;
         const endIdx = page * this.QUEUE_PAGE_SIZE;
+        const totalTracks = player.queue.tracks.length;
+        const maxPage = player.setting.queuePage.maxPage;
 
-        const nowplaying = client.i18n.t('events:MESSAGE_NOW_PLAYING_TITLE', {
-            title: player.current?.title
-        });
+        let maxTitleLength = 80;
 
-        let tracksQueue = '';
-        const queueTracks = player.queue.tracks.slice(startIdx, endIdx);
+        const buildDescription = (titleLength: number): string => {
+            const nowPlayingTitle = player.current?.title || 'Unknown';
+            const truncatedNP = nowPlayingTitle.length > titleLength
+                ? nowPlayingTitle.substring(0, titleLength) + '...'
+                : nowPlayingTitle;
 
-        // Build track list with length check
-        let maxTitleLength = 100;   // Initial max title length
-        const buildTrackList = (titleLength: number) => {
-            return queueTracks.map((track, index) => {
-                let title = track.title;
-                if (title.length > titleLength) {
-                    title = title.substring(0, titleLength) + '...';
-                }
-                return `${startIdx + index + 1}. [${title}](${track.uri}) - \`${track.duration.label}\``;
-            });
+            let desc = `**Now Playing:**\n${truncatedNP}\n${'─'.repeat(20)}\n`;
+
+            const queueTracks = player.queue.tracks.slice(startIdx, endIdx);
+
+            if (queueTracks.length < 1) {
+                desc += '\n*No songs in queue*';
+            } else {
+                desc += '\n**Queue:**\n';
+                const entries = queueTracks.map((track: any, index: number) => {
+                    let title = track.title;
+                    if (title.length > titleLength) {
+                        title = title.substring(0, titleLength) + '...';
+                    }
+                    const requesterId = track.requester?.id;
+                    const requesterMention = requesterId ? `<@${requesterId}>` : (track.requester?.username || client.i18n.t('commands:UNKNOWN_USER'));
+                    return `${startIdx + index + 1}. ${title}\n   \`${track.duration.label}\` | ${requesterMention}`;
+                });
+                desc += entries.join('\n');
+            }
+
+            if (totalTracks > 0 && maxPage > 1) {
+                desc += `\n\n${client.i18n.t('events:MESSAGE_QUEUE_PAGE', { curPage: page, maxPage })}`;
+            }
+
+            return desc;
         };
 
-        let tracks = buildTrackList(maxTitleLength);
+        let description = buildDescription(maxTitleLength);
 
-        if (tracks.length < 1) {
-            tracksQueue = '------------------------------';
-        }
-        else if (tracks.length === player.queue.tracks.length) {
-            tracksQueue = tracks.join('\n');
-        }
-        else {
-            tracksQueue = tracks.join('\n') +
-                `\n\n${client.i18n.t('events:MESSAGE_QUEUE_PAGE', { curPage: page, maxPage: player.setting.queuePage.maxPage })}`;
-        }
-
-        // Check if exceeds Discord's 1024 character limit and shorten if needed
-        while (tracksQueue.length > 1024 && maxTitleLength > 10) {
+        while (description.length > 4000 && maxTitleLength > 10) {
             maxTitleLength -= 10;
-            tracks = buildTrackList(maxTitleLength);
-
-            if (tracks.length === player.queue.tracks.length) {
-                tracksQueue = tracks.join('\n');
-            }
-            else {
-                tracksQueue = tracks.join('\n') +
-                    `\n\n${client.i18n.t('events:MESSAGE_QUEUE_PAGE', { curPage: page, maxPage: player.setting.queuePage.maxPage })}`;
-            }
+            description = buildDescription(maxTitleLength);
         }
 
-        // Final fallback: if still too long, truncate the string
-        if (tracksQueue.length > 1024) {
-            tracksQueue = tracksQueue.substring(0, 1021) + '...';
+        if (description.length > 4096) {
+            description = description.substring(0, 4093) + '...';
         }
 
         const repeatMode = player.repeatMode;
         const row = ButtonsBuilder.createQueueButtons();
 
         await player.setting.queuePage.msg?.edit({
-            embeds: [embeds.queue(bot, nowplaying, tracksQueue, this.LOOP_MODES[repeatMode])],
+            embeds: [embeds.queue(bot, description, this.LOOP_MODES[repeatMode])],
             components: [row],
             allowedMentions: { repliedUser: false }
         });

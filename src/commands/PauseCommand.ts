@@ -30,12 +30,12 @@ export class PauseCommand extends BaseCommand {
         const player = client.lavashark.getPlayer(context.guildId!);
 
         if (!player || !player.playing) {
-            await context.replyError(bot, client.i18n.t('commands:ERROR_NO_PLAYING'));
+            await context.replyEphemeralError(bot, client.i18n.t('commands:ERROR_NO_PLAYING'));
             return;
         }
 
         if (player.paused) {
-            await context.replyWarning(bot, client.i18n.t('commands:MESSAGE_PAUSE_MUSIC_PAUSED'));
+            await context.replyEphemeralError(bot, client.i18n.t('commands:MESSAGE_PAUSE_MUSIC_PAUSED'));
             return;
         }
 

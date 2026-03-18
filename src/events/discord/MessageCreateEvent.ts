@@ -26,7 +26,8 @@ export class MessageCreateEvent extends BaseDiscordEvent<Events.MessageCreate> {
         if (message.content.indexOf(prefix) !== 0) return;
 
         if (message.author.bot || message.channel.type !== ChannelType.GuildText) return;
-        if (bot.config.blacklist && bot.config.blacklist.includes(message.author.id)) return;
+        const isBlacklisted = bot.config.blacklist.includes(message.author.id) || (bot.blacklistManager?.has(message.author.id) ?? false);
+        if (isBlacklisted) return;
 
         // Parse command and arguments
         const args = message.content.slice(prefix.length).trim().split(/ +/g);

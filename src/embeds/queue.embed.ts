@@ -26,11 +26,11 @@ const addPlaylist = (bot: Bot, title: string, subtitle: string, url: string, thu
     return embed_;
 };
 
-const queue = (bot: Bot, nowPlaying: string, queueList: string, repeatMode: string) => {
+const queue = (bot: Bot, description: string, repeatMode: string) => {
     const embed_ = new EmbedBuilder()
         .setColor(bot.config.bot.embedsColors.message as HexColorString | number)
         .setTitle(bot.i18n.t('embeds:QUEUE_LIST_TITLE'))
-        .addFields({ name: nowPlaying, value: queueList })
+        .setDescription(description)
         .setTimestamp()
         .setFooter({ text: bot.i18n.t('embeds:QUEUE_LIST_LOOP_MODE', { repeatMode: repeatMode }) });
 

@@ -41,14 +41,14 @@ export class RemoveCommand extends BaseCommand {
         const player = client.lavashark.getPlayer(context.guild!.id);
 
         if (!player || !player.playing) {
-            await context.replyError(bot, client.i18n.t('commands:ERROR_NO_PLAYING'));
+            await context.replyEphemeralError(bot, client.i18n.t('commands:ERROR_NO_PLAYING'));
             return;
         }
 
         const tracks = player.queue.tracks.map((track, index) => `${++index}. \`${track.title}\``);
 
         if (tracks.length < 1) {
-            await context.replyWarning(bot, client.i18n.t('commands:MESSAGE_REMOVE_QUEUE_EMPTY'));
+            await context.replyEphemeralError(bot, client.i18n.t('commands:MESSAGE_REMOVE_QUEUE_EMPTY'));
             return;
         }
 

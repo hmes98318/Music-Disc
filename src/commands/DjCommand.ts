@@ -53,31 +53,31 @@ export class DjCommand extends BaseCommand {
 
         // Check permission for adding DJ - only admins can add/remove DJs
         if (!bot.config.bot.admin.includes(context.user.id)) {
-            await context.replyError(bot, i18next.t('commands:MESSAGE_DJ_ADMIN_ONLY'));
+            await context.replyEphemeralError(bot, i18next.t('commands:MESSAGE_DJ_ADMIN_ONLY'));
             return;
         }
 
         // Validate user
         if (targetUser.bot) {
-            await context.replyError(bot, i18next.t('commands:MESSAGE_DJ_NO_BOTS'));
+            await context.replyEphemeralError(bot, i18next.t('commands:MESSAGE_DJ_NO_BOTS'));
             return;
         }
 
         // Handle different DJ modes
         if (bot.config.bot.djMode === DJModeEnum.STATIC) {
-            await context.replyWarning(bot, i18next.t('commands:MESSAGE_DJ_STATIC_MODE'));
+            await context.replyEphemeralError(bot, i18next.t('commands:MESSAGE_DJ_STATIC_MODE'));
             return;
         }
         // DYNAMIC mode - add to current player's DJ list
         else {
             if (!player) {
-                await context.replyError(bot, i18next.t('commands:MESSAGE_DJ_NO_PLAYER'));
+                await context.replyEphemeralError(bot, i18next.t('commands:MESSAGE_DJ_NO_PLAYER'));
                 return;
             }
 
             // Check if already DJ
             if (DJManager.isDJ(bot, targetUser.id, null, player)) {
-                await context.replyWarning(bot, i18next.t('commands:MESSAGE_DJ_ALREADY_DJ', {
+                await context.replyEphemeralError(bot, i18next.t('commands:MESSAGE_DJ_ALREADY_DJ', {
                     userId: targetUser.id
                 }));
                 return;

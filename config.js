@@ -94,7 +94,12 @@ const config = {
         },
 
         // Fair queue rotation (round-robin)
-        fairQueue               : false         // When enabled, rotates queue to play songs from different users in turn
+        fairQueue               : false,        // When enabled, rotates queue to play songs from different users in turn
+
+        // Voice channel status emojis (standard or custom Discord emojis)
+        // Set to [] to disable emoji. If multiple provided, a random one is picked each time.
+        // Custom emojis: use format '<:name:id>' or '<a:name:id>' for animated
+        voiceStatusEmojis       : ['🎵']
     },
 
     blacklist                   : [],           // It must be the user ID (string[])
@@ -140,10 +145,17 @@ const config = {
     // Command permission settings
     command: {
         disableCommand: [],                                 // Disabled commands, all enabled by default
-        adminCommand: ['language','server', 'status'],      // Admin commands, only Admin role user can use
+        adminCommand: ['blacklist', 'language','server', 'status'],      // Admin commands, only Admin role user can use
         djCommand: ['dj', 'filter'],                        // DJ commands, only DJ role user can use
-        skipOnlyRequester: true,                            // If true, only the song requester can skip (admins can always skip)
-        skipDjBypass: true                                  // If true, DJs can skip regardless of skipOnlyRequester setting
+        // Supported commands: 'skip', 'seek'
+        // When a command name is listed here, only the requester of the currently playing song may use it.
+        // Admins can always bypass this restriction regardless.
+        requesterOnly: ['skip'],
+
+        // DJs (both role-based and dynamic) can bypass 'requesterOnly' for commands listed here.
+        // Only effective for commands that are also listed in requesterOnly.
+        // Supported commands: 'skip', 'seek'
+        requesterDjBypass: ['skip']
     },
 
     // Queue persistence settings
