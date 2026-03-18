@@ -2,9 +2,11 @@ import i18next from 'i18next';
 
 import { BaseCommand } from './base/BaseCommand.js';
 import { CommandCategory, DJModeEnum } from '../@types/index.js';
+import { embeds } from '../embeds/index.js';
 import { DJManager } from '../lib/DjManager.js';
 
 import type { Client, GuildMember } from 'discord.js';
+import type { Track } from 'lavashark';
 import type { CommandContext } from './base/CommandContext.js';
 import type { Bot, CommandMetadata } from '../@types/index.js';
 
@@ -54,7 +56,7 @@ export class PlayLastCommand extends BaseCommand {
         if (player && player.playing && player.current) {
             const requester = context.isMessage() ? context.getMessage().author : context.getInteraction().user;
             player.addTracks(player.current, requester as any);
-            await context.replySuccess(bot, client.i18n.t('commands:MESSAGE_PLAYLAST_SUCCESS'));
+            await this.#replyWithTrackEmbed(bot, client, context, player.current);
             return;
         }
 
@@ -117,6 +119,21 @@ export class PlayLastCommand extends BaseCommand {
                 return newPlayer.destroy();
             });
 
-        await context.replySuccess(bot, client.i18n.t('commands:MESSAGE_PLAYLAST_SUCCESS'));
+        await this.#replyWithTrackEmbed(bot, client, context, lastTrack);
+    }
+
+    /**
+     * Reply with a rich embed showing track info
+     * @private
+     */
+    async #replyWithTrackEmbed(bot: Bot, client: Client, context: CommandContext, track: Track): Promise<void> {
+        const subtitle = client.i18n.t('events:MESSAGE_NOW_PLAYING_SUBTITLE', {
+            author: track.author,
+            label: track.duration.label
+        });
+
+        await context.reply({
+            embeds: [embeds.addTrack(bot, track.title, subtitle, track.uri, track.thumbnail!)]
+        });
     }
 }
