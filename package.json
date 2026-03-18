@@ -1,6 +1,6 @@
 {
     "name": "music-disc",
-    "version": "4.1.2",
+    "version": "4.1.3",
     "description": "Discord Music Bot",
     "main": "./src/index.ts",
     "type": "module",
@@ -29,7 +29,7 @@
         "express": "^4.21.2",
         "i18next": "^25.4.2",
         "i18next-fs-backend": "^2.6.0",
-        "lavashark": "^2.3.1",
+        "lavashark": "^2.3.2",
         "undici": "^7.16.0"
     },
     "devDependencies": {
