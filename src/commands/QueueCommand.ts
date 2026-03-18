@@ -103,7 +103,7 @@ export class QueueCommand extends BaseCommand {
                     }
                     const requesterId = track.requester?.id;
                     const requesterMention = requesterId ? `<@${requesterId}>` : (track.requester?.username || client.i18n.t('commands:UNKNOWN_USER'));
-                    return `${startIdx + index + 1}. ${title}\n   \`${track.duration.label}\` | ${requesterMention}`;
+                    return `${startIdx + index + 1}. ${title} **${track.duration.label}** | ${requesterMention}`;
                 });
                 desc += entries.join('\n');
             }
