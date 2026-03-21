@@ -7,6 +7,7 @@ import {
     Collection,
     GuildMember,
     Interaction,
+    MessageFlags,
     StringSelectMenuBuilder,
     StringSelectMenuInteraction
 } from 'discord.js';
@@ -32,13 +33,13 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
 
     if (interaction.isButton()) {
         if (!voiceChannel) {
-            return interaction.reply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('events:ERROR_NOT_IN_VOICE_CHANNEL'))], ephemeral: true, components: [] })
+            return interaction.reply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('events:ERROR_NOT_IN_VOICE_CHANNEL'))], flags: [MessageFlags.Ephemeral], components: [] })
                 .catch((error) => {
                     bot.logger.emit('error', bot.shardId, '[interactionCreate] Error reply: ' + error);
                 });
         }
         if (interaction.guild?.members.me?.voice.channel && voiceChannel.id !== interaction.guild.members.me.voice.channelId) {
-            return interaction.reply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('events:ERROR_NOT_IN_SAME_VOICE_CHANNEL'))], ephemeral: true, components: [] })
+            return interaction.reply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('events:ERROR_NOT_IN_SAME_VOICE_CHANNEL'))], flags: [MessageFlags.Ephemeral], components: [] })
                 .catch((error) => {
                     bot.logger.emit('error', bot.shardId, '[interactionCreate] Error reply: ' + error);
                 });
@@ -61,7 +62,7 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
                     // Admin command
                     if (bot.config.command.adminCommand.includes('pause') && bot.config.command.adminCommand.includes('resume')) {
                         if (!bot.config.bot.admin.includes(interaction.user.id))
-                            return interaction.reply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('events:ERROR_REQUIRE_ADMIN'))], ephemeral: true, components: [] })
+                            return interaction.reply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('events:ERROR_REQUIRE_ADMIN'))], flags: [MessageFlags.Ephemeral], components: [] })
                                 .catch((error) => {
                                     bot.logger.emit('error', bot.shardId, `[messageCreate] Error reply: (${interaction.user.username} : ${interaction.customId})` + error);
                                     return;
@@ -102,7 +103,7 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
                     // Admin command
                     if (bot.config.command.adminCommand.includes('skip')) {
                         if (!bot.config.bot.admin.includes(interaction.user.id))
-                            return interaction.reply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('events:ERROR_REQUIRE_ADMIN'))], ephemeral: true, components: [] })
+                            return interaction.reply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('events:ERROR_REQUIRE_ADMIN'))], flags: [MessageFlags.Ephemeral], components: [] })
                                 .catch((error) => {
                                     bot.logger.emit('error', bot.shardId, `[messageCreate] Error reply: (${interaction.user.username} : ${interaction.customId})` + error);
                                     return;
@@ -146,7 +147,7 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
                     // Admin command
                     if (bot.config.command.adminCommand.includes('loop')) {
                         if (!bot.config.bot.admin.includes(interaction.user.id))
-                            return interaction.reply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('events:ERROR_REQUIRE_ADMIN'))], ephemeral: true, components: [] })
+                            return interaction.reply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('events:ERROR_REQUIRE_ADMIN'))], flags: [MessageFlags.Ephemeral], components: [] })
                                 .catch((error) => {
                                     bot.logger.emit('error', bot.shardId, `[messageCreate] Error reply: (${interaction.user.username} : ${interaction.customId})` + error);
                                     return;
@@ -178,7 +179,7 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
                         }));
 
                     const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(select);
-                    const msg = await interaction.reply({ embeds: [embeds.textMsg(bot, client.i18n.t('events:MESSAGE_SELECT_LOOP_MODE'))], ephemeral: true, components: [row] });
+                    const msg = await interaction.reply({ embeds: [embeds.textMsg(bot, client.i18n.t('events:MESSAGE_SELECT_LOOP_MODE'))], flags: [MessageFlags.Ephemeral], components: [row] });
 
                     const collector = (interaction.channel as any /* discord.js type error ? (v14.16.2) */).createMessageComponentCollector({
                         time: 20000, // 20s
@@ -209,7 +210,6 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
                         await dashboard.update(bot, player, player.current!);
 
                         await i.deferUpdate();
-                        interaction.ephemeral = true;
                         await interaction.editReply({ embeds: [embeds.textSuccessMsg(bot, client.i18n.t('events:MESSAGE_SET_LOOP_MODE', { mode: methods[mode].toUpperCase() }))], components: [] });
                     });
 
@@ -225,7 +225,7 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
                     // Admin command
                     if (bot.config.command.adminCommand.includes('leave')) {
                         if (!bot.config.bot.admin.includes(interaction.user.id))
-                            return interaction.reply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('events:ERROR_REQUIRE_ADMIN'))], ephemeral: true, components: [] })
+                            return interaction.reply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('events:ERROR_REQUIRE_ADMIN'))], flags: [MessageFlags.Ephemeral], components: [] })
                                 .catch((error) => {
                                     bot.logger.emit('error', bot.shardId, `[messageCreate] Error reply: (${interaction.user.username} : ${interaction.customId})` + error);
                                     return;
@@ -244,13 +244,13 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
 
                     if (bot.config.bot.autoLeave.enabled) {
                         player.destroy();
-                        await interaction.reply({ embeds: [embeds.textMsg(bot, client.i18n.t('events:MESSAGE_BOT_LEAVE_CHANNEL'))], ephemeral: true, components: [] });
+                        await interaction.reply({ embeds: [embeds.textMsg(bot, client.i18n.t('events:MESSAGE_BOT_LEAVE_CHANNEL'))], flags: [MessageFlags.Ephemeral], components: [] });
                     }
                     else {
                         player.queue.clear();
                         await player.skip();
                         await dashboard.destroy(bot, player);
-                        await interaction.reply({ embeds: [embeds.textMsg(bot, client.i18n.t('events:MESSAGE_BOT_STOP'))], ephemeral: true, components: [] });
+                        await interaction.reply({ embeds: [embeds.textMsg(bot, client.i18n.t('events:MESSAGE_BOT_STOP'))], flags: [MessageFlags.Ephemeral], components: [] });
                     }
 
                     break;
@@ -260,7 +260,7 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
                     // Admin command
                     if (bot.config.command.adminCommand.includes('shuffle')) {
                         if (!bot.config.bot.admin.includes(interaction.user.id))
-                            return interaction.reply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('events:ERROR_REQUIRE_ADMIN'))], ephemeral: true, components: [] })
+                            return interaction.reply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('events:ERROR_REQUIRE_ADMIN'))], flags: [MessageFlags.Ephemeral], components: [] })
                                 .catch((error) => {
                                     bot.logger.emit('error', bot.shardId, `[messageCreate] Error reply: (${interaction.user.username} : ${interaction.customId})` + error);
                                     return;
@@ -279,7 +279,7 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
 
                     player.queue.shuffle();
 
-                    await interaction.reply({ embeds: [embeds.textSuccessMsg(bot, client.i18n.t('events:MESSAGE_MUSIC_SHUFFLE'))], ephemeral: true, components: [] });
+                    await interaction.reply({ embeds: [embeds.textSuccessMsg(bot, client.i18n.t('events:MESSAGE_MUSIC_SHUFFLE'))], flags: [MessageFlags.Ephemeral], components: [] });
                     break;
                 }
 
@@ -289,11 +289,11 @@ export default async (bot: Bot, client: Client, interaction: Interaction) => {
 
                     guildMember?.send({ embeds: [embeds.save(bot, track!.title, subtitle, track!.uri, track!.thumbnail!)] })
                         .then(() => {
-                            return interaction.reply({ embeds: [embeds.textSuccessMsg(bot, client.i18n.t('events:MESSAGE_SEND_PRIVATE_MESSAGE'))], ephemeral: true, components: [] });
+                            return interaction.reply({ embeds: [embeds.textSuccessMsg(bot, client.i18n.t('events:MESSAGE_SEND_PRIVATE_MESSAGE'))], flags: [MessageFlags.Ephemeral], components: [] });
                         })
                         .catch((error) => {
                             bot.logger.emit('error', bot.shardId, 'Error musicSave:' + error);
-                            return interaction.reply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('events:ERROR_SEND_PRIVATE_MESSAGE'))], ephemeral: true, components: [] });
+                            return interaction.reply({ embeds: [embeds.textErrorMsg(bot, client.i18n.t('events:ERROR_SEND_PRIVATE_MESSAGE'))], flags: [MessageFlags.Ephemeral], components: [] });
                         });
 
                     break;
