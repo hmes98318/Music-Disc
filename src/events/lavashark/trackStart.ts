@@ -8,6 +8,11 @@ import type { Bot } from '../../@types/index.js';
 export default async (bot: Bot, _client: Client, player: Player/*, track: Track*/) => {
     // bot.logger.emit('lavashark', '// -------- track start -------- //');
 
+    if (player.leaveTimeout) {
+        clearTimeout(player.leaveTimeout);
+        player.leaveTimeout = undefined;
+    }
+
     const track = player.current; //--------------------------
     await dashboard.update(bot, player, track!);
 };
