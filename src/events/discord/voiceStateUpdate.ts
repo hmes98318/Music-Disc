@@ -7,8 +7,6 @@ import type { Client, VoiceBasedChannel, VoiceState } from 'discord.js';
 import type { Bot } from '../../@types/index.js';
 
 
-const pool = new Map();
-
 // channel doesn't have anyone in blacklist => true
 const checkBlacklistUsers = (channel: VoiceBasedChannel | null, blacklist: string[]) => {
     if (!channel) return false;
@@ -46,20 +44,15 @@ export default async (bot: Bot, client: Client, oldState: VoiceState, newState: 
 
                 // If the channel only has the bot or users in the blacklist, then start counting timeout until leave
                 if (!checkBlacklistUsers(oldState.channel, blacklist)) {
-                    for (const [key, value] of pool.entries()) {
-
-                        if (key === oldState.guild.id) {
-                            // bot.logger.emit('discord', bot.shardId, '[voiceStateUpdate] checkBlacklistUsers.del', pool);
-                            clearTimeout(value);
-                            pool.delete(value);
-                            break;
-                        }
+                    if (player.leaveTimeout) {
+                        clearTimeout(player.leaveTimeout);
+                        player.leaveTimeout = undefined;
                     }
                 }
                 if (oldState.channel!.members.size <= 1 || checkBlacklistUsers(oldState.channel, blacklist)) {
-                    const timeoutID = setTimeout(async () => {
+                    player.leaveTimeout = setTimeout(async () => {
                         if (bot.config.bot.autoLeave.enabled) {
-                            player.destroy();
+                            await player.destroy();
                         }
                         else {
                             player.queue.clear();
@@ -67,9 +60,6 @@ export default async (bot: Bot, client: Client, oldState: VoiceState, newState: 
                             await dashboard.destroy(bot, player);
                         }
                     }, bot.config.bot.autoLeave.cooldown);
-
-                    pool.set(oldState.guild.id, timeoutID);
-                    // bot.logger.emit('discord', bot.shardId, '[voiceStateUpdate] pool.add', pool);
                 }
             }
         }
@@ -100,9 +90,9 @@ export default async (bot: Bot, client: Client, oldState: VoiceState, newState: 
                 // When bot is in the target channel and only one member joined
                 // If there are two members or more (include bot) in the channel, it will not trigger
                 if (checkBlacklistUsers(newState.channel, blacklist)) {
-                    const timeoutID = setTimeout(async () => {
+                    player.leaveTimeout = setTimeout(async () => {
                         if (bot.config.bot.autoLeave.enabled) {
-                            player.destroy();
+                            await player.destroy();
                         }
                         else {
                             player.queue.clear();
@@ -110,20 +100,12 @@ export default async (bot: Bot, client: Client, oldState: VoiceState, newState: 
                             await dashboard.destroy(bot, player);
                         }
                     }, bot.config.bot.autoLeave.cooldown);
-
-                    pool.set(newState.guild.id, timeoutID);
-                    // bot.logger.emit('discord', bot.shardId, '[voiceStateUpdate] checkBlacklistUsers.add', pool);
                 }
                 if (newState.channel!.members.size >= 2 && !checkBlacklistUsers(newState.channel, blacklist)) {
                     // If member join bot channel, then find current channel's timeoutID to clear
-                    for (const [key, value] of pool.entries()) {
-
-                        if (key === newState.guild.id) {
-                            // bot.logger.emit('discord', bot.shardId, '[voiceStateUpdate] pool.del', pool);
-                            clearTimeout(value);
-                            pool.delete(value);
-                            break;
-                        }
+                    if (player.leaveTimeout) {
+                        clearTimeout(player.leaveTimeout);
+                        player.leaveTimeout = undefined;
                     }
                 }
             }
@@ -153,20 +135,15 @@ export default async (bot: Bot, client: Client, oldState: VoiceState, newState: 
 
                 // If the channel only has the bot or users in the blacklist, then start counting timeout until leave
                 if (!checkBlacklistUsers(oldState.channel, blacklist)) {
-                    for (const [key, value] of pool.entries()) {
-
-                        if (key === oldState.guild.id) {
-                            // bot.logger.emit('discord', bot.shardId, '[voiceStateUpdate] checkBlacklistUsers.del', pool);
-                            clearTimeout(value);
-                            pool.delete(value);
-                            break;
-                        }
+                    if (player.leaveTimeout) {
+                        clearTimeout(player.leaveTimeout);
+                        player.leaveTimeout = undefined;
                     }
                 }
                 if (oldState.channel!.members.size <= 1 || checkBlacklistUsers(oldState.channel, blacklist)) {
-                    const timeoutID = setTimeout(async () => {
+                    player.leaveTimeout = setTimeout(async () => {
                         if (bot.config.bot.autoLeave.enabled) {
-                            player.destroy();
+                            await player.destroy();
                         }
                         else {
                             player.queue.clear();
@@ -174,9 +151,6 @@ export default async (bot: Bot, client: Client, oldState: VoiceState, newState: 
                             await dashboard.destroy(bot, player);
                         }
                     }, bot.config.bot.autoLeave.cooldown);
-
-                    pool.set(oldState.guild.id, timeoutID);
-                    // bot.logger.emit('discord', bot.shardId, '[voiceStateUpdate] pool.add', pool);
                 }
             }
             else if (botChannelId === newChannelId) {
@@ -191,9 +165,9 @@ export default async (bot: Bot, client: Client, oldState: VoiceState, newState: 
                 // When bot is in the target channel and only one member joined
                 // If there are two members or more (include bot) in the channel, it will not trigger
                 if (checkBlacklistUsers(newState.channel, blacklist)) {
-                    const timeoutID = setTimeout(async () => {
+                    player.leaveTimeout = setTimeout(async () => {
                         if (bot.config.bot.autoLeave.enabled) {
-                            player.destroy();
+                            await player.destroy();
                         }
                         else {
                             player.queue.clear();
@@ -201,20 +175,12 @@ export default async (bot: Bot, client: Client, oldState: VoiceState, newState: 
                             await dashboard.destroy(bot, player);
                         }
                     }, bot.config.bot.autoLeave.cooldown);
-
-                    pool.set(newState.guild.id, timeoutID);
-                    // bot.logger.emit('discord', bot.shardId, '[voiceStateUpdate] checkBlacklistUsers.add', pool);
                 }
                 if (newState.channel!.members.size >= 2 && !checkBlacklistUsers(newState.channel, blacklist)) {
                     // If member join bot channel, then find current channel's timeoutID to clear
-                    for (const [key, value] of pool.entries()) {
-
-                        if (key === newState.guild.id) {
-                            // bot.logger.emit('discord', bot.shardId, '[voiceStateUpdate] pool.del', pool);
-                            clearTimeout(value);
-                            pool.delete(value);
-                            break;
-                        }
+                    if (player.leaveTimeout) {
+                        clearTimeout(player.leaveTimeout);
+                        player.leaveTimeout = undefined;
                     }
                 }
             }
