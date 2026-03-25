@@ -40,7 +40,6 @@ class App {
             sysInfo: {} as SystemInfo,
             stats: {
                 guildsCount: [-1],
-                membersCount: [-1],
                 lastRefresh: null,
             }
         } as any;
@@ -102,9 +101,9 @@ class App {
             .then(() => loadLavaSharkEvents(this.bot, this.#client))
             .then(() => loadCommands(this.bot, this.#client))
             .then(() => checkNodesStats(this.bot, this.#client.lavashark))
-            .then(() => {
+            .then(async () => {
                 this.bot.logger.emit('log', this.bot.shardId, cst.color.green + '*** All loaded successfully ***' + cst.color.white);
-                this.#client.login(process.env.BOT_TOKEN);
+                await this.#client.login(process.env.BOT_TOKEN);
 
                 // Restore persisted queues after bot is ready
                 if (this.bot.config.queuePersistence.enabled) {
@@ -215,7 +214,7 @@ class App {
 
 const main = async () => {
     const app = new App();
-    app.init();
+    await app.init();
 };
 
 main();

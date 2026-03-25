@@ -323,8 +323,6 @@ export class SearchCommand extends BaseCommand {
 
                         return player.destroy();
                     });
-
-                player.filters.setVolume(bot.config.bot.volume.default);
             }
 
             await i.deferUpdate();

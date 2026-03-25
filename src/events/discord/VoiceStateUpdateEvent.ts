@@ -210,7 +210,8 @@ export class VoiceStateUpdateEvent extends BaseDiscordEvent<Events.VoiceStateUpd
     #checkBlacklistUsers(channel: VoiceBasedChannel | null, blacklist: string[]): boolean {
         if (!channel) return false;
         const membersInChannel = channel.members.filter(member => !member.user.bot);
-        return membersInChannel.some(member => blacklist.includes(member.user.id));
+        if (membersInChannel.size === 0) return false;
+        return membersInChannel.every(member => blacklist.includes(member.user.id));
     }
 
     /**

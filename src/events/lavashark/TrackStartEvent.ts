@@ -17,7 +17,8 @@ export class TrackStartEvent extends BaseLavaSharkEvent<'trackStart'> {
 
     public async execute(bot: Bot, client: Client, player: Player): Promise<void> {
         const track = player.current;
-        await client.dashboard.update(player, track!);
+        if (!track) return;
+        await client.dashboard.update(player, track);
 
         // Set voice channel status with track info
         if (track && player.voiceChannelId) {
