@@ -84,6 +84,7 @@ export class DJManager {
 
     /**
      * Get DJ information categorized by type
+     * Each user appears in only one category using priority: Admin > Role > Dynamic/Static
      */
     public static async getDJInfo(bot: Bot, client: Client, guild: any, player?: Player): Promise<{
         admins: string[];
@@ -91,22 +92,21 @@ export class DJManager {
         dynamicDJs: string[];
         staticDJs: string[];
     }> {
-        const admins = bot.config.bot.admin;
+        // Deduplicate admins array itself
+        const admins = [...new Set(bot.config.bot.admin)];
         const staticDJs = bot.config.bot.dj;
-        const dynamicDJs = (player && player.djUsers) ? Array.from(player.djUsers) : [];
-        
-        // Get role-based DJs
+        const seen = new Set<string>(admins);
+
+        // Get role-based DJs, excluding anyone already counted as admin
         const roleDJs: string[] = [];
         if (bot.config.bot.djRoleId && guild) {
             try {
                 const djRole = guild.roles.cache.get(bot.config.bot.djRoleId);
                 if (djRole) {
-                    // Use role.members which is already cached for smaller roles
                     djRole.members.forEach((member: any) => {
-                        if (!admins.includes(member.user.id) && 
-                            !staticDJs.includes(member.user.id) &&
-                            !dynamicDJs.includes(member.user.id)) {
+                        if (!seen.has(member.user.id)) {
                             roleDJs.push(member.user.id);
+                            seen.add(member.user.id);
                         }
                     });
                 }
@@ -114,44 +114,43 @@ export class DJManager {
                 bot.logger.emit('error', bot.shardId, 'Error fetching guild members for DJ role check: ' + error);
             }
         }
-        
+
+        // Dynamic DJs, excluding anyone already counted as admin or role DJ
+        const rawDynamicDJs = (player && player.djUsers) ? Array.from(player.djUsers) : [];
+        const dynamicDJs = rawDynamicDJs.filter(id => !seen.has(id));
+
         return { admins, roleDJs, dynamicDJs, staticDJs };
     }
 
     /**
-     * Get formatted DJ display string with type indicators
+     * Get formatted DJ display string with type indicators.
+     * In DYNAMIC mode (used for dashboard subtitle), only shows dynamic DJ users.
+     * In STATIC mode, shows admins, role DJs, and static DJs with deduplication.
      */
     public static async getDJDisplayString(bot: Bot, client: Client, guild: any, player?: Player): Promise<string> {
-        const djInfo = await this.getDJInfo(bot, client, guild, player);
         const displayNames: string[] = [];
 
-        // Add admins with "Admin" indicator
-        for (const userId of djInfo.admins) {
-            try {
-                const user = await client.users.fetch(userId);
-                displayNames.push(`<@${user.id}> (Admin)`);
-            } catch (error) {
-                displayNames.push(`Unknown User (Admin)`);
+        // In DYNAMIC mode, only display the active dynamic DJs (not all admins/roles)
+        if (bot.config.bot.djMode === DJModeEnum.DYNAMIC) {
+            const djUserIds = (player && player.djUsers) ? Array.from(player.djUsers) : [];
+            for (const userId of djUserIds) {
+                displayNames.push(`<@${userId}> (DJ)`);
             }
         }
+        else {
+            // STATIC mode: show all categories with deduplication (handled by getDJInfo)
+            const djInfo = await this.getDJInfo(bot, client, guild, player);
 
-        // Add role-based DJs with "Role" indicator
-        for (const userId of djInfo.roleDJs) {
-            try {
-                const user = await client.users.fetch(userId);
-                displayNames.push(`<@${user.id}> (Role)`);
-            } catch (error) {
-                displayNames.push(`Unknown User (Role)`);
+            for (const userId of djInfo.admins) {
+                displayNames.push(`<@${userId}> (Admin)`);
             }
-        }
 
-        // Add dynamic DJs with "DJ" indicator
-        for (const userId of djInfo.dynamicDJs) {
-            try {
-                const user = await client.users.fetch(userId);
-                displayNames.push(`<@${user.id}> (DJ)`);
-            } catch (error) {
-                displayNames.push(`Unknown User (DJ)`);
+            for (const userId of djInfo.roleDJs) {
+                displayNames.push(`<@${userId}> (Role)`);
+            }
+
+            for (const userId of djInfo.dynamicDJs) {
+                displayNames.push(`<@${userId}> (DJ)`);
             }
         }
 
@@ -164,9 +163,24 @@ export class DJManager {
 
     /**
      * Handle DJ leave timeout in dynamic mode (only in DYNAMIC mode)
+     * DJ role users are permanent DJs and are not subject to dynamic removal.
      */
     public static handleDJLeave(bot: Bot, client: Client, player: Player, userId: string, voiceChannel: VoiceBasedChannel): void {
         if (bot.config.bot.djMode !== DJModeEnum.DYNAMIC || !player.djUsers?.has(userId)) {
+            return;
+        }
+
+        // DJ role users are permanent — do not remove them on leave
+        const guild = client.guilds.cache.get(player.guildId);
+        if (guild && bot.config.bot.djRoleId) {
+            const member = guild.members.cache.get(userId);
+            if (member && member.roles.cache.has(bot.config.bot.djRoleId)) {
+                return;
+            }
+        }
+
+        // Admins are also permanent DJs — do not remove them
+        if (bot.config.bot.admin.includes(userId)) {
             return;
         }
 
