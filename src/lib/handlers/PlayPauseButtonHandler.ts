@@ -16,13 +16,13 @@ export class PlayPauseButtonHandler extends DashboardButtonHandler {
         interaction: ButtonInteraction,
         player: Player
     ): Promise<void> {
-        // Check permissions for both pause and resume commands
-        if (!this.checkPermission(bot, interaction, 'pause', player) || 
-            !this.checkPermission(bot, interaction, 'resume', player)) {
+        const playing = !player.paused;
+
+        // Check permission for the relevant command
+        const commandToCheck = playing ? 'pause' : 'resume';
+        if (!this.checkPermission(bot, interaction, commandToCheck, player)) {
             return;
         }
-
-        const playing = !player.paused;
 
         if (playing) {
             await player.pause();

@@ -22,7 +22,7 @@ export class ShardingController {
     }
 
 
-    public spwan() {
-        this.manager.spawn();
+    public async spwan() {
+        await this.manager.spawn();
     }
 }

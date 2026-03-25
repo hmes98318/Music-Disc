@@ -67,7 +67,7 @@ export class SeekCommand extends BaseCommand {
 
         const targetTime = timeToSeconds(str);
 
-        if (!targetTime) {
+        if (targetTime === false || targetTime < 0) {
             await context.replyEphemeralError(bot, client.i18n.t('commands:MESSAGE_SEEK_ARGS_ERROR'));
             return;
         }
@@ -78,11 +78,12 @@ export class SeekCommand extends BaseCommand {
             await context.react('👍');
         }
 
+        const trackDuration = player.current!.duration;
         await player.seek(targetTimeMs);
 
-        if (targetTimeMs >= player.current!.duration.value) {
+        if (targetTimeMs >= trackDuration.value) {
             await context.replyWarning(bot, client.i18n.t('commands:MESSAGE_SEEK_SKIP', {
-                duration: player.current!.duration.label
+                duration: trackDuration.label
             }));
         }
         else {

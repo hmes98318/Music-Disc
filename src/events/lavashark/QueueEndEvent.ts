@@ -26,10 +26,10 @@ export class QueueEndEvent extends BaseLavaSharkEvent<'queueEnd'> {
             (client as any).queuePersistence.deleteQueue(player.guildId);
         }
 
+        await client.dashboard.destroy(player);
+
         if (bot.config.bot.autoLeave.enabled) {
             player.destroy();
         }
-
-        await client.dashboard.destroy(player);
     }
 }

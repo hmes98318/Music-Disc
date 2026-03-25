@@ -144,7 +144,7 @@ const registerExpressEvents = (bot: Bot, shardManager: ShardingManager, localNod
             const session = sessionManager.getSession(sessionId);
 
             if (session) {
-                res.redirect('/dashboard');
+                return res.redirect('/dashboard');
             }
 
             res.sendFile(`${viewsPath}/login.html`);
@@ -581,7 +581,7 @@ const registerExpressEvents = (bot: Bot, shardManager: ShardingManager, localNod
         }
     });
 
-    app.post('/api/localnode/controller', async (req, res) => {
+    app.post('/api/localnode/controller', verifyLogin, async (req, res) => {
         const { type } = req.body;
         let result;
 
