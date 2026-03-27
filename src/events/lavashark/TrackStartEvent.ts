@@ -74,9 +74,14 @@ export class TrackStartEvent extends BaseLavaSharkEvent<'trackStart'> {
             && cleanedAuthor.toLowerCase() !== 'unknown'
             && cleanedAuthor.toLowerCase() !== cleanedTitle.toLowerCase();
 
+        // Check if the title already starts with the author name followed by a separator
+        const titleAlreadyHasAuthor = hasAuthor
+            && /^.+\s[-–—]\s/.test(cleanedTitle)
+            && cleanedTitle.toLowerCase().startsWith(cleanedAuthor!.toLowerCase());
+
         let statusText: string;
 
-        if (hasAuthor) {
+        if (hasAuthor && !titleAlreadyHasAuthor) {
             const combined = `${cleanedAuthor} - ${cleanedTitle}`;
             statusText = combined.length > MAX_LENGTH
                 ? combined.substring(0, MAX_LENGTH - 3) + '...'
