@@ -1,5 +1,5 @@
 import { BaseLavaSharkEvent } from './base/BaseLavaSharkEvent.js';
-import { setVoiceChannelStatus } from '../../utils/functions/setVoiceStatus.js';
+import { setIdleVoiceStatus, setVoiceChannelStatus } from '../../utils/functions/setVoiceStatus.js';
 
 import type { Client } from 'discord.js';
 import type { Player } from 'lavashark';
@@ -16,9 +16,13 @@ export class QueueEndEvent extends BaseLavaSharkEvent<'queueEnd'> {
     }
 
     public async execute(bot: Bot, client: Client, player: Player): Promise<void> {
-        // Clear voice channel status
-        if (player.voiceChannelId && bot.config.bot.voiceStatusEmojis.length > 0) {
-            await setVoiceChannelStatus(bot, client, player.voiceChannelId, null);
+        // Set idle voice status or clear status when queue ends
+        if (player.voiceChannelId) {
+            if (!bot.config.bot.autoLeave.enabled && bot.config.bot.voiceStatusIdleText) {
+                await setIdleVoiceStatus(bot, client, player.voiceChannelId);
+            } else {
+                await setVoiceChannelStatus(bot, client, player.voiceChannelId, null);
+            }
         }
 
         // Delete persisted queue since queue has ended

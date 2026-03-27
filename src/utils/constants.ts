@@ -83,7 +83,10 @@ export const cst = {
             fairQueue               : false,
 
             // Voice channel status emojis
-            voiceStatusEmojis       : ['🎵']
+            voiceStatusEmojis       : ['🎵'],
+
+            // Voice channel status idle text
+            voiceStatusIdleText     : ''
         },
 
         // Lavalink node list

@@ -2,6 +2,7 @@ import i18next from 'i18next';
 
 import { BaseCommand } from './base/BaseCommand.js';
 import { CommandCategory } from '../@types/index.js';
+import { setIdleVoiceStatus } from '../utils/functions/setVoiceStatus.js';
 
 import type { Client } from 'discord.js';
 import type { CommandContext } from './base/CommandContext.js';
@@ -52,6 +53,11 @@ export class JoinCommand extends BaseCommand {
 
             player.metadata = context.isMessage() ? context.getMessage() : context.getInteraction();
             player.filters.setVolume(curVolume);
+
+            // Set idle voice status
+            if (player.voiceChannelId) {
+                await setIdleVoiceStatus(bot, client, player.voiceChannelId);
+            }
         } catch (error) {
             bot.logger.emit('error', bot.shardId, 'Error joining channel: ' + error);
             await context.replyEphemeralError(bot, client.i18n.t('commands:ERROR_PLAY_JOIN_CHANNEL'));

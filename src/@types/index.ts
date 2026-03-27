@@ -138,6 +138,7 @@ export type BotConfig = {
     maxQueuedSongs: MaxQueuedSongsConfig;
     fairQueue: boolean;
     voiceStatusEmojis: string[];
+    voiceStatusIdleText: string;
 };
 
 export type SpotifyConfig = {
