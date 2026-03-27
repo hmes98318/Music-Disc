@@ -132,7 +132,11 @@ export class DashboardManager {
      * Get repeat mode label for display
      */
     #getRepeatModeLabel(repeatMode: number): string {
-        const methods = ['OFF', 'SINGLE', 'ALL'];
-        return methods[repeatMode] || 'OFF';
+        const methods = [
+            this.#bot.i18n.t('commands:REPEAT_MODE_OFF'),
+            this.#bot.i18n.t('commands:REPEAT_MODE_SINGLE'),
+            this.#bot.i18n.t('commands:REPEAT_MODE_ALL')
+        ];
+        return methods[repeatMode] || methods[0];
     }
 }

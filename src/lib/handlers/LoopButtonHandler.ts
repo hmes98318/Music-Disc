@@ -14,7 +14,7 @@ import type { Bot } from '../../@types/index.js';
  * Handler for Dashboard Loop button
  */
 export class LoopButtonHandler extends DashboardButtonHandler {
-    private static readonly LOOP_MODES = ['Off', 'Single', 'All'];
+    private static readonly LOOP_MODE_VALUES = ['off', 'single', 'all'] as const;
 
     public static async handle(
         bot: Bot,
@@ -27,14 +27,20 @@ export class LoopButtonHandler extends DashboardButtonHandler {
             return;
         }
 
+        const modeLabels = [
+            client.i18n.t('events:LOOP_MODE_OFF'),
+            client.i18n.t('events:LOOP_MODE_SINGLE'),
+            client.i18n.t('events:LOOP_MODE_ALL')
+        ];
+
         const select = new StringSelectMenuBuilder()
             .setCustomId(DashboardButtonId.LoopSelect)
-            .setPlaceholder('Select the loop mode')
-            .setOptions(this.LOOP_MODES.map(mode => 
+            .setPlaceholder(client.i18n.t('commands:LOOP_SELECT_PLACEHOLDER'))
+            .setOptions(this.LOOP_MODE_VALUES.map((value, index) =>
                 new StringSelectMenuOptionBuilder()
-                    .setLabel(mode)
-                    .setDescription(`Set loop mode to ${mode}`)
-                    .setValue(mode)
+                    .setLabel(modeLabels[index])
+                    .setDescription(client.i18n.t('commands:LOOP_SELECT_DESCRIPTION', { mode: modeLabels[index] }))
+                    .setValue(value)
             ));
 
         const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(select);
@@ -51,18 +57,22 @@ export class LoopButtonHandler extends DashboardButtonHandler {
         });
 
         collector.on('collect', async (i: StringSelectMenuInteraction) => {
-            const selectedMode = i.values[0];
+            const selectedValue = i.values[0];
             let mode = 0;
+            let modeLabel = modeLabels[0];
 
-            switch (selectedMode) {
-                case 'Off':
+            switch (selectedValue) {
+                case 'off':
                     mode = RepeatMode.OFF;
+                    modeLabel = modeLabels[0];
                     break;
-                case 'Single':
+                case 'single':
                     mode = RepeatMode.TRACK;
+                    modeLabel = modeLabels[1];
                     break;
-                case 'All':
+                case 'all':
                     mode = RepeatMode.QUEUE;
+                    modeLabel = modeLabels[2];
                     break;
             }
 
@@ -72,7 +82,7 @@ export class LoopButtonHandler extends DashboardButtonHandler {
             await player.dashboardMsg?.edit({ components: [buttonRow] });
 
             await i.update({
-                embeds: [embeds.textSuccessMsg(bot, client.i18n.t('events:MESSAGE_SET_LOOP_MODE', { mode: selectedMode }))],
+                embeds: [embeds.textSuccessMsg(bot, client.i18n.t('events:MESSAGE_SET_LOOP_MODE', { mode: modeLabel }))],
                 components: []
             });
         });

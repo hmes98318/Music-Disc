@@ -28,15 +28,15 @@ export class LoopCommand extends BaseCommand {
                     required: true,
                     choices: [
                         {
-                            name: 'Off',
+                            name: i18next.t('commands:LOOP_CHOICE_OFF'),
                             value: 'off'
                         },
                         {
-                            name: 'One',
+                            name: i18next.t('commands:LOOP_CHOICE_ONE'),
                             value: 'one'
                         },
                         {
-                            name: 'All',
+                            name: i18next.t('commands:LOOP_CHOICE_ALL'),
                             value: 'all'
                         }
                     ]
@@ -67,7 +67,11 @@ export class LoopCommand extends BaseCommand {
         }
 
         let mode: number | null = null;
-        const methods = ['OFF', 'SINGLE', 'ALL'];
+        const methods = [
+            client.i18n.t('commands:REPEAT_MODE_OFF'),
+            client.i18n.t('commands:REPEAT_MODE_SINGLE'),
+            client.i18n.t('commands:REPEAT_MODE_ALL')
+        ];
 
         switch (modeParam.toLowerCase()) {
             case 'off': {

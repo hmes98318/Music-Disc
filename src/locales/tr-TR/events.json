@@ -16,6 +16,9 @@
     "MESSAGE_NOW_PLAYING_TITLE": "Şuan Çalıyor: {{title}}\n\n",
 	"MESSAGE_QUEUE_PAGE": "\n\n----- Sayfa {{curPage}}/{{maxPage}} -----",
     "MESSAGE_SELECT_LOOP_MODE": "Döngü modunu seçiniz.",
+    "LOOP_MODE_OFF": "Off",
+    "LOOP_MODE_SINGLE": "Single",
+    "LOOP_MODE_ALL": "All",
     "MESSAGE_SEND_PRIVATE_MESSAGE": "✅ Parçanın adını size özel mesaj olarak gönderdim.",
     "MESSAGE_SET_LOOP_MODE": "✅ Döngü modu `{{mode}}`",
     "MESSAGE_SPECIFIC_CHANNEL_WARN": "❌ Bu kanalda komut kullanamazsınız! Lütfen <#{{channelId}}> metin kanalını kullanın."
