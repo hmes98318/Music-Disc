@@ -88,6 +88,7 @@
     "ERROR_NO_PLAYING": "❌ 目前沒有正在播放的音樂。",
     "ERROR_SKIP_NOT_REQUESTER": "❌ 只有點播這首歌的人可以跳過。管理員和 DJ（如果啟用）也可以跳過。",
     "ERROR_SEEK_NOT_REQUESTER": "❌ 只有點播這首歌的人可以調整播放位置。管理員和 DJ（如果啟用）也可以調整。",
+    "ERROR_PAUSE_NOT_REQUESTER": "❌ 只有點播這首歌的人可以暫停。管理員和 DJ（如果啟用）也可以暫停。",
     "ERROR_PLAY_JOIN_CHANNEL": "❌ 我無法加入語音頻道。",
     "ERROR_PLAY_MUSIC": "❌ 服務遇到一些問題，請稍後再試。（{{reason}}）",
     "ERROR_PLAY_SEARCH": "❌ 找不到結果。（{{reason}}）",

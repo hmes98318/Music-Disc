@@ -23,7 +23,7 @@ export class LoopButtonHandler extends DashboardButtonHandler {
         player: Player
     ): Promise<void> {
         // Check loop permission
-        if (!this.checkPermission(bot, interaction, 'loop', player)) {
+        if (!await this.checkPermission(bot, client, interaction, 'loop', player)) {
             return;
         }
 

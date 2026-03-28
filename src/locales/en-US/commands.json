@@ -88,6 +88,7 @@
     "ERROR_NO_PLAYING": "❌ There is no music currently playing.",
     "ERROR_SKIP_NOT_REQUESTER": "❌ Only the person who requested this song can skip it. Admins and DJs (if enabled) can also skip.",
     "ERROR_SEEK_NOT_REQUESTER": "❌ Only the person who requested this song can seek. Admins and DJs (if enabled) can also seek.",
+    "ERROR_PAUSE_NOT_REQUESTER": "❌ Only the person who requested this song can pause it. Admins and DJs (if enabled) can also pause.",
     "ERROR_PLAY_JOIN_CHANNEL": "❌ I can't join voice channel.",
     "ERROR_PLAY_MUSIC": "❌ The service is experiencing some problems, please try again. ({{reason}})",
     "ERROR_PLAY_SEARCH": "❌ No results found. ({{reason}})",

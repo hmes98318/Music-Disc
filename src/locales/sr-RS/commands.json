@@ -88,6 +88,7 @@
     "ERROR_NO_PLAYING": "❌ Trenutno se ne pušta muzika.",
     "ERROR_SKIP_NOT_REQUESTER": "❌ Samo osoba koja je zatražila ovu pesmu može da je preskoči. Administratori i DJ-evi (ako je omogućeno) takođe mogu da preskoče.",
     "ERROR_SEEK_NOT_REQUESTER": "❌ Samo osoba koja je zatražila ovu pesmu može da je premotava. Administratori i DJ-evi (ako je omogućeno) takođe mogu da premotavaju.",
+    "ERROR_PAUSE_NOT_REQUESTER": "❌ Samo osoba koja je zatražila ovu pesmu može da je pauzira. Administratori i DJ-evi (ako je omogućeno) takođe mogu da pauziraju.",
     "ERROR_PLAY_JOIN_CHANNEL": "❌ Ne mogu da se pridružim govornom kanalu.",
     "ERROR_PLAY_MUSIC": "❌ Servis ima problema, pokušaj ponovo. ({{reason}})",
     "ERROR_PLAY_SEARCH": "❌ Nema rezultata. ({{reason}})",

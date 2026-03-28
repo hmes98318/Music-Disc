@@ -50,6 +50,9 @@ export class TrackStartEvent extends BaseLavaSharkEvent<'trackStart'> {
         // Remove standalone quality tags: [HD], [HQ], [4K], (HD), (HQ), (4K)
         cleaned = cleaned.replace(/[\[\(]\s*(?:hd|hq|4k)\s*[\]\)]/gi, '');
 
+        // Remove "(Audio Only)" and similar patterns
+        cleaned = cleaned.replace(/[\[\(]\s*audio\s*only\s*[\]\)]/gi, '');
+
         // Remove trailing "| Official Video", "- Official Audio", etc.
         cleaned = cleaned.replace(/\s*[|\-]\s*official\s*(?:music\s*)?(?:hd\s*)?(?:lyric\s*)?(?:video|audio|lyrics?)\s*$/i, '');
 
@@ -77,8 +80,8 @@ export class TrackStartEvent extends BaseLavaSharkEvent<'trackStart'> {
 
         // Check if the title already starts with the author name followed by a separator
         const titleAlreadyHasAuthor = hasAuthor
-            && /^.+\s[-–—]\s/.test(cleanedTitle)
-            && cleanedTitle.toLowerCase().startsWith(cleanedAuthor!.toLowerCase());
+            && cleanedTitle.toLowerCase().startsWith(cleanedAuthor!.toLowerCase())
+            && /^.+\s*[-–—:]\s/.test(cleanedTitle);
 
         let statusText: string;
 

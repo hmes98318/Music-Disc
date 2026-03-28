@@ -88,6 +88,7 @@
     "ERROR_NO_PLAYING": "❌ 현재 재생 중인 음악이 없습니다.",
     "ERROR_SKIP_NOT_REQUESTER": "❌ 이 곡을 요청한 사람만 건너뛸 수 있습니다. 관리자 및 DJ(활성화된 경우)도 건너뛸 수 있습니다.",
     "ERROR_SEEK_NOT_REQUESTER": "❌ 이 곡을 요청한 사람만 탐색할 수 있습니다. 관리자 및 DJ(활성화된 경우)도 탐색할 수 있습니다.",
+    "ERROR_PAUSE_NOT_REQUESTER": "❌ 이 곡을 요청한 사람만 일시정지할 수 있습니다. 관리자 및 DJ(활성화된 경우)도 일시정지할 수 있습니다.",
     "ERROR_PLAY_JOIN_CHANNEL": "❌ 음성 채널에 참여할 수 없습니다.",
     "ERROR_PLAY_MUSIC": "❌ 서비스에 문제가 발생했습니다. 다시 시도해 주세요. 이유: ({{reason}})",
     "ERROR_PLAY_SEARCH": "❌ 검색결과가 없습니다. 이유: ({{reason}})",

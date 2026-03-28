@@ -2,8 +2,9 @@ import i18next from 'i18next';
 
 import { BaseCommand } from './base/BaseCommand.js';
 import { CommandCategory } from '../@types/index.js';
+import { PermissionManager } from '../lib/PermissionManager.js';
 
-import type { Client } from 'discord.js';
+import type { Client, GuildMember } from 'discord.js';
 import type { CommandContext } from './base/CommandContext.js';
 import type { Bot, CommandMetadata } from '../@types/index.js';
 
@@ -37,6 +38,23 @@ export class PauseCommand extends BaseCommand {
         if (player.paused) {
             await context.replyEphemeralError(bot, client.i18n.t('commands:MESSAGE_PAUSE_MUSIC_PAUSED'));
             return;
+        }
+
+        // Check if pause is restricted to requester only
+        if (bot.config.command.requesterOnly.includes('pause')) {
+            const currentTrack = player.current;
+            const userId = context.isMessage() ? context.getMessage().author.id : context.getInteraction().user.id;
+            const isRequester = currentTrack?.requester?.id === userId;
+            const isAdmin = bot.config.bot.admin.includes(userId);
+            const member = context.isMessage()
+                ? context.getMessage().member as GuildMember | null
+                : context.getInteraction().member as GuildMember | null;
+            const isDJ = PermissionManager.hasDJCommandPermission(bot, userId, member, player);
+            const canDJBypass = bot.config.command.requesterDjBypass.includes('pause') && isDJ;
+            if (!isRequester && !isAdmin && !canDJBypass) {
+                await context.replyEphemeralError(bot, client.i18n.t('commands:ERROR_PAUSE_NOT_REQUESTER'));
+                return;
+            }
         }
 
         const success = await player.pause();

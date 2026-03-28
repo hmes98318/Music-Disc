@@ -15,7 +15,7 @@ export class StopButtonHandler extends DashboardButtonHandler {
         player: Player
     ): Promise<void> {
         // Check leave permission
-        if (!this.checkPermission(bot, interaction, 'leave', player)) {
+        if (!await this.checkPermission(bot, client, interaction, 'leave', player)) {
             return;
         }
 
