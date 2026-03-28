@@ -31,6 +31,12 @@ export class StopCommand extends BaseCommand {
             return;
         }
 
+        // Clean up queue persistence before stopping
+        if (bot.config.queuePersistence.enabled && (client as any).queuePersistence) {
+            (client as any).queuePersistence.stopPeriodicSave(player.guildId);
+            (client as any).queuePersistence.deleteQueue(player.guildId);
+        }
+
         player.queue.clear();
         await player.skip();
         await client.dashboard.destroy(player);

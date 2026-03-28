@@ -19,6 +19,12 @@ export class StopButtonHandler extends DashboardButtonHandler {
             return;
         }
 
+        // Clean up queue persistence before stopping
+        if (bot.config.queuePersistence.enabled && (client as any).queuePersistence) {
+            (client as any).queuePersistence.stopPeriodicSave(player.guildId);
+            (client as any).queuePersistence.deleteQueue(player.guildId);
+        }
+
         if (bot.config.bot.autoLeave.enabled) {
             player.destroy();
         } else {

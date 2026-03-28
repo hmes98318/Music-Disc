@@ -206,20 +206,31 @@ export class QueuePersistence {
             const stmt = this.db.prepare('SELECT * FROM queues');
             const rows = stmt.all() as any[];
 
-            const queues: PersistedQueue[] = rows.map(row => ({
-                guildId: row.guild_id,
-                voiceChannelId: row.voice_channel_id,
-                textChannelId: row.text_channel_id,
-                tracks: JSON.parse(row.tracks),
-                currentTrackIndex: row.current_track_index,
-                volume: row.volume,
-                repeatMode: row.repeat_mode,
-                paused: row.paused === 1,
-                position: row.position,
-                timestamp: row.timestamp
-            }));
+            const queues: PersistedQueue[] = [];
 
-            this.bot.logger.emit('log', this.bot.shardId, 
+            for (const row of rows) {
+                try {
+                    queues.push({
+                        guildId: row.guild_id,
+                        voiceChannelId: row.voice_channel_id,
+                        textChannelId: row.text_channel_id,
+                        tracks: JSON.parse(row.tracks),
+                        currentTrackIndex: row.current_track_index,
+                        volume: row.volume,
+                        repeatMode: row.repeat_mode,
+                        paused: row.paused === 1,
+                        position: row.position,
+                        timestamp: row.timestamp
+                    });
+                } catch (parseError) {
+                    this.bot.logger.emit('error', this.bot.shardId,
+                        `[QueuePersistence] Corrupted queue data for guild ${row.guild_id}, skipping: ${parseError}`
+                    );
+                    this.deleteQueue(row.guild_id);
+                }
+            }
+
+            this.bot.logger.emit('log', this.bot.shardId,
                 `[QueuePersistence] Loaded ${queues.length} persisted queue(s)`
             );
 
@@ -422,8 +433,14 @@ export class QueuePersistence {
         this.stopPeriodicSave(player.guildId);
 
         const timer = setInterval(async () => {
-            if (player.playing && player.current) {
-                await this.saveQueue(player);
+            try {
+                if (player.playing && player.current) {
+                    await this.saveQueue(player);
+                }
+            } catch (error) {
+                this.bot.logger.emit('error', this.bot.shardId,
+                    `[QueuePersistence] Periodic save failed for guild ${player.guildId}: ${error}`
+                );
             }
         }, QueuePersistence.PERIODIC_SAVE_INTERVAL);
 
