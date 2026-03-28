@@ -77,12 +77,12 @@ export class VoiceStateUpdateEvent extends BaseDiscordEvent<Events.VoiceStateUpd
         }
 
         // Clear existing timeout if channel has valid members
-        if (!this.#checkBlacklistUsers(oldState.channel, blacklist)) {
+        if (!this.#checkBlacklistUsers(bot, oldState.channel, blacklist)) {
             this.#clearTimeout(oldState.guild.id);
         }
 
         // If channel only has bot or blacklisted users, start auto-leave timeout
-        if (oldState.channel!.members.size <= 1 || this.#checkBlacklistUsers(oldState.channel, blacklist)) {
+        if (oldState.channel!.members.size <= 1 || this.#checkBlacklistUsers(bot, oldState.channel, blacklist)) {
             this.#startAutoLeaveTimeout(bot, client, player, oldState.guild.id);
         }
     }
@@ -125,12 +125,12 @@ export class VoiceStateUpdateEvent extends BaseDiscordEvent<Events.VoiceStateUpd
         if (botChannelId !== newChannelId) return;
 
         // If only blacklisted users in channel, start timeout
-        if (this.#checkBlacklistUsers(newState.channel, blacklist)) {
+        if (this.#checkBlacklistUsers(bot, newState.channel, blacklist)) {
             this.#startAutoLeaveTimeout(bot, client, player, newState.guild.id);
         }
 
         // If valid members joined, clear timeout
-        if (newState.channel!.members.size >= 2 && !this.#checkBlacklistUsers(newState.channel, blacklist)) {
+        if (newState.channel!.members.size >= 2 && !this.#checkBlacklistUsers(bot, newState.channel, blacklist)) {
             this.#clearTimeout(newState.guild.id);
         }
     }
@@ -172,12 +172,12 @@ export class VoiceStateUpdateEvent extends BaseDiscordEvent<Events.VoiceStateUpd
             }
 
             // Clear timeout if valid members remain
-            if (!this.#checkBlacklistUsers(oldState.channel, blacklist)) {
+            if (!this.#checkBlacklistUsers(bot, oldState.channel, blacklist)) {
                 this.#clearTimeout(oldState.guild.id);
             }
 
             // Start timeout if only bot or blacklisted users remain
-            if (oldState.channel!.members.size <= 1 || this.#checkBlacklistUsers(oldState.channel, blacklist)) {
+            if (oldState.channel!.members.size <= 1 || this.#checkBlacklistUsers(bot, oldState.channel, blacklist)) {
                 this.#startAutoLeaveTimeout(bot, client, player, oldState.guild.id);
             }
         }
@@ -192,12 +192,12 @@ export class VoiceStateUpdateEvent extends BaseDiscordEvent<Events.VoiceStateUpd
             }
 
             // Start timeout if only blacklisted users
-            if (this.#checkBlacklistUsers(newState.channel, blacklist)) {
+            if (this.#checkBlacklistUsers(bot, newState.channel, blacklist)) {
                 this.#startAutoLeaveTimeout(bot, client, player, newState.guild.id);
             }
 
             // Clear timeout if valid members joined
-            if (newState.channel!.members.size >= 2 && !this.#checkBlacklistUsers(newState.channel, blacklist)) {
+            if (newState.channel!.members.size >= 2 && !this.#checkBlacklistUsers(bot, newState.channel, blacklist)) {
                 this.#clearTimeout(newState.guild.id);
             }
         }
@@ -205,13 +205,16 @@ export class VoiceStateUpdateEvent extends BaseDiscordEvent<Events.VoiceStateUpd
 
     /**
      * Check if channel only has blacklisted users (excluding bots)
+     * Checks both static config blacklist and dynamic BlacklistManager
      * @private
      */
-    #checkBlacklistUsers(channel: VoiceBasedChannel | null, blacklist: string[]): boolean {
+    #checkBlacklistUsers(bot: Bot, channel: VoiceBasedChannel | null, blacklist: string[]): boolean {
         if (!channel) return false;
         const membersInChannel = channel.members.filter(member => !member.user.bot);
         if (membersInChannel.size === 0) return false;
-        return membersInChannel.every(member => blacklist.includes(member.user.id));
+        return membersInChannel.every(member =>
+            blacklist.includes(member.user.id) || (bot.blacklistManager?.has(member.user.id) ?? false)
+        );
     }
 
     /**
@@ -220,6 +223,12 @@ export class VoiceStateUpdateEvent extends BaseDiscordEvent<Events.VoiceStateUpd
      */
     #startAutoLeaveTimeout(bot: Bot, client: Client, player: any, guildId: string): void {
         const timeoutID = setTimeout(async () => {
+            // Clean up queue persistence before leaving
+            if (bot.config.queuePersistence.enabled && (client as any).queuePersistence) {
+                (client as any).queuePersistence.stopPeriodicSave(guildId);
+                (client as any).queuePersistence.deleteQueue(guildId);
+            }
+
             if (bot.config.bot.autoLeave.enabled) {
                 player.destroy();
             }

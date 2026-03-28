@@ -114,6 +114,10 @@ export class QueueButtonHandler {
 
         player.queue.clear();
 
+        if (bot.config.queuePersistence.enabled && (client as any).queuePersistence) {
+            await (client as any).queuePersistence.saveQueue(player);
+        }
+
         if (player.setting.queuePage) {
             player.setting.queuePage.curPage = 1;
             player.setting.queuePage.maxPage = 1;

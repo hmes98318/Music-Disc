@@ -88,6 +88,10 @@ export class RemoveCommand extends BaseCommand {
     ): Promise<void> {
         const SUCCESS = player.queue.remove(index - 1);
 
+        if (SUCCESS && bot.config.queuePersistence.enabled && (client as any).queuePersistence) {
+            await (client as any).queuePersistence.saveQueue(player);
+        }
+
         if (!SUCCESS) {
             if (context.isMessage()) {
                 await context.react('❌');
@@ -122,6 +126,10 @@ export class RemoveCommand extends BaseCommand {
         index2: number
     ): Promise<void> {
         const SUCCESS = player.queue.remove(index1 - 1, index2 - index1 + 1);
+
+        if (SUCCESS && bot.config.queuePersistence.enabled && (client as any).queuePersistence) {
+            await (client as any).queuePersistence.saveQueue(player);
+        }
 
         if (!SUCCESS) {
             if (context.isMessage()) {
@@ -222,6 +230,10 @@ export class RemoveCommand extends BaseCommand {
 
             await query.react('👍');
             player.queue.remove(index - 1);
+
+            if (bot.config.queuePersistence.enabled && (client as any).queuePersistence) {
+                await (client as any).queuePersistence.saveQueue(player);
+            }
 
             await query.reply({
                 embeds: [embeds.removeTrack(bot, tracks[index - 1])],

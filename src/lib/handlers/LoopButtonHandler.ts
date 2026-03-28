@@ -53,7 +53,7 @@ export class LoopButtonHandler extends DashboardButtonHandler {
         const collector = interaction.channel!.createMessageComponentCollector({
             time: 20000,
             max: 1,
-            filter: (i: any) => i.user.id === interaction.user.id
+            filter: (i: any) => i.user.id === interaction.user.id && i.customId === DashboardButtonId.LoopSelect
         });
 
         collector.on('collect', async (i: StringSelectMenuInteraction) => {

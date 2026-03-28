@@ -23,6 +23,10 @@ export class ShuffleButtonHandler extends DashboardButtonHandler {
 
         player.queue.shuffle();
 
+        if (bot.config.queuePersistence.enabled && (client as any).queuePersistence) {
+            await (client as any).queuePersistence.saveQueue(player);
+        }
+
         await interaction.reply({
             embeds: [embeds.textSuccessMsg(bot, client.i18n.t('events:MESSAGE_MUSIC_SHUFFLE'))],
             ephemeral: true,

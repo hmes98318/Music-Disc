@@ -71,6 +71,10 @@ export class MoveCommand extends BaseCommand {
 
         const isSuccess = player.queue.move(index1 - 1, index2 - 1);
 
+        if (isSuccess && bot.config.queuePersistence.enabled && (client as any).queuePersistence) {
+            await (client as any).queuePersistence.saveQueue(player);
+        }
+
         if (!isSuccess) {
             await context.replyEphemeralError(bot, client.i18n.t('commands:MESSAGE_MOVE_WRONG_INDEX', {
                 max: player.queue.size

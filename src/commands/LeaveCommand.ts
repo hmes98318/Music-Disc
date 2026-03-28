@@ -31,6 +31,11 @@ export class LeaveCommand extends BaseCommand {
             return;
         }
 
+        if (bot.config.queuePersistence.enabled && (client as any).queuePersistence) {
+            (client as any).queuePersistence.stopPeriodicSave(player.guildId);
+            (client as any).queuePersistence.deleteQueue(player.guildId);
+        }
+
         player.destroy();
 
         if (context.isMessage()) {
