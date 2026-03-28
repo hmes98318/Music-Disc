@@ -99,7 +99,10 @@ const config = {
         // Voice channel status emojis (standard or custom Discord emojis)
         // Set to [] to disable emoji. If multiple provided, a random one is picked each time.
         // Custom emojis: use format '<:name:id>' or '<a:name:id>' for animated
-        voiceStatusEmojis       : ['🎵']
+        voiceStatusEmojis       : ['🎵'],
+
+        // Set voice idle status which is displayed when no songs are being played by the bot in its voice channel while the bot is present in it
+        voiceStatusIdleText     : '🎵 Use /play to jam!'
     },
 
     blacklist                   : [],           // It must be the user ID (string[])
