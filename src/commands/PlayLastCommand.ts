@@ -78,7 +78,8 @@ export class PlayLastCommand extends BaseCommand {
         if (!newPlayer.setting) {
             newPlayer.setting = {
                 queuePage: null,
-                volume: null
+                volume: null,
+                fairQueueRotation: []
             };
         }
 

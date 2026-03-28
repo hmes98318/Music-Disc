@@ -49,6 +49,7 @@ export type DJMode = keyof typeof DJModeEnum;
 export interface PlayerSetting {
     queuePage: QueuePage | null;
     volume: number | null;
+    fairQueueRotation?: string[];
 }
 
 export interface QueuePage {

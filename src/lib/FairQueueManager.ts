@@ -8,10 +8,9 @@ import type { Bot } from '../@types/index.js';
  */
 export class FairQueueManager {
     /**
-     * Reorder the queue to implement fair rotation (round-robin)
-     * Called after a track ends to rotate queue so next song is from a different user.
-     * Present (in-channel) users are prioritized for rotation; absent users' songs
-     * are only played when all present users' songs have been exhausted in a round.
+     * Reorder the queue to implement fair rotation (round-robin).
+     * Present (in-channel) users' tracks are interleaved in rotation order.
+     * Absent users' tracks are appended at the end in original queue order.
      */
     public static reorderQueue(bot: Bot, player: Player, voiceChannel: VoiceChannel | null): void {
         if (!bot.config.bot.fairQueue) {
@@ -23,73 +22,105 @@ export class FairQueueManager {
         }
 
         const lastPlayedUserId = player.current?.requester?.id;
-        if (!lastPlayedUserId) {
-            return;
-        }
 
-        // Get list of users currently in voice channel
-        const activeUserIds = voiceChannel
+        // Get present (non-bot) user IDs from voice channel
+        const presentUserIds = voiceChannel
             ? new Set(voiceChannel.members.filter(m => !m.user.bot).keys())
-            : null;
+            : new Set<string>();
 
-        // Categorize tracks by user, preserving first-appearance order
-        const presentUserOrder: string[] = [];
-        const absentUserOrder: string[] = [];
+        // Update persistent rotation order
+        const rotation = this.updateRotationOrder(player, presentUserIds);
+        if (rotation.length === 0) return;
+
+        // Categorize tracks by user presence
         const tracksByUser = new Map<string, (Track | any)[]>();
+        const absentTracks: (Track | any)[] = [];
 
         for (const track of player.queue.tracks) {
             const userId = track.requester?.id;
-            if (!userId) continue;
+            if (!userId) {
+                absentTracks.push(track);
+                continue;
+            }
+            if (presentUserIds.has(userId)) {
+                if (!tracksByUser.has(userId)) tracksByUser.set(userId, []);
+                tracksByUser.get(userId)!.push(track);
+            }
+            else {
+                absentTracks.push(track);
+            }
+        }
 
-            if (!tracksByUser.has(userId)) {
-                tracksByUser.set(userId, []);
-                const isPresent = !activeUserIds || activeUserIds.has(userId);
-                if (isPresent) {
-                    presentUserOrder.push(userId);
-                } else {
-                    absentUserOrder.push(userId);
+        // Find start position: user AFTER lastPlayedUserId in rotation
+        let startIndex = 0;
+        if (lastPlayedUserId) {
+            const lastIdx = rotation.indexOf(lastPlayedUserId);
+            if (lastIdx !== -1) {
+                startIndex = (lastIdx + 1) % rotation.length;
+            }
+        }
+
+        // Build interleaved queue via round-robin
+        const interleaved: (Track | any)[] = [];
+        const consumed = new Map<string, number>();
+        for (const userId of rotation) consumed.set(userId, 0);
+
+        let exhausted = false;
+        while (!exhausted) {
+            exhausted = true;
+            for (let i = 0; i < rotation.length; i++) {
+                const idx = (startIndex + i) % rotation.length;
+                const userId = rotation[idx];
+                const userTracks = tracksByUser.get(userId);
+                const consumedCount = consumed.get(userId) || 0;
+                if (userTracks && consumedCount < userTracks.length) {
+                    interleaved.push(userTracks[consumedCount]);
+                    consumed.set(userId, consumedCount + 1);
+                    exhausted = false;
                 }
             }
-            tracksByUser.get(userId)!.push(track);
         }
 
-        // Determine rotation order: present users first, then absent users as fallback
-        // This ensures absent users' songs still get played, just at lower priority
-        const userOrder = presentUserOrder.length > 0
-            ? presentUserOrder
-            : absentUserOrder;
+        // Append absent users' tracks at the end (original queue order)
+        interleaved.push(...absentTracks);
 
-        if (userOrder.length <= 1) {
-            return;
+        // Replace queue contents
+        player.queue.tracks.splice(0, player.queue.tracks.length, ...interleaved);
+
+        bot.logger.emit('log', bot.shardId,
+            `[FairQueue] Reordered: ${interleaved.length} tracks, rotation: [${rotation.join(', ')}], absent: ${absentTracks.length}`
+        );
+    }
+
+    /**
+     * Update the persistent rotation order.
+     * - Keep existing present users in their current order
+     * - Remove users who left
+     * - Append newly present users at the end
+     */
+    private static updateRotationOrder(player: Player, presentUserIds: Set<string>): string[] {
+        const existing = player.setting?.fairQueueRotation || [];
+
+        // Keep users who are still present (in original rotation order)
+        const kept = existing.filter(id => presentUserIds.has(id));
+        const keptSet = new Set(kept);
+
+        // Append new users (present but not in existing rotation)
+        const newUsers: string[] = [];
+        for (const id of presentUserIds) {
+            if (!keptSet.has(id)) {
+                newUsers.push(id);
+            }
         }
 
-        // Find where the last played user sits in rotation
-        let lastUserIndex = userOrder.indexOf(lastPlayedUserId);
-        if (lastUserIndex === -1) {
-            lastUserIndex = userOrder.length - 1; // Will wrap to index 0
+        const rotation = [...kept, ...newUsers];
+
+        // Save back to player setting
+        if (player.setting) {
+            player.setting.fairQueueRotation = rotation;
         }
 
-        const nextUserIndex = (lastUserIndex + 1) % userOrder.length;
-        const nextUserId = userOrder[nextUserIndex];
-
-        if (nextUserId === lastPlayedUserId) {
-            return;
-        }
-
-        // Move the first song from the next user to the front of the queue
-        const nextUserTracks = tracksByUser.get(nextUserId)!;
-        const trackToMove = nextUserTracks[0];
-
-        const trackIndex = player.queue.tracks.findIndex(t => t === trackToMove);
-
-        if (trackIndex > 0) {
-            player.queue.tracks.splice(trackIndex, 1);
-            player.queue.tracks.unshift(trackToMove as any);
-
-            bot.logger.emit('log', bot.shardId,
-                `[FairQueue] Reordered queue: moved track from user ${nextUserId} to front (was at position ${trackIndex}, rotation: ${userOrder.join(' -> ')})`
-            );
-        }
+        return rotation;
     }
 
     /**
