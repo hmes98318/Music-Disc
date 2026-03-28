@@ -128,7 +128,8 @@ export class PlayCommand extends BaseCommand {
         if (!player.setting) {
             player.setting = {
                 queuePage: null,
-                volume: null
+                volume: null,
+                fairQueueRotation: []
             };
         }
 

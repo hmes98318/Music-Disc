@@ -149,7 +149,8 @@ export class ClientReadyEvent extends BaseDiscordEvent<Events.ClientReady> {
         if (!player.setting) {
             player.setting = {
                 queuePage: null,
-                volume: null
+                volume: null,
+                fairQueueRotation: []
             };
         }
 
