@@ -174,7 +174,11 @@ export class RemoveCommand extends BaseCommand {
             tracksQueue = tracks.join('\n');
         }
 
-        const methods = ['OFF', 'SINGLE', 'ALL'];
+        const methods = [
+            client.i18n.t('commands:REPEAT_MODE_OFF'),
+            client.i18n.t('commands:REPEAT_MODE_SINGLE'),
+            client.i18n.t('commands:REPEAT_MODE_ALL')
+        ];
         const repeatMode = player.repeatMode;
         const instruction = client.i18n.t('commands:MESSAGE_REMOVE_INSTRUCTION', {
             length: tracks.length

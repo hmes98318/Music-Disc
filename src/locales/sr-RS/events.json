@@ -16,6 +16,9 @@
     "MESSAGE_NOW_PLAYING_TITLE": "Trenutno svira: {{title}}\n\n",
     "MESSAGE_QUEUE_PAGE": "\n\n----- Strana {{curPage}}/{{maxPage}} -----",
     "MESSAGE_SELECT_LOOP_MODE": "Izaberi režim ponavljanja pesme.",
+    "LOOP_MODE_OFF": "Isključeno",
+    "LOOP_MODE_SINGLE": "Jedna",
+    "LOOP_MODE_ALL": "Sve",
     "MESSAGE_SEND_PRIVATE_MESSAGE": "✅ Poslao sam ti naziv muzike u privatnoj poruci.",
     "MESSAGE_SET_LOOP_MODE": "✅ Ponavljanje postavljeno na `{{mode}}`",
     "MESSAGE_SPECIFIC_CHANNEL_WARN": "❌ Ne možeš izvršavati komande u ovom kanalu. Molim te koristi <#{{channelId}}> tekstualni kanal."

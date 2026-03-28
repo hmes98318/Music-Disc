@@ -101,7 +101,9 @@ const config = {
         // Custom emojis: use format '<:name:id>' or '<a:name:id>' for animated
         voiceStatusEmojis       : ['🎵'],
 
-        // Set voice idle status which is displayed when no songs are being played by the bot in its voice channel while the bot is present in it
+        // Voice channel status idle text (shown when bot is in channel but nothing is playing)
+        // Set to '' to disable idle status. Supports standard or custom Discord emojis in the text.
+        // Example: '🎵 Use /play to jam!'
         voiceStatusIdleText     : '🎵 Use /play to jam!'
     },
 

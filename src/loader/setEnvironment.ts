@@ -108,7 +108,11 @@ const setEnvironment = (defaultConfig: Config) => {
 
         voiceStatusEmojis: Array.isArray(config.bot.voiceStatusEmojis)
             ? config.bot.voiceStatusEmojis
-            : defaultConfig.bot.voiceStatusEmojis
+            : defaultConfig.bot.voiceStatusEmojis,
+
+        voiceStatusIdleText: (typeof config.bot.voiceStatusIdleText === 'string')
+            ? config.bot.voiceStatusIdleText
+            : defaultConfig.bot.voiceStatusIdleText
     };
 
     // Lavalink node list

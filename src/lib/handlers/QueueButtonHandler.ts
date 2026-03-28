@@ -12,7 +12,14 @@ import type { Bot } from '../../@types/index.js';
  */
 export class QueueButtonHandler {
     private static readonly QUEUE_PAGE_SIZE = 5;
-    private static readonly LOOP_MODES = ['Off', 'Single', 'All'];
+    private static getLoopModeLabel(client: Client, repeatMode: number): string {
+        const modes = [
+            client.i18n.t('commands:REPEAT_MODE_OFF'),
+            client.i18n.t('commands:REPEAT_MODE_SINGLE'),
+            client.i18n.t('commands:REPEAT_MODE_ALL')
+        ];
+        return modes[repeatMode] || modes[0];
+    }
 
     /**
      * Handle queue previous page button
@@ -184,7 +191,7 @@ export class QueueButtonHandler {
         const row = ButtonsBuilder.createQueueButtons();
 
         await player.setting.queuePage.msg?.edit({
-            embeds: [embeds.queue(bot, description, this.LOOP_MODES[repeatMode])],
+            embeds: [embeds.queue(bot, description, this.getLoopModeLabel(client, repeatMode))],
             components: [row],
             allowedMentions: { repliedUser: false }
         });
