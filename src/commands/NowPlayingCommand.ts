@@ -38,10 +38,12 @@ export class NowPlayingCommand extends BaseCommand {
         }
 
         const track = player.current;
+        const requester = track?.requester;
+        const requesterInfo = requester?.id ? ` | <@${requester.id}>` : '';
         const subtitle = client.i18n.t('commands:MESSAGE_NOW_PLAYING_SUBTITLE', {
             author: track?.author,
             label: track?.duration.label
-        });
+        }) + requesterInfo;
 
         const saveButton = new ButtonBuilder()
             .setCustomId(MusicButtonId.Save)

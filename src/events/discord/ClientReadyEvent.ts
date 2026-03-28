@@ -157,6 +157,12 @@ export class ClientReadyEvent extends BaseDiscordEvent<Events.ClientReady> {
             // Connects to the voice channel
             await player.connect();
             bot.logger.emit('log', bot.shardId, `Auto join voice channel : ${(channel as any).name || 'Unknown channel'} (${bot.config.bot.specifyVoiceChannel})`);
+
+            // Set idle voice status after auto-join
+            if (bot.config.bot.voiceStatusIdleText && bot.config.bot.voiceStatusEmojis.length > 0) {
+                const { setIdleVoiceStatus } = await import('../../utils/functions/setVoiceStatus.js');
+                await setIdleVoiceStatus(bot, client, channel.id);
+            }
         } catch (error) {
             bot.logger.emit('error', bot.shardId, 'Error startup auto joining channel: ' + error);
         }

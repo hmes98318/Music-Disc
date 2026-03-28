@@ -17,7 +17,7 @@ export class ShuffleButtonHandler extends DashboardButtonHandler {
         player: Player
     ): Promise<void> {
         // Check shuffle permission
-        if (!this.checkPermission(bot, interaction, 'shuffle', player)) {
+        if (!await this.checkPermission(bot, client, interaction, 'shuffle', player)) {
             return;
         }
 

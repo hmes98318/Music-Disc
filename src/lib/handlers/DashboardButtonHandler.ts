@@ -1,4 +1,5 @@
 import { PermissionManager } from '../PermissionManager.js';
+import { embeds } from '../../embeds/index.js';
 import type { Client, ButtonInteraction, GuildMember } from 'discord.js';
 import type { Player } from 'lavashark';
 import type { Bot } from '../../@types/index.js';
@@ -13,20 +14,26 @@ export abstract class DashboardButtonHandler {
      * Check if user has permission to execute the command
      * @static
      * @param {Bot} bot - Bot instance
+     * @param {Client} client - Discord client
      * @param {ButtonInteraction} interaction - Button interaction
      * @param {string} commandName - Command name to check permission for
      * @param {Player} player - Player instance
-     * @returns {boolean} true if user has permission, false otherwise
+     * @returns {Promise<boolean>} true if user has permission, false otherwise
      */
-    protected static checkPermission(
+    protected static async checkPermission(
         bot: Bot,
+        client: Client,
         interaction: ButtonInteraction,
         commandName: string,
         player: Player
-    ): boolean {
+    ): Promise<boolean> {
         // Check admin permission
         if (bot.config.command.adminCommand.includes(commandName)) {
             if (!bot.config.bot.admin.includes(interaction.user.id)) {
+                await interaction.reply({
+                    embeds: [embeds.textErrorMsg(bot, client.i18n.t('events:ERROR_REQUIRE_ADMIN'))],
+                    ephemeral: true
+                });
                 return false;
             }
         }
@@ -35,6 +42,10 @@ export abstract class DashboardButtonHandler {
         if (bot.config.command.djCommand.includes(commandName)) {
             const member = interaction.member as GuildMember;
             if (!PermissionManager.hasDJCommandPermission(bot, interaction.user.id, member, player)) {
+                await interaction.reply({
+                    embeds: [embeds.textErrorMsg(bot, client.i18n.t('events:ERROR_REQUIRE_DJ'))],
+                    ephemeral: true
+                });
                 return false;
             }
         }

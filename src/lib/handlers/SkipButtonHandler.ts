@@ -20,7 +20,7 @@ export class SkipButtonHandler extends DashboardButtonHandler {
         player: Player
     ): Promise<void> {
         // Check skip permission
-        if (!this.checkPermission(bot, interaction, 'skip', player)) {
+        if (!await this.checkPermission(bot, client, interaction, 'skip', player)) {
             return;
         }
 

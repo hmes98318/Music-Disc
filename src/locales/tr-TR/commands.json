@@ -88,6 +88,7 @@
     "ERROR_NO_PLAYING": "❌ Şuan çalan bir parça bulunmuyor.",
     "ERROR_SKIP_NOT_REQUESTER": "❌ Bu şarkıyı sadece isteyen kişi atlayabilir. Yöneticiler ve DJ'ler (etkinse) de atlayabilir.",
     "ERROR_SEEK_NOT_REQUESTER": "❌ Bu şarkıda yalnızca isteyen kişi zaman atlayabilir. Yöneticiler ve DJ'ler (etkinse) de zaman atlayabilir.",
+    "ERROR_PAUSE_NOT_REQUESTER": "❌ Bu şarkıyı sadece isteyen kişi duraklatabilir. Yöneticiler ve DJ'ler (etkinse) de duraklatabilir.",
     "ERROR_PLAY_JOIN_CHANNEL": "❌ Ses kanalına giriş yapamıyorum.",
     "ERROR_PLAY_MUSIC": "❌ Sistemimiz şuan sorun yaşıyor. Lütfen birazdan tekrar deneyiniz. ({{reason}})",
     "ERROR_PLAY_SEARCH": "❌ Herhangi bir sonuç bulunamadı. ({{reason}})",
