@@ -223,19 +223,24 @@ export class VoiceStateUpdateEvent extends BaseDiscordEvent<Events.VoiceStateUpd
      */
     #startAutoLeaveTimeout(bot: Bot, client: Client, player: any, guildId: string): void {
         const timeoutID = setTimeout(async () => {
-            // Clean up queue persistence before leaving
-            if (bot.config.queuePersistence.enabled && (client as any).queuePersistence) {
-                (client as any).queuePersistence.stopPeriodicSave(guildId);
-                (client as any).queuePersistence.deleteQueue(guildId);
-            }
+            try {
+                // Clean up queue persistence before leaving
+                if (bot.config.queuePersistence.enabled && (client as any).queuePersistence) {
+                    (client as any).queuePersistence.stopPeriodicSave(guildId);
+                    (client as any).queuePersistence.deleteQueue(guildId);
+                }
 
-            if (bot.config.bot.autoLeave.enabled) {
-                player.destroy();
+                if (bot.config.bot.autoLeave.enabled) {
+                    player.destroy();
+                }
+                else {
+                    player.queue.clear();
+                    await player.skip();
+                    await client.dashboard.destroy(player);
+                }
             }
-            else {
-                player.queue.clear();
-                await player.skip();
-                await client.dashboard.destroy(player);
+            catch (error) {
+                bot.logger.emit('error', bot.shardId, `[VoiceStateUpdate] Auto-leave timeout error for guild ${guildId}: ${error}`);
             }
         }, bot.config.bot.autoLeave.cooldown);
 
