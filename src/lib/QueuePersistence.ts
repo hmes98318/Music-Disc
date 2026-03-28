@@ -271,10 +271,9 @@ export class QueuePersistence {
             // Check if there are any members in the voice channel (excluding bots)
             const hasMembers = voiceChannel.members.filter(m => !m.user.bot).size > 0;
             if (!hasMembers) {
-                this.bot.logger.emit('log', this.bot.shardId, 
+                this.bot.logger.emit('log', this.bot.shardId,
                     `[QueuePersistence] No members in voice channel ${queueData.voiceChannelId}, skipping queue restore`
                 );
-                this.deleteQueue(queueData.guildId);
                 return;
             }
 
@@ -288,6 +287,14 @@ export class QueuePersistence {
                     selfDeaf: true,
                     selfMute: false
                 });
+            }
+
+            if (!player.setting) {
+                player.setting = {
+                    queuePage: null,
+                    volume: null,
+                    fairQueueRotation: []
+                };
             }
 
             // Restore tracks - try encoded track string first, fall back to URI search
