@@ -30,9 +30,10 @@ export class TrackStartEvent extends BaseLavaSharkEvent<'trackStart'> {
             }
         }
 
-        // Save queue state on each track start
+        // Save queue state and start periodic position saving
         if (bot.config.queuePersistence.enabled && (client as any).queuePersistence) {
             await (client as any).queuePersistence.saveQueue(player);
+            (client as any).queuePersistence.startPeriodicSave(player);
         }
     }
 

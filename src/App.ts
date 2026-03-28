@@ -105,40 +105,10 @@ class App {
                 this.bot.logger.emit('log', this.bot.shardId, cst.color.green + '*** All loaded successfully ***' + cst.color.white);
                 await this.#client.login(process.env.BOT_TOKEN);
 
-                // Restore persisted queues after bot is ready
-                if (this.bot.config.queuePersistence.enabled) {
-                    this.#client.once('ready', () => {
-                        this.#restorePersistedQueues();
-                    });
-                }
-
                 this.#setShutdownSignalHandlers();
                 this.bot.logger.emit('log', this.bot.shardId, 'pid: ' + process.pid);
             });
     }
-
-    /**
-     * Restore persisted queues from database
-     * @private
-     */
-    async #restorePersistedQueues(): Promise<void> {
-        try {
-            const queuePersistence = (this.#client as any).queuePersistence;
-            if (!queuePersistence) return;
-
-            // Wait for bot and Lavalink nodes to be fully ready
-            await new Promise(resolve => setTimeout(resolve, 5000));
-
-            const queues = queuePersistence.loadQueues(this.#client);
-            
-            for (const queueData of queues) {
-                await queuePersistence.restoreQueue(this.#client, queueData);
-            }
-        } catch (error) {
-            this.bot.logger.emit('error', this.bot.shardId, `Failed to restore persisted queues: ${error}`);
-        }
-    }
-
 
     /**
      * Set shutdown signal handlers for SIGINT and SIGTERM
@@ -154,9 +124,10 @@ class App {
             }, 30 * 1000);
 
             try {
-                // Save all active queues before shutdown
+                // Stop periodic saves and save all active queues before shutdown
                 if (this.bot.config.queuePersistence.enabled && (this.#client as any).queuePersistence) {
                     this.bot.logger.emit('log', this.bot.shardId, 'Saving active queues before shutdown...');
+                    (this.#client as any).queuePersistence.stopAllPeriodicSaves();
                     for (const player of this.#client.lavashark.players.values()) {
                         await (this.#client as any).queuePersistence.saveQueue(player);
                     }

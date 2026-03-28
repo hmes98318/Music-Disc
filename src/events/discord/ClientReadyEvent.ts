@@ -69,18 +69,56 @@ export class ClientReadyEvent extends BaseDiscordEvent<Events.ClientReady> {
     }
 
     /**
-     * Initialize Lavalink connection and handle auto-join
+     * Initialize Lavalink connection and handle auto-join / queue restore
      * @private
      */
     async #initializeLavalink(bot: Bot, client: Client): Promise<void> {
-        // Auto join voice channel after startup
         client.lavashark.once('nodeConnect', async () => {
-            if ((bot.shardId + 1 >= (client.shard?.count ?? 1)) && bot.config.bot.startupAutoJoin) {
-                await this.#handleAutoJoin(bot, client);
+            if (bot.shardId + 1 >= (client.shard?.count ?? 1)) {
+                // Queue persistence restore takes priority over bare auto-join
+                if (bot.config.queuePersistence.enabled && (client as any).queuePersistence) {
+                    await this.#restorePersistedQueues(bot, client);
+                }
+
+                // Auto-join only if no persisted queue was restored for this channel
+                if (bot.config.bot.startupAutoJoin) {
+                    const qp = (client as any).queuePersistence;
+                    const channelId = bot.config.bot.specifyVoiceChannel;
+                    const hasPersistedData = qp && channelId && qp.hasPersistedQueueForChannel(channelId);
+
+                    if (!hasPersistedData) {
+                        await this.#handleAutoJoin(bot, client);
+                    } else {
+                        bot.logger.emit('log', bot.shardId, 'Skipping auto-join: queue persistence restored for this channel.');
+                    }
+                }
             }
         });
 
         client.lavashark.start(String(client.user?.id));
+    }
+
+    /**
+     * Restore persisted queues from database on startup
+     * @private
+     */
+    async #restorePersistedQueues(bot: Bot, client: Client): Promise<void> {
+        try {
+            const queuePersistence = (client as any).queuePersistence;
+            if (!queuePersistence) return;
+
+            const queues = queuePersistence.loadQueues(client);
+
+            for (const queueData of queues) {
+                await queuePersistence.restoreQueue(client, queueData);
+            }
+
+            if (queues.length > 0) {
+                bot.logger.emit('log', bot.shardId, `Restored ${queues.length} persisted queue(s) on startup.`);
+            }
+        } catch (error) {
+            bot.logger.emit('error', bot.shardId, `Failed to restore persisted queues: ${error}`);
+        }
     }
 
     /**
