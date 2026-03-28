@@ -25,8 +25,9 @@ export class QueueEndEvent extends BaseLavaSharkEvent<'queueEnd'> {
             }
         }
 
-        // Delete persisted queue since queue has ended
+        // Stop periodic save and delete persisted queue since queue has ended
         if (bot.config.queuePersistence.enabled && (client as any).queuePersistence) {
+            (client as any).queuePersistence.stopPeriodicSave(player.guildId);
             (client as any).queuePersistence.deleteQueue(player.guildId);
         }
 

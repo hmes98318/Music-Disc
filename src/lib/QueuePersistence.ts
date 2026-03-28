@@ -45,9 +45,12 @@ interface SerializedTrack {
  * Manager for persisting queue state to SQLite database
  */
 export class QueuePersistence {
+    private static readonly PERIODIC_SAVE_INTERVAL = 30_000; // 30 seconds
+
     private db: Database.Database | null = null;
     private bot: Bot;
     private dbPath: string;
+    private periodicSaveTimers: Map<string, ReturnType<typeof setInterval>> = new Map();
 
     constructor(bot: Bot) {
         this.bot = bot;
@@ -335,13 +338,51 @@ export class QueuePersistence {
                 await player.play();
             }
 
-            this.bot.logger.emit('log', this.bot.shardId, 
+            // Seek to saved position after playback starts
+            if (queueData.position > 0) {
+                // Wait briefly for the player to initialize playback before seeking
+                await new Promise(resolve => setTimeout(resolve, 2000));
+
+                try {
+                    if (player.playing || player.paused) {
+                        await player.seek(queueData.position);
+                        this.bot.logger.emit('log', this.bot.shardId,
+                            `[QueuePersistence] Seeked to position ${queueData.position}ms for guild ${queueData.guildId}`
+                        );
+                    }
+                } catch (error) {
+                    this.bot.logger.emit('error', this.bot.shardId,
+                        `[QueuePersistence] Failed to seek to position for guild ${queueData.guildId}: ${error}`
+                    );
+                }
+            }
+
+            this.bot.logger.emit('log', this.bot.shardId,
                 `[QueuePersistence] Restored queue for guild ${queueData.guildId} (${queueData.tracks.length} tracks)`
             );
         } catch (error) {
             this.bot.logger.emit('error', this.bot.shardId, 
                 `[QueuePersistence] Failed to restore queue for guild ${queueData.guildId}: ${error}`
             );
+        }
+    }
+
+    /**
+     * Check if any persisted queues exist for a specific voice channel
+     * @param voiceChannelId - Voice channel ID to check
+     * @returns true if a persisted queue exists for this channel
+     */
+    public hasPersistedQueueForChannel(voiceChannelId: string): boolean {
+        if (!this.bot.config.queuePersistence.enabled || !this.db) {
+            return false;
+        }
+
+        try {
+            const stmt = this.db.prepare('SELECT COUNT(*) as count FROM queues WHERE voice_channel_id = ?');
+            const row = stmt.get(voiceChannelId) as { count: number };
+            return row.count > 0;
+        } catch {
+            return false;
         }
     }
 
@@ -369,9 +410,53 @@ export class QueuePersistence {
     }
 
     /**
+     * Start periodic position saving for a player
+     * @param player - Player instance to periodically save
+     */
+    public startPeriodicSave(player: Player): void {
+        if (!this.bot.config.queuePersistence.enabled || !this.db) {
+            return;
+        }
+
+        // Clear any existing timer for this guild
+        this.stopPeriodicSave(player.guildId);
+
+        const timer = setInterval(async () => {
+            if (player.playing && player.current) {
+                await this.saveQueue(player);
+            }
+        }, QueuePersistence.PERIODIC_SAVE_INTERVAL);
+
+        this.periodicSaveTimers.set(player.guildId, timer);
+    }
+
+    /**
+     * Stop periodic position saving for a guild
+     * @param guildId - Guild ID
+     */
+    public stopPeriodicSave(guildId: string): void {
+        const timer = this.periodicSaveTimers.get(guildId);
+        if (timer) {
+            clearInterval(timer);
+            this.periodicSaveTimers.delete(guildId);
+        }
+    }
+
+    /**
+     * Stop all periodic save timers
+     */
+    public stopAllPeriodicSaves(): void {
+        for (const [guildId, timer] of this.periodicSaveTimers) {
+            clearInterval(timer);
+            this.periodicSaveTimers.delete(guildId);
+        }
+    }
+
+    /**
      * Close the database connection
      */
     public close(): void {
+        this.stopAllPeriodicSaves();
         if (this.db) {
             this.db.close();
             this.bot.logger.emit('log', this.bot.shardId, '[QueuePersistence] Database connection closed.');
