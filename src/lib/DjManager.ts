@@ -1,6 +1,3 @@
-import i18next from 'i18next';
-
-import { embeds } from '../embeds/index.js';
 import { DJModeEnum } from '../@types/index.js';
 
 import type { VoiceBasedChannel, GuildMember, Client } from 'discord.js';
@@ -39,13 +36,15 @@ export class DJManager {
     }
 
     /**
-     * Add a user as DJ in dynamic mode
+     * Add a user as DJ in dynamic mode.
+     * Only 1 dynamic DJ at a time — clear existing before adding.
      */
     public static addDJ(player: Player, userId: string): void {
         if (!player.djUsers) {
             player.djUsers = new Set();
         }
 
+        player.djUsers.clear();
         player.djUsers.add(userId);
     }
 
@@ -162,16 +161,17 @@ export class DJManager {
     }
 
     /**
-     * Handle DJ leave timeout in dynamic mode (only in DYNAMIC mode)
-     * DJ role users are permanent DJs and are not subject to dynamic removal.
+     * Handle DJ leaving voice channel in dynamic mode.
+     * Removes DJ immediately — no timeout, no auto-select.
+     * DJ role users and admins are permanent DJs and are not affected.
      */
-    public static handleDJLeave(bot: Bot, client: Client, player: Player, userId: string, voiceChannel: VoiceBasedChannel): void {
+    public static handleDJLeave(bot: Bot, _client: Client, player: Player, userId: string, _voiceChannel: VoiceBasedChannel): void {
         if (bot.config.bot.djMode !== DJModeEnum.DYNAMIC || !player.djUsers?.has(userId)) {
             return;
         }
 
         // DJ role users are permanent — do not remove them on leave
-        const guild = client.guilds.cache.get(player.guildId);
+        const guild = _client.guilds.cache.get(player.guildId);
         if (guild && bot.config.bot.djRoleId) {
             const member = guild.members.cache.get(userId);
             if (member && member.roles.cache.has(bot.config.bot.djRoleId)) {
@@ -184,110 +184,7 @@ export class DJManager {
             return;
         }
 
-        // Clear existing timeout if any
-        if (player.djLeaveTimeout) {
-            clearTimeout(player.djLeaveTimeout);
-        }
-
-        // Set new timeout
-        player.djLeaveTimeout = setTimeout(async () => {
-            // Remove the DJ who left
-            this.removeDJ(player, userId);
-            await this.autoSelectNewDJ(bot, client, player, voiceChannel);
-        }, bot.config.bot.djLeaveCooldown);
-    }
-
-    /**
-     * Cancel DJ leave timeout when DJ returns
-     */
-    public static cancelDJLeaveTimeout(player: Player): void {
-        if (player.djLeaveTimeout) {
-            clearTimeout(player.djLeaveTimeout);
-            player.djLeaveTimeout = undefined;
-        }
-    }
-
-    /**
-     * Automatically select a new DJ from voice channel members (only in DYNAMIC mode)
-     */
-    public static async autoSelectNewDJ(bot: Bot, client: Client, player: Player, voiceChannel: VoiceBasedChannel): Promise<void> {
-        if (bot.config.bot.djMode !== DJModeEnum.DYNAMIC) {
-            return;
-        }
-
-        // Check if there are still DJs in the voice channel
-        if (this.hasDJInChannel(bot, player, voiceChannel)) {
-            return; // Don't auto-select if there are still DJs in the channel
-        }
-
-        // Get non-bot members from voice channel
-        const availableMembers = voiceChannel.members.filter(member =>
-            !member.user.bot &&
-            !bot.config.blacklist.includes(member.user.id) &&
-            (!player.djUsers || !player.djUsers.has(member.user.id))
-        );
-
-        if (availableMembers.size === 0) {
-            return;
-        }
-
-        // Select first available member as new DJ
-        const newDJ = availableMembers.first();
-        if (newDJ) {
-            this.addDJ(player, newDJ.user.id);
-
-            // Send message to dashboard channel
-            try {
-                const dashboardChannel = player.dashboardMsg?.channel;
-                if (dashboardChannel && 'send' in dashboardChannel) {
-                    await dashboardChannel.send({
-                        embeds: [embeds.textSuccessMsg(bot, i18next.t('commands:MESSAGE_DJ_AUTO_SELECT', { userId: newDJ.user.id }))]
-                    });
-                }
-            } catch (error) {
-                bot.logger.emit('error', bot.shardId, 'Error sending auto DJ message: ' + error);
-            }
-
-            // Update dashboard to reflect new DJ
-            try {
-                if (player.current && player.dashboardMsg) {
-                    await client.dashboard.update(player, player.current);
-                }
-            } catch (error) {
-                bot.logger.emit('error', bot.shardId, 'Error updating dashboard after auto DJ selection: ' + error);
-            }
-        }
-    }
-
-    /**
-     * Check if there are any DJs in the voice channel (for dynamic mode)
-     */
-    public static hasDJInChannel(bot: Bot, player: Player, voiceChannel: VoiceBasedChannel): boolean {
-        // Check for admins in the channel
-        const hasAdmin = voiceChannel.members.some(member =>
-            !member.user.bot && bot.config.bot.admin.includes(member.user.id)
-        );
-        if (hasAdmin) {
-            return true;
-        }
-
-        // Check for role-based DJs in the channel
-        if (bot.config.bot.djRoleId) {
-            const hasRoleDJ = voiceChannel.members.some(member => 
-                !member.user.bot && member.roles.cache.has(bot.config.bot.djRoleId!)
-            );
-            if (hasRoleDJ) {
-                return true;
-            }
-        }
-        
-        // Check for dynamic DJs
-        if (!player.djUsers) {
-            return false;
-        }
-        
-        return voiceChannel.members.some(member =>
-            player.djUsers!.has(member.user.id) && !member.user.bot
-        );
+        // Remove DJ immediately — no timeout, no auto-select
+        this.removeDJ(player, userId);
     }
 }

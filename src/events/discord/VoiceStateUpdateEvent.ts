@@ -102,17 +102,6 @@ export class VoiceStateUpdateEvent extends BaseDiscordEvent<Events.VoiceStateUpd
             bot.logger.emit('discord', bot.shardId, `[voiceStateUpdate]${cst.color.grey} (${newState.member?.guild.name}) ${newState.member?.user.username} joined channel ${newState.channel?.name}${cst.color.white}`);
         }
 
-        // Handle DJ returning to channel in DYNAMIC mode
-        if (bot.config.bot.djMode === DJModeEnum.DYNAMIC && !newState.member?.user.bot && newState.member) {
-            const player = client.lavashark.getPlayer(newState.guild.id);
-            if (player && newState.channel?.id === player.voiceChannelId) {
-                const userId = newState.member.user.id;
-                if (DJManager.isDJ(bot, userId, newState.member, player)) {
-                    DJManager.cancelDJLeaveTimeout(player);
-                }
-            }
-        }
-
         // If the member who joined is a bot, ignore
         if (newState.member?.user.bot) return;
 
@@ -183,14 +172,6 @@ export class VoiceStateUpdateEvent extends BaseDiscordEvent<Events.VoiceStateUpd
         }
         // Handle joining bot's channel
         else if (botChannelId === newChannelId) {
-            // Handle DJ returning in DYNAMIC mode
-            if (bot.config.bot.djMode === DJModeEnum.DYNAMIC && newState.member && newState.channel) {
-                const userId = newState.member.user.id;
-                if (DJManager.isDJ(bot, userId, newState.member, player)) {
-                    DJManager.cancelDJLeaveTimeout(player);
-                }
-            }
-
             // Start timeout if only blacklisted users
             if (this.#checkBlacklistUsers(bot, newState.channel, blacklist)) {
                 this.#startAutoLeaveTimeout(bot, client, player, newState.guild.id);
