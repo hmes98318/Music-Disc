@@ -152,9 +152,18 @@ export class PlayFirstCommand extends BaseCommand {
             await client.dashboard.destroy(player);
         }
 
-        // Set first user as DJ in dynamic mode
+        // Set first user as DJ in dynamic mode (skip admins and if DJ-role user is in channel)
         if (bot.config.bot.djMode === DJModeEnum.DYNAMIC && !DJManager.hasDJSet(player)) {
-            DJManager.addDJ(player, context.user.id);
+            const djMember = context.isMessage()
+                ? context.getMessage().member as GuildMember | null
+                : context.getInteraction().member as GuildMember | null;
+            const vc = djMember?.voice.channel;
+            const isAdmin = bot.config.bot.admin.includes(context.user.id);
+            const hasDJRoleUser = vc?.isVoiceBased() ? DJManager.hasDJRoleInChannel(bot, vc) : false;
+
+            if (!isAdmin && !hasDJRoleUser) {
+                DJManager.addDJ(player, context.user.id);
+            }
         }
 
         return player;
