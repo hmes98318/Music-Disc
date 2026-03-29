@@ -155,15 +155,15 @@ const config = {
         disableCommand: [],                                 // Disabled commands, all enabled by default
         adminCommand: ['blacklist', 'language','server', 'status'],      // Admin commands, only Admin role user can use
         djCommand: ['dj', 'filter'],                        // DJ commands, only DJ role user can use
-        // Supported commands: 'skip', 'seek'
+        // Supported commands: 'skip', 'seek', 'pause'
         // When a command name is listed here, only the requester of the currently playing song may use it.
         // Admins can always bypass this restriction regardless.
-        requesterOnly: ['skip'],
+        requesterOnly: ['skip', 'seek', 'pause'],
 
         // DJs (both role-based and dynamic) can bypass 'requesterOnly' for commands listed here.
         // Only effective for commands that are also listed in requesterOnly.
-        // Supported commands: 'skip', 'seek'
-        requesterDjBypass: ['skip']
+        // Supported commands: 'skip', 'seek', 'pause'
+        requesterDjBypass: ['skip', 'seek', 'pause']
     },
 
     // Queue persistence settings
