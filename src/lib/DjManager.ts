@@ -162,16 +162,17 @@ export class DJManager {
 
     /**
      * Handle DJ leaving voice channel in dynamic mode.
-     * Removes DJ immediately — no timeout, no auto-select.
+     * PLAY mode: Removes DJ immediately — no auto-assign. Next DJ is whoever successfully plays a song.
+     * COOLDOWN mode: Removes DJ immediately, then auto-assigns next eligible member after cooldown.
      * DJ role users and admins are permanent DJs and are not affected.
      */
-    public static handleDJLeave(bot: Bot, _client: Client, player: Player, userId: string, _voiceChannel: VoiceBasedChannel): void {
+    public static handleDJLeave(bot: Bot, client: Client, player: Player, userId: string, voiceChannel: VoiceBasedChannel): void {
         if (bot.config.bot.djMode !== DJModeEnum.DYNAMIC || !player.djUsers?.has(userId)) {
             return;
         }
 
         // DJ role users are permanent — do not remove them on leave
-        const guild = _client.guilds.cache.get(player.guildId);
+        const guild = client.guilds.cache.get(player.guildId);
         if (guild && bot.config.bot.djRoleId) {
             const member = guild.members.cache.get(userId);
             if (member && member.roles.cache.has(bot.config.bot.djRoleId)) {
@@ -184,7 +185,40 @@ export class DJManager {
             return;
         }
 
-        // Remove DJ immediately — no timeout, no auto-select
+        // Remove DJ immediately in both modes
         this.removeDJ(player, userId);
+
+        if (bot.config.bot.djLeave.mode === 'COOLDOWN') {
+            // Clear any existing leave timeout before setting a new one
+            this.cancelDJLeaveTimeout(player);
+
+            player.leaveTimeout = setTimeout(() => {
+                // Verify player still exists and has no DJ set
+                if (this.hasDJSet(player)) {
+                    return;
+                }
+
+                // Get non-bot members in the voice channel
+                const members = voiceChannel.members.filter((m: GuildMember) => !m.user.bot);
+                if (members.size === 0) {
+                    return;
+                }
+
+                // Pick the first eligible member as new DJ
+                const nextDJ = members.first()!;
+                this.addDJ(player, nextDJ.user.id);
+                bot.logger.emit('log', bot.shardId, `[Guild ${player.guildId}] Auto-assigned DJ to <@${nextDJ.user.id}> after cooldown`);
+            }, bot.config.bot.djLeave.cooldown);
+        }
+    }
+
+    /**
+     * Cancel any pending DJ leave timeout for a player
+     */
+    public static cancelDJLeaveTimeout(player: Player): void {
+        if (player.leaveTimeout) {
+            clearTimeout(player.leaveTimeout);
+            player.leaveTimeout = undefined;
+        }
     }
 }
