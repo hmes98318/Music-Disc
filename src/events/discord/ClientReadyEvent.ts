@@ -2,6 +2,7 @@ import { ChannelType, Events } from 'discord.js';
 
 import { BaseDiscordEvent } from './base/BaseDiscordEvent.js';
 import { getSysInfo } from '../../utils/functions/getSysInfo.js';
+import { setIdleVoiceStatus } from '../../utils/functions/setVoiceStatus.js';
 import { cst } from '../../utils/constants.js';
 
 import type { Client } from 'discord.js';
@@ -109,6 +110,11 @@ export class ClientReadyEvent extends BaseDiscordEvent<Events.ClientReady> {
 
             const queues = queuePersistence.loadQueues(client);
 
+            // Set idle voice status before restore attempts as a safety net
+            for (const queueData of queues) {
+                await setIdleVoiceStatus(bot, client, queueData.voiceChannelId);
+            }
+
             for (const queueData of queues) {
                 await queuePersistence.restoreQueue(client, queueData);
             }
@@ -161,7 +167,6 @@ export class ClientReadyEvent extends BaseDiscordEvent<Events.ClientReady> {
 
             // Set idle voice status after auto-join
             if (bot.config.bot.voiceStatusIdleText && bot.config.bot.voiceStatusEmojis.length > 0) {
-                const { setIdleVoiceStatus } = await import('../../utils/functions/setVoiceStatus.js');
                 await setIdleVoiceStatus(bot, client, channel.id);
             }
         } catch (error) {
