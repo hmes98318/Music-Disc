@@ -310,7 +310,7 @@ export class QueuePersistence {
                     }
 
                     // Fallback: search by URI
-                    if (!result || result.tracks.length === 0) {
+                    if (!result || !result.tracks || result.tracks.length === 0) {
                         try {
                             result = await client.lavashark.search(serializedTrack.info.uri);
                         } catch (_) {
@@ -319,7 +319,7 @@ export class QueuePersistence {
                     }
 
                     // Final fallback: search by title + author
-                    if (!result || result.tracks.length === 0) {
+                    if (!result || !result.tracks || result.tracks.length === 0) {
                         try {
                             result = await client.lavashark.search(`ytsearch:${serializedTrack.info.title} ${serializedTrack.info.author}`);
                         } catch (_) {
@@ -327,7 +327,7 @@ export class QueuePersistence {
                         }
                     }
 
-                    if (result && result.tracks.length > 0) {
+                    if (result && result.tracks && result.tracks.length > 0) {
                         const track = result.tracks[0];
                         track.requester = {
                             id: serializedTrack.requesterId,
@@ -347,7 +347,6 @@ export class QueuePersistence {
             }
 
             // Restore settings
-            (player as any).volume = queueData.volume;
             player.setRepeatMode(queueData.repeatMode);
 
             // Connect and play
@@ -355,6 +354,9 @@ export class QueuePersistence {
             if (!player.playing && !player.paused) {
                 await player.play();
             }
+
+            // Set volume after playback starts (Player.volume is a read-only getter)
+            player.filters.setVolume(queueData.volume);
 
             // Seek to saved position after playback starts
             if (queueData.position > 0) {
