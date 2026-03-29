@@ -22,7 +22,10 @@ export const cst = {
             djMode                  : DJModeEnum.DYNAMIC,   // DJ mode: 'STATIC' (config.js based) or 'DYNAMIC' (first user to execute command based)
             dj                      : [],                   // DJ users, It must be the user ID (string[])
             djRoleId                : null,                 // DJ role ID, members with this role have DJ permissions
-            djLeaveCooldown         : 5000,                 // Automatically assign a cooldown time (ms) to a new DJ after the DJ leaves in DYNAMIC mode (default: 5000ms)
+            djLeave: {
+                mode: 'PLAY',       // 'PLAY' = next DJ on successful /play; 'COOLDOWN' = auto-assign after cooldown
+                cooldown: 5000,     // Cooldown in ms, only used in COOLDOWN mode (default: 5000ms)
+            },
 
             clientSecret            : '',
     

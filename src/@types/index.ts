@@ -46,6 +46,13 @@ export enum DJModeEnum {
 
 export type DJMode = keyof typeof DJModeEnum;
 
+export type DJLeaveMode = 'PLAY' | 'COOLDOWN';
+
+export interface DJLeaveConfig {
+    mode: DJLeaveMode;
+    cooldown: number;
+}
+
 export interface PlayerSetting {
     queuePage: QueuePage | null;
     volume: number | null;
@@ -102,7 +109,7 @@ export type BotConfig = {
     djMode: DJMode;
     dj: string[];
     djRoleId: string | null;
-    djLeaveCooldown: number;
+    djLeave: DJLeaveConfig;
     clientSecret: string;
     name: string;
     prefix: string;

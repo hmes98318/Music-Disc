@@ -25,9 +25,14 @@ const setEnvironment = (defaultConfig: Config) => {
         djMode: Object.values(DJModeEnum).includes(config.bot.djMode as any)
             ? config.bot.djMode
             : defaultConfig.bot.djMode,
-        djLeaveCooldown: isNumber(config.bot.djLeaveCooldown)
-            ? config.bot.djLeaveCooldown
-            : defaultConfig.bot.djLeaveCooldown,
+        djLeave: {
+            mode: (config.bot.djLeave?.mode === 'PLAY' || config.bot.djLeave?.mode === 'COOLDOWN')
+                ? config.bot.djLeave.mode
+                : defaultConfig.bot.djLeave.mode,
+            cooldown: isNumber(config.bot.djLeave?.cooldown)
+                ? config.bot.djLeave.cooldown
+                : defaultConfig.bot.djLeave.cooldown,
+        },
 
         clientSecret: config.bot.clientSecret || defaultConfig.bot.clientSecret,
 
