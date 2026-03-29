@@ -10,6 +10,14 @@ import type { Bot } from '../@types/index.js';
  */
 export class DJManager {
     /**
+     * Check if any member with the DJ role is in the voice channel (excluding bots)
+     */
+    public static hasDJRoleInChannel(bot: Bot, voiceChannel: VoiceBasedChannel): boolean {
+        if (!bot.config.bot.djRoleId) return false;
+        return voiceChannel.members.some(m => !m.user.bot && m.roles.cache.has(bot.config.bot.djRoleId!));
+    }
+
+    /**
      * Check if a user has DJ permissions
      */
     public static isDJ(bot: Bot, userId: string, member: GuildMember | null, player?: Player): boolean {
@@ -131,9 +139,12 @@ export class DJManager {
 
         // In DYNAMIC mode, only display the active dynamic DJs (not all admins/roles)
         if (bot.config.bot.djMode === DJModeEnum.DYNAMIC) {
+            // Show dynamic DJs (excluding admins)
             const djUserIds = (player && player.djUsers) ? Array.from(player.djUsers) : [];
             for (const userId of djUserIds) {
-                displayNames.push(`<@${userId}> (DJ)`);
+                if (!bot.config.bot.admin.includes(userId)) {
+                    displayNames.push(`<@${userId}> (D-DJ)`);
+                }
             }
         }
         else {
@@ -198,8 +209,17 @@ export class DJManager {
                     return;
                 }
 
-                // Get non-bot members in the voice channel
-                const members = voiceChannel.members.filter((m: GuildMember) => !m.user.bot);
+                // If a DJ-role user is in the channel, don't auto-assign dynamic DJ
+                if (this.hasDJRoleInChannel(bot, voiceChannel)) {
+                    return;
+                }
+
+                // Get non-bot members in the voice channel, excluding admins and DJ-role users
+                const members = voiceChannel.members.filter((m: GuildMember) =>
+                    !m.user.bot &&
+                    !bot.config.bot.admin.includes(m.user.id) &&
+                    !(bot.config.bot.djRoleId && m.roles.cache.has(bot.config.bot.djRoleId))
+                );
                 if (members.size === 0) {
                     return;
                 }
