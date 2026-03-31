@@ -116,13 +116,11 @@ export class Language {
     public async initI18Next() {
         i18next.use(I18NexFsBackend);
         await i18next.init({
-            initAsync: true,
             backend: {
                 loadPath: path.join(this.localePath, './{{lng}}/{{ns}}.json'),
             },
             debug: false,
             fallbackLng: this.#defaultLocale,
-            initImmediate: false,
             interpolation: { escapeValue: false },
             load: 'all',
             ns: this.namespaces,
