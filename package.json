@@ -8,7 +8,7 @@
         "start": "npm run build && node ./dist/src/index.js",
         "build": "tsc",
         "dev": "tsc --noEmit --incremental false && tsx ./src/index.ts",
-        "lint": "eslint . --ext .ts --color"
+        "lint": "eslint . --color"
     },
     "repository": {
         "type": "git",
