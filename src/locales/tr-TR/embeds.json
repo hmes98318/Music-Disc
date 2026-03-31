@@ -1,4 +1,5 @@
 {
+    "DASHBOARD_TITLE": "Panel",
     "DASHBOARD_FINISH_PLAYING": "Kuyruk sonlandı.",
     "DASHBOARD_SUBTITLE": "Sanatçı: **{{author}}**\nSüre: **{{duration}}**\n────────────────────\nSes Yüksekliği: `{{volume}}%`\nDöngü: `{{repeatMode}}`",
     "DASHBOARD_REQUESTER_INFO": "\n────────────────────\n**Talep Eden:** <@{{requesterId}}>",
@@ -17,8 +18,9 @@
     "NODE_STATUS_INFO_VALUE": "Versiyon: **{{version}}**\nJVM: **{{jvm}}**\nLavaplayer: **{{lavaplayer}}**\nGit: **{{git}}**\nBuild time: **{{buildTime}}**",
     "NODE_STATUS_MEMORY_TITLE": "📑 Hafıza",
     "NODE_STATUS_MEMORY_VALUE": "Kullanılan: **{{used}}**\nFree: **{{free}}**\nAllocated: **{{allocated}}**\nReservable: **{{reservable}}**\n",
+    "NODE_STATUS_PING": "Gecikme",
     "NODE_STATUS_STATS_TITLE": "📊 İstatistikler",
-    "NODE_STATUS_STATS_VALUE": "Bağlantı Süresi: **{{uptime}}**\nPing: **{{nodePing}} ms**\nPlayer: **{{playerCount}}**\nPlaying players: **{{playingCount}}**",
+    "NODE_STATUS_STATS_VALUE": "Bağlantı Süresi: **{{uptime}}**\n**{{pingKey}}**: **{{nodePing}} ms**\nPlayer: **{{playerCount}}**\nPlaying players: **{{playingCount}}**",
     "NODE_STATUS_TITLE": "🛰️ Bağlantı Noktası",
     "NODE_STATUS_TITLE_2": "🛰️ Node '{{nodeName}}' durumu",
     "NODE_UNHEALTHY": "⚠️  {{unhealthValue}} tane bağlantı noktasının bağlantısı kesildi",

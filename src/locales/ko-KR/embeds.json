@@ -1,4 +1,5 @@
 {
+    "DASHBOARD_TITLE": "대시보드",
     "DASHBOARD_FINISH_PLAYING": "모든 음악이 재생되었습니다.",
     "DASHBOARD_SUBTITLE": "**아티스트:** {{author}}\n**길이:** {{duration}}\n────────────────────\n**음량:** `{{volume}}%`\n**반복:** `{{repeatMode}}`",
     "DASHBOARD_REQUESTER_INFO": "\n────────────────────\n**요청자:** <@{{requesterId}}>",
@@ -17,8 +18,9 @@
     "NODE_STATUS_INFO_VALUE": "**버전:** {{version}}\n**자바:** {{jvm}}\n**Lavaplayer:** {{lavaplayer}}\n**Git:** {{git}}\n**빌드 시간:** {{buildTime}}",
     "NODE_STATUS_MEMORY_TITLE": "📑 메모리",
     "NODE_STATUS_MEMORY_VALUE": "**사용중:** {{used}}\n**사용 가능:** {{free}}\n**할당 가능:** {{allocated}}\n**예약 가능:** {{reservable}}\n",
+    "NODE_STATUS_PING": "지연시간",
     "NODE_STATUS_STATS_TITLE": "📊 상태",
-    "NODE_STATUS_STATS_VALUE": "**가동 시간:** {{uptime}}\n**지연시간:** {{nodePing}}ms\n**음악을 듣는 서버:** {{playerCount}}개\n**음악을 듣는 인원:** {{playingCount}}명",
+    "NODE_STATUS_STATS_VALUE": "**가동 시간:** {{uptime}}\n**{{pingKey}}:** {{nodePing}}ms\n**음악을 듣는 서버:** {{playerCount}}개\n**음악을 듣는 인원:** {{playingCount}}명",
     "NODE_STATUS_TITLE": "🛰️ 노드 상태",
     "NODE_STATUS_TITLE_2": "🛰️ '{{nodeName}}'의 상태",
     "NODE_UNHEALTHY": "⚠️ {{unhealthValue}}의 연결이 끊어졌습니다.",

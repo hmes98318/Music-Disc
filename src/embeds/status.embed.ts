@@ -57,7 +57,7 @@ const nodeStatus = (bot: Bot, nodeName: string, nodeInfo: Info, nodeStats: NodeS
         .setDescription(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━`)
         .addFields(
             { name: bot.i18n.t('embeds:NODE_STATUS_INFO_TITLE'), value: bot.i18n.t('embeds:NODE_STATUS_INFO_VALUE', { version: nodeInfo.version.semver, jvm: nodeInfo.jvm, lavaplayer: nodeInfo.lavaplayer, git: nodeInfo.git.commit, buildTime: timestampToTime(nodeInfo.buildTime) }) },
-            { name: bot.i18n.t('embeds:NODE_STATUS_STATS_TITLE'), value: bot.i18n.t('embeds:NODE_STATUS_STATS_VALUE', { uptime: msToTime(nodeStats.uptime), nodePing: nodePing, playerCount: nodeStats.players, playingCount: nodeStats.playingPlayers }) },
+            { name: bot.i18n.t('embeds:NODE_STATUS_STATS_TITLE'), value: bot.i18n.t('embeds:NODE_STATUS_STATS_VALUE', { uptime: msToTime(nodeStats.uptime), pingKey: bot.i18n.t('embeds:NODE_STATUS_PING'), nodePing: nodePing, playerCount: nodeStats.players, playingCount: nodeStats.playingPlayers }) },
             { name: bot.i18n.t('embeds:NODE_STATUS_CPU_TITLE'), value: bot.i18n.t('embeds:NODE_STATUS_CPU_VALUE', { cores: nodeStats.cpu.cores, systemLoad: nodeStats.cpu.systemLoad.toFixed(6), lavalinkLoad: nodeStats.cpu.lavalinkLoad.toFixed(6) }) },
             { name: bot.i18n.t('embeds:NODE_STATUS_MEMORY_TITLE'), value: bot.i18n.t('embeds:NODE_STATUS_MEMORY_VALUE', { used: formatBytes(nodeStats.memory.used), free: formatBytes(nodeStats.memory.free), allocated: formatBytes(nodeStats.memory.allocated), reservable: formatBytes(nodeStats.memory.reservable) }) })
         .setTimestamp();
