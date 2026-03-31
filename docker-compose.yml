@@ -10,5 +10,6 @@ services:
       - ./config.js:/bot/config.js              # Bot config
       - ./logs:/bot/logs                        # Bot logs
       - ./server:/bot/server                    # localnode configuration file
+      - ./data:/bot/data                        # Queue persistence data
     ports:
       - 33333:33333

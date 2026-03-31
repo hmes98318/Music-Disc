@@ -22,7 +22,6 @@ export class Controller {
             sysInfo: {} as SystemInfo,
             stats: {
                 guildsCount: [-1],
-                membersCount: [-1],
                 lastRefresh: null,
             },
             i18n: null,

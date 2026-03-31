@@ -22,7 +22,10 @@ export const cst = {
             djMode                  : DJModeEnum.DYNAMIC,   // DJ mode: 'STATIC' (config.js based) or 'DYNAMIC' (first user to execute command based)
             dj                      : [],                   // DJ users, It must be the user ID (string[])
             djRoleId                : null,                 // DJ role ID, members with this role have DJ permissions
-            djLeaveCooldown         : 5000,                 // Automatically assign a cooldown time (ms) to a new DJ after the DJ leaves in DYNAMIC mode (default: 5000ms)
+            djLeave: {
+                mode: 'PLAY',       // 'PLAY' = next DJ on successful /play; 'COOLDOWN' = auto-assign after cooldown
+                cooldown: 5000,     // Cooldown in ms, only used in COOLDOWN mode (default: 5000ms)
+            },
 
             clientSecret            : '',
     
@@ -69,7 +72,24 @@ export const cst = {
             i18n: {
                 localePath          : '../../locales',
                 defaultLocale       : 'en-US'
-            }
+            },
+
+            // Max queued songs per user settings
+            maxQueuedSongs: {
+                enabled             : true,                                 // Enable/disable this feature
+                global              : 100,                                  // Global maximum queue size
+                default             : 5,                                    // Default limit for users without special roles
+                djs                 : 50,                                   // Limit for DJ role users
+                roles               : {}                                    // Custom limits per role ID
+            },
+
+            fairQueue               : false,
+
+            // Voice channel status emojis
+            voiceStatusEmojis       : ['🎵'],
+
+            // Voice channel status idle text
+            voiceStatusIdleText     : ''
         },
 
         // Lavalink node list
@@ -131,7 +151,9 @@ export const cst = {
         command: {
             disableCommand      : [],                                   // Disabled commands, all enabled by default
             adminCommand        : ['language','server', 'status'],      // Admin commands, only Admin role user can use
-            djCommand           : ['dj']                                // DJ commands, only DJ role user can use
+            djCommand           : ['dj'],                               // DJ commands, only DJ role user can use
+            requesterOnly       : ['skip'],                              // Commands restricted to the song requester
+            requesterDjBypass   : ['skip']                              // Commands DJs can bypass requesterOnly on
         }
     },
 
@@ -146,17 +168,21 @@ export const cst = {
     },
     // Dashboard button icon
     button: {
-        play        : '<:w_play:1106270709644271656>',
-        pause       : '<:w_pause:1106270708243386428>',
-        skip        : '<:w_skip:1106270714664849448>',
-        back        : '<:w_back:1106270704049061928>',
-        stop        : '<:w_stop:1106272001909346386>',
-        loop        : '<:w_loop:1106270705575792681>',
-        shuffle     : '<:w_shuffle:1106270712542531624>',
-        prev        : '<:w_prev:1153665768093921280>',
-        next        : '<:w_next:1153665809990815874>',
-        delete      : 'Delete Message',
-        clear       : 'Clear Queue'
+        emoji: {
+            play        : '<:w_play:1106270709644271656>',
+            pause       : '<:w_pause:1106270708243386428>',
+            skip        : '<:w_skip:1106270714664849448>',
+            back        : '<:w_back:1106270704049061928>',
+            stop        : '<:w_stop:1106272001909346386>',
+            loop        : '<:w_loop:1106270705575792681>',
+            shuffle     : '<:w_shuffle:1106270712542531624>',
+            prev        : '<:w_prev:1153665768093921280>',
+            next        : '<:w_next:1153665809990815874>',
+        },
+        label: {
+            delete      : 'Delete Message',
+            clear       : 'Clear Queue'
+        }
     },
     // Logger
     logger: {

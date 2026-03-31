@@ -42,9 +42,8 @@ export class SessionManager {
      * @param sessionId - Session id
      */
     public createSession(sessionId: string): void {
-        const now = new Date();
         const sessionData = {
-            createdAt: now.setHours(now.getHours() + 1)
+            createdAt: Date.now()
         };
 
         this.#sessionMap.set(sessionId, sessionData);

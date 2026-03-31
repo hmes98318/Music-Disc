@@ -25,9 +25,14 @@ const setEnvironment = (defaultConfig: Config) => {
         djMode: Object.values(DJModeEnum).includes(config.bot.djMode as any)
             ? config.bot.djMode
             : defaultConfig.bot.djMode,
-        djLeaveCooldown: isNumber(config.bot.djLeaveCooldown)
-            ? config.bot.djLeaveCooldown
-            : defaultConfig.bot.djLeaveCooldown,
+        djLeave: {
+            mode: (config.bot.djLeave?.mode === 'PLAY' || config.bot.djLeave?.mode === 'COOLDOWN')
+                ? config.bot.djLeave.mode
+                : defaultConfig.bot.djLeave.mode,
+            cooldown: isNumber(config.bot.djLeave?.cooldown)
+                ? config.bot.djLeave.cooldown
+                : defaultConfig.bot.djLeave.cooldown,
+        },
 
         clientSecret: config.bot.clientSecret || defaultConfig.bot.clientSecret,
 
@@ -86,7 +91,33 @@ const setEnvironment = (defaultConfig: Config) => {
         i18n: {
             localePath: config.bot.i18n.localePath || defaultConfig.bot.i18n.localePath,
             defaultLocale: config.bot.i18n.defaultLocale || defaultConfig.bot.i18n.defaultLocale
-        }
+        },
+
+        maxQueuedSongs: {
+            enabled: config.bot.maxQueuedSongs?.enabled ?? defaultConfig.bot.maxQueuedSongs.enabled,
+            global: isNumber(config.bot.maxQueuedSongs?.global)
+                ? config.bot.maxQueuedSongs.global
+                : defaultConfig.bot.maxQueuedSongs.global,
+            default: isNumber(config.bot.maxQueuedSongs?.default)
+                ? config.bot.maxQueuedSongs.default
+                : defaultConfig.bot.maxQueuedSongs.default,
+            djs: isNumber(config.bot.maxQueuedSongs?.djs)
+                ? config.bot.maxQueuedSongs.djs
+                : defaultConfig.bot.maxQueuedSongs.djs,
+            roles: (config.bot.maxQueuedSongs?.roles && typeof config.bot.maxQueuedSongs.roles === 'object')
+                ? config.bot.maxQueuedSongs.roles
+                : defaultConfig.bot.maxQueuedSongs.roles
+        },
+
+        fairQueue: config.bot.fairQueue ?? defaultConfig.bot.fairQueue,
+
+        voiceStatusEmojis: Array.isArray(config.bot.voiceStatusEmojis)
+            ? config.bot.voiceStatusEmojis
+            : defaultConfig.bot.voiceStatusEmojis,
+
+        voiceStatusIdleText: (typeof config.bot.voiceStatusIdleText === 'string')
+            ? config.bot.voiceStatusIdleText
+            : defaultConfig.bot.voiceStatusIdleText
     };
 
     // Lavalink node list
@@ -151,7 +182,19 @@ const setEnvironment = (defaultConfig: Config) => {
         djCommand: Array.isArray(config.command.djCommand)
             ? config.command.djCommand
             : defaultConfig.command.djCommand,
+        requesterOnly: Array.isArray(config.command.requesterOnly)
+            ? config.command.requesterOnly
+            : defaultConfig.command.requesterOnly,
+        requesterDjBypass: Array.isArray(config.command.requesterDjBypass)
+            ? config.command.requesterDjBypass
+            : defaultConfig.command.requesterDjBypass,
     };
+
+    defaultConfig.queuePersistence = {
+        enabled: config.queuePersistence?.enabled ?? defaultConfig.queuePersistence.enabled,
+        path: config.queuePersistence?.path || defaultConfig.queuePersistence.path
+    };
+
 };
 
 export { setEnvironment };

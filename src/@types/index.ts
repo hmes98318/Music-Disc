@@ -2,40 +2,41 @@ import type {
     ActivityType,
     ChatInputCommandInteraction,
     ClientPresenceStatus,
-    Collection,
     Message
 } from 'discord.js';
 import type { i18n } from 'i18next';
-import type { LavaShark } from 'lavashark';
+import type { LavaShark, Track } from 'lavashark';
 import type { NodeOptions } from 'lavashark/typings/src/@types/index.js';
 
 import type { Language } from '../lib/i18n/Language.js';
 import type { Logger } from '../lib/Logger.js';
+import type { BlacklistManager } from '../lib/BlacklistManager.js';
+import type { DashboardManager } from '../lib/DashboardManager.js';
+import type { CommandRegistry } from '../commands/base/CommandRegistry.js';
 import type { IPBlockerConfig, SessionManagerConfig } from './SessionManager.types.js';
+
+export * from './ButtonIds.types.js';
+export * from './BaseCommand.types.js';
 
 
 declare module 'discord.js' {
     export interface Client {
-        commands: Collection<unknown, any>,
+        commands: CommandRegistry,
         lavashark: LavaShark,
         i18n: i18n;
+        dashboard: DashboardManager;
+        lastPlayedTracks: Map<string, Track>;
     }
 }
 
 declare module 'lavashark' {
     export interface Player {
-        dashboard: Message<boolean> | null;
+        dashboardMsg: Message<boolean> | null;      // Dashboard message for this player
         metadata: Message<boolean> | ChatInputCommandInteraction | null;
         setting: PlayerSetting;
         djUsers?: Set<string>;              // Dynamic DJ users for this guild
-        djLeaveTimeout?: NodeJS.Timeout;    // Timeout for DJ leave cooldown
         leaveTimeout?: NodeJS.Timeout;      // Timeout for auto leave channel
     }
-}
-
-export enum CommandCategory {
-    MUSIC = 'Music',
-    UTILITY = 'Utility',
 }
 
 export enum DJModeEnum {
@@ -45,9 +46,17 @@ export enum DJModeEnum {
 
 export type DJMode = keyof typeof DJModeEnum;
 
+export type DJLeaveMode = 'PLAY' | 'COOLDOWN';
+
+export interface DJLeaveConfig {
+    mode: DJLeaveMode;
+    cooldown: number;
+}
+
 export interface PlayerSetting {
     queuePage: QueuePage | null;
     volume: number | null;
+    fairQueueRotation?: string[];
 }
 
 export interface QueuePage {
@@ -76,6 +85,7 @@ export type Bot = {
     },
     i18n: i18n;
     lang: Language;
+    blacklistManager?: BlacklistManager;
 }
 
 /**
@@ -89,6 +99,7 @@ export type Config = {
     webDashboard: WebDashboardConfig;
     localNode: LocalNodeConfig;
     command: CommandConfig;
+    queuePersistence: QueuePersistenceConfig;
 };
 
 export type BotConfig = {
@@ -98,7 +109,7 @@ export type BotConfig = {
     djMode: DJMode;
     dj: string[];
     djRoleId: string | null;
-    djLeaveCooldown: number;
+    djLeave: DJLeaveConfig;
     clientSecret: string;
     name: string;
     prefix: string;
@@ -130,7 +141,11 @@ export type BotConfig = {
     i18n: {
         localePath: string;
         defaultLocale: string;
-    }
+    };
+    maxQueuedSongs: MaxQueuedSongsConfig;
+    fairQueue: boolean;
+    voiceStatusEmojis: string[];
+    voiceStatusIdleText: string;
 };
 
 export type SpotifyConfig = {
@@ -164,6 +179,21 @@ export type CommandConfig = {
     disableCommand: string[];
     adminCommand: string[];
     djCommand: string[];
+    requesterOnly: string[];
+    requesterDjBypass: string[];
+};
+
+export type MaxQueuedSongsConfig = {
+    enabled: boolean;
+    global: number;
+    default: number;
+    djs: number;
+    roles: Record<string, number>;
+};
+
+export type QueuePersistenceConfig = {
+    enabled: boolean;
+    path: string;
 };
 
 

@@ -1,6 +1,7 @@
 import type { VoiceBasedChannel } from 'discord.js';
+import type { BlacklistManager } from '../../lib/BlacklistManager.js';
 
-const isUserInBlacklist = (voiceChannel: VoiceBasedChannel | null | undefined, blacklist: string[]) => {
+const isUserInBlacklist = (voiceChannel: VoiceBasedChannel | null | undefined, blacklist: string[], blacklistManager?: BlacklistManager) => {
     if (!voiceChannel) {
         return [];
     }
@@ -9,7 +10,9 @@ const isUserInBlacklist = (voiceChannel: VoiceBasedChannel | null | undefined, b
     const blacklistedUsers = [];
 
     for (const member of voiceMembers.values()) {
-        if (blacklist.includes(member.user.id)) {
+        const inStaticList = blacklist.includes(member.user.id);
+        const inDynamicList = blacklistManager?.has(member.user.id) ?? false;
+        if (inStaticList || inDynamicList) {
             blacklistedUsers.push({ name: member.user.username, value: member.user.id });
         }
     }
