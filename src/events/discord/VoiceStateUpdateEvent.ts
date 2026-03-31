@@ -14,9 +14,6 @@ import type { Bot } from '../../@types/index.js';
  * Handles voice state changes for auto-leave and DJ management
  */
 export class VoiceStateUpdateEvent extends BaseDiscordEvent<Events.VoiceStateUpdate> {
-    // Timeout pool for auto-leave functionality
-    #timeoutPool = new Map<string, NodeJS.Timeout>();
-
     public getEventName(): Events.VoiceStateUpdate {
         return Events.VoiceStateUpdate;
     }
@@ -78,7 +75,7 @@ export class VoiceStateUpdateEvent extends BaseDiscordEvent<Events.VoiceStateUpd
 
         // Clear existing timeout if channel has valid members
         if (!this.#checkBlacklistUsers(bot, oldState.channel, blacklist)) {
-            this.#clearTimeout(oldState.guild.id);
+            this.#clearTimeout(player);
         }
 
         // If channel only has bot or blacklisted users, start auto-leave timeout
@@ -120,7 +117,7 @@ export class VoiceStateUpdateEvent extends BaseDiscordEvent<Events.VoiceStateUpd
 
         // If valid members joined, clear timeout
         if (newState.channel!.members.size >= 2 && !this.#checkBlacklistUsers(bot, newState.channel, blacklist)) {
-            this.#clearTimeout(newState.guild.id);
+            this.#clearTimeout(player);
         }
     }
 
@@ -162,7 +159,7 @@ export class VoiceStateUpdateEvent extends BaseDiscordEvent<Events.VoiceStateUpd
 
             // Clear timeout if valid members remain
             if (!this.#checkBlacklistUsers(bot, oldState.channel, blacklist)) {
-                this.#clearTimeout(oldState.guild.id);
+                this.#clearTimeout(player);
             }
 
             // Start timeout if only bot or blacklisted users remain
@@ -179,7 +176,7 @@ export class VoiceStateUpdateEvent extends BaseDiscordEvent<Events.VoiceStateUpd
 
             // Clear timeout if valid members joined
             if (newState.channel!.members.size >= 2 && !this.#checkBlacklistUsers(bot, newState.channel, blacklist)) {
-                this.#clearTimeout(newState.guild.id);
+                this.#clearTimeout(player);
             }
         }
     }
@@ -203,7 +200,9 @@ export class VoiceStateUpdateEvent extends BaseDiscordEvent<Events.VoiceStateUpd
      * @private
      */
     #startAutoLeaveTimeout(bot: Bot, client: Client, player: any, guildId: string): void {
-        const timeoutID = setTimeout(async () => {
+        this.#clearTimeout(player);
+
+        player.autoLeaveTimeout = setTimeout(async () => {
             try {
                 // Clean up queue persistence before leaving
                 if (bot.config.queuePersistence.enabled && (client as any).queuePersistence) {
@@ -224,19 +223,16 @@ export class VoiceStateUpdateEvent extends BaseDiscordEvent<Events.VoiceStateUpd
                 bot.logger.emit('error', bot.shardId, `[VoiceStateUpdate] Auto-leave timeout error for guild ${guildId}: ${error}`);
             }
         }, bot.config.bot.autoLeave.cooldown);
-
-        this.#timeoutPool.set(guildId, timeoutID);
     }
 
     /**
      * Clear auto-leave timeout
      * @private
      */
-    #clearTimeout(guildId: string): void {
-        const timeoutID = this.#timeoutPool.get(guildId);
-        if (timeoutID) {
-            clearTimeout(timeoutID);
-            this.#timeoutPool.delete(guildId);
+    #clearTimeout(player: any): void {
+        if (player.autoLeaveTimeout) {
+            clearTimeout(player.autoLeaveTimeout);
+            player.autoLeaveTimeout = undefined;
         }
     }
 }

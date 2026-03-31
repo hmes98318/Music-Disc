@@ -48,6 +48,9 @@ export class DJManager {
      * Only 1 dynamic DJ at a time — clear existing before adding.
      */
     public static addDJ(player: Player, userId: string): void {
+        // Cancel any pending DJ leave timeout when a new DJ is assigned
+        this.cancelDJLeaveTimeout(player);
+
         if (!player.djUsers) {
             player.djUsers = new Set();
         }

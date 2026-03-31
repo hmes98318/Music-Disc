@@ -7,7 +7,7 @@
     "MAINTAIN_DESCRIPTION": "몇 분 후에 봇이 점검을 시작합니다. 일부 기능을 일시적으로 사용하지 못할 수 있습니다.",
     "MAINTAIN_TITLE": "⚠️ 유지보수 안내 ⚠️",
     "MESSAGE_BLACKLIST": "음성 채널에 블랙리스트에 등록된 사용자가 있습니다.",
-    "MESSAGE_COMMAND": "Command **{{command}}**",
+    "MESSAGE_COMMAND": "명령어 **{{command}}**",
     "MESSAGE_FILTER": "`{{effectName}}`(으)로 재생 효과가 변경되었습니다.",
     "NODE_ALL_ACTIVE": "모든 노드가 활성화되었습니다.",
     "NODE_STATUS_ARGS_ERROR": "❌ 유효한 노드 이름을 입력하세요.",
