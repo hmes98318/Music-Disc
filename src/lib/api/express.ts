@@ -129,12 +129,15 @@ const registerExpressEvents = (bot: Bot, shardManager: ShardingManager, localNod
                     }
                 } catch (error) {
                     console.error(error);
-                    return res.json(error);
+                    return res.status(500).json({ error: String(error) });
                 }
             }
 
-
-            res.sendFile(`${viewsPath}/login-oauth2.html`);
+            return res.sendFile(`${viewsPath}/login-oauth2.html`, (err) => {
+                if (err) {
+                    res.status(404).send('login-oauth2.html not found');
+                }
+            });
         });
     }
     else {  // LoginType.USER
@@ -147,24 +150,44 @@ const registerExpressEvents = (bot: Bot, shardManager: ShardingManager, localNod
                 return res.redirect('/dashboard');
             }
 
-            res.sendFile(`${viewsPath}/login.html`);
+            return res.sendFile(`${viewsPath}/login.html`, (err) => {
+                if (err) {
+                    res.status(404).send('login.html not found');
+                }
+            });
         });
     }
 
     app.get('/dashboard', verifyLogin, (req, res) => {
-        res.sendFile(`${viewsPath}/dashboard.html`);
+        return res.sendFile(`${viewsPath}/dashboard.html`, (err) => {
+            if (err) {
+                res.status(404).send('dashboard.html not found');
+            }
+        });
     });
 
     app.get('/maintenance', verifyLogin, (req, res) => {
-        res.sendFile(`${viewsPath}/maintenance.html`);
+        return res.sendFile(`${viewsPath}/maintenance.html`, (err) => {
+            if (err) {
+                res.status(404).send('maintenance.html not found');
+            }
+        });
     });
 
     app.get('/nodeslist', verifyLogin, (req, res) => {
-        res.sendFile(`${viewsPath}/nodeslist.html`);
+        return res.sendFile(`${viewsPath}/nodeslist.html`, (err) => {
+            if (err) {
+                res.status(404).send('nodeslist.html not found');
+            }
+        });
     });
 
     app.get('/serverlist', verifyLogin, (req, res) => {
-        res.sendFile(`${viewsPath}/serverlist.html`);
+        return res.sendFile(`${viewsPath}/serverlist.html`, (err) => {
+            if (err) {
+                res.status(404).send('serverlist.html not found');
+            }
+        });
     });
 
     app.get('/servers/:id', verifyLogin, async (req, res) => {
@@ -180,19 +203,31 @@ const registerExpressEvents = (bot: Bot, shardManager: ShardingManager, localNod
         const server = guilds.find(guild => guild !== null);
 
         if (!server) {
-            res.redirect('/serverlist');
+            return res.redirect('/serverlist');
         }
         else {
-            res.sendFile(`${viewsPath}/server.html`);
+            return res.sendFile(`${viewsPath}/server.html`, (err) => {
+                if (err) {
+                    res.status(404).send('server.html not found');
+                }
+            });
         }
     });
 
     app.get('/localnode', verifyLogin, (req, res) => {
-        res.sendFile(`${viewsPath}/localnode.html`);
+        return res.sendFile(`${viewsPath}/localnode.html`, (err) => {
+            if (err) {
+                res.status(404).send('localnode.html not found');
+            }
+        });
     });
 
     app.get('/logs', verifyLogin, (req, res) => {
-        res.sendFile(`${viewsPath}/logs.html`);
+        return res.sendFile(`${viewsPath}/logs.html`, (err) => {
+            if (err) {
+                res.status(404).send('logs.html not found');
+            }
+        });
     });
 
 

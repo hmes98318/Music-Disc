@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, Message } from 'discord.js';
+import { ChatInputCommandInteraction, Message, MessageFlags } from 'discord.js';
 import { embeds } from '../../embeds/index.js';
 
 import type {
@@ -178,7 +178,7 @@ export class CommandContext {
             const interaction = this.getInteraction();
             try { await interaction.deleteReply(); } catch (_) { /* ignore */ }
             await interaction.followUp({
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
                 embeds: [embeds.textErrorMsg(bot, message)]
             });
         } else {

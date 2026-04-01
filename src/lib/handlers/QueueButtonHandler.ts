@@ -1,3 +1,4 @@
+import { MessageFlags } from 'discord.js';
 import { ButtonsBuilder } from '../builders/ButtonsBuilder.js';
 import { embeds } from '../../embeds/index.js';
 import { PermissionManager } from '../PermissionManager.js';
@@ -94,7 +95,7 @@ export class QueueButtonHandler {
             if (!bot.config.bot.admin.includes(interaction.user.id)) {
                 await interaction.reply({
                     embeds: [embeds.textErrorMsg(bot, client.i18n.t('events:ERROR_REQUIRE_ADMIN'))],
-                    ephemeral: true
+                    flags: MessageFlags.Ephemeral
                 });
                 return;
             }
@@ -106,7 +107,7 @@ export class QueueButtonHandler {
             if (!PermissionManager.hasDJCommandPermission(bot, interaction.user.id, member, player)) {
                 await interaction.reply({
                     embeds: [embeds.textErrorMsg(bot, client.i18n.t('events:ERROR_REQUIRE_DJ'))],
-                    ephemeral: true
+                    flags: MessageFlags.Ephemeral
                 });
                 return;
             }
