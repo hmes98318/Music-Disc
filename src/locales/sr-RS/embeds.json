@@ -11,6 +11,8 @@
     "MESSAGE_COMMAND": "Komanda **{{command}}**",
     "MESSAGE_FILTER": "Režim filtera postavljen na **{{effectName}}**",
     "NODE_ALL_ACTIVE": "Svi nodovi su aktivni",
+    "NODE_CONNECTED": "Kašnjenje: **{{ping}}ms**",
+    "NODE_DISCONNECTED": "**ISKLJUČEN**",
     "NODE_STATUS_ARGS_ERROR": "❌ Molim te unesi važeći naziv noda.",
     "NODE_STATUS_CPU_TITLE": "⚙️ CPU",
     "NODE_STATUS_CPU_VALUE": "Jezgra: **{{cores}}**\nSistemsko opterećenje: **{{systemLoad}}**\nLavalink opterećenje: **{{lavalinkLoad}}**",

@@ -11,6 +11,8 @@
     "MESSAGE_COMMAND": "指令 **{{command}}**",
     "MESSAGE_FILTER": "將效果模式設置為 **{{effectName}}**",
     "NODE_ALL_ACTIVE": "所有節點均已啟用",
+    "NODE_CONNECTED": "延遲: **{{ping}}ms**",
+    "NODE_DISCONNECTED": "**已斷線**",
     "NODE_STATUS_ARGS_ERROR": "❌ 請輸入有效的節點名稱。",
     "NODE_STATUS_CPU_TITLE": "⚙️ CPU",
     "NODE_STATUS_CPU_VALUE": "核心數: **{{cores}}**\n系統負載: **{{systemLoad}}**\nLavalink 負載: **{{lavalinkLoad}}**",

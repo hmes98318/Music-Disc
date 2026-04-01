@@ -11,6 +11,8 @@
     "MESSAGE_COMMAND": "Command **{{command}}**",
     "MESSAGE_FILTER": "Set filter mode to **{{effectName}}**",
     "NODE_ALL_ACTIVE": "All nodes are active",
+    "NODE_CONNECTED": "Latency: **{{ping}}ms**",
+    "NODE_DISCONNECTED": "**DISCONNECTED**",
     "NODE_STATUS_ARGS_ERROR": "❌ Please enter a valid node name.",
     "NODE_STATUS_CPU_TITLE": "⚙️ CPU",
     "NODE_STATUS_CPU_VALUE": "Cores: **{{cores}}**\nSystem load: **{{systemLoad}}**\nLavalink load: **{{lavalinkLoad}}**",

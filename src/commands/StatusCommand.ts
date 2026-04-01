@@ -43,10 +43,10 @@ export class StatusCommand extends BaseCommand {
 
             if (ping === -1) {
                 unhealthValue++;
-                nodesStatus.push({ name: `❌ ${node.identifier}`, value: '**DISCONNECTED**' });
+                nodesStatus.push({ name: `❌ ${node.identifier}`, value: bot.i18n.t('embeds:NODE_DISCONNECTED') });
             }
             else {
-                nodesStatus.push({ name: `✅ ${node.identifier}`, value: `ping: **${ping}ms**` });
+                nodesStatus.push({ name: `✅ ${node.identifier}`, value: bot.i18n.t('embeds:NODE_CONNECTED', { ping: ping }) });
             }
         }
 

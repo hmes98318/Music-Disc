@@ -69,7 +69,7 @@ const nodeDisconnected = (bot: Bot, nodeName: string) => {
     const embed_ = new EmbedBuilder()
         .setColor(bot.config.bot.embedsColors.error as HexColorString | number)
         .setTitle(bot.i18n.t('embeds:NODE_STATUS_TITLE_2', { nodeName: nodeName }))
-        .setDescription(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n❌ | **DISCONNECTED**`)
+        .setDescription(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n❌ㅣ${bot.i18n.t('embeds:NODE_DISCONNECTED')}`)
         .setTimestamp();
 
     return embed_;

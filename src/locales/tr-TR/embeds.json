@@ -11,6 +11,8 @@
     "MESSAGE_COMMAND": "Komut **{{command}}**",
     "MESSAGE_FILTER": "Filtre modu seçiliyor **{{effectName}}**",
     "NODE_ALL_ACTIVE": "Tüm bağlantı noktaları etkin",
+    "NODE_CONNECTED": "Gecikme: **{{ping}}ms**",
+    "NODE_DISCONNECTED": "**BAĞLANTI KESİLDİ**",
     "NODE_STATUS_ARGS_ERROR": "❌ Lütfen geçerli bir bağlantı noktası seçin.",
     "NODE_STATUS_CPU_TITLE": "⚙️ CPU",
     "NODE_STATUS_CPU_VALUE": "Çekirdekler: **{{cores}}**\nSistem yükü: **{{systemLoad}}**\nLavalink yükü: **{{lavalinkLoad}}**",
