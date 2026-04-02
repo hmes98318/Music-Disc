@@ -16,6 +16,12 @@ export class TrackStartEvent extends BaseLavaSharkEvent<'trackStart'> {
     }
 
     public async execute(bot: Bot, client: Client, player: Player): Promise<void> {
+        // Cancel auto-leave timeout when a track starts
+        if (player.autoLeaveTimeout) {
+            clearTimeout(player.autoLeaveTimeout);
+            player.autoLeaveTimeout = undefined;
+        }
+
         const track = player.current;
         if (!track) return;
         await client.dashboard.update(player, track);

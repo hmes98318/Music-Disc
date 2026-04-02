@@ -25,13 +25,9 @@ export class StopButtonHandler extends DashboardButtonHandler {
             (client as any).queuePersistence.deleteQueue(player.guildId);
         }
 
-        if (bot.config.bot.autoLeave.enabled) {
-            player.destroy();
-        } else {
-            player.queue.clear();
-            await player.skip();
-            await client.dashboard.destroy(player);
-        }
+        player.queue.clear();
+        await player.skip();
+        await client.dashboard.destroy(player);
 
         await interaction.deferUpdate();
     }

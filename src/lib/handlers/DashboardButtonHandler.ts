@@ -1,5 +1,6 @@
 import { PermissionManager } from '../PermissionManager.js';
 import { embeds } from '../../embeds/index.js';
+import { MessageFlags } from 'discord.js';
 import type { Client, ButtonInteraction, GuildMember } from 'discord.js';
 import type { Player } from 'lavashark';
 import type { Bot } from '../../@types/index.js';
@@ -32,7 +33,7 @@ export abstract class DashboardButtonHandler {
             if (!bot.config.bot.admin.includes(interaction.user.id)) {
                 await interaction.reply({
                     embeds: [embeds.textErrorMsg(bot, client.i18n.t('events:ERROR_REQUIRE_ADMIN'))],
-                    ephemeral: true
+                    flags: MessageFlags.Ephemeral
                 });
                 return false;
             }
@@ -44,7 +45,7 @@ export abstract class DashboardButtonHandler {
             if (!PermissionManager.hasDJCommandPermission(bot, interaction.user.id, member, player)) {
                 await interaction.reply({
                     embeds: [embeds.textErrorMsg(bot, client.i18n.t('events:ERROR_REQUIRE_DJ'))],
-                    ephemeral: true
+                    flags: MessageFlags.Ephemeral
                 });
                 return false;
             }

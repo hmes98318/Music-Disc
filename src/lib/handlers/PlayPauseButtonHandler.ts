@@ -1,3 +1,4 @@
+import { MessageFlags } from 'discord.js';
 import { DashboardButtonHandler } from './DashboardButtonHandler.js';
 import { ButtonsBuilder } from '../builders/ButtonsBuilder.js';
 import { PermissionManager } from '../PermissionManager.js';
@@ -38,7 +39,7 @@ export class PlayPauseButtonHandler extends DashboardButtonHandler {
             if (!isRequester && !isAdmin && !canDJBypass) {
                 await interaction.reply({
                     embeds: [embeds.textErrorMsg(bot, client.i18n.t('commands:ERROR_PAUSE_NOT_REQUESTER'))],
-                    ephemeral: true
+                    flags: MessageFlags.Ephemeral
                 });
                 return;
             }

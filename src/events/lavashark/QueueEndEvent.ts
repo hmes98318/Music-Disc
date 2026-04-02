@@ -34,7 +34,13 @@ export class QueueEndEvent extends BaseLavaSharkEvent<'queueEnd'> {
         await client.dashboard.destroy(player);
 
         if (bot.config.bot.autoLeave.enabled) {
-            player.destroy();
+            if (player.autoLeaveTimeout) {
+                clearTimeout(player.autoLeaveTimeout);
+            }
+
+            player.autoLeaveTimeout = setTimeout(() => {
+                player.destroy();
+            }, bot.config.bot.autoLeave.cooldown);
         }
     }
 }

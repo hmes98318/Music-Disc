@@ -1,3 +1,4 @@
+import { MessageFlags } from 'discord.js';
 import { DashboardButtonHandler } from './DashboardButtonHandler.js';
 import { embeds } from '../../embeds/index.js';
 
@@ -29,7 +30,7 @@ export class ShuffleButtonHandler extends DashboardButtonHandler {
 
         await interaction.reply({
             embeds: [embeds.textSuccessMsg(bot, client.i18n.t('events:MESSAGE_MUSIC_SHUFFLE'))],
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
             components: []
         });
     }

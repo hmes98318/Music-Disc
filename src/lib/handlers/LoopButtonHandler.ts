@@ -1,4 +1,4 @@
-import { ActionRowBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, Collection } from 'discord.js';
+import { ActionRowBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, Collection, MessageFlags } from 'discord.js';
 import { RepeatMode } from 'lavashark';
 import { DashboardButtonHandler } from './DashboardButtonHandler.js';
 import { ButtonsBuilder } from '../builders/ButtonsBuilder.js';
@@ -46,7 +46,7 @@ export class LoopButtonHandler extends DashboardButtonHandler {
         const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(select);
         const msg = await interaction.reply({
             embeds: [embeds.textMsg(bot, client.i18n.t('events:MESSAGE_SELECT_LOOP_MODE'))],
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
             components: [row]
         });
 

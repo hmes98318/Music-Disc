@@ -35,7 +35,8 @@ declare module 'lavashark' {
         metadata: Message<boolean> | ChatInputCommandInteraction | null;
         setting: PlayerSetting;
         djUsers?: Set<string>;              // Dynamic DJ users for this guild
-        leaveTimeout?: NodeJS.Timeout;      // Timeout for auto leave channel
+        leaveTimeout?: NodeJS.Timeout;      // Timeout for DJ leave channel
+        autoLeaveTimeout?: NodeJS.Timeout;  // Timeout for auto leave channel
     }
 }
 

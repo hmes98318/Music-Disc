@@ -1,4 +1,5 @@
 import { RepeatMode } from 'lavashark';
+import { MessageFlags } from 'discord.js';
 import { DashboardButtonHandler } from './DashboardButtonHandler.js';
 import { ButtonsBuilder } from '../builders/ButtonsBuilder.js';
 import { PermissionManager } from '../PermissionManager.js';
@@ -44,7 +45,7 @@ export class SkipButtonHandler extends DashboardButtonHandler {
             if (!isRequester && !isAdmin && !canDJBypass) {
                 await interaction.reply({
                     embeds: [embeds.textErrorMsg(bot, client.i18n.t('commands:ERROR_SKIP_NOT_REQUESTER'))],
-                    ephemeral: true
+                    flags: MessageFlags.Ephemeral
                 });
                 return;
             }

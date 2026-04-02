@@ -1,4 +1,4 @@
-import { Events, GuildMember, Interaction } from 'discord.js';
+import { Events, GuildMember, Interaction, MessageFlags } from 'discord.js';
 
 import { BaseDiscordEvent } from './base/BaseDiscordEvent.js';
 import { cst } from '../../utils/constants.js';
@@ -56,7 +56,7 @@ export class InteractionCreateEvent extends BaseDiscordEvent<Events.InteractionC
         if (!voiceChannel) {
             await interaction.reply({
                 embeds: [embeds.textErrorMsg(bot, client.i18n.t('events:ERROR_NOT_IN_VOICE_CHANNEL'))],
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
                 components: []
             }).catch((error) => {
                 bot.logger.emit('error', bot.shardId, '[interactionCreate] Error reply: ' + error);
@@ -67,7 +67,7 @@ export class InteractionCreateEvent extends BaseDiscordEvent<Events.InteractionC
         if (interaction.guild?.members.me?.voice.channel && voiceChannel.id !== interaction.guild.members.me.voice.channelId) {
             await interaction.reply({
                 embeds: [embeds.textErrorMsg(bot, client.i18n.t('events:ERROR_NOT_IN_SAME_VOICE_CHANNEL'))],
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
                 components: []
             }).catch((error) => {
                 bot.logger.emit('error', bot.shardId, '[interactionCreate] Error reply: ' + error);

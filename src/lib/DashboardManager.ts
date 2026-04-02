@@ -61,7 +61,7 @@ export class DashboardManager {
             await player.dashboardMsg.edit({
                 embeds: [embeds.dashboard(
                     this.#bot,
-                    'Dashboard',
+                    this.#bot.i18n.t('embeds:DASHBOARD_TITLE'),
                     track.title,
                     subtitle,
                     track.uri,

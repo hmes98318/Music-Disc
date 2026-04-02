@@ -16,6 +16,16 @@ export class PlayerDestroyEvent extends BaseLavaSharkEvent<'playerDestroy'> {
     }
 
     public async execute(bot: Bot, client: Client, player: Player): Promise<void> {
+        // Clear any pending timeouts
+        if (player.autoLeaveTimeout) {
+            clearTimeout(player.autoLeaveTimeout);
+            player.autoLeaveTimeout = undefined;
+        }
+        if (player.leaveTimeout) {
+            clearTimeout(player.leaveTimeout);
+            player.leaveTimeout = undefined;
+        }
+
         bot.logger.emit('lavashark', bot.shardId, `[playerDestroy] Player destroyed in guild "${player.guildId}"`);
 
         // Stop periodic queue persistence save

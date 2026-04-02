@@ -1,3 +1,4 @@
+import { MessageFlags } from 'discord.js';
 import { embeds } from '../../embeds/index.js';
 import type { Client, ButtonInteraction, GuildMember } from 'discord.js';
 import type { Player } from 'lavashark';
@@ -27,14 +28,14 @@ export class MusicSaveButtonHandler {
             .then(() => {
                 interaction.reply({
                     embeds: [embeds.textSuccessMsg(bot, client.i18n.t('events:MESSAGE_SEND_PRIVATE_MESSAGE'))],
-                    ephemeral: true
+                    flags: MessageFlags.Ephemeral
                 }).catch(() => { });
             })
             .catch((error) => {
                 bot.logger.emit('error', bot.shardId, '[MusicSaveButtonHandler] Error sending DM: ' + error);
                 interaction.reply({
                     embeds: [embeds.textErrorMsg(bot, client.i18n.t('events:ERROR_SEND_PRIVATE_MESSAGE'))],
-                    ephemeral: true
+                    flags: MessageFlags.Ephemeral
                 }).catch(() => { });
             });
     }

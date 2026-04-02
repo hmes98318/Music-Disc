@@ -66,7 +66,7 @@ export class NodeStatusCommand extends BaseCommand {
                 nodesStatus.push({ name: `❌ ${node.identifier}`, value: '**DISCONNECTED**' });
             }
             else {
-                nodesStatus.push({ name: `✅ ${node.identifier}`, value: `ping: **${ping}ms**` });
+                nodesStatus.push({ name: `✅ ${node.identifier}`, value: `${bot.i18n.t('embeds:NODE_STATUS_PING')}: **${ping}ms**` });
             }
         }
 
