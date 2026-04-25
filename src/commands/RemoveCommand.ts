@@ -45,7 +45,7 @@ export class RemoveCommand extends BaseCommand {
             return;
         }
 
-        const tracks = player.queue.tracks.map((track, index) => `${++index}. \`${track.title}\``);
+        const tracks = player.queue.tracks.map((track, index) => `${index + 1}. \`${track.title}\``);
 
         if (tracks.length < 1) {
             await context.replyEphemeralError(bot, client.i18n.t('commands:MESSAGE_REMOVE_QUEUE_EMPTY'));
@@ -168,7 +168,7 @@ export class RemoveCommand extends BaseCommand {
             title: player.current?.title
         });
 
-        let tracksQueue = '';
+        let tracksQueue: string;
         if (tracks.length < 1) {
             tracksQueue = '------------------------------';
         }
