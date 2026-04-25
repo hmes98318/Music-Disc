@@ -169,5 +169,12 @@
     "ERROR_QUEUE_LIMIT_REACHED": "❌ 대기열 한도에 도달했습니다! 현재 대기열에 **{{current}}**개의 음악이 있습니다 (한도: **{{limit}}**). 더 추가하려면 일부 음악이 끝날 때까지 기다려 주세요.",
     "ERROR_GLOBAL_QUEUE_LIMIT_REACHED": "❌ 전역 대기열 한도에 도달했습니다! 대기열에 현재 **{{total}}**개의 음악이 있습니다 (전역 한도: **{{limit}}**). 더 추가하려면 일부 음악이 끝날 때까지 기다려 주세요.",
     "MESSAGE_PLAYLIST_PARTIAL": "⚠️ 플레이리스트 일부 추가됨: **{{added}}**개 추가, **{{skipped}}**개 건너뜀 (대기열 한도: **{{current}}/{{limit}}**).",
-    "MESSAGE_PLAYLIST_PARTIAL_GLOBAL": "⚠️ 플레이리스트 일부 추가됨: **{{added}}**개 추가, **{{skipped}}**개 건너뜀 (전역 대기열 한도: **{{total}}/{{limit}}**)."
+    "MESSAGE_PLAYLIST_PARTIAL_GLOBAL": "⚠️ 플레이리스트 일부 추가됨: **{{added}}**개 추가, **{{skipped}}**개 건너뜀 (전역 대기열 한도: **{{total}}/{{limit}}**).",
+    "MESSAGE_SERVER_GUILD_ID": "서버 ID",
+    "MESSAGE_SERVER_GUILD": "서버",
+    "MESSAGE_SERVER_MEMBERS": "멤버",
+    "MESSAGE_NONE": "없음",
+    "MESSAGE_DJ_TYPE_STATIC": "(고정)",
+    "MESSAGE_DJ_TYPE_ROLE": "(역할)",
+    "MESSAGE_DJ_TYPE_DYNAMIC": "(동적)"
 }
