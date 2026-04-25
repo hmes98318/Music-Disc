@@ -45,5 +45,8 @@
     "STATUS_SYSTEM_TITLE": "⚙️ Sistem",
     "STATUS_SYSTEM_VALUE": "OS: **{{os_version}}**\nNode.js: **{{node_version}}**\nDiscord.js: **{{dc_version}}**\nLavaShark: **{{shark_version}}**\nCPU: **{{cpu}}**\nBağlantı Süresi: **{{uptime}}**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
     "STATUS_USAGE_TITLE": "📊 Kullanım",
-    "STATUS_USAGE_VALUE": "CPU: **{{cpuUsage}}**\nRam: **{{ramUsage}}**\nHeap: **{{heapUsage}}**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    "STATUS_USAGE_VALUE": "CPU: **{{cpuUsage}}**\nRam: **{{ramUsage}}**\nHeap: **{{heapUsage}}**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
+    "QUEUE_NOW_PLAYING": "**Şu An Çalıyor:**",
+    "QUEUE_EMPTY": "*Kuyrukta şarkı yok*",
+    "QUEUE_HEADER": "**Kuyruk:**"
 }

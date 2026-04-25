@@ -59,7 +59,7 @@ export class BlacklistCommand extends BaseCommand {
 
     protected async run(bot: Bot, client: Client, context: CommandContext): Promise<void> {
         if (!bot.blacklistManager) {
-            await context.replyEphemeralError(bot, 'Blacklist manager is not initialized.');
+            await context.replyEphemeralError(bot, client.i18n.t('commands:ERROR_BLACKLIST_NOT_INITIALIZED'));
             return;
         }
 

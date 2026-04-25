@@ -89,18 +89,18 @@ export class QueueCommand extends BaseCommand {
         let maxTitleLength = 80;
 
         const buildDescription = (titleLength: number): string => {
-            const nowPlayingTitle = player.current?.title || 'Unknown';
+            const nowPlayingTitle = player.current?.title || client.i18n.t('commands:UNKNOWN_USER');
             const truncatedNP = nowPlayingTitle.length > titleLength
                 ? nowPlayingTitle.substring(0, titleLength) + '...'
                 : nowPlayingTitle;
 
-            let desc = `**Now Playing:**\n${truncatedNP}\n${'─'.repeat(20)}\n`;
+            let desc = `${client.i18n.t('embeds:QUEUE_NOW_PLAYING')}\n${truncatedNP}\n${'─'.repeat(20)}\n`;
 
             if (queueTracks.length < 1) {
-                desc += '\n*No songs in queue*';
+                desc += `\n*${client.i18n.t('embeds:QUEUE_EMPTY')}*`;
             } else {
-                desc += '\n**Queue:**\n';
-                const entries = queueTracks.map((track: any, index: number) => {
+                desc += `\n${client.i18n.t('embeds:QUEUE_HEADER')}\n`;
+                const entries = queueTracks.map((track, index) => {
                     let title = track.title;
                     if (title.length > titleLength) {
                         title = title.substring(0, titleLength) + '...';

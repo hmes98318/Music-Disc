@@ -45,5 +45,8 @@
     "STATUS_SYSTEM_TITLE": "⚙️ SYSTEM",
     "STATUS_SYSTEM_VALUE": "作業系統: **{{os_version}}**\nNode.js: **{{node_version}}**\nDiscord.js: **{{dc_version}}**\nLavaShark: **{{shark_version}}**\nCPU: **{{cpu}}**\n運行時間: **{{uptime}}**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
     "STATUS_USAGE_TITLE": "📊 資源使用",
-    "STATUS_USAGE_VALUE": "CPU: **{{cpuUsage}}**\nRam: **{{ramUsage}}**\nHeap: **{{heapUsage}}**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    "STATUS_USAGE_VALUE": "CPU: **{{cpuUsage}}**\nRam: **{{ramUsage}}**\nHeap: **{{heapUsage}}**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
+    "QUEUE_NOW_PLAYING": "**正在播放:**",
+    "QUEUE_EMPTY": "*播放清單中沒有歌曲*",
+    "QUEUE_HEADER": "**播放清單:**"
 }

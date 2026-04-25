@@ -176,5 +176,22 @@
     "MESSAGE_NONE": "없음",
     "MESSAGE_DJ_TYPE_STATIC": "(고정)",
     "MESSAGE_DJ_TYPE_ROLE": "(역할)",
-    "MESSAGE_DJ_TYPE_DYNAMIC": "(동적)"
+    "MESSAGE_DJ_TYPE_DYNAMIC": "(동적)",
+    "LABEL_DELETE_MESSAGE": "메세지 삭제",
+    "LABEL_CLEAR_QUEUE": "재생목록 초기화",
+    "UNIT_DAYS": "일",
+    "UNIT_HOURS": "시간",
+    "UNIT_MINUTES": "분",
+    "UNIT_SECONDS": "초",
+    "UNIT_BYTES": "바이트",
+    "UNIT_KB": "KB",
+    "UNIT_MB": "MB",
+    "UNIT_GB": "GB",
+    "UNIT_TB": "TB",
+    "ERROR_BLACKLIST_NOT_INITIALIZED": "블랙리스트 관리자가 초기화되지 않았습니다.",
+    "HELP_SELECT_MUSIC_PLACEHOLDER": "음악 명령어 선택",
+    "HELP_SELECT_UTILITY_PLACEHOLDER": "유틸리티 명령어 선택",
+    "HELP_COMMAND_ALIASES": "별칭: {{aliases}}",
+    "HELP_COMMAND_NONE": "없음",
+    "LABEL_FILTER_CLEAR": "효과 초기화"
 }

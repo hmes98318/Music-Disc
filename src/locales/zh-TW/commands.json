@@ -176,5 +176,22 @@
     "MESSAGE_NONE": "無",
     "MESSAGE_DJ_TYPE_STATIC": "(靜態)",
     "MESSAGE_DJ_TYPE_ROLE": "(角色)",
-    "MESSAGE_DJ_TYPE_DYNAMIC": "(動態)"
+    "MESSAGE_DJ_TYPE_DYNAMIC": "(動態)",
+    "LABEL_DELETE_MESSAGE": "刪除訊息",
+    "LABEL_CLEAR_QUEUE": "清空播放清單",
+    "UNIT_DAYS": "天",
+    "UNIT_HOURS": "小時",
+    "UNIT_MINUTES": "分",
+    "UNIT_SECONDS": "秒",
+    "UNIT_BYTES": "Bytes",
+    "UNIT_KB": "KB",
+    "UNIT_MB": "MB",
+    "UNIT_GB": "GB",
+    "UNIT_TB": "TB",
+    "ERROR_BLACKLIST_NOT_INITIALIZED": "黑名單管理器尚未初始化。",
+    "HELP_SELECT_MUSIC_PLACEHOLDER": "選擇音樂指令",
+    "HELP_SELECT_UTILITY_PLACEHOLDER": "選擇工具指令",
+    "HELP_COMMAND_ALIASES": "別名: {{aliases}}",
+    "HELP_COMMAND_NONE": "無",
+    "LABEL_FILTER_CLEAR": "清除效果"
 }

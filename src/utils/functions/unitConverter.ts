@@ -1,12 +1,20 @@
+import i18next from 'i18next';
+
 const formatBytes = (bytes: number) => {
-    if (bytes === 0) return '0 Bytes';
+    if (bytes === 0) return '0 ' + i18next.t('commands:UNIT_BYTES');
 
     const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+    const sizes = [
+        i18next.t('commands:UNIT_BYTES'),
+        i18next.t('commands:UNIT_KB'),
+        i18next.t('commands:UNIT_MB'),
+        i18next.t('commands:UNIT_GB'),
+        i18next.t('commands:UNIT_TB')
+    ];
 
     const i = Math.floor(Math.log(bytes) / Math.log(k));
 
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + (sizes[i] || '??');
 };
 
 const msToTime = (ms: number) => {
@@ -16,16 +24,16 @@ const msToTime = (ms: number) => {
     const days = Math.floor(hours / 24);
 
     if (days > 0) {
-        return `${days} day${days > 1 ? 's' : ''} ${hours % 24} hour${hours % 24 > 1 ? 's' : ''}`;
+        return `${days}${i18next.t('commands:UNIT_DAYS')} ${hours % 24}${i18next.t('commands:UNIT_HOURS')}`;
     }
     else if (hours > 0) {
-        return `${hours} hour${hours > 1 ? 's' : ''} ${minutes % 60} minute${minutes % 60 > 1 ? 's' : ''}`;
+        return `${hours}${i18next.t('commands:UNIT_HOURS')} ${minutes % 60}${i18next.t('commands:UNIT_MINUTES')}`;
     }
     else if (minutes > 0) {
-        return `${minutes} minute${minutes > 1 ? 's' : ''} ${seconds % 60} second${seconds % 60 > 1 ? 's' : ''}`;
+        return `${minutes}${i18next.t('commands:UNIT_MINUTES')} ${seconds % 60}${i18next.t('commands:UNIT_SECONDS')}`;
     }
     else {
-        return `${seconds % 60} second${seconds % 60 > 1 ? 's' : ''}`;
+        return `${seconds % 60}${i18next.t('commands:UNIT_SECONDS')}`;
     }
 };
 
@@ -77,23 +85,33 @@ const timeToSeconds = (time: string) => {
 
     // Otherwise, parse the timeString into hours, minutes, and seconds
     else {
-        const regex = /(\d+)\s*(h|m|s)/g;
+        const regex = /(\d+)\s*(h|m|s|d|일|시간|분|초)/g;
         let match;
         let valid = false; // Flag to track if any valid match is found
 
+        const unitDays = i18next.t('commands:UNIT_DAYS');
+        const unitHours = i18next.t('commands:UNIT_HOURS');
+        const unitMinutes = i18next.t('commands:UNIT_MINUTES');
+        const unitSeconds = i18next.t('commands:UNIT_SECONDS');
+
         while ((match = regex.exec(timeString)) !== null) {
             const value = parseInt(match[1]);
+            const unit = match[2];
 
-            if (match[2] === 'h') {
-                hours = value;
+            if (unit === 'd' || unit === '일' || unit === unitDays) {
+                hours += value * 24;
                 valid = true;
             }
-            else if (match[2] === 'm') {
-                minutes = value;
+            else if (unit === 'h' || unit === '시간' || unit === unitHours) {
+                hours += value;
                 valid = true;
             }
-            else if (match[2] === 's') {
-                seconds = value;
+            else if (unit === 'm' || unit === '분' || unit === unitMinutes) {
+                minutes += value;
+                valid = true;
+            }
+            else if (unit === 's' || unit === '초' || unit === unitSeconds) {
+                seconds += value;
                 valid = true;
             }
         }

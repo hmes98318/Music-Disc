@@ -176,5 +176,22 @@
     "MESSAGE_NONE": "None",
     "MESSAGE_DJ_TYPE_STATIC": "(Static)",
     "MESSAGE_DJ_TYPE_ROLE": "(Role)",
-    "MESSAGE_DJ_TYPE_DYNAMIC": "(Dynamic)"
+    "MESSAGE_DJ_TYPE_DYNAMIC": "(Dynamic)",
+    "LABEL_DELETE_MESSAGE": "Delete Message",
+    "LABEL_CLEAR_QUEUE": "Clear Queue",
+    "UNIT_DAYS": "d",
+    "UNIT_HOURS": "h",
+    "UNIT_MINUTES": "m",
+    "UNIT_SECONDS": "s",
+    "UNIT_BYTES": "Bytes",
+    "UNIT_KB": "KB",
+    "UNIT_MB": "MB",
+    "UNIT_GB": "GB",
+    "UNIT_TB": "TB",
+    "ERROR_BLACKLIST_NOT_INITIALIZED": "Blacklist manager is not initialized.",
+    "HELP_SELECT_MUSIC_PLACEHOLDER": "Select a Music command",
+    "HELP_SELECT_UTILITY_PLACEHOLDER": "Select a Utility command",
+    "HELP_COMMAND_ALIASES": "Aliases: {{aliases}}",
+    "HELP_COMMAND_NONE": "None",
+    "LABEL_FILTER_CLEAR": "Clear filters"
 }

@@ -176,5 +176,22 @@
     "MESSAGE_NONE": "Nijedan",
     "MESSAGE_DJ_TYPE_STATIC": "(Statički)",
     "MESSAGE_DJ_TYPE_ROLE": "(Uloga)",
-    "MESSAGE_DJ_TYPE_DYNAMIC": "(Dinamički)"
+    "MESSAGE_DJ_TYPE_DYNAMIC": "(Dinamički)",
+    "LABEL_DELETE_MESSAGE": "Obriši poruku",
+    "LABEL_CLEAR_QUEUE": "Obriši red",
+    "UNIT_DAYS": "d",
+    "UNIT_HOURS": "č",
+    "UNIT_MINUTES": "m",
+    "UNIT_SECONDS": "s",
+    "UNIT_BYTES": "Bajta",
+    "UNIT_KB": "KB",
+    "UNIT_MB": "MB",
+    "UNIT_GB": "GB",
+    "UNIT_TB": "TB",
+    "ERROR_BLACKLIST_NOT_INITIALIZED": "Blacklist manager nije inicijalizovan.",
+    "HELP_SELECT_MUSIC_PLACEHOLDER": "Izaberi Muzičku komandu",
+    "HELP_SELECT_UTILITY_PLACEHOLDER": "Izaberi Utility komandu",
+    "HELP_COMMAND_ALIASES": "Aliasi: {{aliases}}",
+    "HELP_COMMAND_NONE": "Nijedan",
+    "LABEL_FILTER_CLEAR": "Obriši filtere"
 }

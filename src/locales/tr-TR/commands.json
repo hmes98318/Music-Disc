@@ -176,5 +176,22 @@
     "MESSAGE_NONE": "Yok",
     "MESSAGE_DJ_TYPE_STATIC": "(Statik)",
     "MESSAGE_DJ_TYPE_ROLE": "(Rol)",
-    "MESSAGE_DJ_TYPE_DYNAMIC": "(Dinamik)"
+    "MESSAGE_DJ_TYPE_DYNAMIC": "(Dinamik)",
+    "LABEL_DELETE_MESSAGE": "Mesajı Sil",
+    "LABEL_CLEAR_QUEUE": "Kuyruğu Temizle",
+    "UNIT_DAYS": "g",
+    "UNIT_HOURS": "s",
+    "UNIT_MINUTES": "dk",
+    "UNIT_SECONDS": "sn",
+    "UNIT_BYTES": "Bayt",
+    "UNIT_KB": "KB",
+    "UNIT_MB": "MB",
+    "UNIT_GB": "GB",
+    "UNIT_TB": "TB",
+    "ERROR_BLACKLIST_NOT_INITIALIZED": "Kara liste yöneticisi başlatılmadı.",
+    "HELP_SELECT_MUSIC_PLACEHOLDER": "Bir Müzik komutu seçin",
+    "HELP_SELECT_UTILITY_PLACEHOLDER": "Bir Yardımcı komut seçin",
+    "HELP_COMMAND_ALIASES": "Takma Adlar: {{aliases}}",
+    "HELP_COMMAND_NONE": "Yok",
+    "LABEL_FILTER_CLEAR": "Filtreleri temizle"
 }
