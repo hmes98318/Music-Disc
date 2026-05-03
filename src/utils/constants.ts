@@ -180,8 +180,8 @@ export const cst = {
             next        : '<:w_next:1153665809990815874>',
         },
         label: {
-            delete      : 'Delete Message',
-            clear       : 'Clear Queue'
+            delete      : 'commands:LABEL_DELETE_MESSAGE',
+            clear       : 'commands:LABEL_CLEAR_QUEUE'
         }
     },
     // Logger

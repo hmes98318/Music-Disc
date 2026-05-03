@@ -3,8 +3,8 @@ import { existsSync, mkdirSync } from 'fs';
 import { dirname } from 'path';
 
 import type { Player, Track } from 'lavashark';
+import { ChannelType, type Client } from 'discord.js';
 import type { Bot } from '../@types/index.js';
-import type { Client } from 'discord.js';
 
 /**
  * Persisted queue data structure
@@ -295,6 +295,18 @@ export class QueuePersistence {
                     volume: null,
                     fairQueueRotation: []
                 };
+            }
+
+            // Initialize dashboard if text channel is available
+            const textChannel = guild.channels.cache.get(queueData.textChannelId);
+            if (textChannel && (textChannel.type === ChannelType.GuildText || textChannel.type === ChannelType.GuildAnnouncement)) {
+                try {
+                    await client.dashboard.initialize(textChannel as any, player);
+                } catch (error) {
+                    this.bot.logger.emit('error', this.bot.shardId,
+                        `[QueuePersistence] Failed to initialize dashboard for guild ${queueData.guildId}: ${error}`
+                    );
+                }
             }
 
             // Restore tracks - try encoded track string first, fall back to URI search

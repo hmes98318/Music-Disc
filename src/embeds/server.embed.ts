@@ -11,13 +11,13 @@ const server = (bot: Bot, serverlist: string, djRole?: string, admins?: string, 
 
     // Add DJ information fields if provided
     if (djRole) {
-        embed_.addFields({ name: 'DJ Role', value: djRole, inline: true });
+        embed_.addFields({ name: bot.i18n.t('embeds:SERVER_FIELD_DJ_ROLE'), value: djRole, inline: true });
     }
     if (admins) {
-        embed_.addFields({ name: 'Admins', value: admins, inline: true });
+        embed_.addFields({ name: bot.i18n.t('embeds:SERVER_FIELD_ADMINS'), value: admins, inline: true });
     }
     if (djUsers) {
-        embed_.addFields({ name: 'DJ Users', value: djUsers, inline: false });
+        embed_.addFields({ name: bot.i18n.t('embeds:SERVER_FIELD_DJ_USERS'), value: djUsers, inline: false });
     }
 
     return embed_;

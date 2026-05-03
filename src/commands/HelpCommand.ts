@@ -74,24 +74,26 @@ export class HelpCommand extends BaseCommand {
         // Build select menus
         const musicSelect = new StringSelectMenuBuilder()
             .setCustomId(SelectButtonId.HelpMusic)
-            .setPlaceholder('Select a Music command')
+            .setPlaceholder(client.i18n.t('commands:HELP_SELECT_MUSIC_PLACEHOLDER'))
             .setOptions(musicCommands.map(cmd => {
                 const metadata = cmd.getMetadata(bot);
+                const aliases = metadata.aliases && metadata.aliases.length > 0 ? metadata.aliases.join(', ') : client.i18n.t('commands:HELP_COMMAND_NONE');
                 return {
                     label: metadata.name,
-                    description: `Aliases: ${metadata.aliases && metadata.aliases.length > 0 ? metadata.aliases.join(', ') : 'None'}`,
+                    description: client.i18n.t('commands:HELP_COMMAND_ALIASES', { aliases }),
                     value: metadata.name
                 };
             }));
 
         const utilitySelect = new StringSelectMenuBuilder()
             .setCustomId(SelectButtonId.HelpUtility)
-            .setPlaceholder('Select a Utility command')
+            .setPlaceholder(client.i18n.t('commands:HELP_SELECT_UTILITY_PLACEHOLDER'))
             .setOptions(utilityCommands.map(cmd => {
                 const metadata = cmd.getMetadata(bot);
+                const aliases = metadata.aliases && metadata.aliases.length > 0 ? metadata.aliases.join(', ') : client.i18n.t('commands:HELP_COMMAND_NONE');
                 return {
                     label: metadata.name,
-                    description: `Aliases: ${metadata.aliases && metadata.aliases.length > 0 ? metadata.aliases.join(', ') : 'None'}`,
+                    description: client.i18n.t('commands:HELP_COMMAND_ALIASES', { aliases }),
                     value: metadata.name
                 };
             }));

@@ -56,7 +56,7 @@ export class Language {
                 }
             }
         } catch (error) {
-            throw Error(`Error loading default locale (${this.#templateLocale}) files from path "${templateLocalePath}": ` + JSON.stringify(error));
+            throw new Error(`Error loading default locale (${this.#templateLocale}) files from path "${templateLocalePath}": ` + JSON.stringify(error), { cause: error });
         }
     }
 
@@ -95,7 +95,7 @@ export class Language {
                 const namespace = file.name.replace(/\.json$/, '');
                 const filePath = path.join(languagePath, file.name);
 
-                let content: Record<string, any> = {};
+                let content: Record<string, any>;
                 try {
                     content = JSON.parse(await fs.promises.readFile(filePath, 'utf-8'));
                 } catch (error) {

@@ -36,11 +36,17 @@
     "REMOVE_LIST_TITLE": "Lista za uklanjanje",
     "REMOVE_TRACK_TITLE": "Uklonjena muzika",
     "SERVER_TITLE": "Serveri koji imaju **{{name}}**",
+    "SERVER_FIELD_DJ_ROLE": "DJ uloga",
+    "SERVER_FIELD_ADMINS": "Administratori",
+    "SERVER_FIELD_DJ_USERS": "DJ korisnici",
     "STATUS_DESCRIPTION": "**• Opslužuje {{serverCount}} servera**\n**• Svira na {{playingCount}} servera**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
     "STATUS_LATENCY_TITLE": "🛰️ KAŠNJENJE",
     "STATUS_LATENCY_VALUE": "Bot: **{{botPing}}**\nAPI: **{{apiPing}}ms**",
     "STATUS_SYSTEM_TITLE": "⚙️ SISTEM",
     "STATUS_SYSTEM_VALUE": "OS: **{{os_version}}**\nNode.js: **{{node_version}}**\nDiscord.js: **{{dc_version}}**\nLavaShark: **{{shark_version}}**\nCPU: **{{cpu}}**\nVreme rada: **{{uptime}}**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
     "STATUS_USAGE_TITLE": "📊 KORIŠĆENJE",
-    "STATUS_USAGE_VALUE": "CPU: **{{cpuUsage}}**\nRam: **{{ramUsage}}**\nHeap: **{{heapUsage}}**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    "STATUS_USAGE_VALUE": "CPU: **{{cpuUsage}}**\nRam: **{{ramUsage}}**\nHeap: **{{heapUsage}}**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
+    "QUEUE_NOW_PLAYING": "**Trenutno svira:**",
+    "QUEUE_EMPTY": "*Nema pesama u redu*",
+    "QUEUE_HEADER": "**Red:**"
 }

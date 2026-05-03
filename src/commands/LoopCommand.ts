@@ -66,7 +66,7 @@ export class LoopCommand extends BaseCommand {
             return;
         }
 
-        let mode: number | null = null;
+        let mode: number;
         const methods = [
             client.i18n.t('commands:REPEAT_MODE_OFF'),
             client.i18n.t('commands:REPEAT_MODE_SINGLE'),

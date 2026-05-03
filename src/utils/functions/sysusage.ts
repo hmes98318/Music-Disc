@@ -1,6 +1,7 @@
 import os from 'os';
 import util from 'util';
 import { exec } from 'child_process';
+import i18next from 'i18next';
 
 import { CpuInfo } from 'os';
 
@@ -47,7 +48,7 @@ const sysusage = {
 
         return {
             percent: `${usedRatio}%`,
-            detail: `(${usedMb} / ${totalMb} MB)`
+            detail: `(${usedMb} / ${totalMb} ${i18next.t('commands:UNIT_MB')})`
         };
     },
     heap: () => {
@@ -59,7 +60,7 @@ const sysusage = {
 
         return {
             percent: `${usedRatio}%`,
-            detail: `(${usedMb} / ${totalMb} MB)`
+            detail: `(${usedMb} / ${totalMb} ${i18next.t('commands:UNIT_MB')})`
         };
     }
 };

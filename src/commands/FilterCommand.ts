@@ -87,7 +87,7 @@ export class FilterCommand extends BaseCommand {
                     label: effectName,
                     value: effectName
                 }))),
-                { label: 'clear', value: 'clear' }
+                { label: client.i18n.t('commands:LABEL_FILTER_CLEAR'), value: 'clear' }
             ]);
 
         const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(select);

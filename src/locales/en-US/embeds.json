@@ -36,11 +36,17 @@
     "REMOVE_LIST_TITLE": "Remove List",
     "REMOVE_TRACK_TITLE": "Removed Music",
     "SERVER_TITLE": "Servers that have **{{name}}**",
+    "SERVER_FIELD_DJ_ROLE": "DJ Role",
+    "SERVER_FIELD_ADMINS": "Admins",
+    "SERVER_FIELD_DJ_USERS": "DJ Users",
     "STATUS_DESCRIPTION": "**• Serving {{serverCount}} servers**\n**• Playing on {{playingCount}} servers**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
     "STATUS_LATENCY_TITLE": "🛰️ LATENCY",
     "STATUS_LATENCY_VALUE": "Bot: **{{botPing}}**\nAPI: **{{apiPing}}ms**",
     "STATUS_SYSTEM_TITLE": "⚙️ SYSTEM",
     "STATUS_SYSTEM_VALUE": "OS: **{{os_version}}**\nNode.js: **{{node_version}}**\nDiscord.js: **{{dc_version}}**\nLavaShark: **{{shark_version}}**\nCPU: **{{cpu}}**\nUptime: **{{uptime}}**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
     "STATUS_USAGE_TITLE": "📊 USAGE",
-    "STATUS_USAGE_VALUE": "CPU: **{{cpuUsage}}**\nRam: **{{ramUsage}}**\nHeap: **{{heapUsage}}**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    "STATUS_USAGE_VALUE": "CPU: **{{cpuUsage}}**\nRam: **{{ramUsage}}**\nHeap: **{{heapUsage}}**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
+    "QUEUE_NOW_PLAYING": "**Now Playing:**",
+    "QUEUE_EMPTY": "*No songs in queue*",
+    "QUEUE_HEADER": "**Queue:**"
 }

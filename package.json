@@ -20,28 +20,31 @@
         "url": "https://github.com/hmes98318/Music-Disc/issues"
     },
     "homepage": "https://github.com/hmes98318/Music-Disc#readme",
+    "overrides": {
+        "flatted": "^3.4.2"
+    },
     "dependencies": {
-        "better-sqlite3": "^12.8.0",
+        "better-sqlite3": "^12.9.0",
         "body-parser": "^2.2.2",
         "cookie": "^1.1.1",
-        "discord.js": "~14.26.0",
-        "dotenv": "^17.3.1",
+        "discord.js": "~14.26.3",
+        "dotenv": "^17.4.2",
         "express": "^5.2.1",
-        "i18next": "^26.0.3",
-        "i18next-fs-backend": "^2.6.3",
+        "i18next": "^26.0.8",
+        "i18next-fs-backend": "^2.6.5",
         "lavashark": "^2.3.2",
-        "undici": "^7.24.6"
+        "undici": "^8.1.0"
     },
     "devDependencies": {
-        "@eslint/js": "^9.39.4",
+        "@eslint/js": "^10.0.1",
         "@types/better-sqlite3": "^7.6.13",
         "@types/express": "^5.0.6",
-        "@types/node": "^25.5.0",
-        "eslint": "^9.39.4",
-        "globals": "^17.4.0",
+        "@types/node": "^25.6.0",
+        "eslint": "^10.2.1",
+        "globals": "^17.5.0",
         "tsx": "^4.21.0",
-        "typescript": "~5.9.3",
-        "typescript-eslint": "^8.58.0"
+        "typescript": "~6.0.3",
+        "typescript-eslint": "^8.59.0"
     },
     "engines": {
         "node": ">=22.22.2"

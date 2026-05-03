@@ -35,12 +35,18 @@
     "REMOVE_LIST_LOOP_MODE": "Döngü: {{repeatMode}}",
     "REMOVE_LIST_TITLE": "Liste kaldırıldı.",
     "REMOVE_TRACK_TITLE": "Parça kaldırıldı.",
-    "SERVER_TITLE": "Bağlı olan sunucular **{{name}}**",
+    "SERVER_TITLE": "**{{name}}** bulunan sunucular",
+    "SERVER_FIELD_DJ_ROLE": "DJ Rolü",
+    "SERVER_FIELD_ADMINS": "Yöneticiler",
+    "SERVER_FIELD_DJ_USERS": "DJ Kullanıcıları",
     "STATUS_DESCRIPTION": "**• Bot {{serverCount}} sunucuda aktif.**\n**• Şu anda {{playingCount}} sunucuda çalıyor.**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
     "STATUS_LATENCY_TITLE": "🛰️ Gecikme",
     "STATUS_LATENCY_VALUE": "Bot: **{{botPing}}**\nAPI: **{{apiPing}}ms**",
     "STATUS_SYSTEM_TITLE": "⚙️ Sistem",
     "STATUS_SYSTEM_VALUE": "OS: **{{os_version}}**\nNode.js: **{{node_version}}**\nDiscord.js: **{{dc_version}}**\nLavaShark: **{{shark_version}}**\nCPU: **{{cpu}}**\nBağlantı Süresi: **{{uptime}}**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
     "STATUS_USAGE_TITLE": "📊 Kullanım",
-    "STATUS_USAGE_VALUE": "CPU: **{{cpuUsage}}**\nRam: **{{ramUsage}}**\nHeap: **{{heapUsage}}**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    "STATUS_USAGE_VALUE": "CPU: **{{cpuUsage}}**\nRam: **{{ramUsage}}**\nHeap: **{{heapUsage}}**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
+    "QUEUE_NOW_PLAYING": "**Şu An Çalıyor:**",
+    "QUEUE_EMPTY": "*Kuyrukta şarkı yok*",
+    "QUEUE_HEADER": "**Kuyruk:**"
 }

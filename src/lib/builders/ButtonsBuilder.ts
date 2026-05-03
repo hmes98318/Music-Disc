@@ -1,4 +1,5 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
+import i18next from 'i18next';
 import { cst } from '../../utils/constants.js';
 import { DashboardButtonId, QueueButtonId } from '../../@types/index.js';
 
@@ -65,12 +66,12 @@ export class ButtonsBuilder {
 
         const delButton = new ButtonBuilder()
             .setCustomId(QueueButtonId.Delete)
-            .setLabel(cst.button.label.delete)
+            .setLabel(i18next.t(cst.button.label.delete))
             .setStyle(ButtonStyle.Primary);
 
         const clsButton = new ButtonBuilder()
             .setCustomId(QueueButtonId.Clear)
-            .setLabel(cst.button.label.clear)
+            .setLabel(i18next.t(cst.button.label.clear))
             .setStyle(ButtonStyle.Danger);
 
         return new ActionRowBuilder<ButtonBuilder>()
