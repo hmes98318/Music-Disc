@@ -59,7 +59,7 @@ export class BlacklistCommand extends BaseCommand {
 
     protected async run(bot: Bot, client: Client, context: CommandContext): Promise<void> {
         if (!bot.blacklistManager) {
-            await context.replyEphemeralError(bot, client.i18n.t('commands:ERROR_BLACKLIST_NOT_INITIALIZED'));
+            await context.replyEphemeralError(bot, context.t('commands:ERROR_BLACKLIST_NOT_INITIALIZED'));
             return;
         }
 
@@ -99,7 +99,7 @@ export class BlacklistCommand extends BaseCommand {
         const action = args[0]?.toLowerCase();
 
         if (!action || !['add', 'remove', 'list'].includes(action)) {
-            await context.replyEphemeralError(bot, client.i18n.t('commands:CONFIG_BLACKLIST_USAGE'));
+            await context.replyEphemeralError(bot, context.t('commands:CONFIG_BLACKLIST_USAGE'));
             return;
         }
 
@@ -111,7 +111,7 @@ export class BlacklistCommand extends BaseCommand {
         // Extract user ID from mention or raw ID
         const userArg = args[1];
         if (!userArg) {
-            await context.replyEphemeralError(bot, client.i18n.t('commands:CONFIG_BLACKLIST_USAGE'));
+            await context.replyEphemeralError(bot, context.t('commands:CONFIG_BLACKLIST_USAGE'));
             return;
         }
 
@@ -127,18 +127,18 @@ export class BlacklistCommand extends BaseCommand {
     async #addUser(bot: Bot, _client: Client, context: CommandContext, userId: string): Promise<void> {
         const success = bot.blacklistManager!.add(userId);
         if (success) {
-            await context.replySuccess(bot, _client.i18n.t('commands:MESSAGE_BLACKLIST_ADDED', { userId }));
+            await context.replySuccess(bot, context.t('commands:MESSAGE_BLACKLIST_ADDED', { userId }));
         } else {
-            await context.replyEphemeralError(bot, _client.i18n.t('commands:MESSAGE_BLACKLIST_ALREADY_LISTED', { userId }));
+            await context.replyEphemeralError(bot, context.t('commands:MESSAGE_BLACKLIST_ALREADY_LISTED', { userId }));
         }
     }
 
     async #removeUser(bot: Bot, _client: Client, context: CommandContext, userId: string): Promise<void> {
         const success = bot.blacklistManager!.remove(userId);
         if (success) {
-            await context.replySuccess(bot, _client.i18n.t('commands:MESSAGE_BLACKLIST_REMOVED', { userId }));
+            await context.replySuccess(bot, context.t('commands:MESSAGE_BLACKLIST_REMOVED', { userId }));
         } else {
-            await context.replyEphemeralError(bot, _client.i18n.t('commands:MESSAGE_BLACKLIST_NOT_LISTED', { userId }));
+            await context.replyEphemeralError(bot, context.t('commands:MESSAGE_BLACKLIST_NOT_LISTED', { userId }));
         }
     }
 
@@ -146,7 +146,7 @@ export class BlacklistCommand extends BaseCommand {
         const users = bot.blacklistManager!.getAll();
 
         if (users.length === 0) {
-            await context.replyText(bot, _client.i18n.t('commands:MESSAGE_BLACKLIST_LIST_EMPTY'));
+            await context.replyText(bot, context.t('commands:MESSAGE_BLACKLIST_LIST_EMPTY'));
             return;
         }
 
@@ -155,7 +155,7 @@ export class BlacklistCommand extends BaseCommand {
 
         const embed = new EmbedBuilder()
             .setColor(bot.config.bot.embedsColors.message as any)
-            .setTitle(_client.i18n.t('commands:MESSAGE_BLACKLIST_LIST_TITLE'))
+            .setTitle(context.t('commands:MESSAGE_BLACKLIST_LIST_TITLE'))
             .setDescription(userList)
             .setTimestamp();
 

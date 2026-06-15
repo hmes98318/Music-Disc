@@ -16,7 +16,7 @@ export class ButtonsBuilder {
      * @param {Player} player - The lavashark player instance
      * @returns {ActionRowBuilder<ButtonBuilder>} ActionRow containing all dashboard buttons
      */
-    public static createDashboardButtons(player: Player): ActionRowBuilder<ButtonBuilder> {
+    public static createDashboardButtons(player: Player, _lng?: string): ActionRowBuilder<ButtonBuilder> {
         const playing = !player.paused;
 
         const playPauseButton = new ButtonBuilder()
@@ -53,7 +53,7 @@ export class ButtonsBuilder {
      * @static
      * @returns {ActionRowBuilder<ButtonBuilder>} ActionRow containing queue navigation buttons
      */
-    public static createQueueButtons(): ActionRowBuilder<ButtonBuilder> {
+    public static createQueueButtons(lng?: string): ActionRowBuilder<ButtonBuilder> {
         const prevButton = new ButtonBuilder()
             .setCustomId(QueueButtonId.Previous)
             .setEmoji(cst.button.emoji.prev)
@@ -66,12 +66,12 @@ export class ButtonsBuilder {
 
         const delButton = new ButtonBuilder()
             .setCustomId(QueueButtonId.Delete)
-            .setLabel(i18next.t(cst.button.label.delete))
+            .setLabel(i18next.t(cst.button.label.delete, { lng }))
             .setStyle(ButtonStyle.Primary);
 
         const clsButton = new ButtonBuilder()
             .setCustomId(QueueButtonId.Clear)
-            .setLabel(i18next.t(cst.button.label.clear))
+            .setLabel(i18next.t(cst.button.label.clear, { lng }))
             .setStyle(ButtonStyle.Danger);
 
         return new ActionRowBuilder<ButtonBuilder>()

@@ -50,7 +50,7 @@ export class FilterCommand extends BaseCommand {
         const player = client.lavashark.getPlayer(context.guild!.id);
 
         if (!player || !player.playing) {
-            await context.replyEphemeralError(bot, client.i18n.t('commands:ERROR_NO_PLAYING'));
+            await context.replyEphemeralError(bot, context.t('commands:ERROR_NO_PLAYING'));
             return;
         }
 
@@ -81,18 +81,18 @@ export class FilterCommand extends BaseCommand {
     ): Promise<void> {
         const select = new StringSelectMenuBuilder()
             .setCustomId(SelectButtonId.Filter)
-            .setPlaceholder(client.i18n.t('commands:MESSAGE_FILTER_SELECT_MODE'))
+            .setPlaceholder(context.t('commands:MESSAGE_FILTER_SELECT_MODE'))
             .setOptions([
                 ...(Object.keys(filtersConfig).map((effectName) => ({
                     label: effectName,
                     value: effectName
                 }))),
-                { label: client.i18n.t('commands:LABEL_FILTER_CLEAR'), value: 'clear' }
+                { label: context.t('commands:LABEL_FILTER_CLEAR'), value: 'clear' }
             ]);
 
         const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(select);
         const msg = await context.reply({
-            embeds: [embeds.textMsg(bot, client.i18n.t('commands:MESSAGE_FILTER_SELECT_LIST'))],
+            embeds: [embeds.textMsg(bot, context.t('commands:MESSAGE_FILTER_SELECT_LIST'))],
             components: [row.toJSON()],
             allowedMentions: { repliedUser: false }
         });
@@ -113,7 +113,7 @@ export class FilterCommand extends BaseCommand {
             else {
                 if (!Object.keys(filtersConfig).includes(effectName)) {
                     await context.reply({
-                        embeds: [embeds.textErrorMsg(bot, client.i18n.t('commands:MESSAGE_FILTER_NOT_FOUND'))],
+                        embeds: [embeds.textErrorMsg(bot, context.t('commands:MESSAGE_FILTER_NOT_FOUND'))],
                         allowedMentions: { repliedUser: false }
                     });
                     collector.stop();
@@ -129,7 +129,7 @@ export class FilterCommand extends BaseCommand {
 
             await i.deferUpdate();
             await msg.edit({
-                embeds: [embeds.filterMsg(bot, effectName)],
+                embeds: [embeds.filterMsg(bot, effectName, context.language)],
                 components: [],
                 allowedMentions: { repliedUser: false }
             }).catch(() =>
@@ -142,7 +142,7 @@ export class FilterCommand extends BaseCommand {
         collector.on('end', async (collected: Collection<string, ButtonInteraction>, reason: string) => {
             if (reason === 'time' && collected.size === 0) {
                 await msg.edit({
-                    embeds: [embeds.textErrorMsg(bot, client.i18n.t('commands:ERROR_TIME_EXPIRED'))],
+                    embeds: [embeds.textErrorMsg(bot, context.t('commands:ERROR_TIME_EXPIRED'))],
                     components: [],
                     allowedMentions: { repliedUser: false }
                 }).catch(() =>
@@ -168,7 +168,7 @@ export class FilterCommand extends BaseCommand {
         }
         else {
             if (!Object.keys(filtersConfig).includes(effectName)) {
-                await context.replyEphemeralError(bot, client.i18n.t('commands:MESSAGE_FILTER_NOT_FOUND'));
+                await context.replyEphemeralError(bot, context.t('commands:MESSAGE_FILTER_NOT_FOUND'));
                 return;
             }
 
@@ -180,7 +180,7 @@ export class FilterCommand extends BaseCommand {
         }
 
         await context.reply({
-            embeds: [embeds.filterMsg(bot, effectName)],
+            embeds: [embeds.filterMsg(bot, effectName, context.language)],
             components: [],
             allowedMentions: { repliedUser: false }
         }).catch(() =>

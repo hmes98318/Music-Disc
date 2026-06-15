@@ -43,10 +43,10 @@ export class StatusCommand extends BaseCommand {
 
             if (ping === -1) {
                 unhealthValue++;
-                nodesStatus.push({ name: `❌ ${node.identifier}`, value: bot.i18n.t('embeds:NODE_DISCONNECTED') });
+                nodesStatus.push({ name: `❌ ${node.identifier}`, value: context.t('embeds:NODE_DISCONNECTED') });
             }
             else {
-                nodesStatus.push({ name: `✅ ${node.identifier}`, value: bot.i18n.t('embeds:NODE_CONNECTED', { ping: ping }) });
+                nodesStatus.push({ name: `✅ ${node.identifier}`, value: context.t('embeds:NODE_CONNECTED', { ping: ping }) });
             }
         }
 
@@ -96,8 +96,8 @@ export class StatusCommand extends BaseCommand {
 
         await context.reply({
             embeds: [
-                embeds.botStatus(bot, systemStatus),
-                embeds.nodesStatus(bot, unhealthValue, nodesStatus)
+                embeds.botStatus(bot, systemStatus, context.language),
+                embeds.nodesStatus(bot, unhealthValue, nodesStatus, context.language)
             ],
             allowedMentions: { repliedUser: false }
         });

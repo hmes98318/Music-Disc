@@ -74,26 +74,26 @@ export class HelpCommand extends BaseCommand {
         // Build select menus
         const musicSelect = new StringSelectMenuBuilder()
             .setCustomId(SelectButtonId.HelpMusic)
-            .setPlaceholder(client.i18n.t('commands:HELP_SELECT_MUSIC_PLACEHOLDER'))
+            .setPlaceholder(context.t('commands:HELP_SELECT_MUSIC_PLACEHOLDER'))
             .setOptions(musicCommands.map(cmd => {
                 const metadata = cmd.getMetadata(bot);
-                const aliases = metadata.aliases && metadata.aliases.length > 0 ? metadata.aliases.join(', ') : client.i18n.t('commands:HELP_COMMAND_NONE');
+                const aliases = metadata.aliases && metadata.aliases.length > 0 ? metadata.aliases.join(', ') : context.t('commands:HELP_COMMAND_NONE');
                 return {
                     label: metadata.name,
-                    description: client.i18n.t('commands:HELP_COMMAND_ALIASES', { aliases }),
+                    description: context.t('commands:HELP_COMMAND_ALIASES', { aliases }),
                     value: metadata.name
                 };
             }));
 
         const utilitySelect = new StringSelectMenuBuilder()
             .setCustomId(SelectButtonId.HelpUtility)
-            .setPlaceholder(client.i18n.t('commands:HELP_SELECT_UTILITY_PLACEHOLDER'))
+            .setPlaceholder(context.t('commands:HELP_SELECT_UTILITY_PLACEHOLDER'))
             .setOptions(utilityCommands.map(cmd => {
                 const metadata = cmd.getMetadata(bot);
-                const aliases = metadata.aliases && metadata.aliases.length > 0 ? metadata.aliases.join(', ') : client.i18n.t('commands:HELP_COMMAND_NONE');
+                const aliases = metadata.aliases && metadata.aliases.length > 0 ? metadata.aliases.join(', ') : context.t('commands:HELP_COMMAND_NONE');
                 return {
                     label: metadata.name,
-                    description: client.i18n.t('commands:HELP_COMMAND_ALIASES', { aliases }),
+                    description: context.t('commands:HELP_COMMAND_ALIASES', { aliases }),
                     value: metadata.name
                 };
             }));
@@ -103,7 +103,7 @@ export class HelpCommand extends BaseCommand {
 
         // Send message
         const msg = await context.reply({
-            embeds: [embeds.textMsg(bot, client.i18n.t('commands:MESSAGE_HELP_SELECT_LIST'))],
+            embeds: [embeds.textMsg(bot, context.t('commands:MESSAGE_HELP_SELECT_LIST'))],
             components: [musicRow.toJSON(), utilityRow.toJSON()],
             allowedMentions: { repliedUser: false }
         });
@@ -125,7 +125,7 @@ export class HelpCommand extends BaseCommand {
 
             await i.deferUpdate();
             await msg.edit({
-                embeds: [embeds.help(bot, title!, usage)],
+                embeds: [embeds.help(bot, title!, usage, context.language)],
                 components: [],
                 allowedMentions: { repliedUser: false }
             }).catch(() => bot.logger.discord( bot.shardId, 'Failed to edit deleted message.'));
@@ -136,7 +136,7 @@ export class HelpCommand extends BaseCommand {
         collector.on('end', async (collected: Collection<string, ButtonInteraction>, reason: string) => {
             if (reason === 'time' && collected.size === 0) {
                 await msg.edit({
-                    embeds: [embeds.textErrorMsg(bot, client.i18n.t('commands:ERROR_TIME_EXPIRED'))],
+                    embeds: [embeds.textErrorMsg(bot, context.t('commands:ERROR_TIME_EXPIRED'))],
                     components: [],
                     allowedMentions: { repliedUser: false }
                 }).catch(() => bot.logger.discord( bot.shardId, 'Failed to edit deleted message.'));
@@ -159,7 +159,7 @@ export class HelpCommand extends BaseCommand {
                 const description = `${metadata.description}\n\`\`\`${prefix}${metadata.usage}\`\`\``;
 
                 await context.reply({
-                    embeds: [embeds.help(bot, metadata.name, description)],
+                    embeds: [embeds.help(bot, metadata.name, description, context.language)],
                     allowedMentions: { repliedUser: false }
                 });
 
@@ -170,7 +170,7 @@ export class HelpCommand extends BaseCommand {
 
         if (!found) {
             await context.reply({
-                embeds: [embeds.textErrorMsg(bot, client.i18n.t('commands:MESSAGE_HELP_NOT_FOUND'))],
+                embeds: [embeds.textErrorMsg(bot, context.t('commands:MESSAGE_HELP_NOT_FOUND'))],
                 allowedMentions: { repliedUser: false }
             });
         }

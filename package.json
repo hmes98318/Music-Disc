@@ -12,7 +12,8 @@
         "build:dashboard": "cd dashboard && npm run generate",
         "install:dashboard": "cd dashboard && npm install",
         "dev": "tsc --noEmit --incremental false && tsx ./src/index.ts",
-        "lint": "eslint . --color"
+        "lint": "eslint . --color",
+        "typecheck": "npx tsc --noEmit"
     },
     "repository": {
         "type": "git",
@@ -25,33 +26,31 @@
     },
     "homepage": "https://github.com/hmes98318/Music-Disc#readme",
     "overrides": {
-        "brace-expansion": "^5.0.6",
-        "qs": "^6.15.2",
-        "ws": "^8.21.0"
+        "esbuild": "^0.28.1"
     },
     "dependencies": {
         "bcryptjs": "^3.0.3",
-        "better-sqlite3": "^12.10.0",
+        "better-sqlite3": "^12.10.1",
         "cookie": "^1.1.1",
         "discord.js": "~14.26.4",
         "dotenv": "^17.4.2",
         "express": "^5.2.1",
-        "i18next": "^26.2.0",
+        "i18next": "^26.3.1",
         "i18next-fs-backend": "^2.6.6",
         "lavashark": "^2.3.2",
-        "undici": "^8.3.0",
+        "undici": "^8.4.1",
         "zod": "^4.4.3"
     },
     "devDependencies": {
         "@eslint/js": "^10.0.1",
         "@types/better-sqlite3": "^7.6.13",
         "@types/express": "^5.0.6",
-        "@types/node": "^25.9.1",
-        "eslint": "^10.4.0",
+        "@types/node": "^25.9.3",
+        "eslint": "^10.5.0",
         "globals": "^17.6.0",
-        "tsx": "^4.22.3",
+        "tsx": "^4.22.4",
         "typescript": "~6.0.3",
-        "typescript-eslint": "^8.59.4"
+        "typescript-eslint": "^8.61.0"
     },
     "engines": {
         "node": ">=22.22.3"

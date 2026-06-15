@@ -39,8 +39,10 @@ export class DashboardManager {
             throw new TypeError('Invalid Interaction or Message type');
         }
 
+        const lng = this.#bot.guildLanguageManager?.get(player.guildId);
+
         player.dashboardMsg = await (channel as any /* discord.js type error ? (v14.16.2) */).send({
-            embeds: [embeds.connected(this.#bot)],
+            embeds: [embeds.connected(this.#bot, lng)],
             components: []
         });
     }
@@ -54,14 +56,15 @@ export class DashboardManager {
             return;
         }
 
-        const subtitle = await this.#buildSubtitle(player, track);
-        const buttons = ButtonsBuilder.createDashboardButtons(player);
+        const lng = this.#bot.guildLanguageManager?.get(player.guildId);
+        const subtitle = await this.#buildSubtitle(player, track, lng);
+        const buttons = ButtonsBuilder.createDashboardButtons(player, lng);
 
         try {
             await player.dashboardMsg.edit({
                 embeds: [embeds.dashboard(
                     this.#bot,
-                    this.#bot.i18n.t('embeds:DASHBOARD_TITLE'),
+                    this.#bot.i18n.t('embeds:DASHBOARD_TITLE', { lng }),
                     track.title,
                     subtitle,
                     track.uri,
@@ -82,9 +85,11 @@ export class DashboardManager {
             return;
         }
 
+        const lng = this.#bot.guildLanguageManager?.get(player.guildId);
+
         try {
             await player.dashboardMsg.edit({
-                embeds: [embeds.disconnect(this.#bot)],
+                embeds: [embeds.disconnect(this.#bot, lng)],
                 components: []
             });
         } catch (error) {
@@ -98,20 +103,21 @@ export class DashboardManager {
     /**
      * Build subtitle with track info, volume, repeat mode, and DJ info
      */
-    async #buildSubtitle(player: Player, track: Track): Promise<string> {
-        const repeatModeLabel = this.#getRepeatModeLabel(player.repeatMode);
+    async #buildSubtitle(player: Player, track: Track, lng?: string): Promise<string> {
+        const repeatModeLabel = this.#getRepeatModeLabel(player.repeatMode, lng);
 
         let subtitle = this.#bot.i18n.t('embeds:DASHBOARD_SUBTITLE', {
             author: track.author,
             duration: track.duration.label,
             volume: player.volume,
-            repeatMode: repeatModeLabel
+            repeatMode: repeatModeLabel,
+            lng
         });
 
         // Add requester info
         const requesterId = track.requester?.id;
         if (requesterId) {
-            subtitle += this.#bot.i18n.t('embeds:DASHBOARD_REQUESTER_INFO', { requesterId });
+            subtitle += this.#bot.i18n.t('embeds:DASHBOARD_REQUESTER_INFO', { requesterId, lng });
         }
 
         // Add Dynamic DJ info (only if DYNAMIC mode AND a DJ is assigned)
@@ -119,7 +125,7 @@ export class DashboardManager {
             try {
                 const guild = this.#client.guilds.cache.get(player.guildId);
                 const djDisplay = await DJManager.getDJDisplayString(this.#bot, this.#client, guild, player);
-                subtitle += this.#bot.i18n.t('embeds:DASHBOARD_DJ_INFO', { djDisplay });
+                subtitle += this.#bot.i18n.t('embeds:DASHBOARD_DJ_INFO', { djDisplay, lng });
             } catch (_) {
                 // Ignore errors in DJ display
             }
@@ -131,11 +137,11 @@ export class DashboardManager {
     /**
      * Get repeat mode label for display
      */
-    #getRepeatModeLabel(repeatMode: number): string {
+    #getRepeatModeLabel(repeatMode: number, lng?: string): string {
         const methods = [
-            this.#bot.i18n.t('commands:REPEAT_MODE_OFF'),
-            this.#bot.i18n.t('commands:REPEAT_MODE_SINGLE'),
-            this.#bot.i18n.t('commands:REPEAT_MODE_ALL')
+            this.#bot.i18n.t('commands:REPEAT_MODE_OFF', { lng }),
+            this.#bot.i18n.t('commands:REPEAT_MODE_SINGLE', { lng }),
+            this.#bot.i18n.t('commands:REPEAT_MODE_ALL', { lng })
         ];
         return methods[repeatMode] || methods[0];
     }

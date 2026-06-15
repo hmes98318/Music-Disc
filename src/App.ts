@@ -11,6 +11,7 @@ import {
 } from './loader/index.js';
 import { Logger } from './lib/Logger.js';
 import { BlacklistManager } from './lib/BlacklistManager.js';
+import { GuildLanguageManager } from './lib/GuildLanguageManager.js';
 import { DashboardManager } from './lib/DashboardManager.js';
 import { QueuePersistence } from './lib/QueuePersistence.js';
 import { cst } from './utils/constants.js';
@@ -91,6 +92,10 @@ class App {
             (this.#client as any).queuePersistence = new QueuePersistence(this.bot);
             (this.#client as any).queuePersistence.initialize();
         }
+
+        // Initialize guild language manager
+        this.bot.guildLanguageManager = new GuildLanguageManager(this.bot);
+        this.bot.guildLanguageManager.initialize();
     }
 
 
@@ -164,6 +169,12 @@ class App {
                 if (this.bot.blacklistManager) {
                     this.bot.logger.log( this.bot.shardId, 'Closing blacklist database...');
                     this.bot.blacklistManager.close();
+                }
+
+                // Close guild language manager database
+                if (this.bot.guildLanguageManager) {
+                    this.bot.logger.log( this.bot.shardId, 'Closing guild language database...');
+                    this.bot.guildLanguageManager.close();
                 }
 
                 clearTimeout(timeout);

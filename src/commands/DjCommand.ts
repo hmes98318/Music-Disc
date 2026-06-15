@@ -53,31 +53,31 @@ export class DjCommand extends BaseCommand {
 
         // Check permission for adding DJ - only admins can add/remove DJs
         if (!bot.config.bot.admin.includes(context.user.id)) {
-            await context.replyEphemeralError(bot, i18next.t('commands:MESSAGE_DJ_ADMIN_ONLY'));
+            await context.replyEphemeralError(bot, context.t('commands:MESSAGE_DJ_ADMIN_ONLY'));
             return;
         }
 
         // Validate user
         if (targetUser.bot) {
-            await context.replyEphemeralError(bot, i18next.t('commands:MESSAGE_DJ_NO_BOTS'));
+            await context.replyEphemeralError(bot, context.t('commands:MESSAGE_DJ_NO_BOTS'));
             return;
         }
 
         // Handle different DJ modes
         if (bot.config.bot.djMode === DJModeEnum.STATIC) {
-            await context.replyEphemeralError(bot, i18next.t('commands:MESSAGE_DJ_STATIC_MODE'));
+            await context.replyEphemeralError(bot, context.t('commands:MESSAGE_DJ_STATIC_MODE'));
             return;
         }
         // DYNAMIC mode - add to current player's DJ list
         else {
             if (!player) {
-                await context.replyEphemeralError(bot, i18next.t('commands:MESSAGE_DJ_NO_PLAYER'));
+                await context.replyEphemeralError(bot, context.t('commands:MESSAGE_DJ_NO_PLAYER'));
                 return;
             }
 
             // Check if already DJ
             if (DJManager.isDJ(bot, targetUser.id, null, player)) {
-                await context.replyEphemeralError(bot, i18next.t('commands:MESSAGE_DJ_ALREADY_DJ', {
+                await context.replyEphemeralError(bot, context.t('commands:MESSAGE_DJ_ALREADY_DJ', {
                     userId: targetUser.id
                 }));
                 return;
@@ -85,7 +85,7 @@ export class DjCommand extends BaseCommand {
 
             // Add DJ
             DJManager.addDJ(player, targetUser.id);
-            await context.replySuccess(bot, i18next.t('commands:MESSAGE_DJ_SUCCESS', {
+            await context.replySuccess(bot, context.t('commands:MESSAGE_DJ_SUCCESS', {
                 userId: targetUser.id
             }));
         }
@@ -95,23 +95,23 @@ export class DjCommand extends BaseCommand {
         try {
             const djInfo = await DJManager.getDJInfo(bot, client, context.guild!, player || undefined);
             
-            let description = i18next.t('commands:MESSAGE_DJ_LIST_TITLE') + '\n\n';
+            let description = context.t('commands:MESSAGE_DJ_LIST_TITLE') + '\n\n';
             
             // Add admins
             if (djInfo.admins.length > 0) {
-                description += `**${i18next.t('commands:MESSAGE_DJ_LIST_ADMINS')}**\n`;
+                description += `**${context.t('commands:MESSAGE_DJ_LIST_ADMINS')}**\n`;
                 description += djInfo.admins.map(id => `<@${id}>`).join(', ') + '\n\n';
             }
             
             // Add role-based DJs
             if (djInfo.roleDJs.length > 0) {
-                description += `**${i18next.t('commands:MESSAGE_DJ_LIST_ROLE_DJS')}**\n`;
+                description += `**${context.t('commands:MESSAGE_DJ_LIST_ROLE_DJS')}**\n`;
                 description += djInfo.roleDJs.map(id => `<@${id}>`).join(', ') + '\n\n';
             }
             
             // Add dynamic DJs
             if (djInfo.dynamicDJs.length > 0) {
-                description += `**${i18next.t('commands:MESSAGE_DJ_LIST_DYNAMIC_DJS')}**\n`;
+                description += `**${context.t('commands:MESSAGE_DJ_LIST_DYNAMIC_DJS')}**\n`;
                 description += djInfo.dynamicDJs.map(id => `<@${id}>`).join(', ') + '\n\n';
             }
             
@@ -119,17 +119,17 @@ export class DjCommand extends BaseCommand {
             if (bot.config.bot.djRoleId) {
                 description += `**DJ Role:** <@&${bot.config.bot.djRoleId}>\n`;
             } else {
-                description += i18next.t('commands:MESSAGE_DJ_ROLE_NOT_SET') + '\n';
+                description += context.t('commands:MESSAGE_DJ_ROLE_NOT_SET') + '\n';
             }
             
             if (djInfo.admins.length === 0 && djInfo.roleDJs.length === 0 && djInfo.dynamicDJs.length === 0) {
-                description = i18next.t('commands:MESSAGE_DJ_LIST_NONE');
+                description = context.t('commands:MESSAGE_DJ_LIST_NONE');
             }
             
             await context.replySuccess(bot, description);
         } catch (error) {
             bot.logger.error( bot.shardId, `Error showing DJ list: ${error}`);
-            await context.replyError(bot, i18next.t('commands:MESSAGE_DJ_LIST_ERROR'));
+            await context.replyError(bot, context.t('commands:MESSAGE_DJ_LIST_ERROR'));
         }
     }
 }

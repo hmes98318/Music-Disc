@@ -15,10 +15,12 @@ import type { Bot } from '../../@types/index.js';
  * Unified command context that abstracts Message and Interaction differences
  */
 export class CommandContext {
+    public readonly bot: Bot;
     readonly #source: Message | ChatInputCommandInteraction;
     #args: string[];
 
-    constructor(source: Message | ChatInputCommandInteraction, args: string[] = []) {
+    constructor(bot: Bot, source: Message | ChatInputCommandInteraction, args: string[] = []) {
+        this.bot = bot;
         this.#source = source;
         this.#args = args;
     }
@@ -112,6 +114,21 @@ export class CommandContext {
      */
     public get guildId(): string | null {
         return this.#source.guildId;
+    }
+
+    /**
+     * Get the language for the current guild
+     */
+    public get language(): string {
+        if (!this.guildId) return this.bot.config.bot.i18n.defaultLocale;
+        return this.bot.guildLanguageManager?.get(this.guildId) || this.bot.config.bot.i18n.defaultLocale;
+    }
+
+    /**
+     * Translate a key using the guild's language
+     */
+    public t(key: string, options?: any): string {
+        return this.bot.i18n.t(key, { ...options, lng: this.language }) as string;
     }
 
     /**

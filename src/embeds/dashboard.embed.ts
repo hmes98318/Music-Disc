@@ -2,18 +2,18 @@ import { EmbedBuilder, HexColorString } from 'discord.js';
 import type { Bot } from '../@types/index.js';
 
 
-const connected = (bot: Bot) => {
+const connected = (bot: Bot, lng?: string) => {
     const embed_ = new EmbedBuilder()
         .setColor(bot.config.bot.embedsColors.success as HexColorString | number)
-        .setDescription(bot.i18n.t('embeds:DASHBOARD_VOICE_CHANNEL_CONNECT_SUCCESS'));
+        .setDescription(bot.i18n.t('embeds:DASHBOARD_VOICE_CHANNEL_CONNECT_SUCCESS', { lng }));
 
     return embed_;
 };
 
-const disconnect = (bot: Bot) => {
+const disconnect = (bot: Bot, lng?: string) => {
     const embed_ = new EmbedBuilder()
         .setColor(bot.config.bot.embedsColors.message as HexColorString | number)
-        .setDescription(bot.i18n.t('embeds:DASHBOARD_FINISH_PLAYING'));
+        .setDescription(bot.i18n.t('embeds:DASHBOARD_FINISH_PLAYING', { lng }));
 
     return embed_;
 };

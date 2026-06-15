@@ -95,7 +95,7 @@ export class MessageCreateEvent extends BaseDiscordEvent<Events.MessageCreate> {
         if (!cacheValidation.valid) return;
 
         // Execute command
-        const context = new CommandContext(message, args);
+        const context = new CommandContext(bot, message, args);
         await cmd.execute(bot, client, context);
     }
 }

@@ -25,17 +25,19 @@ export class CommandValidator {
      */
     public static async validateMessageChannel(
         bot: Bot,
-        client: Client,
+        _client: Client,
         source: Message | ChatInputCommandInteraction,
         channelId: string
     ): Promise<ValidationResult> {
         if (bot.config.bot.specifyMessageChannel && bot.config.bot.specifyMessageChannel !== channelId) {
             const username = source instanceof Message ? source.author.username : source.user.username;
             const content = source instanceof Message ? source.content : `/${source.commandName}`;
+            const lng = bot.guildLanguageManager?.get(source.guildId!);
 
             await source.reply({
-                embeds: [embeds.textErrorMsg(bot, client.i18n.t('events:MESSAGE_SPECIFIC_CHANNEL_WARN', {
-                    channelId: bot.config.bot.specifyMessageChannel
+                embeds: [embeds.textErrorMsg(bot, bot.i18n.t('events:MESSAGE_SPECIFIC_CHANNEL_WARN', {
+                    channelId: bot.config.bot.specifyMessageChannel,
+                    lng
                 }))],
                 allowedMentions: { repliedUser: false }
             }).catch((error) => {
@@ -53,7 +55,7 @@ export class CommandValidator {
      */
     public static async validateAdminPermission(
         bot: Bot,
-        client: Client,
+        _client: Client,
         source: Message | ChatInputCommandInteraction,
         command: BaseCommand,
         userId: string
@@ -64,9 +66,10 @@ export class CommandValidator {
             if (!bot.config.bot.admin.includes(userId)) {
                 const username = source instanceof Message ? source.author.username : source.user.username;
                 const content = source instanceof Message ? source.content : `/${source.commandName}`;
+                const lng = bot.guildLanguageManager?.get(source.guildId!);
 
                 await source.reply({
-                    embeds: [embeds.textErrorMsg(bot, client.i18n.t('events:ERROR_REQUIRE_ADMIN'))],
+                    embeds: [embeds.textErrorMsg(bot, bot.i18n.t('events:ERROR_REQUIRE_ADMIN', { lng }))],
                     allowedMentions: { repliedUser: false }
                 }).catch((error) => {
                     bot.logger.error( bot.shardId, `Error reply: (${username} : ${content}) ${error}`);
@@ -99,9 +102,10 @@ export class CommandValidator {
             if (!PermissionManager.hasDJCommandPermission(bot, userId, member, player || undefined)) {
                 const username = source instanceof Message ? source.author.username : source.user.username;
                 const content = source instanceof Message ? source.content : `/${source.commandName}`;
+                const lng = bot.guildLanguageManager?.get(source.guildId!);
 
                 await source.reply({
-                    embeds: [embeds.textErrorMsg(bot, client.i18n.t('events:ERROR_REQUIRE_DJ'))],
+                    embeds: [embeds.textErrorMsg(bot, bot.i18n.t('events:ERROR_REQUIRE_DJ', { lng }))],
                     allowedMentions: { repliedUser: false }
                 }).catch((error) => {
                     bot.logger.error( bot.shardId, `Error reply: (${username} : ${content}) ${error}`);
@@ -134,11 +138,12 @@ export class CommandValidator {
         const voiceChannel = member.voice.channel;
         const username = source instanceof Message ? source.author.username : source.user.username;
         const content = source instanceof Message ? source.content : `/${source.commandName}`;
+        const lng = bot.guildLanguageManager?.get(source.guildId!);
 
         // Check if user is in voice channel
         if (!voiceChannel) {
             await source.reply({
-                embeds: [embeds.textErrorMsg(bot, client.i18n.t('events:ERROR_NOT_IN_VOICE_CHANNEL'))],
+                embeds: [embeds.textErrorMsg(bot, bot.i18n.t('events:ERROR_NOT_IN_VOICE_CHANNEL', { lng }))],
                 allowedMentions: { repliedUser: false }
             }).catch((error) => {
                 bot.logger.error( bot.shardId, `Error reply: (${username} : ${content}) ${error}`);
@@ -150,8 +155,9 @@ export class CommandValidator {
         // Check if user is in specified voice channel
         if (bot.config.bot.specifyVoiceChannel && voiceChannel.id !== bot.config.bot.specifyVoiceChannel) {
             await source.reply({
-                embeds: [embeds.textErrorMsg(bot, client.i18n.t('events:ERRPR_NOT_IN_SPECIFIC_VOICE_CHANNEL', {
-                    channelId: bot.config.bot.specifyVoiceChannel
+                embeds: [embeds.textErrorMsg(bot, bot.i18n.t('events:ERRPR_NOT_IN_SPECIFIC_VOICE_CHANNEL', {
+                    channelId: bot.config.bot.specifyVoiceChannel,
+                    lng
                 }))],
                 allowedMentions: { repliedUser: false }
             }).catch((error) => {
@@ -165,7 +171,7 @@ export class CommandValidator {
         const guild = await client.guilds.fetch(guildId);
         if (guild.members.me?.voice.channel && voiceChannel.id !== guild.members.me.voice.channelId) {
             await source.reply({
-                embeds: [embeds.textErrorMsg(bot, client.i18n.t('events:ERROR_NOT_IN_SAME_VOICE_CHANNEL'))],
+                embeds: [embeds.textErrorMsg(bot, bot.i18n.t('events:ERROR_NOT_IN_SAME_VOICE_CHANNEL', { lng }))],
                 allowedMentions: { repliedUser: false }
             }).catch((error) => {
                 bot.logger.error( bot.shardId, `Error reply: (${username} : ${content}) ${error}`);
@@ -188,6 +194,7 @@ export class CommandValidator {
         userId: string
     ): Promise<ValidationResult> {
         let guild;
+        const lng = bot.guildLanguageManager?.get(source.guildId!);
 
         // Ensure guild data is in cache
         try {
@@ -195,7 +202,7 @@ export class CommandValidator {
         } catch (error) {
             bot.logger.error( bot.shardId, `Error fetching guild (${guildId}): ${error}`);
             await source.reply({
-                embeds: [embeds.textErrorMsg(bot, client.i18n.t('events:ERROR_GET_GUILD_DATA_CACHE'))],
+                embeds: [embeds.textErrorMsg(bot, bot.i18n.t('events:ERROR_GET_GUILD_DATA_CACHE', { lng }))],
                 allowedMentions: { repliedUser: false }
             });
             return { valid: false, errorSent: true };
@@ -207,7 +214,7 @@ export class CommandValidator {
         } catch (error) {
             bot.logger.error( bot.shardId, `Error fetching member (${userId}): ${error}`);
             await source.reply({
-                embeds: [embeds.textErrorMsg(bot, client.i18n.t('events:ERROR_GET_GUILD_DATA_CACHE'))],
+                embeds: [embeds.textErrorMsg(bot, bot.i18n.t('events:ERROR_GET_GUILD_DATA_CACHE', { lng }))],
                 allowedMentions: { repliedUser: false }
             });
             return { valid: false, errorSent: true };

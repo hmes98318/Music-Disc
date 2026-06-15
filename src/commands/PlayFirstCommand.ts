@@ -42,7 +42,7 @@ export class PlayFirstCommand extends BaseCommand {
             : context.getStringOption('playfirst');
 
         if (!str) {
-            await context.replyEphemeralError(bot, client.i18n.t('commands:MESSAGE_PLAY_ARGS_ERROR'));
+            await context.replyEphemeralError(bot, context.t('commands:MESSAGE_PLAY_ARGS_ERROR'));
             return;
         }
 
@@ -53,7 +53,7 @@ export class PlayFirstCommand extends BaseCommand {
         } catch (error) {
             console.error(error);
             bot.logger.error( bot.shardId, `Search Error: ${error}`);
-            await context.replyEphemeralError(bot, client.i18n.t('commands:ERROR_PLAY_SEARCH', {
+            await context.replyEphemeralError(bot, context.t('commands:ERROR_PLAY_SEARCH', {
                 reason: error instanceof Error ? error.message : String(error)
             }));
             return;
@@ -62,13 +62,13 @@ export class PlayFirstCommand extends BaseCommand {
         // Handle search results
         if (res.loadType === LoadType.ERROR) {
             bot.logger.error( bot.shardId, `Search Error: ${JSON.stringify(res)}`);
-            await context.replyEphemeralError(bot, client.i18n.t('commands:ERROR_PLAY_SEARCH', {
+            await context.replyEphemeralError(bot, context.t('commands:ERROR_PLAY_SEARCH', {
                 reason: (res as any).data?.message
             }));
             return;
         }
         else if (res.loadType === LoadType.EMPTY) {
-            await context.replyEphemeralError(bot, client.i18n.t('commands:MESSAGE_PLAY_SEARCH_NO_MATCH'));
+            await context.replyEphemeralError(bot, context.t('commands:MESSAGE_PLAY_SEARCH_NO_MATCH'));
             return;
         }
 
@@ -80,7 +80,7 @@ export class PlayFirstCommand extends BaseCommand {
         const validBlackist = isUserInBlacklist(voiceChannel, bot.config.blacklist, bot.blacklistManager);
         if (validBlackist.length > 0) {
             await context.reply({
-                embeds: [embeds.blacklist(bot, validBlackist)]
+                embeds: [embeds.blacklist(bot, validBlackist, context.language)]
             });
             return;
         }
@@ -104,7 +104,7 @@ export class PlayFirstCommand extends BaseCommand {
         if (context.isMessage()) {
             await context.react('👍');
         } else {
-            await context.replySuccess(bot, client.i18n.t('commands:MESSAGE_PLAY_MUSIC_ADD'));
+            await context.replySuccess(bot, context.t('commands:MESSAGE_PLAY_MUSIC_ADD'));
         }
     }
 
@@ -140,7 +140,7 @@ export class PlayFirstCommand extends BaseCommand {
             player.metadata = metadata;
         } catch (error) {
             bot.logger.error( bot.shardId, 'Error joining channel: ' + error);
-            await context.replyEphemeralError(bot, client.i18n.t('commands:ERROR_PLAY_JOIN_CHANNEL'));
+            await context.replyEphemeralError(bot, context.t('commands:ERROR_PLAY_JOIN_CHANNEL'));
             return null;
         }
 
@@ -189,7 +189,7 @@ export class PlayFirstCommand extends BaseCommand {
             const checkResult = QueueLimitManager.canAddSongs(bot, player, userId, guildMember, 1);
             
             if (!checkResult.canAdd) {
-                await context.replyEphemeralError(bot, client.i18n.t('commands:ERROR_QUEUE_LIMIT_REACHED', {
+                await context.replyEphemeralError(bot, context.t('commands:ERROR_QUEUE_LIMIT_REACHED', {
                     current: checkResult.currentCount,
                     limit: checkResult.limit
                 }));
@@ -204,7 +204,7 @@ export class PlayFirstCommand extends BaseCommand {
         const playlistCheck = QueueLimitManager.calculatePlaylistAddition(bot, player, userId, guildMember, playlistSize);
 
         if (playlistCheck.limitReached) {
-            await context.replyEphemeralError(bot, client.i18n.t('commands:ERROR_QUEUE_LIMIT_REACHED', {
+            await context.replyEphemeralError(bot, context.t('commands:ERROR_QUEUE_LIMIT_REACHED', {
                 current: QueueLimitManager.countUserSongsInQueue(player, userId),
                 limit: QueueLimitManager.getUserLimit(bot, userId, guildMember, player)
             }));
@@ -216,7 +216,7 @@ export class PlayFirstCommand extends BaseCommand {
             const currentCount = QueueLimitManager.countUserSongsInQueue(player, userId);
             const limit = QueueLimitManager.getUserLimit(bot, userId, guildMember, player);
             
-            await context.replyWarning(bot, client.i18n.t('commands:MESSAGE_PLAYLIST_PARTIAL', {
+            await context.replyWarning(bot, context.t('commands:MESSAGE_PLAYLIST_PARTIAL', {
                 added: playlistCheck.canAddCount,
                 skipped: playlistCheck.willSkipCount,
                 current: currentCount + playlistCheck.canAddCount,
@@ -247,7 +247,7 @@ export class PlayFirstCommand extends BaseCommand {
                 await player.play()
                     .catch(async (error) => {
                         bot.logger.error( bot.shardId, 'Error playing track: ' + error);
-                        await context.replyError(bot, client.i18n.t('commands:ERROR_PLAY_MUSIC', { reason: JSON.stringify(error) }));
+                        await context.replyError(bot, context.t('commands:ERROR_PLAY_MUSIC', { reason: JSON.stringify(error) }));
                         return player.destroy();
                     });
             }
@@ -257,7 +257,7 @@ export class PlayFirstCommand extends BaseCommand {
             await player.prioritizePlay(track, requester as any)
                 .catch(async (error) => {
                     bot.logger.error( bot.shardId, 'Error playing track: ' + error);
-                    await context.replyError(bot, client.i18n.t('commands:ERROR_PLAY_MUSIC', { reason: JSON.stringify(error) }));
+                    await context.replyError(bot, context.t('commands:ERROR_PLAY_MUSIC', { reason: JSON.stringify(error) }));
                     return player.destroy();
                 });
         }

@@ -40,7 +40,7 @@ export class PlayLastCommand extends BaseCommand {
 
         const voiceChannel = member?.voice.channel;
         if (!voiceChannel) {
-            await context.replyEphemeralError(bot, client.i18n.t('events:ERROR_NOT_IN_VOICE_CHANNEL'));
+            await context.replyEphemeralError(bot, context.t('events:ERROR_NOT_IN_VOICE_CHANNEL'));
             return;
         }
 
@@ -48,7 +48,7 @@ export class PlayLastCommand extends BaseCommand {
 
         // If player exists and queue is NOT empty: deny
         if (player && player.queue.tracks.length > 0) {
-            await context.replyEphemeralError(bot, client.i18n.t('commands:ERROR_PLAYLAST_QUEUE_NOT_EMPTY'));
+            await context.replyEphemeralError(bot, context.t('commands:ERROR_PLAYLAST_QUEUE_NOT_EMPTY'));
             return;
         }
 
@@ -63,7 +63,7 @@ export class PlayLastCommand extends BaseCommand {
         // No player or not playing: check for last played track
         const lastTrack = client.lastPlayedTracks.get(guildId);
         if (!lastTrack) {
-            await context.replyEphemeralError(bot, client.i18n.t('commands:ERROR_PLAYLAST_NO_LAST_TRACK'));
+            await context.replyEphemeralError(bot, context.t('commands:ERROR_PLAYLAST_NO_LAST_TRACK'));
             return;
         }
 
@@ -90,7 +90,7 @@ export class PlayLastCommand extends BaseCommand {
             newPlayer.metadata = metadata;
         } catch (error) {
             bot.logger.error( bot.shardId, 'Error joining channel: ' + error);
-            await context.replyError(bot, client.i18n.t('commands:ERROR_PLAY_JOIN_CHANNEL'));
+            await context.replyError(bot, context.t('commands:ERROR_PLAY_JOIN_CHANNEL'));
             return;
         }
 
@@ -121,7 +121,7 @@ export class PlayLastCommand extends BaseCommand {
         await newPlayer.play()
             .catch(async (error) => {
                 bot.logger.error( bot.shardId, 'Error playing track: ' + error);
-                await context.replyError(bot, client.i18n.t('commands:ERROR_PLAY_MUSIC', { reason: JSON.stringify(error) }));
+                await context.replyError(bot, context.t('commands:ERROR_PLAY_MUSIC', { reason: JSON.stringify(error) }));
                 return newPlayer.destroy();
             });
 
@@ -133,13 +133,13 @@ export class PlayLastCommand extends BaseCommand {
      * @private
      */
     async #replyWithTrackEmbed(bot: Bot, client: Client, context: CommandContext, track: Track): Promise<void> {
-        const subtitle = client.i18n.t('events:MESSAGE_NOW_PLAYING_SUBTITLE', {
+        const subtitle = context.t('events:MESSAGE_NOW_PLAYING_SUBTITLE', {
             author: track.author,
             label: track.duration.label
         });
 
         await context.reply({
-            embeds: [embeds.addTrack(bot, track.title, subtitle, track.uri, track.thumbnail!)]
+            embeds: [embeds.addTrack(bot, track.title, subtitle, track.uri, track.thumbnail!, context.language)]
         });
     }
 }

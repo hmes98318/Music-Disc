@@ -27,25 +27,27 @@ export class LoopButtonHandler extends DashboardButtonHandler {
             return;
         }
 
+        const lng = bot.guildLanguageManager?.get(interaction.guildId!);
+
         const modeLabels = [
-            client.i18n.t('events:LOOP_MODE_OFF'),
-            client.i18n.t('events:LOOP_MODE_SINGLE'),
-            client.i18n.t('events:LOOP_MODE_ALL')
+            bot.i18n.t('events:LOOP_MODE_OFF', { lng }),
+            bot.i18n.t('events:LOOP_MODE_SINGLE', { lng }),
+            bot.i18n.t('events:LOOP_MODE_ALL', { lng })
         ];
 
         const select = new StringSelectMenuBuilder()
             .setCustomId(DashboardButtonId.LoopSelect)
-            .setPlaceholder(client.i18n.t('commands:LOOP_SELECT_PLACEHOLDER'))
+            .setPlaceholder(bot.i18n.t('commands:LOOP_SELECT_PLACEHOLDER', { lng }))
             .setOptions(this.LOOP_MODE_VALUES.map((value, index) =>
                 new StringSelectMenuOptionBuilder()
                     .setLabel(modeLabels[index])
-                    .setDescription(client.i18n.t('commands:LOOP_SELECT_DESCRIPTION', { mode: modeLabels[index] }))
+                    .setDescription(bot.i18n.t('commands:LOOP_SELECT_DESCRIPTION', { mode: modeLabels[index], lng }))
                     .setValue(value)
             ));
 
         const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(select);
         const msg = await interaction.reply({
-            embeds: [embeds.textMsg(bot, client.i18n.t('events:MESSAGE_SELECT_LOOP_MODE'))],
+            embeds: [embeds.textMsg(bot, bot.i18n.t('events:MESSAGE_SELECT_LOOP_MODE', { lng }))],
             flags: MessageFlags.Ephemeral,
             components: [row]
         });
@@ -78,11 +80,11 @@ export class LoopButtonHandler extends DashboardButtonHandler {
 
             player.setRepeatMode(mode);
 
-            const buttonRow = ButtonsBuilder.createDashboardButtons(player);
+            const buttonRow = ButtonsBuilder.createDashboardButtons(player, lng);
             await player.dashboardMsg?.edit({ components: [buttonRow] });
 
             await i.update({
-                embeds: [embeds.textSuccessMsg(bot, client.i18n.t('events:MESSAGE_SET_LOOP_MODE', { mode: modeLabel }))],
+                embeds: [embeds.textSuccessMsg(bot, bot.i18n.t('events:MESSAGE_SET_LOOP_MODE', { mode: modeLabel, lng }))],
                 components: []
             });
         });
@@ -90,7 +92,7 @@ export class LoopButtonHandler extends DashboardButtonHandler {
         collector.on('end', async (collected: Collection<string, StringSelectMenuInteraction>, reason: string) => {
             if (reason === 'time' && collected.size === 0) {
                 await msg.edit({
-                    embeds: [embeds.textErrorMsg(bot, client.i18n.t('commands:ERROR_TIME_EXPIRED'))],
+                    embeds: [embeds.textErrorMsg(bot, bot.i18n.t('commands:ERROR_TIME_EXPIRED', { lng }))],
                     components: []
                 }).catch(() => {});
             }

@@ -28,11 +28,13 @@ export abstract class DashboardButtonHandler {
         commandName: string,
         player: Player
     ): Promise<boolean> {
+        const lng = bot.guildLanguageManager?.get(interaction.guildId!);
+
         // Check admin permission
         if (bot.config.command.adminCommand.includes(commandName)) {
             if (!bot.config.bot.admin.includes(interaction.user.id)) {
                 await interaction.reply({
-                    embeds: [embeds.textErrorMsg(bot, client.i18n.t('events:ERROR_REQUIRE_ADMIN'))],
+                    embeds: [embeds.textErrorMsg(bot, bot.i18n.t('events:ERROR_REQUIRE_ADMIN', { lng }))],
                     flags: MessageFlags.Ephemeral
                 });
                 return false;
@@ -44,7 +46,7 @@ export abstract class DashboardButtonHandler {
             const member = interaction.member as GuildMember;
             if (!PermissionManager.hasDJCommandPermission(bot, interaction.user.id, member, player)) {
                 await interaction.reply({
-                    embeds: [embeds.textErrorMsg(bot, client.i18n.t('events:ERROR_REQUIRE_DJ'))],
+                    embeds: [embeds.textErrorMsg(bot, bot.i18n.t('events:ERROR_REQUIRE_DJ', { lng }))],
                     flags: MessageFlags.Ephemeral
                 });
                 return false;
