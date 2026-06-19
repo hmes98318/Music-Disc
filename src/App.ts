@@ -12,6 +12,7 @@ import {
 import { Logger } from './lib/Logger.js';
 import { BlacklistManager } from './lib/BlacklistManager.js';
 import { GuildLanguageManager } from './lib/GuildLanguageManager.js';
+import { GuildVolumeManager } from './lib/GuildVolumeManager.js';
 import { DashboardManager } from './lib/DashboardManager.js';
 import { QueuePersistence } from './lib/QueuePersistence.js';
 import { cst } from './utils/constants.js';
@@ -96,6 +97,10 @@ class App {
         // Initialize guild language manager
         this.bot.guildLanguageManager = new GuildLanguageManager(this.bot);
         this.bot.guildLanguageManager.initialize();
+
+        // Initialize guild volume manager
+        this.bot.guildVolumeManager = new GuildVolumeManager(this.bot);
+        this.bot.guildVolumeManager.initialize();
     }
 
 
@@ -175,6 +180,12 @@ class App {
                 if (this.bot.guildLanguageManager) {
                     this.bot.logger.log( this.bot.shardId, 'Closing guild language database...');
                     this.bot.guildLanguageManager.close();
+                }
+
+                // Close guild volume manager database
+                if (this.bot.guildVolumeManager) {
+                    this.bot.logger.log( this.bot.shardId, 'Closing guild volume database...');
+                    this.bot.guildVolumeManager.close();
                 }
 
                 clearTimeout(timeout);
