@@ -85,7 +85,7 @@
   "CONFIG_VOLUME_OPTION_DESCRIPTION": "Уровень громкости",
   "CONFIG_VOLUME_DEFAULT_DESCRIPTION": "Изменить громкость по умолчанию для этого сервера",
   "CONFIG_VOLUME_DEFAULT_USAGE": "volume-default [громкость]",
-  "CONFIG_VOLUME_DEFAULT_OPTION_DESCRIPTION": "Громкость по умолчанию (1-100)",
+  "CONFIG_VOLUME_DEFAULT_OPTION_DESCRIPTION": "Громкость по умолчанию (1-{{maxVolume}})",
   "ERROR_LOOP_COMMAND": "❌ Ошибка команды. {{command}}",
   "ERROR_NO_MUSIC_IN_QUEUE": "❌ В очереди нет музыки для воспроизведения.",
   "ERROR_NO_PLAYING": "❌ Сейчас ничего не воспроизводится.",

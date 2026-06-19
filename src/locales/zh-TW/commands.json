@@ -85,7 +85,7 @@
     "CONFIG_VOLUME_OPTION_DESCRIPTION": "設定的音量",
     "CONFIG_VOLUME_DEFAULT_DESCRIPTION": "更改此伺服器的預設音量",
     "CONFIG_VOLUME_DEFAULT_USAGE": "volume-default [音量]",
-    "CONFIG_VOLUME_DEFAULT_OPTION_DESCRIPTION": "要設定的預設音量 (1-100)",
+    "CONFIG_VOLUME_DEFAULT_OPTION_DESCRIPTION": "要設定的預設音量 (1-{{maxVolume}})",
     "ERROR_LOOP_COMMAND": "❌ 指令錯誤。{{command}}",
     "ERROR_NO_MUSIC_IN_QUEUE": "❌ 目前播放清單中沒有音樂。",
     "ERROR_NO_PLAYING": "❌ 目前沒有正在播放的音樂。",

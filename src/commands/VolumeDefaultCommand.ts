@@ -9,7 +9,7 @@ import type { CommandContext } from './base/CommandContext.js';
 import type { Bot, CommandMetadata } from '../@types/index.js';
 
 export class VolumeDefaultCommand extends BaseCommand {
-    public getMetadata(_bot: Bot): CommandMetadata {
+    public getMetadata(bot: Bot): CommandMetadata {
         return {
             name: 'volume-default',
             aliases: ['vdef', 'voldef'],
@@ -22,10 +22,11 @@ export class VolumeDefaultCommand extends BaseCommand {
             options: [
                 {
                     name: 'volume',
-                    description: i18next.t('commands:CONFIG_VOLUME_DEFAULT_OPTION_DESCRIPTION'),
+                    description: bot.i18n.t('commands:CONFIG_VOLUME_DEFAULT_OPTION_DESCRIPTION', { maxVolume: bot.config.bot.volume.max }),
                     type: 4,
                     required: false,
-                    min_value: 1
+                    min_value: 1,
+                    max_value: bot.config.bot.volume.max
                 }
             ]
         };

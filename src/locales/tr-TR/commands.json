@@ -85,7 +85,7 @@
     "CONFIG_VOLUME_OPTION_DESCRIPTION": "Ses seviyesi",
     "CONFIG_VOLUME_DEFAULT_DESCRIPTION": "Bu sunucu için varsayılan ses seviyesini değiştir",
     "CONFIG_VOLUME_DEFAULT_USAGE": "volume-default [ses-seviyesi]",
-    "CONFIG_VOLUME_DEFAULT_OPTION_DESCRIPTION": "Belirlenecek varsayılan ses seviyesi (1-100)",
+    "CONFIG_VOLUME_DEFAULT_OPTION_DESCRIPTION": "Belirlenecek varsayılan ses seviyesi (1-{{maxVolume}})",
     "ERROR_LOOP_COMMAND": "❌ Komut hatası. {{command}}",
     "ERROR_NO_MUSIC_IN_QUEUE": "❌ Kuyrukta çalınacak başka bir parça bulunmuyor.",
     "ERROR_NO_PLAYING": "❌ Şuan çalan bir parça bulunmuyor.",

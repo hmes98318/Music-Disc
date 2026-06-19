@@ -85,7 +85,7 @@
     "CONFIG_VOLUME_OPTION_DESCRIPTION": "The volume to set",
     "CONFIG_VOLUME_DEFAULT_DESCRIPTION": "Change the default volume for this server",
     "CONFIG_VOLUME_DEFAULT_USAGE": "volume-default [volume]",
-    "CONFIG_VOLUME_DEFAULT_OPTION_DESCRIPTION": "The default volume to set (1-100)",
+    "CONFIG_VOLUME_DEFAULT_OPTION_DESCRIPTION": "The default volume to set (1-{{maxVolume}})",
     "ERROR_LOOP_COMMAND": "❌ Command error. {{command}}",
     "ERROR_NO_MUSIC_IN_QUEUE": "❌ There is currently no music to be play in the queue.",
     "ERROR_NO_PLAYING": "❌ There is no music currently playing.",

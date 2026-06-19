@@ -85,7 +85,7 @@
     "CONFIG_VOLUME_OPTION_DESCRIPTION": "Jačina zvuka koja će se podesiti",
     "CONFIG_VOLUME_DEFAULT_DESCRIPTION": "Promeni podrazumevanu jačinu zvuka za ovaj server",
     "CONFIG_VOLUME_DEFAULT_USAGE": "volume-default [jačina]",
-    "CONFIG_VOLUME_DEFAULT_OPTION_DESCRIPTION": "Podrazumevana jačina zvuka (1-100)",
+    "CONFIG_VOLUME_DEFAULT_OPTION_DESCRIPTION": "Podrazumevana jačina zvuka (1-{{maxVolume}})",
     "ERROR_LOOP_COMMAND": "❌ Greška u komandi. {{command}}",
     "ERROR_NO_MUSIC_IN_QUEUE": "❌ Trenutno nema muzike za puštanje u redu.",
     "ERROR_NO_PLAYING": "❌ Trenutno se ne pušta muzika.",
