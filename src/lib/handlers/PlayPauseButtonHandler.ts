@@ -20,6 +20,7 @@ export class PlayPauseButtonHandler extends DashboardButtonHandler {
         player: Player
     ): Promise<void> {
         const playing = !player.paused;
+        const lng = bot.guildLanguageManager?.get(interaction.guildId!);
 
         // Check permission for the relevant command
         const commandToCheck = playing ? 'pause' : 'resume';
@@ -38,7 +39,7 @@ export class PlayPauseButtonHandler extends DashboardButtonHandler {
             const canDJBypass = bot.config.command.requesterDjBypass.includes('pause') && isDJ;
             if (!isRequester && !isAdmin && !canDJBypass) {
                 await interaction.reply({
-                    embeds: [embeds.textErrorMsg(bot, client.i18n.t('commands:ERROR_PAUSE_NOT_REQUESTER'))],
+                    embeds: [embeds.textErrorMsg(bot, bot.i18n.t('commands:ERROR_PAUSE_NOT_REQUESTER', { lng }))],
                     flags: MessageFlags.Ephemeral
                 });
                 return;
@@ -51,7 +52,7 @@ export class PlayPauseButtonHandler extends DashboardButtonHandler {
             await player.resume();
         }
 
-        const row = ButtonsBuilder.createDashboardButtons(player);
+        const row = ButtonsBuilder.createDashboardButtons(player, lng);
         await interaction.update({ components: [row] });
     }
 }

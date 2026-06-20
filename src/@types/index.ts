@@ -11,6 +11,7 @@ import type { NodeOptions } from 'lavashark/typings/src/@types/index.js';
 import type { Language } from '../lib/i18n/Language.js';
 import type { Logger } from '../lib/Logger.js';
 import type { BlacklistManager } from '../lib/BlacklistManager.js';
+import type { GuildLanguageManager } from '../lib/GuildLanguageManager.js';
 import type { DashboardManager } from '../lib/DashboardManager.js';
 import type { CommandRegistry } from '../commands/base/CommandRegistry.js';
 import type { IPBlockerConfig, SessionManagerConfig } from './SessionManager.types.js';
@@ -87,6 +88,7 @@ export type Bot = {
     i18n: i18n;
     lang: Language;
     blacklistManager?: BlacklistManager;
+    guildLanguageManager?: GuildLanguageManager;
 }
 
 /**

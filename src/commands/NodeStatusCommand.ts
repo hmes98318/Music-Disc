@@ -63,17 +63,17 @@ export class NodeStatusCommand extends BaseCommand {
 
             if (ping === -1) {
                 unhealthValue++;
-                nodesStatus.push({ name: `❌ ${node.identifier}`, value: `**${bot.i18n.t('embeds:NODE_DISCONNECTED')}**` });
+                nodesStatus.push({ name: `❌ ${node.identifier}`, value: `**${context.t('embeds:NODE_DISCONNECTED')}**` });
             }
             else {
-                nodesStatus.push({ name: `✅ ${node.identifier}`, value: `${bot.i18n.t('embeds:NODE_STATUS_PING')}: **${ping}ms**` });
+                nodesStatus.push({ name: `✅ ${node.identifier}`, value: `${context.t('embeds:NODE_STATUS_PING')}: **${ping}ms**` });
             }
         }
 
         bot.logger.log( bot.shardId, 'nodesStatus: ' + JSON.stringify(nodesStatus));
 
         await context.reply({
-            embeds: [embeds.nodesStatus(bot, unhealthValue, nodesStatus)],
+            embeds: [embeds.nodesStatus(bot, unhealthValue, nodesStatus, context.language)],
             allowedMentions: { repliedUser: false }
         });
     }
@@ -89,7 +89,7 @@ export class NodeStatusCommand extends BaseCommand {
             if (node.identifier === nodeName) {
                 if (node.state !== NodeState.CONNECTED) {
                     await context.reply({
-                        embeds: [embeds.nodeDisconnected(bot, nodeName)],
+                        embeds: [embeds.nodeDisconnected(bot, nodeName, context.language)],
                         allowedMentions: { repliedUser: false }
                     });
                     return;
@@ -109,7 +109,7 @@ export class NodeStatusCommand extends BaseCommand {
                 bot.logger.log( bot.shardId, 'nodePing: ' + nodePing + 'ms');
 
                 await context.reply({
-                    embeds: [embeds.nodeStatus(bot, nodeName, nodeInfo, nodeStats, nodePing)],
+                    embeds: [embeds.nodeStatus(bot, nodeName, nodeInfo, nodeStats, nodePing, context.language)],
                     allowedMentions: { repliedUser: false }
                 });
                 return;
@@ -123,7 +123,7 @@ export class NodeStatusCommand extends BaseCommand {
         }
 
         await context.reply({
-            embeds: [embeds.validNodeName(bot, nodesName)],
+            embeds: [embeds.validNodeName(bot, nodesName, context.language)],
             allowedMentions: { repliedUser: false }
         });
     }

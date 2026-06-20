@@ -2,37 +2,37 @@ import { EmbedBuilder, HexColorString } from 'discord.js';
 import type { Bot } from '../@types/index.js';
 
 
-const addTrack = (bot: Bot, title: string, subtitle: string, url: string, thumbnail: string) => {
+const addTrack = (bot: Bot, title: string, subtitle: string, url: string, thumbnail: string, lng?: string) => {
     const embed_ = new EmbedBuilder()
         .setColor(bot.config.bot.embedsColors.message as HexColorString | number)
         .setTitle(title)
         .setURL(url)
         .setThumbnail(thumbnail)
-        .addFields({ name: bot.i18n.t('embeds:QUEUE_ADD_TRACK'), value: subtitle, inline: true })
+        .addFields({ name: bot.i18n.t('embeds:QUEUE_ADD_TRACK', { lng }), value: subtitle, inline: true })
         .setTimestamp();
 
     return embed_;
 };
 
-const addPlaylist = (bot: Bot, title: string, subtitle: string, url: string, thumbnail: string) => {
+const addPlaylist = (bot: Bot, title: string, subtitle: string, url: string, thumbnail: string, lng?: string) => {
     const embed_ = new EmbedBuilder()
         .setColor(bot.config.bot.embedsColors.message as HexColorString | number)
         .setTitle(title)
         .setURL(url)
         .setThumbnail(thumbnail)
-        .addFields({ name: bot.i18n.t('embeds:QUEUE_ADD_PLAYLIST'), value: subtitle, inline: true })
+        .addFields({ name: bot.i18n.t('embeds:QUEUE_ADD_PLAYLIST', { lng }), value: subtitle, inline: true })
         .setTimestamp();
 
     return embed_;
 };
 
-const queue = (bot: Bot, description: string, repeatMode: string) => {
+const queue = (bot: Bot, description: string, repeatMode: string, lng?: string) => {
     const embed_ = new EmbedBuilder()
         .setColor(bot.config.bot.embedsColors.message as HexColorString | number)
-        .setTitle(bot.i18n.t('embeds:QUEUE_LIST_TITLE'))
+        .setTitle(bot.i18n.t('embeds:QUEUE_LIST_TITLE', { lng }))
         .setDescription(description)
         .setTimestamp()
-        .setFooter({ text: bot.i18n.t('embeds:QUEUE_LIST_LOOP_MODE', { repeatMode: repeatMode }) });
+        .setFooter({ text: bot.i18n.t('embeds:QUEUE_LIST_LOOP_MODE', { repeatMode: repeatMode, lng }) });
 
     return embed_;
 };

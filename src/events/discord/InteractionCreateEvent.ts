@@ -49,13 +49,14 @@ export class InteractionCreateEvent extends BaseDiscordEvent<Events.InteractionC
     async #handleButtonInteraction(bot: Bot, client: Client, interaction: Interaction): Promise<void> {
         if (!interaction.isButton()) return;
 
+        const lng = bot.guildLanguageManager?.get(interaction.guildId!);
         const guildMember = interaction.guild!.members.cache.get(interaction.user.id);
         const voiceChannel = guildMember?.voice.channel;
 
         // Validate voice channel
         if (!voiceChannel) {
             await interaction.reply({
-                embeds: [embeds.textErrorMsg(bot, client.i18n.t('events:ERROR_NOT_IN_VOICE_CHANNEL'))],
+                embeds: [embeds.textErrorMsg(bot, bot.i18n.t('events:ERROR_NOT_IN_VOICE_CHANNEL', { lng }))],
                 flags: MessageFlags.Ephemeral,
                 components: []
             }).catch((error) => {
@@ -66,7 +67,7 @@ export class InteractionCreateEvent extends BaseDiscordEvent<Events.InteractionC
 
         if (interaction.guild?.members.me?.voice.channel && voiceChannel.id !== interaction.guild.members.me.voice.channelId) {
             await interaction.reply({
-                embeds: [embeds.textErrorMsg(bot, client.i18n.t('events:ERROR_NOT_IN_SAME_VOICE_CHANNEL'))],
+                embeds: [embeds.textErrorMsg(bot, bot.i18n.t('events:ERROR_NOT_IN_SAME_VOICE_CHANNEL', { lng }))],
                 flags: MessageFlags.Ephemeral,
                 components: []
             }).catch((error) => {
@@ -80,7 +81,7 @@ export class InteractionCreateEvent extends BaseDiscordEvent<Events.InteractionC
 
         if (!player) {
             await interaction.reply({
-                embeds: [embeds.textErrorMsg(bot, client.i18n.t('events:ERROR_NOT_PLAYING'))],
+                embeds: [embeds.textErrorMsg(bot, bot.i18n.t('events:ERROR_NOT_PLAYING', { lng }))],
                 allowedMentions: { repliedUser: false }
             }).catch((error) => {
                 bot.logger.error( bot.shardId, '[interactionCreate] Error reply: ' + error);
@@ -154,10 +155,12 @@ export class InteractionCreateEvent extends BaseDiscordEvent<Events.InteractionC
     async #handleCommandInteraction(bot: Bot, client: Client, interaction: Interaction): Promise<void> {
         if (!interaction.isChatInputCommand()) return;
 
+        const lng = bot.guildLanguageManager?.get(interaction.guildId!);
+
         // Check if slash commands are enabled
         if (!bot.config.bot.slashCommand) {
             await interaction.reply({
-                embeds: [embeds.textErrorMsg(bot, client.i18n.t('events:ERROR_SLASH_NOT_ENABLE'))],
+                embeds: [embeds.textErrorMsg(bot, bot.i18n.t('events:ERROR_SLASH_NOT_ENABLE', { lng }))],
                 allowedMentions: { repliedUser: false }
             }).catch((error) => {
                 bot.logger.error( bot.shardId, `[interactionCreate] Error reply: (${interaction.user.username} : /${interaction.commandName}) ${error}`);
@@ -235,7 +238,7 @@ export class InteractionCreateEvent extends BaseDiscordEvent<Events.InteractionC
         }
 
         // Execute command
-        const context = new CommandContext(interaction);
+        const context = new CommandContext(bot, interaction);
         await cmd.execute(bot, client, context);
     }
 }

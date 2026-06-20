@@ -13,23 +13,24 @@ import type { Bot } from '../../@types/index.js';
 export class ShuffleButtonHandler extends DashboardButtonHandler {
     public static async handle(
         bot: Bot,
-        client: Client,
+        _client: Client,
         interaction: ButtonInteraction,
         player: Player
     ): Promise<void> {
         // Check shuffle permission
-        if (!await this.checkPermission(bot, client, interaction, 'shuffle', player)) {
+        if (!await this.checkPermission(bot, _client, interaction, 'shuffle', player)) {
             return;
         }
 
+        const lng = bot.guildLanguageManager?.get(interaction.guildId!);
         player.queue.shuffle();
 
-        if (bot.config.queuePersistence.enabled && (client as any).queuePersistence) {
-            await (client as any).queuePersistence.saveQueue(player);
+        if (bot.config.queuePersistence.enabled && (_client as any).queuePersistence) {
+            await (_client as any).queuePersistence.saveQueue(player);
         }
 
         await interaction.reply({
-            embeds: [embeds.textSuccessMsg(bot, client.i18n.t('events:MESSAGE_MUSIC_SHUFFLE'))],
+            embeds: [embeds.textSuccessMsg(bot, bot.i18n.t('events:MESSAGE_MUSIC_SHUFFLE', { lng }))],
             flags: MessageFlags.Ephemeral,
             components: []
         });

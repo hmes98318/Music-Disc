@@ -31,7 +31,7 @@ export class SkipCommand extends BaseCommand {
         const player = client.lavashark.getPlayer(context.guildId!);
 
         if (!player || !player.playing) {
-            await context.replyEphemeralError(bot, client.i18n.t('commands:ERROR_NO_PLAYING'));
+            await context.replyEphemeralError(bot, context.t('commands:ERROR_NO_PLAYING'));
             return;
         }
 
@@ -55,7 +55,7 @@ export class SkipCommand extends BaseCommand {
 
             // Deny skip if user is not requester and doesn't have bypass permissions
             if (!isRequester && !isAdmin && !canDJBypass) {
-                await context.replyEphemeralError(bot, client.i18n.t('commands:ERROR_SKIP_NOT_REQUESTER'));
+                await context.replyEphemeralError(bot, context.t('commands:ERROR_SKIP_NOT_REQUESTER'));
                 return;
             }
         }
@@ -67,10 +67,10 @@ export class SkipCommand extends BaseCommand {
         }
         else {
             if (success) {
-                await context.replySuccess(bot, client.i18n.t('commands:MESSAGE_SKIP_SUCCESS'));
+                await context.replySuccess(bot, context.t('commands:MESSAGE_SKIP_SUCCESS'));
             }
             else {
-                await context.replyError(bot, client.i18n.t('commands:MESSAGE_SKIP_FAIL'));
+                await context.replyError(bot, context.t('commands:MESSAGE_SKIP_FAIL'));
             }
         }
     }

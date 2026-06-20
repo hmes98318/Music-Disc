@@ -2,10 +2,10 @@ import { EmbedBuilder, HexColorString } from 'discord.js';
 import type { Bot } from '../@types/index.js';
 
 
-const blacklist = (bot: Bot, userList: { name: string; value: string; }[]) => {
+const blacklist = (bot: Bot, userList: { name: string; value: string; }[], lng?: string) => {
     const embed_ = new EmbedBuilder()
         .setColor(bot.config.bot.embedsColors.message as HexColorString | number)
-        .setTitle(bot.i18n.t('embeds:MESSAGE_BLACKLIST'))
+        .setTitle(bot.i18n.t('embeds:MESSAGE_BLACKLIST', { lng }))
         .setDescription('━━━━━━━━━━━━━━━━━━━━━━━━━━━━')
         .addFields(userList)
         .setTimestamp();
@@ -13,18 +13,18 @@ const blacklist = (bot: Bot, userList: { name: string; value: string; }[]) => {
     return embed_;
 };
 
-const filterMsg = (bot: Bot, effectName: string) => {
+const filterMsg = (bot: Bot, effectName: string, lng?: string) => {
     const embed_ = new EmbedBuilder()
         .setColor(bot.config.bot.embedsColors.message as HexColorString | number)
-        .setDescription(bot.i18n.t('embeds:MESSAGE_FILTER', { effectName: effectName }));
+        .setDescription(bot.i18n.t('embeds:MESSAGE_FILTER', { effectName: effectName, lng }));
 
     return embed_;
 };
 
-const help = (bot: Bot, command: string, description: string) => {
+const help = (bot: Bot, command: string, description: string, lng?: string) => {
     const embed_ = new EmbedBuilder()
         .setColor(bot.config.bot.embedsColors.message as HexColorString | number)
-        .setTitle(bot.i18n.t('embeds:MESSAGE_COMMAND', { command: command }))
+        .setTitle(bot.i18n.t('embeds:MESSAGE_COMMAND', { command: command, lng }))
         .setDescription(description);
 
     return embed_;

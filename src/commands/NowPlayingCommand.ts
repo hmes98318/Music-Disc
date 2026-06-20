@@ -33,21 +33,21 @@ export class NowPlayingCommand extends BaseCommand {
         const player = client.lavashark.getPlayer(context.guild!.id);
 
         if (!player || !player.playing) {
-            await context.replyEphemeralError(bot, client.i18n.t('commands:ERROR_NO_PLAYING'));
+            await context.replyEphemeralError(bot, context.t('commands:ERROR_NO_PLAYING'));
             return;
         }
 
         const track = player.current;
         const requester = track?.requester;
         const requesterInfo = requester?.id ? ` | <@${requester.id}>` : '';
-        const subtitle = client.i18n.t('commands:MESSAGE_NOW_PLAYING_SUBTITLE', {
+        const subtitle = context.t('commands:MESSAGE_NOW_PLAYING_SUBTITLE', {
             author: track?.author,
             label: track?.duration.label
         }) + requesterInfo;
 
         const saveButton = new ButtonBuilder()
             .setCustomId(MusicButtonId.Save)
-            .setLabel(client.i18n.t('commands:MESSAGE_NOW_PLAYING_SAVE_BUTTON'))
+            .setLabel(context.t('commands:MESSAGE_NOW_PLAYING_SAVE_BUTTON'))
             .setStyle(ButtonStyle.Success);
         const row = new ActionRowBuilder<ButtonBuilder>()
             .addComponents(saveButton);

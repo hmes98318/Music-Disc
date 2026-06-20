@@ -25,6 +25,8 @@ export class SkipButtonHandler extends DashboardButtonHandler {
             return;
         }
 
+        const lng = bot.guildLanguageManager?.get(interaction.guildId!);
+
         // Check if skip is restricted to requester only
         if (bot.config.command.requesterOnly.includes('skip')) {
             const currentTrack = player.current;
@@ -44,7 +46,7 @@ export class SkipButtonHandler extends DashboardButtonHandler {
             // Deny skip if user is not requester and doesn't have bypass permissions
             if (!isRequester && !isAdmin && !canDJBypass) {
                 await interaction.reply({
-                    embeds: [embeds.textErrorMsg(bot, client.i18n.t('commands:ERROR_SKIP_NOT_REQUESTER'))],
+                    embeds: [embeds.textErrorMsg(bot, bot.i18n.t('commands:ERROR_SKIP_NOT_REQUESTER', { lng }))],
                     flags: MessageFlags.Ephemeral
                 });
                 return;
@@ -61,7 +63,7 @@ export class SkipButtonHandler extends DashboardButtonHandler {
             await player.skip();
         }
 
-        const row = ButtonsBuilder.createDashboardButtons(player);
+        const row = ButtonsBuilder.createDashboardButtons(player, lng);
         await interaction.update({ components: [row] });
     }
 }

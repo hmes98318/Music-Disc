@@ -36,7 +36,7 @@ export class SeekCommand extends BaseCommand {
         const player = client.lavashark.getPlayer(context.guild!.id);
 
         if (!player || !player.playing) {
-            await context.replyEphemeralError(bot, client.i18n.t('commands:ERROR_NO_PLAYING'));
+            await context.replyEphemeralError(bot, context.t('commands:ERROR_NO_PLAYING'));
             return;
         }
 
@@ -55,7 +55,7 @@ export class SeekCommand extends BaseCommand {
             const canDJBypass = bot.config.command.requesterDjBypass.includes('seek') && isDJ;
 
             if (!isRequester && !isAdmin && !canDJBypass) {
-                await context.replyEphemeralError(bot, client.i18n.t('commands:ERROR_SEEK_NOT_REQUESTER'));
+                await context.replyEphemeralError(bot, context.t('commands:ERROR_SEEK_NOT_REQUESTER'));
                 return;
             }
         }
@@ -68,7 +68,7 @@ export class SeekCommand extends BaseCommand {
         const targetTime = timeToSeconds(str);
 
         if (targetTime === false || targetTime < 0) {
-            await context.replyEphemeralError(bot, client.i18n.t('commands:MESSAGE_SEEK_ARGS_ERROR'));
+            await context.replyEphemeralError(bot, context.t('commands:MESSAGE_SEEK_ARGS_ERROR'));
             return;
         }
 
@@ -82,12 +82,12 @@ export class SeekCommand extends BaseCommand {
         await player.seek(targetTimeMs);
 
         if (targetTimeMs >= trackDuration.value) {
-            await context.replyWarning(bot, client.i18n.t('commands:MESSAGE_SEEK_SKIP', {
+            await context.replyWarning(bot, context.t('commands:MESSAGE_SEEK_SKIP', {
                 duration: trackDuration.label
             }));
         }
         else {
-            await context.replySuccess(bot, client.i18n.t('commands:MESSAGE_SEEK_SUCCESS', {
+            await context.replySuccess(bot, context.t('commands:MESSAGE_SEEK_SUCCESS', {
                 duration: str
             }));
         }

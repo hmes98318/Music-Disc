@@ -34,7 +34,7 @@ export class PingCommand extends BaseCommand {
         await context.react('👍');
 
         await context.reply({
-            embeds: [embeds.ping(bot, botPing, apiPing)]
+            embeds: [embeds.ping(bot, botPing, apiPing, context.language)]
         });
     }
 }

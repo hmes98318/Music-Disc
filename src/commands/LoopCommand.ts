@@ -50,7 +50,7 @@ export class LoopCommand extends BaseCommand {
         const metadata = this.getMetadata(bot);
 
         if (!player || !player.playing) {
-            await context.replyEphemeralError(bot, client.i18n.t('commands:ERROR_NO_PLAYING'));
+            await context.replyEphemeralError(bot, context.t('commands:ERROR_NO_PLAYING'));
             return;
         }
 
@@ -60,7 +60,7 @@ export class LoopCommand extends BaseCommand {
             : context.args.join(' ');
 
         if (!modeParam) {
-            await context.replyEphemeralError(bot, client.i18n.t('commands:ERROR_LOOP_COMMAND', {
+            await context.replyEphemeralError(bot, context.t('commands:ERROR_LOOP_COMMAND', {
                 command: `${bot.config.bot.prefix}${metadata.usage}`
             }));
             return;
@@ -68,9 +68,9 @@ export class LoopCommand extends BaseCommand {
 
         let mode: number;
         const methods = [
-            client.i18n.t('commands:REPEAT_MODE_OFF'),
-            client.i18n.t('commands:REPEAT_MODE_SINGLE'),
-            client.i18n.t('commands:REPEAT_MODE_ALL')
+            context.t('commands:REPEAT_MODE_OFF'),
+            context.t('commands:REPEAT_MODE_SINGLE'),
+            context.t('commands:REPEAT_MODE_ALL')
         ];
 
         switch (modeParam.toLowerCase()) {
@@ -92,7 +92,7 @@ export class LoopCommand extends BaseCommand {
                 break;
             }
             default: {
-                await context.replyEphemeralError(bot, client.i18n.t('commands:ERROR_LOOP_COMMAND', {
+                await context.replyEphemeralError(bot, context.t('commands:ERROR_LOOP_COMMAND', {
                     command: `${bot.config.bot.prefix}${metadata.usage}`
                 }));
                 return;
@@ -103,7 +103,7 @@ export class LoopCommand extends BaseCommand {
             await context.react('👍');
         }
 
-        await context.replySuccess(bot, client.i18n.t('commands:MESSAGE_LOOP_MODE', {
+        await context.replySuccess(bot, context.t('commands:MESSAGE_LOOP_MODE', {
             mode: methods[mode]
         }));
     }

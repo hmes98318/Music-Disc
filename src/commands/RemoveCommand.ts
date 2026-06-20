@@ -41,14 +41,14 @@ export class RemoveCommand extends BaseCommand {
         const player = client.lavashark.getPlayer(context.guild!.id);
 
         if (!player || !player.playing) {
-            await context.replyEphemeralError(bot, client.i18n.t('commands:ERROR_NO_PLAYING'));
+            await context.replyEphemeralError(bot, context.t('commands:ERROR_NO_PLAYING'));
             return;
         }
 
         const tracks = player.queue.tracks.map((track, index) => `${index + 1}. \`${track.title}\``);
 
         if (tracks.length < 1) {
-            await context.replyEphemeralError(bot, client.i18n.t('commands:MESSAGE_REMOVE_QUEUE_EMPTY'));
+            await context.replyEphemeralError(bot, context.t('commands:MESSAGE_REMOVE_QUEUE_EMPTY'));
             return;
         }
 
@@ -97,7 +97,7 @@ export class RemoveCommand extends BaseCommand {
                 await context.react('❌');
             }
             else {
-                await context.replyError(bot, client.i18n.t('commands:MESSAGE_REMOVE_FAIL'));
+                await context.replyError(bot, context.t('commands:MESSAGE_REMOVE_FAIL'));
             }
             return;
         }
@@ -107,7 +107,7 @@ export class RemoveCommand extends BaseCommand {
         }
 
         await context.reply({
-            embeds: [embeds.removeTrack(bot, tracks[index - 1])],
+            embeds: [embeds.removeTrack(bot, tracks[index - 1], context.language)],
             allowedMentions: { repliedUser: false }
         });
     }
@@ -136,7 +136,7 @@ export class RemoveCommand extends BaseCommand {
                 await context.react('❌');
             }
             else {
-                await context.replyError(bot, client.i18n.t('commands:MESSAGE_REMOVE_FAIL'));
+                await context.replyError(bot, context.t('commands:MESSAGE_REMOVE_FAIL'));
             }
             return;
         }
@@ -148,7 +148,7 @@ export class RemoveCommand extends BaseCommand {
         }
 
         await context.reply({
-            embeds: [embeds.removeTrack(bot, musicTitle)],
+            embeds: [embeds.removeTrack(bot, musicTitle, context.language)],
             allowedMentions: { repliedUser: false }
         });
     }
@@ -164,7 +164,7 @@ export class RemoveCommand extends BaseCommand {
         player: any,
         tracks: string[]
     ): Promise<void> {
-        const nowplaying = client.i18n.t('commands:MESSAGE_NOW_PLAYING_TITLE', {
+        const nowplaying = context.t('commands:MESSAGE_NOW_PLAYING_TITLE', {
             title: player.current?.title
         });
 
@@ -174,7 +174,7 @@ export class RemoveCommand extends BaseCommand {
         }
         else if (tracks.length > 9) {
             tracksQueue = tracks.slice(0, 10).join('\n');
-            tracksQueue += client.i18n.t('commands:MESSAGE_NOW_PLAYING_BUTTOMTITLE', {
+            tracksQueue += context.t('commands:MESSAGE_NOW_PLAYING_BUTTOMTITLE', {
                 length: tracks.length - 10
             });
         }
@@ -183,12 +183,12 @@ export class RemoveCommand extends BaseCommand {
         }
 
         const methods = [
-            client.i18n.t('commands:REPEAT_MODE_OFF'),
-            client.i18n.t('commands:REPEAT_MODE_SINGLE'),
-            client.i18n.t('commands:REPEAT_MODE_ALL')
+            context.t('commands:REPEAT_MODE_OFF'),
+            context.t('commands:REPEAT_MODE_SINGLE'),
+            context.t('commands:REPEAT_MODE_ALL')
         ];
         const repeatMode = player.repeatMode;
-        const instruction = client.i18n.t('commands:MESSAGE_REMOVE_INSTRUCTION', {
+        const instruction = context.t('commands:MESSAGE_REMOVE_INSTRUCTION', {
             length: tracks.length
         });
 
@@ -198,7 +198,7 @@ export class RemoveCommand extends BaseCommand {
 
         const msg = await context.reply({
             content: instruction,
-            embeds: [embeds.removeList(bot, nowplaying, tracksQueue, methods[repeatMode])],
+            embeds: [embeds.removeList(bot, nowplaying, tracksQueue, methods[repeatMode], context.language)],
             allowedMentions: { repliedUser: false }
         });
 
@@ -214,13 +214,13 @@ export class RemoveCommand extends BaseCommand {
             if (!index || index <= 0 || index > tracks.length) {
                 if (context.isMessage()) {
                     await context.reply({
-                        embeds: [embeds.textWarningMsg(bot, client.i18n.t('commands:MESSAGE_REMOVE_CANCEL'))],
+                        embeds: [embeds.textWarningMsg(bot, context.t('commands:MESSAGE_REMOVE_CANCEL'))],
                         allowedMentions: { repliedUser: false }
                     });
                 }
                 else {
                     await context.reply({
-                        embeds: [embeds.textWarningMsg(bot, client.i18n.t('commands:MESSAGE_REMOVE_CANCEL'))],
+                        embeds: [embeds.textWarningMsg(bot, context.t('commands:MESSAGE_REMOVE_CANCEL'))],
                         allowedMentions: { repliedUser: false }
                     });
                 }
@@ -236,7 +236,7 @@ export class RemoveCommand extends BaseCommand {
             }
 
             await query.reply({
-                embeds: [embeds.removeTrack(bot, tracks[index - 1])],
+                embeds: [embeds.removeTrack(bot, tracks[index - 1], context.language)],
                 allowedMentions: { repliedUser: false }
             });
 
@@ -250,7 +250,7 @@ export class RemoveCommand extends BaseCommand {
         collector.on('end', async (collected: ReadonlyCollection<string, Message<boolean>>, reason: string) => {
             if (reason === 'time' && collected.size === 0) {
                 await msg.edit({
-                    embeds: [embeds.textErrorMsg(bot, client.i18n.t('commands:ERROR_TIME_EXPIRED'))],
+                    embeds: [embeds.textErrorMsg(bot, context.t('commands:ERROR_TIME_EXPIRED'))],
                     allowedMentions: { repliedUser: false }
                 }).catch(() =>
                     bot.logger.discord( bot.shardId, 'Failed to edit deleted message.')

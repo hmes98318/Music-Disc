@@ -37,7 +37,7 @@ export class LanguageCommand extends BaseCommand {
 
         // Show available languages
         if (!locale) {
-            await context.replyText(bot, client.i18n.t('commands:MESSAGE_LANG_AVAILABLE_LIST', {
+            await context.replyText(bot, context.t('commands:MESSAGE_LANG_AVAILABLE_LIST', {
                 langList: bot.lang.languages.map(lang => `\`${lang}\``).join(', ')
             }));
             return;
@@ -45,20 +45,22 @@ export class LanguageCommand extends BaseCommand {
 
         // Validate language
         if (!bot.lang.languages.includes(locale)) {
-            await context.replyEphemeralError(bot, client.i18n.t('commands:MESSAGE_LANG_ARGS_ERROR', {
+            await context.replyEphemeralError(bot, context.t('commands:MESSAGE_LANG_ARGS_ERROR', {
                 langList: bot.lang.languages.map(lang => `\`${lang}\``).join(', ')
             }));
             return;
         }
 
-        // Change language
-        await client.i18n.changeLanguage(locale);
+        // Change language for the current guild
+        if (context.guildId) {
+            bot.guildLanguageManager?.set(context.guildId, locale);
+        }
 
         if (context.isMessage()) {
             await context.react('👍');
         }
         else {
-            await context.replySuccess(bot, client.i18n.t('commands:MESSAGE_LANG_SUCCESS', { locale }));
+            await context.replySuccess(bot, context.t('commands:MESSAGE_LANG_SUCCESS', { locale }));
         }
     }
 }

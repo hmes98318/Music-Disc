@@ -29,7 +29,7 @@ export class QueueCommand extends BaseCommand {
         const player = client.lavashark.getPlayer(context.guild!.id);
 
         if (!player || !player.playing) {
-            await context.replyEphemeralError(bot, client.i18n.t('commands:ERROR_NO_PLAYING'));
+            await context.replyEphemeralError(bot, context.t('commands:ERROR_NO_PLAYING'));
             return;
         }
 
@@ -52,18 +52,18 @@ export class QueueCommand extends BaseCommand {
         const endIdx = page * 5;
 
         const queueTracks = player.queue.tracks.slice(startIdx, endIdx);
-        const description = this.#buildQueueDescription(client, player, queueTracks, startIdx, page, player.setting.queuePage.maxPage, player.queue.tracks.length);
+        const description = this.#buildQueueDescription(context, player, queueTracks, startIdx, page, player.setting.queuePage.maxPage, player.queue.tracks.length);
 
         const methods = [
-            client.i18n.t('commands:REPEAT_MODE_OFF'),
-            client.i18n.t('commands:REPEAT_MODE_SINGLE'),
-            client.i18n.t('commands:REPEAT_MODE_ALL')
+            context.t('commands:REPEAT_MODE_OFF'),
+            context.t('commands:REPEAT_MODE_SINGLE'),
+            context.t('commands:REPEAT_MODE_ALL')
         ];
         const repeatMode = player.repeatMode;
         const row = ButtonsBuilder.createQueueButtons();
 
         player.setting.queuePage.msg = await context.reply({
-            embeds: [embeds.queue(bot, description, methods[repeatMode])],
+            embeds: [embeds.queue(bot, description, methods[repeatMode], context.language)],
             components: [row],
             allowedMentions: { repliedUser: false },
         });
@@ -78,7 +78,7 @@ export class QueueCommand extends BaseCommand {
      * @private
      */
     #buildQueueDescription(
-        client: Client,
+        context: CommandContext,
         player: any,
         queueTracks: any[],
         startIdx: number,
@@ -89,31 +89,31 @@ export class QueueCommand extends BaseCommand {
         let maxTitleLength = 80;
 
         const buildDescription = (titleLength: number): string => {
-            const nowPlayingTitle = player.current?.title || client.i18n.t('commands:UNKNOWN_USER');
+            const nowPlayingTitle = player.current?.title || context.t('commands:UNKNOWN_USER');
             const truncatedNP = nowPlayingTitle.length > titleLength
                 ? nowPlayingTitle.substring(0, titleLength) + '...'
                 : nowPlayingTitle;
 
-            let desc = `${client.i18n.t('embeds:QUEUE_NOW_PLAYING')}\n${truncatedNP}\n${'─'.repeat(20)}\n`;
+            let desc = `${context.t('embeds:QUEUE_NOW_PLAYING')}\n${truncatedNP}\n${'─'.repeat(20)}\n`;
 
             if (queueTracks.length < 1) {
-                desc += `\n*${client.i18n.t('embeds:QUEUE_EMPTY')}*`;
+                desc += `\n*${context.t('embeds:QUEUE_EMPTY')}*`;
             } else {
-                desc += `\n${client.i18n.t('embeds:QUEUE_HEADER')}\n`;
+                desc += `\n${context.t('embeds:QUEUE_HEADER')}\n`;
                 const entries = queueTracks.map((track, index) => {
                     let title = track.title;
                     if (title.length > titleLength) {
                         title = title.substring(0, titleLength) + '...';
                     }
                     const requesterId = track.requester?.id;
-                    const requesterMention = requesterId ? `<@${requesterId}>` : (track.requester?.username || client.i18n.t('commands:UNKNOWN_USER'));
+                    const requesterMention = requesterId ? `<@${requesterId}>` : (track.requester?.username || context.t('commands:UNKNOWN_USER'));
                     return `${startIdx + index + 1}. ${title} **${track.duration.label}** | ${requesterMention}`;
                 });
                 desc += entries.join('\n');
             }
 
             if (totalTracks > 0 && maxPage > 1) {
-                desc += `\n\n${client.i18n.t('events:MESSAGE_QUEUE_PAGE', { curPage, maxPage })}`;
+                desc += `\n\n${context.t('events:MESSAGE_QUEUE_PAGE', { curPage, maxPage })}`;
             }
 
             return desc;

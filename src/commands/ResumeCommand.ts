@@ -27,12 +27,12 @@ export class ResumeCommand extends BaseCommand {
         const player = client.lavashark.getPlayer(context.guild!.id);
 
         if (!player || !player.playing) {
-            await context.replyEphemeralError(bot, client.i18n.t('commands:ERROR_NO_PLAYING'));
+            await context.replyEphemeralError(bot, context.t('commands:ERROR_NO_PLAYING'));
             return;
         }
 
         if (!player.paused) {
-            await context.replyEphemeralError(bot, client.i18n.t('commands:MESSAGE_RESUME_MUSIC_RESUMED'));
+            await context.replyEphemeralError(bot, context.t('commands:MESSAGE_RESUME_MUSIC_RESUMED'));
             return;
         }
 
@@ -43,10 +43,10 @@ export class ResumeCommand extends BaseCommand {
         }
         else {
             if (SUCCESS) {
-                await context.replySuccess(bot, client.i18n.t('commands:MESSAGE_RESUME_SUCCESS'));
+                await context.replySuccess(bot, context.t('commands:MESSAGE_RESUME_SUCCESS'));
             }
             else {
-                await context.replyError(bot, client.i18n.t('commands:MESSAGE_RESUME_FAIL'));
+                await context.replyError(bot, context.t('commands:MESSAGE_RESUME_FAIL'));
             }
         }
     }

@@ -18,23 +18,25 @@ export class MusicSaveButtonHandler {
         const track = player.current;
         if (!track) return;
 
+        const lng = bot.guildLanguageManager?.get(interaction.guildId!);
         const member = interaction.member as GuildMember;
-        const subtitle = client.i18n.t('events:MESSAGE_NOW_PLAYING_SUBTITLE', {
+        const subtitle = bot.i18n.t('events:MESSAGE_NOW_PLAYING_SUBTITLE', {
             author: track.author,
-            label: track.duration.label
+            label: track.duration.label,
+            lng
         });
 
         member.user.send({ embeds: [embeds.save(bot, track.title, subtitle, track.uri, track.thumbnail!)] })
             .then(() => {
                 interaction.reply({
-                    embeds: [embeds.textSuccessMsg(bot, client.i18n.t('events:MESSAGE_SEND_PRIVATE_MESSAGE'))],
+                    embeds: [embeds.textSuccessMsg(bot, bot.i18n.t('events:MESSAGE_SEND_PRIVATE_MESSAGE', { lng }))],
                     flags: MessageFlags.Ephemeral
                 }).catch(() => { });
             })
             .catch((error) => {
                 bot.logger.error( bot.shardId, '[MusicSaveButtonHandler] Error sending DM: ' + error);
                 interaction.reply({
-                    embeds: [embeds.textErrorMsg(bot, client.i18n.t('events:ERROR_SEND_PRIVATE_MESSAGE'))],
+                    embeds: [embeds.textErrorMsg(bot, bot.i18n.t('events:ERROR_SEND_PRIVATE_MESSAGE', { lng }))],
                     flags: MessageFlags.Ephemeral
                 }).catch(() => { });
             });

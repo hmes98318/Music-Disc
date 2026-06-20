@@ -31,12 +31,12 @@ export class PauseCommand extends BaseCommand {
         const player = client.lavashark.getPlayer(context.guildId!);
 
         if (!player || !player.playing) {
-            await context.replyEphemeralError(bot, client.i18n.t('commands:ERROR_NO_PLAYING'));
+            await context.replyEphemeralError(bot, context.t('commands:ERROR_NO_PLAYING'));
             return;
         }
 
         if (player.paused) {
-            await context.replyEphemeralError(bot, client.i18n.t('commands:MESSAGE_PAUSE_MUSIC_PAUSED'));
+            await context.replyEphemeralError(bot, context.t('commands:MESSAGE_PAUSE_MUSIC_PAUSED'));
             return;
         }
 
@@ -52,7 +52,7 @@ export class PauseCommand extends BaseCommand {
             const isDJ = PermissionManager.hasDJCommandPermission(bot, userId, member, player);
             const canDJBypass = bot.config.command.requesterDjBypass.includes('pause') && isDJ;
             if (!isRequester && !isAdmin && !canDJBypass) {
-                await context.replyEphemeralError(bot, client.i18n.t('commands:ERROR_PAUSE_NOT_REQUESTER'));
+                await context.replyEphemeralError(bot, context.t('commands:ERROR_PAUSE_NOT_REQUESTER'));
                 return;
             }
         }
@@ -64,10 +64,10 @@ export class PauseCommand extends BaseCommand {
         }
         else {
             if (success) {
-                await context.replySuccess(bot, client.i18n.t('commands:MESSAGE_PAUSE_SUCCESS'));
+                await context.replySuccess(bot, context.t('commands:MESSAGE_PAUSE_SUCCESS'));
             }
             else {
-                await context.replyError(bot, client.i18n.t('commands:MESSAGE_PAUSE_FAIL'));
+                await context.replyError(bot, context.t('commands:MESSAGE_PAUSE_FAIL'));
             }
         }
     }
