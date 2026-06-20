@@ -153,7 +153,7 @@ const config = {
     // Command permission settings
     command: {
         disableCommand: [],                                 // Disabled commands, all enabled by default
-        adminCommand: ['blacklist', 'language','server', 'status'],      // Admin commands, only Admin role user can use
+        adminCommand: ['blacklist','server', 'status'],     // Admin commands, only Admin role user can use
         djCommand: ['dj', 'filter'],                        // DJ commands, only DJ role user can use
         // Supported commands: 'skip', 'seek', 'pause'
         // When a command name is listed here, only the requester of the currently playing song may use it.
