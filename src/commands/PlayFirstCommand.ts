@@ -235,7 +235,7 @@ export class PlayFirstCommand extends BaseCommand {
      */
     async #handleTracks(bot: Bot, client: Client, context: CommandContext, player: Player, res: any, tracksToAdd?: number): Promise<void> {
         const requester = context.isMessage() ? context.getMessage().author : context.getInteraction().user;
-        const curVolume = player.setting.volume ?? bot.config.bot.volume.default;
+        const curVolume = player.setting.volume ?? bot.guildVolumeManager?.get(player.guildId) ?? bot.config.bot.volume.default;
 
         if (res.loadType === LoadType.PLAYLIST) {
             // Add only the allowed number of tracks from playlist

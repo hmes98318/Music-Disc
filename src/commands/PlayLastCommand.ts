@@ -113,7 +113,7 @@ export class PlayLastCommand extends BaseCommand {
         }
 
         const requester = context.isMessage() ? context.getMessage().author : context.getInteraction().user;
-        const curVolume = newPlayer.setting.volume ?? bot.config.bot.volume.default;
+        const curVolume = newPlayer.setting.volume ?? bot.guildVolumeManager?.get(newPlayer.guildId) ?? bot.config.bot.volume.default;
 
         newPlayer.addTracks(lastTrack, requester as any);
         newPlayer.filters.setVolume(curVolume);

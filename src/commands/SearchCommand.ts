@@ -199,7 +199,7 @@ export class SearchCommand extends BaseCommand {
         }
 
         const requester = context.isMessage() ? context.getMessage().author : context.getInteraction().user;
-        const curVolume = player.setting.volume ?? bot.config.bot.volume.default;
+        const curVolume = player.setting.volume ?? bot.guildVolumeManager?.get(player.guildId) ?? bot.config.bot.volume.default;
 
         // Add only allowed tracks
         const tracksToAdd = playlistCheck.canAddCount < playlistSize ? res.tracks.slice(0, playlistCheck.canAddCount) : res.tracks;
@@ -251,7 +251,7 @@ export class SearchCommand extends BaseCommand {
         }
 
         const requester = context.isMessage() ? context.getMessage().author : context.getInteraction().user;
-        const curVolume = player.setting.volume ?? bot.config.bot.volume.default;
+        const curVolume = player.setting.volume ?? bot.guildVolumeManager?.get(player.guildId) ?? bot.config.bot.volume.default;
         const track = res.tracks[0];
 
         player.addTracks(track, requester as any);
@@ -315,7 +315,7 @@ export class SearchCommand extends BaseCommand {
             }
 
             const requester = context.isMessage() ? context.getMessage().author : context.getInteraction().user;
-            const curVolume = player.setting.volume ?? bot.config.bot.volume.default;
+            const curVolume = player.setting.volume ?? bot.guildVolumeManager?.get(player.guildId) ?? bot.config.bot.volume.default;
 
             player.addTracks(res.tracks.find((x: any) => x.uri == i.values[0])!, requester as any);
 

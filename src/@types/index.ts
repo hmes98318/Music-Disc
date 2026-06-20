@@ -12,6 +12,7 @@ import type { Language } from '../lib/i18n/Language.js';
 import type { Logger } from '../lib/Logger.js';
 import type { BlacklistManager } from '../lib/BlacklistManager.js';
 import type { GuildLanguageManager } from '../lib/GuildLanguageManager.js';
+import type { GuildVolumeManager } from '../lib/GuildVolumeManager.js';
 import type { DashboardManager } from '../lib/DashboardManager.js';
 import type { CommandRegistry } from '../commands/base/CommandRegistry.js';
 import type { IPBlockerConfig, SessionManagerConfig } from './SessionManager.types.js';
@@ -89,6 +90,7 @@ export type Bot = {
     lang: Language;
     blacklistManager?: BlacklistManager;
     guildLanguageManager?: GuildLanguageManager;
+    guildVolumeManager?: GuildVolumeManager;
 }
 
 /**

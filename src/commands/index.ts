@@ -14,6 +14,7 @@ import { ClearCommand } from './ClearCommand.js';
 import { JoinCommand } from './JoinCommand.js';
 import { LeaveCommand } from './LeaveCommand.js';
 import { LanguageCommand } from './LanguageCommand.js';
+import { VolumeDefaultCommand } from './VolumeDefaultCommand.js';
 import { DjCommand } from './DjCommand.js';
 import { ServerCommand } from './ServerCommand.js';
 import { StatusCommand } from './StatusCommand.js';
@@ -43,6 +44,7 @@ export function registerAllCommands(registry: CommandRegistry, bot: Bot): void {
     registry.register(new PingCommand(), bot);
     registry.register(new HelpCommand(), bot);
     registry.register(new LanguageCommand(), bot);
+    registry.register(new VolumeDefaultCommand(), bot);
     registry.register(new DjCommand(), bot);
     registry.register(new ServerCommand(), bot);
     registry.register(new StatusCommand(), bot);

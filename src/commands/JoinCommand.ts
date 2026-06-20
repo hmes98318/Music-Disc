@@ -46,7 +46,7 @@ export class JoinCommand extends BaseCommand {
             };
         }
 
-        const curVolume = player.setting.volume ?? bot.config.bot.volume.default;
+        const curVolume = player.setting.volume ?? bot.guildVolumeManager?.get(player.guildId) ?? bot.config.bot.volume.default;
 
         try {
             // Connect to voice channel
