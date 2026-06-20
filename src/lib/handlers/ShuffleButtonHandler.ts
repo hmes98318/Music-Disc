@@ -25,8 +25,8 @@ export class ShuffleButtonHandler extends DashboardButtonHandler {
         const lng = bot.guildLanguageManager?.get(interaction.guildId!);
         player.queue.shuffle();
 
-        if (bot.config.queuePersistence.enabled && (_client as any).queuePersistence) {
-            await (_client as any).queuePersistence.saveQueue(player);
+        if (bot.config.queuePersistence.enabled && _client.queuePersistence) {
+            await _client.queuePersistence.saveQueue(player);
         }
 
         await interaction.reply({

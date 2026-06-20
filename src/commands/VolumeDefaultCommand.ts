@@ -3,7 +3,6 @@ import type { Client } from 'discord.js';
 
 import { BaseCommand } from './base/BaseCommand.js';
 import { CommandCategory } from '../@types/index.js';
-import { DJManager } from '../lib/DjManager.js';
 
 import type { CommandContext } from './base/CommandContext.js';
 import type { Bot, CommandMetadata } from '../@types/index.js';
@@ -32,15 +31,7 @@ export class VolumeDefaultCommand extends BaseCommand {
         };
     }
 
-    protected async run(bot: Bot, client: Client, context: CommandContext): Promise<void> {
-        const player = client.lavashark.getPlayer(context.guild!.id);
-        const isDJ = DJManager.isDJ(bot, context.user.id, context.member, player || undefined);
-
-        if (!isDJ) {
-            await context.replyEphemeralError(bot, context.t('events:ERROR_REQUIRE_DJ'));
-            return;
-        }
-
+    protected async run(bot: Bot, _client: Client, context: CommandContext): Promise<void> {
         const maxVolume = bot.config.bot.volume.max;
         const volumeInput = context.isMessage()
             ? (context.args[0] ? parseInt(context.args[0], 10) : null)

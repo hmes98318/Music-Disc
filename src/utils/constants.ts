@@ -154,6 +154,14 @@ export const cst = {
             djCommand           : ['dj'],                               // DJ commands, only DJ role user can use
             requesterOnly       : ['skip'],                              // Commands restricted to the song requester
             requesterDjBypass   : ['skip']                              // Commands DJs can bypass requesterOnly on
+        },
+
+        queuePersistence: {
+            enabled             : false
+        },
+
+        database: {
+            path                : './data/database.db'
         }
     },
 

@@ -88,8 +88,8 @@ export class RemoveCommand extends BaseCommand {
     ): Promise<void> {
         const SUCCESS = player.queue.remove(index - 1);
 
-        if (SUCCESS && bot.config.queuePersistence.enabled && (client as any).queuePersistence) {
-            await (client as any).queuePersistence.saveQueue(player);
+        if (SUCCESS && bot.config.queuePersistence.enabled && client.queuePersistence) {
+            await client.queuePersistence.saveQueue(player);
         }
 
         if (!SUCCESS) {
@@ -127,8 +127,8 @@ export class RemoveCommand extends BaseCommand {
     ): Promise<void> {
         const SUCCESS = player.queue.remove(index1 - 1, index2 - index1 + 1);
 
-        if (SUCCESS && bot.config.queuePersistence.enabled && (client as any).queuePersistence) {
-            await (client as any).queuePersistence.saveQueue(player);
+        if (SUCCESS && bot.config.queuePersistence.enabled && client.queuePersistence) {
+            await client.queuePersistence.saveQueue(player);
         }
 
         if (!SUCCESS) {
@@ -231,8 +231,8 @@ export class RemoveCommand extends BaseCommand {
             await query.react('👍');
             player.queue.remove(index - 1);
 
-            if (bot.config.queuePersistence.enabled && (client as any).queuePersistence) {
-                await (client as any).queuePersistence.saveQueue(player);
+            if (bot.config.queuePersistence.enabled && client.queuePersistence) {
+                await client.queuePersistence.saveQueue(player);
             }
 
             await query.reply({

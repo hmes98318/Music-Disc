@@ -61,7 +61,7 @@ export class JoinCommand extends BaseCommand {
             }
         } catch (error) {
             bot.logger.error( bot.shardId, 'Error joining channel: ' + error);
-            await context.replyEphemeralError(bot, client.i18n.t('commands:ERROR_PLAY_JOIN_CHANNEL'));
+            await context.replyEphemeralError(bot, context.t('commands:ERROR_PLAY_JOIN_CHANNEL'));
             return;
         }
 
@@ -83,7 +83,7 @@ export class JoinCommand extends BaseCommand {
             await context.react('👍');
         }
         else {
-            await context.replySuccess(bot, client.i18n.t('commands:MESSAGE_JOIN_SUCCESS'));
+            await context.replySuccess(bot, context.t('commands:MESSAGE_JOIN_SUCCESS'));
         }
     }
 }

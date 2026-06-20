@@ -14,11 +14,14 @@ import type { BlacklistManager } from '../lib/BlacklistManager.js';
 import type { GuildLanguageManager } from '../lib/GuildLanguageManager.js';
 import type { GuildVolumeManager } from '../lib/GuildVolumeManager.js';
 import type { DashboardManager } from '../lib/DashboardManager.js';
+import type { DatabaseManager } from '../lib/DatabaseManager.js';
+import type { QueuePersistence } from '../lib/QueuePersistence.js';
 import type { CommandRegistry } from '../commands/base/CommandRegistry.js';
 import type { IPBlockerConfig, SessionManagerConfig } from './SessionManager.types.js';
 
 export * from './ButtonIds.types.js';
 export * from './BaseCommand.types.js';
+export * from './Database.types.js';
 
 
 declare module 'discord.js' {
@@ -28,6 +31,7 @@ declare module 'discord.js' {
         i18n: i18n;
         dashboard: DashboardManager;
         lastPlayedTracks: Map<string, Track>;
+        queuePersistence?: QueuePersistence;
     }
 }
 
@@ -88,6 +92,7 @@ export type Bot = {
     },
     i18n: i18n;
     lang: Language;
+    databaseManager?: DatabaseManager;
     blacklistManager?: BlacklistManager;
     guildLanguageManager?: GuildLanguageManager;
     guildVolumeManager?: GuildVolumeManager;
@@ -104,6 +109,7 @@ export type Config = {
     webDashboard: WebDashboardConfig;
     localNode: LocalNodeConfig;
     command: CommandConfig;
+    database: DatabaseConfig;
     queuePersistence: QueuePersistenceConfig;
 };
 
@@ -188,6 +194,10 @@ export type CommandConfig = {
     requesterDjBypass: string[];
 };
 
+export type DatabaseConfig = {
+    path: string;
+};
+
 export type MaxQueuedSongsConfig = {
     enabled: boolean;
     global: number;
@@ -198,7 +208,6 @@ export type MaxQueuedSongsConfig = {
 
 export type QueuePersistenceConfig = {
     enabled: boolean;
-    path: string;
 };
 
 

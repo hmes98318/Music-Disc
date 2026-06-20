@@ -189,9 +189,12 @@ const setEnvironment = (defaultConfig: Config) => {
             : defaultConfig.command.requesterDjBypass,
     };
 
+    defaultConfig.database = {
+        path: config.database?.path || defaultConfig.database.path
+    };
+
     defaultConfig.queuePersistence = {
-        enabled: config.queuePersistence?.enabled ?? defaultConfig.queuePersistence.enabled,
-        path: config.queuePersistence?.path || defaultConfig.queuePersistence.path
+        enabled: config.queuePersistence?.enabled ?? defaultConfig.queuePersistence.enabled
     };
 
 };

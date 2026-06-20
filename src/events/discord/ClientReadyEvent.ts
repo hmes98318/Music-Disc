@@ -77,13 +77,13 @@ export class ClientReadyEvent extends BaseDiscordEvent<Events.ClientReady> {
         client.lavashark.once('nodeConnect', async () => {
             if (bot.shardId + 1 >= (client.shard?.count ?? 1)) {
                 // Queue persistence restore takes priority over bare auto-join
-                if (bot.config.queuePersistence.enabled && (client as any).queuePersistence) {
+                if (bot.config.queuePersistence.enabled && client.queuePersistence) {
                     await this.#restorePersistedQueues(bot, client);
                 }
 
                 // Auto-join only if no persisted queue was restored for this channel
                 if (bot.config.bot.startupAutoJoin) {
-                    const qp = (client as any).queuePersistence;
+                    const qp = client.queuePersistence;
                     const channelId = bot.config.bot.specifyVoiceChannel;
                     const hasPersistedData = qp && channelId && qp.hasPersistedQueueForChannel(channelId);
 
@@ -105,7 +105,7 @@ export class ClientReadyEvent extends BaseDiscordEvent<Events.ClientReady> {
      */
     async #restorePersistedQueues(bot: Bot, client: Client): Promise<void> {
         try {
-            const queuePersistence = (client as any).queuePersistence;
+            const queuePersistence = client.queuePersistence;
             if (!queuePersistence) return;
 
             const queues = queuePersistence.loadQueues(client);

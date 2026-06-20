@@ -33,8 +33,8 @@ export class ShuffleCommand extends BaseCommand {
 
         player.queue.shuffle();
 
-        if (bot.config.queuePersistence.enabled && (client as any).queuePersistence) {
-            await (client as any).queuePersistence.saveQueue(player);
+        if (bot.config.queuePersistence.enabled && client.queuePersistence) {
+            await client.queuePersistence.saveQueue(player);
         }
 
         if (context.isMessage()) {

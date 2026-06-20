@@ -205,9 +205,9 @@ export class VoiceStateUpdateEvent extends BaseDiscordEvent<Events.VoiceStateUpd
         player.autoLeaveTimeout = setTimeout(async () => {
             try {
                 // Clean up queue persistence before leaving
-                if (bot.config.queuePersistence.enabled && (client as any).queuePersistence) {
-                    (client as any).queuePersistence.stopPeriodicSave(guildId);
-                    (client as any).queuePersistence.deleteQueue(guildId);
+                if (bot.config.queuePersistence.enabled && client.queuePersistence) {
+                    client.queuePersistence.stopPeriodicSave(guildId);
+                    client.queuePersistence.deleteQueue(guildId);
                 }
 
                 if (bot.config.bot.autoLeave.enabled) {

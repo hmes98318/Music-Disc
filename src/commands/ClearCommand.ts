@@ -33,8 +33,8 @@ export class ClearCommand extends BaseCommand {
         player.queue.clear();
 
         // Update persisted queue to reflect cleared queue (current track still playing)
-        if (bot.config.queuePersistence.enabled && (client as any).queuePersistence) {
-            await (client as any).queuePersistence.saveQueue(player);
+        if (bot.config.queuePersistence.enabled && client.queuePersistence) {
+            await client.queuePersistence.saveQueue(player);
         }
 
         if (context.isMessage()) {

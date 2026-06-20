@@ -29,8 +29,8 @@ export class PlayerDestroyEvent extends BaseLavaSharkEvent<'playerDestroy'> {
         bot.logger.lavashark( bot.shardId, `[playerDestroy] Player destroyed in guild "${player.guildId}"`);
 
         // Stop periodic queue persistence save
-        if (bot.config.queuePersistence.enabled && (client as any).queuePersistence) {
-            (client as any).queuePersistence.stopPeriodicSave(player.guildId);
+        if (bot.config.queuePersistence.enabled && client.queuePersistence) {
+            client.queuePersistence.stopPeriodicSave(player.guildId);
         }
 
         // Clear voice channel status

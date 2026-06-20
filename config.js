@@ -168,8 +168,12 @@ const config = {
 
     // Queue persistence settings
     queuePersistence: {
-        enabled             : false,            // Enable/disable persistent queue storage
-        path                : './data/queue.db' // Path to SQLite database file
+        enabled             : false             // Enable/disable persistent queue storage
+    },
+
+    // SQLite database settings
+    database: {
+        path                : './data/database.db' // Path to SQLite database file
     }
 };
 
