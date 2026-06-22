@@ -30,7 +30,7 @@
     },
     "dependencies": {
         "bcryptjs": "^3.0.3",
-        "better-sqlite3": "^12.10.1",
+        "better-sqlite3": "^12.11.1",
         "cookie": "^1.1.1",
         "discord.js": "~14.26.4",
         "dotenv": "^17.4.2",
@@ -38,19 +38,19 @@
         "i18next": "^26.3.1",
         "i18next-fs-backend": "^2.6.6",
         "lavashark": "^2.3.2",
-        "undici": "^8.4.1",
+        "undici": "^8.5.0",
         "zod": "^4.4.3"
     },
     "devDependencies": {
         "@eslint/js": "^10.0.1",
         "@types/better-sqlite3": "^7.6.13",
         "@types/express": "^5.0.6",
-        "@types/node": "^25.9.3",
+        "@types/node": "^26.0.0",
         "eslint": "^10.5.0",
         "globals": "^17.6.0",
         "tsx": "^4.22.4",
         "typescript": "~6.0.3",
-        "typescript-eslint": "^8.61.0"
+        "typescript-eslint": "^8.61.1"
     },
     "engines": {
         "node": ">=22.22.3"
