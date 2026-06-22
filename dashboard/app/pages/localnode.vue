@@ -2,13 +2,13 @@
     <div class="flex h-full flex-col gap-4">
         <!-- Header -->
         <div class="flex shrink-0 flex-wrap items-center justify-between gap-3">
-            <h1 class="font-display text-xl font-extrabold tracking-wide text-snow">Local Node</h1>
+            <h1 class="font-display text-xl font-extrabold tracking-wide text-snow">{{ $t('localnode.title') }}</h1>
             <div class="flex items-center gap-2">
                 <span class="rounded-full bg-surface px-3 py-1 text-xs text-fog">
-                    Log refresh in {{ logCountdown }}s
+                    {{ $t('index.refreshIn', { countdown: logCountdown }) }}
                 </span>
                 <span class="rounded-full bg-blurple/15 px-3 py-1 text-xs font-medium text-blurple-light">
-                    Status refresh in {{ statusCountdown }}s
+                    {{ $t('index.refreshIn', { countdown: statusCountdown }) }}
                 </span>
             </div>
         </div>
@@ -34,7 +34,7 @@
                         <!-- Status fields (horizontal) -->
                         <div class="flex flex-wrap items-center gap-x-6 gap-y-3">
                             <div class="flex items-center gap-2">
-                                <span class="text-[11px] font-semibold tracking-wide text-muted">Feature</span>
+                                <span class="text-[11px] font-semibold tracking-wide text-muted">{{ $t('common.status') }}</span>
                                 <span
                                     class="rounded-full px-2.5 py-0.5 text-xs font-semibold"
                                     :class="
@@ -43,29 +43,29 @@
                                             : 'bg-danger/15 text-danger'
                                     "
                                 >
-                                    {{ localNodeStore.summary?.enabled ? 'Enabled' : 'Disabled' }}
+                                    {{ localNodeStore.summary?.enabled ? $t('common.enabled') : $t('common.disabled') }}
                                 </span>
                             </div>
                             <div class="flex items-center gap-2">
-                                <span class="text-[11px] font-semibold tracking-wide text-muted">Process</span>
+                                <span class="text-[11px] font-semibold tracking-wide text-muted">{{ $t('localnode.process') }}</span>
                                 <span class="rounded-full px-2.5 py-0.5 text-xs font-semibold" :class="processClass">
                                     {{ processLabel }}
                                 </span>
                             </div>
                             <div class="flex items-center gap-2">
-                                <span class="text-[11px] font-semibold tracking-wide text-muted">PID</span>
+                                <span class="text-[11px] font-semibold tracking-wide text-muted">{{ $t('localnode.pid') }}</span>
                                 <span class="text-sm font-medium text-snow">
                                     {{ localNodeStore.summary?.process.pid ?? '—' }}
                                 </span>
                             </div>
                             <div class="flex items-center gap-2">
-                                <span class="text-[11px] font-semibold tracking-wide text-muted">Port</span>
+                                <span class="text-[11px] font-semibold tracking-wide text-muted">{{ $t('localnode.port') }}</span>
                                 <span class="text-sm font-medium text-snow">
                                     {{ localNodeStore.summary?.process.port ?? '—' }}
                                 </span>
                             </div>
                             <div class="flex items-center gap-2">
-                                <span class="text-[11px] font-semibold tracking-wide text-muted">Auto Restart</span>
+                                <span class="text-[11px] font-semibold tracking-wide text-muted">{{ $t('localnode.autoRestart') }}</span>
                                 <span
                                     class="rounded-full px-2.5 py-0.5 text-xs font-semibold"
                                     :class="
@@ -74,7 +74,7 @@
                                             : 'bg-line/50 text-muted'
                                     "
                                 >
-                                    {{ localNodeStore.summary?.process.autoRestart ? 'On' : 'Off' }}
+                                    {{ localNodeStore.summary?.process.autoRestart ? $t('common.enabled') : $t('common.disabled') }}
                                 </span>
                             </div>
                         </div>
@@ -95,7 +95,7 @@
                                     class="inline-block size-4 animate-spin rounded-full border-2 border-white/30 border-t-white"
                                 />
                                 <Icon v-else name="lucide:refresh-cw" class="size-4" />
-                                Restart
+                                {{ $t('localnode.restarting') }}
                             </button>
                             <button
                                 class="flex items-center gap-2 rounded-xl bg-danger px-4 py-2 text-sm font-semibold text-white transition hover:opacity-85 disabled:opacity-50"
@@ -111,7 +111,7 @@
                                     class="inline-block size-4 animate-spin rounded-full border-2 border-white/30 border-t-white"
                                 />
                                 <Icon v-else name="lucide:square" class="size-4" />
-                                Stop
+                                {{ $t('localnode.stop') }}
                             </button>
                         </div>
                     </div>
@@ -131,18 +131,18 @@
                     v-if="!localNodeStore.summary?.enabled"
                     class="flex flex-1 items-center justify-center rounded-2xl bg-panel text-sm text-muted shadow"
                 >
-                    The local node feature is disabled in the current configuration.
+                    {{ $t('localnode.disabledNotice') }}
                 </div>
 
                 <!-- Logs panel (fills remaining height) -->
                 <div v-else class="flex min-h-0 flex-1 flex-col gap-3 rounded-2xl bg-panel p-4 shadow">
                     <div class="flex shrink-0 items-center justify-between">
                         <div>
-                            <h2 class="text-[13px] font-semibold tracking-wide text-muted">Logs</h2>
-                            <p class="mt-0.5 text-xs text-muted">Scroll up to load older entries.</p>
+                            <h2 class="text-[13px] font-semibold tracking-wide text-muted">{{ $t('localnode.logs') }}</h2>
+                            <p class="mt-0.5 text-xs text-muted">{{ $t('localnode.scrollNotice') }}</p>
                         </div>
                         <span class="rounded-full bg-surface px-3 py-1 text-xs text-fog">
-                            Total {{ logStream.totalItems.value }}
+                            {{ $t('localnode.total', { count: logStream.totalItems.value }) }}
                         </span>
                     </div>
 
@@ -154,7 +154,7 @@
                             :loading-older="logStream.loadingOlder.value"
                             :stretch="true"
                             :nowrap="true"
-                            empty-text="No logs available."
+                            :empty-text="$t('localnode.emptyLogs')"
                             @reach-top="loadOlderLogs"
                         />
                     </div>
@@ -165,6 +165,8 @@
 </template>
 
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n';
+
 type LogConsoleInstance = {
     captureSnapshot: () => { scrollHeight: number; scrollTop: number };
     isNearBottom: () => boolean;
@@ -178,12 +180,13 @@ const logStream = useLogStream((q) => api.getLocalNodeLogs(q));
 const logConsole = ref<LogConsoleInstance | null>(null);
 const pageLoading = ref(true);
 const currentAction = ref<'restart' | 'stop' | ''>('');
+const { t } = useI18n();
 
 const processLabel = computed(() => {
     const p = localNodeStore.summary?.process;
     if (!p) return '—';
-    if (p.starting) return 'Starting';
-    return p.active ? 'Running' : 'Stopped';
+    if (p.starting) return t('localnode.starting');
+    return p.active ? t('localnode.running') : t('localnode.stopped');
 });
 
 const processClass = computed(() => {

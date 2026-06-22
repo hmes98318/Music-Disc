@@ -28,7 +28,7 @@
                     v-if="loading"
                     class="inline-block size-[18px] animate-spin rounded-full border-2 border-white/30 border-t-white"
                 />
-                <span v-else>Login with Discord</span>
+                <span v-else>{{ $t('login.loginWithDiscord') }}</span>
             </button>
             <p v-if="errorMsg" class="mt-3 text-center text-sm text-danger">{{ errorMsg }}</p>
         </template>
@@ -37,26 +37,26 @@
         <template v-else>
             <form class="flex flex-col gap-4" @submit.prevent="handleLogin">
                 <div class="flex flex-col gap-2">
-                    <label class="text-[13px] font-medium text-sub" for="username">Username</label>
+                    <label class="text-[13px] font-medium text-sub" for="username">{{ $t('login.username') }}</label>
                     <input
                         id="username"
                         v-model="username"
                         type="text"
                         class="w-full rounded-lg border border-line bg-input-bg px-4 py-2.5 text-base text-snow outline-none placeholder:text-muted focus:border-blurple"
-                        placeholder="Enter username"
+                        :placeholder="$t('login.username')"
                         autocomplete="username"
                         required
                     />
                 </div>
 
                 <div class="flex flex-col gap-2">
-                    <label class="text-[13px] font-medium text-sub" for="password">Password</label>
+                    <label class="text-[13px] font-medium text-sub" for="password">{{ $t('login.password') }}</label>
                     <input
                         id="password"
                         v-model="password"
                         type="password"
                         class="w-full rounded-lg border border-line bg-input-bg px-4 py-2.5 text-base text-snow outline-none placeholder:text-muted focus:border-blurple"
-                        placeholder="Enter password"
+                        :placeholder="$t('login.password')"
                         autocomplete="current-password"
                         required
                     />
@@ -73,7 +73,7 @@
                         v-if="loading"
                         class="inline-block size-[18px] animate-spin rounded-full border-2 border-white/30 border-t-white"
                     />
-                    <span v-else>Sign In</span>
+                    <span v-else>{{ $t('login.signIn') }}</span>
                 </button>
             </form>
         </template>
@@ -81,6 +81,7 @@
 </template>
 
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n';
 import { ApiError } from '~/composables/useApi';
 
 definePageMeta({ layout: 'auth' });
@@ -89,6 +90,7 @@ const api = useApi();
 const route = useRoute();
 const router = useRouter();
 const authStore = useAuthStore();
+const { t } = useI18n();
 
 const pageLoading = ref(true);
 const loginMode = ref<'credentials' | 'oauth2'>('credentials');
@@ -116,7 +118,7 @@ onMounted(async () => {
         const config = await api.getAuthConfig();
         loginMode.value = config.loginMode;
     } catch {
-        errorMsg.value = 'Failed to load login configuration.';
+        errorMsg.value = t('login.configLoadFailed');
     } finally {
         pageLoading.value = false;
     }
@@ -131,11 +133,11 @@ async function handleLogin() {
         router.replace('/');
     } catch (error) {
         if (error instanceof ApiError && error.status === 429) {
-            errorMsg.value = 'Too many failed attempts. Your IP has been temporarily blocked.';
+            errorMsg.value = t('login.ipBlocked');
         } else if (error instanceof ApiError && error.isUnauthorized) {
-            errorMsg.value = 'Invalid username or password.';
+            errorMsg.value = t('login.invalidCredentials');
         } else {
-            errorMsg.value = 'Login failed. Please try again.';
+            errorMsg.value = t('login.loginFailed');
         }
     } finally {
         loading.value = false;
@@ -150,7 +152,7 @@ async function handleOAuth2Login() {
         window.location.assign(authorization.oauth2AuthorizationUrl);
     } catch (error) {
         errorMsg.value =
-            error instanceof ApiError && error.detail ? error.detail : 'Unable to start Discord login right now.';
+            error instanceof ApiError && error.detail ? error.detail : t('login.discordLoginUnable');
     } finally {
         loading.value = false;
     }
@@ -158,14 +160,14 @@ async function handleOAuth2Login() {
 
 function oauth2ErrorMessage(code: string): string {
     const messages: Record<string, string> = {
-        blocked: 'Too many failed login attempts. Please try again later.',
-        state_invalid: 'The Discord login request expired. Please try again.',
-        code_missing: 'Discord login was cancelled or did not return an authorization code.',
-        bot_not_ready: 'The bot is not ready to complete Discord login yet.',
-        exchange_failed: 'Discord rejected the login request. Please try again.',
-        admin_required: 'This Discord account is not allowed to access the dashboard.',
-        user_fetch_failed: 'Unable to verify the Discord account right now.',
+        blocked: t('login.oauth2.blocked'),
+        state_invalid: t('login.oauth2.state_invalid'),
+        code_missing: t('login.oauth2.code_missing'),
+        bot_not_ready: t('login.oauth2.bot_not_ready'),
+        exchange_failed: t('login.oauth2.exchange_failed'),
+        admin_required: t('login.oauth2.admin_required'),
+        user_fetch_failed: t('login.oauth2.user_fetch_failed'),
     };
-    return messages[code] ?? 'Discord login failed unexpectedly. Please try again.';
+    return messages[code] ?? t('login.oauth2.unexpected');
 }
 </script>

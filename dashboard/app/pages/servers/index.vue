@@ -4,11 +4,11 @@
         <!-- Header -->
         <div class="flex flex-wrap items-start justify-between gap-3">
             <div>
-                <h1 class="font-display text-xl font-extrabold tracking-wide text-snow">Servers</h1>
-                <p class="mt-1 text-sm text-sub">Browse guilds, filter by playback state, or search by guild ID.</p>
+                <h1 class="font-display text-xl font-extrabold tracking-wide text-snow">{{ $t('common.servers') }}</h1>
+                <p class="mt-1 text-sm text-sub">{{ $t('servers.desc') }}</p>
             </div>
             <span class="rounded-full bg-surface px-3 py-1 text-xs text-fog">
-                Total {{ serversStore.pagination.totalItems }}
+                {{ $t('localnode.total', { count: serversStore.pagination.totalItems }) }}
             </span>
         </div>
 
@@ -21,7 +21,7 @@
                         v-model="guildIdInput"
                         class="w-full rounded-lg border border-line bg-input-bg px-4 py-2 text-sm text-snow outline-none placeholder:text-muted focus:border-blurple"
                         inputmode="numeric"
-                        placeholder="Filter by exact guild ID"
+                        :placeholder="$t('servers.idPlaceholder')"
                     />
                 </div>
                 <div class="flex flex-wrap items-center gap-2">
@@ -36,20 +36,20 @@
                         @click="togglePlayingFilter"
                     >
                         <Icon name="lucide:music" class="mr-1.5 inline size-3.5" />
-                        {{ serversStore.playingFilter ? 'Playing Only' : 'All States' }}
+                        {{ serversStore.playingFilter ? $t('servers.playingOnly') : $t('servers.allStates') }}
                     </button>
                     <button
                         type="submit"
                         class="rounded-xl bg-blurple px-4 py-2 text-sm font-semibold text-white transition hover:bg-blurple-dark"
                     >
-                        Apply
+                        {{ $t('common.apply') }}
                     </button>
                     <button
                         type="button"
                         class="rounded-xl bg-hover px-4 py-2 text-sm font-medium text-sub transition hover:text-snow"
                         @click="clearFilters"
                     >
-                        Clear
+                        {{ $t('localnode.clear') }}
                     </button>
                 </div>
             </form>
@@ -67,7 +67,7 @@
                 v-else-if="serversStore.items.length === 0"
                 class="flex h-full min-h-50 items-center justify-center rounded-2xl bg-panel p-10 text-center text-muted"
             >
-                No servers matched the current filters.
+                {{ $t('servers.emptyServers') }}
             </div>
 
             <!-- Server grid -->
@@ -103,8 +103,8 @@
                     <!-- Server info -->
                     <div class="min-w-0 flex-1">
                         <p class="truncate text-[15px] font-semibold text-snow">{{ server.name }}</p>
-                        <p class="text-xs text-muted">{{ (server.memberCount ?? 0).toLocaleString() }} members</p>
-                        <p class="text-xs text-muted">Shard {{ server.shardId }}</p>
+                        <p class="text-xs text-muted">{{ $t('servers.memberCount', { count: server.memberCount ?? 0 }) }}</p>
+                        <p class="text-xs text-muted">{{ $t('servers.shardId', { id: server.shardId }) }}</p>
                         <p class="truncate font-mono text-[11px] text-muted">{{ server.id }}</p>
                     </div>
 
@@ -113,7 +113,7 @@
                         class="shrink-0 rounded-full px-2 py-0.5 text-xs font-medium"
                         :class="server.isPlaying ? 'bg-online/15 text-online' : 'bg-line/50 text-muted'"
                     >
-                        {{ server.isPlaying ? 'Playing' : 'Idle' }}
+                        {{ server.isPlaying ? $t('servers.playing') : $t('servers.idle') }}
                     </span>
                 </NuxtLink>
             </div>

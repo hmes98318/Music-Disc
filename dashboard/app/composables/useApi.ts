@@ -196,6 +196,9 @@ export interface BotSummary {
         total: number;
         perShard: number[];
     };
+    i18n: {
+        defaultLocale: string;
+    };
 }
 
 export interface BotRuntime {

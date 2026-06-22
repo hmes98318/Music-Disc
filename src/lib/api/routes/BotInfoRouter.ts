@@ -79,6 +79,9 @@ export class BotInfoRouter extends BaseRouter {
                 total: totalServerCount,
                 perShard: this.bot.stats.guildsCount,
             },
+            i18n: {
+                defaultLocale: this.bot.config.bot.i18n.defaultLocale,
+            },
         });
     }
 
