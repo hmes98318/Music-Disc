@@ -18,6 +18,7 @@ import type { DatabaseManager } from '../lib/DatabaseManager.js';
 import type { QueuePersistence } from '../lib/QueuePersistence.js';
 import type { CommandRegistry } from '../commands/base/CommandRegistry.js';
 import type { IPBlockerConfig, SessionManagerConfig } from './SessionManager.types.js';
+import type { PlaylistManager } from '../lib/PlaylistManager.js';
 
 export * from './ButtonIds.types.js';
 export * from './BaseCommand.types.js';
@@ -96,6 +97,7 @@ export type Bot = {
     blacklistManager?: BlacklistManager;
     guildLanguageManager?: GuildLanguageManager;
     guildVolumeManager?: GuildVolumeManager;
+    playlistManager?: PlaylistManager;
 }
 
 /**

@@ -16,6 +16,7 @@ import { GuildVolumeManager } from './lib/GuildVolumeManager.js';
 import { DashboardManager } from './lib/DashboardManager.js';
 import { DatabaseManager } from './lib/DatabaseManager.js';
 import { QueuePersistence } from './lib/QueuePersistence.js';
+import { PlaylistManager } from './lib/PlaylistManager.js';
 import { cst } from './utils/constants.js';
 
 import type { Bot, SystemInfo } from './@types/index.js';
@@ -106,6 +107,9 @@ class App {
         // Initialize guild volume manager
         this.bot.guildVolumeManager = new GuildVolumeManager(this.bot);
         this.bot.guildVolumeManager.initialize();
+
+        // Initialize playlist manager
+        this.bot.playlistManager = new PlaylistManager(this.bot);
     }
 
 

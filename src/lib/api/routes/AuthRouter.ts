@@ -1,7 +1,7 @@
 import { timingSafeEqual } from 'crypto';
 
 import bcrypt from 'bcryptjs';
-import cookie from 'cookie';
+import { parseCookie } from 'cookie';
 import undici from 'undici';
 
 import { LoginTypeEnum } from '../../../@types/index.js';
@@ -426,7 +426,7 @@ export class AuthRouter extends BaseRouter {
     }
 
     #getOAuthStateCookie(req: Request): string {
-        return cookie.parse(req.headers.cookie ?? '')[OAUTH2_STATE_COOKIE_NAME] ?? '';
+        return parseCookie(req.headers.cookie ?? '')[OAUTH2_STATE_COOKIE_NAME] ?? '';
     }
 
     #clearOAuthStateCookie(res: Response): void {

@@ -1,0 +1,192 @@
+import i18next from 'i18next';
+import { ApplicationCommandOptionType } from 'discord.js';
+
+import { BaseCommand } from './base/BaseCommand.js';
+import { CommandCategory, DJModeEnum } from '../@types/index.js';
+import { DJManager } from '../lib/DjManager.js';
+
+import type { Client, GuildMember } from 'discord.js';
+import type { CommandContext } from './base/CommandContext.js';
+import type { Bot, CommandMetadata } from '../@types/index.js';
+
+export class RadioCommand extends BaseCommand {
+    public getMetadata(_bot: Bot): CommandMetadata {
+        return {
+            name: 'radio',
+            aliases: ['record'],
+            description: i18next.t('commands:CONFIG_RADIO_DESCRIPTION'),
+            usage: i18next.t('commands:CONFIG_RADIO_USAGE'),
+            category: CommandCategory.MUSIC,
+            voiceChannel: false,
+            showHelp: true,
+            sendTyping: true,
+            options: [
+                {
+                    name: 'playlist',
+                    description: '검색할 플레이리스트 이름',
+                    type: ApplicationCommandOptionType.String,
+                    required: true
+                },
+                {
+                    name: 'channel',
+                    description: i18next.t('commands:CONFIG_RADIO_OPTION_CHANNEL'),
+                    type: ApplicationCommandOptionType.String,
+                    required: true
+                }
+            ]
+        };
+    }
+
+    protected async run(bot: Bot, client: Client, context: CommandContext): Promise<void> {
+        if (!bot.playlistManager) {
+            await context.replyEphemeralError(bot, context.t('commands:ERROR_PLAYLIST_NOT_INITIALIZED'));
+            return;
+        }
+
+        const guildId = context.guild!.id;
+        let playlistName: string;
+        let channelQuery: string;
+
+        if (context.isMessage()) {
+            const args = context.args;
+            if (args.length < 2) {
+                await context.replyEphemeralError(bot, `올바른 사용법: \`${bot.config.bot.prefix}radio [플레이리스트 이름] [채널명]\` (예: \`${bot.config.bot.prefix}radio Test Dance\`)`);
+                return;
+            }
+            playlistName = args[0];
+            channelQuery = args.slice(1).join(' ');
+        } else {
+            playlistName = context.getInteraction().options.getString('playlist', true);
+            channelQuery = context.getInteraction().options.getString('channel', true);
+        }
+
+        if (!playlistName || !channelQuery) {
+            await context.replyEphemeralError(bot, '플레이리스트 이름과 검색할 채널명을 모두 입력해주세요.');
+            return;
+        }
+
+        const playlist = bot.playlistManager!.getPlaylist(guildId, playlistName);
+        if (!playlist || !playlist.tracks || playlist.tracks.length === 0) {
+            await context.replyEphemeralError(bot, context.t('commands:ERROR_PLAYLIST_NOT_FOUND', { name: playlistName }));
+            return;
+        }
+
+        const queryLower = channelQuery.toLowerCase();
+        const matchedTracks = playlist.tracks.filter(t => t.title.toLowerCase().includes(queryLower));
+
+        if (matchedTracks.length === 0) {
+            const samples = playlist.tracks.slice(0, 10).map(t => `\`${t.title}\``).join(', ');
+            await context.replyEphemeralError(
+                bot,
+                `플레이리스트 \`${playlistName}\`에서 \`${channelQuery}\`와(과) 일치하는 라디오 채널을 찾을 수 없습니다.\n사용 가능한 예시: ${samples} 등`
+            );
+            return;
+        }
+
+        const member = context.isMessage()
+            ? context.getMessage().member as GuildMember | null
+            : context.getInteraction().member as GuildMember | null;
+
+        const voiceChannel = member?.voice.channel;
+        if (!voiceChannel) {
+            await context.replyEphemeralError(bot, context.t('events:ERROR_NOT_IN_VOICE_CHANNEL'));
+            return;
+        }
+
+        const targetTrack = matchedTracks[0];
+
+        let player = client.lavashark.getPlayer(guildId);
+        if (!player) {
+            player = client.lavashark.createPlayer({
+                guildId: guildId,
+                voiceChannelId: voiceChannel.id,
+                textChannelId: context.channel!.id,
+                selfDeaf: true
+            });
+        }
+
+        if (!player.setting) {
+            player.setting = {
+                queuePage: null,
+                volume: null,
+                fairQueueRotation: []
+            };
+        }
+
+        const metadata = context.isMessage() ? context.getMessage() : context.getInteraction();
+
+        try {
+            await player.connect();
+            player.metadata = metadata;
+        } catch (error) {
+            bot.logger.error(bot.shardId, 'Error joining channel: ' + error);
+            await context.replyEphemeralError(bot, context.t('commands:ERROR_PLAY_JOIN_CHANNEL'));
+            return;
+        }
+
+        try {
+            if (!player.dashboardMsg) {
+                await client.dashboard.initialize(metadata, player);
+            }
+        } catch (error) {
+            await client.dashboard.destroy(player);
+        }
+
+        if (bot.config.bot.djMode === DJModeEnum.DYNAMIC && !DJManager.hasDJSet(player)) {
+            const isAdmin = bot.config.bot.admin.includes(context.user.id);
+            const hasDJRoleUser = voiceChannel.isVoiceBased() ? DJManager.hasDJRoleInChannel(bot, voiceChannel) : false;
+
+            if (!isAdmin && !hasDJRoleUser) {
+                DJManager.addDJ(player, context.user.id);
+            }
+        }
+
+        const requester = context.isMessage() ? context.getMessage().author : context.getInteraction().user;
+        const curVolume = player.setting.volume ?? bot.guildVolumeManager?.get(player.guildId) ?? bot.config.bot.volume.default;
+
+        await context.replySuccess(bot, context.t('commands:MESSAGE_RADIO_SEARCHING', { title: `${playlistName} ➔ ${targetTrack.title}` }));
+
+        try {
+            let searchResult = null;
+            if (targetTrack.url) {
+                try {
+                    searchResult = await client.lavashark.search(targetTrack.url);
+                } catch (_) {}
+            }
+
+            if (!searchResult || !searchResult.tracks || searchResult.tracks.length === 0) {
+                try {
+                    searchResult = await client.lavashark.search(`ytsearch:${targetTrack.title}`);
+                } catch (_) {}
+            }
+
+            if (searchResult && searchResult.tracks && searchResult.tracks.length > 0) {
+                const track = searchResult.tracks[0];
+                player.addTracks(track, requester as any);
+
+                if (!player.playing) {
+                    player.filters.setVolume(curVolume);
+                    await player.play().catch(async (error) => {
+                        bot.logger.error(bot.shardId, 'Error playing track: ' + error);
+                        return player!.destroy();
+                    });
+                }
+
+                if (bot.config.queuePersistence.enabled && client.queuePersistence) {
+                    await client.queuePersistence.saveQueue(player);
+                }
+
+                if (context.channel && 'send' in context.channel) {
+                    await (context.channel as any).send({
+                        content: context.t('commands:MESSAGE_RADIO_PLAYING', { title: `${playlistName} ➔ ${targetTrack.title}` })
+                    });
+                }
+            } else {
+                await context.replyEphemeralError(bot, context.t('commands:ERROR_RADIO_STREAM_FAILED', { title: targetTrack.title }));
+            }
+        } catch (err) {
+            bot.logger.error(bot.shardId, `Error loading radio track ${targetTrack.title}: ${err}`);
+            await context.replyEphemeralError(bot, context.t('commands:ERROR_RADIO_LOAD_FAILED', { error: err instanceof Error ? err.message : String(err) }));
+        }
+    }
+}
