@@ -46,12 +46,6 @@ export class PlaylistCommand extends BaseCommand {
                             description: i18next.t('commands:CONFIG_PLAYLIST_OPTION_NAME'),
                             type: ApplicationCommandOptionType.String,
                             required: true
-                        },
-                        {
-                            name: 'search',
-                            description: i18next.t('commands:CONFIG_PLAYLIST_OPTION_SEARCH'),
-                            type: ApplicationCommandOptionType.String,
-                            required: false
                         }
                     ]
                 },
@@ -216,11 +210,8 @@ export class PlaylistCommand extends BaseCommand {
     async #handlePlay(bot: Bot, client: Client, context: CommandContext): Promise<void> {
         const guildId = context.guild!.id;
         const name = context.isMessage()
-            ? context.args[1]
+            ? context.args.slice(1).join(' ')
             : context.getInteraction().options.getString('name', true);
-        const searchQuery = context.isMessage()
-            ? context.args.slice(2).join(' ') || null
-            : context.getInteraction().options.getString('search', false);
 
         if (!name) {
             await context.replyEphemeralError(bot, context.t('commands:ERROR_PLAYLIST_NAME_REQUIRED'));
@@ -243,16 +234,7 @@ export class PlaylistCommand extends BaseCommand {
             return;
         }
 
-        let tracksToPlay = playlist.tracks;
-        if (searchQuery) {
-            const queryLower = searchQuery.toLowerCase();
-            tracksToPlay = playlist.tracks.filter(t => t.title.toLowerCase().includes(queryLower));
-
-            if (tracksToPlay.length === 0) {
-                await context.replyEphemeralError(bot, context.t('commands:ERROR_PLAYLIST_TRACK_NOT_FOUND', { name, searchQuery }));
-                return;
-            }
-        }
+        const tracksToPlay = playlist.tracks;
 
         let player = client.lavashark.getPlayer(guildId);
         if (!player) {
