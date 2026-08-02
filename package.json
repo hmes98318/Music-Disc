@@ -6,14 +6,14 @@
     "type": "module",
     "scripts": {
         "start": "npm run build && node ./dist/src/index.js",
-        "start:server": "npm run build:server && node ./dist/src/index.js",
+        "start:server": "node ./dist/src/index.js",
         "build": "npm run build:dashboard && npm run build:server",
         "build:server": "tsc",
-        "build:dashboard": "cd dashboard && npm run generate",
-        "install:dashboard": "cd dashboard && npm install",
-        "dev": "tsc --noEmit --incremental false && tsx ./src/index.ts",
+        "build:dashboard": "npm --prefix ./dashboard run generate",
+        "install:dashboard": "npm --prefix ./dashboard ci",
+        "dev": "npm run typecheck -- --incremental false && tsx ./src/index.ts",
         "lint": "eslint . --color",
-        "typecheck": "npx tsc --noEmit"
+        "typecheck": "tsc --noEmit"
     },
     "repository": {
         "type": "git",

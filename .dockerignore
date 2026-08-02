@@ -4,12 +4,12 @@
 .gitignore
 
 # Dependencies (reinstalled inside the build stage)
-node_modules/
+**/node_modules/
 
 # Build outputs
 dist/
-dashboard/.nuxt/
-dashboard/.output/
+**/.nuxt/
+**/.output/
 
 # Logs
 logs/

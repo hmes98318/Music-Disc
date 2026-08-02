@@ -1,8 +1,14 @@
 import { ActivityType } from 'discord.js';
-import { config } from '../../config.js';
+import * as path from 'node:path';
+import { pathToFileURL } from 'node:url';
+
 import { DJModeEnum } from './../@types/index.js';
 
 import type { Config } from './../@types/index.js';
+
+
+const configModuleUrl = pathToFileURL(path.resolve('config.js')).href;
+const { config } = await import(configModuleUrl) as { config: Config };
 
 
 const setEnvironment = (defaultConfig: Config) => {
