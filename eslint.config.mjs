@@ -13,6 +13,7 @@ export default [
             "public/",
             "server/",
             "views/",
+            "dashboard/",
             "*.d.ts"
         ]
     },

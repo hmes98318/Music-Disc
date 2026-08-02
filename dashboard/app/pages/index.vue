@@ -2,9 +2,9 @@
     <div class="max-w-300">
         <!-- Header -->
         <div class="mb-6 flex items-center justify-between">
-            <h1 class="font-display text-xl font-extrabold tracking-wide text-snow">Dashboard</h1>
+            <h1 class="font-display text-xl font-extrabold tracking-wide text-snow">{{ $t('common.dashboard') }}</h1>
             <span class="rounded-full bg-blurple/15 px-3 py-1 text-xs font-medium text-blurple-light">
-                Refresh in {{ countdown }}s
+                {{ $t('index.refreshIn', { countdown }) }}
             </span>
         </div>
 
@@ -12,7 +12,7 @@
         <div class="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
             <!-- System Info -->
             <div class="rounded-2xl bg-panel p-8 shadow">
-                <h2 class="mb-4 text-[13px] font-semibold tracking-wide text-muted">System Information</h2>
+                <h2 class="mb-4 text-[13px] font-semibold tracking-wide text-muted">{{ $t('index.systemInfo') }}</h2>
                 <div v-if="botStore.summaryLoading" class="flex min-h-30 items-center justify-center">
                     <span
                         class="inline-block size-7 animate-spin rounded-full border-[3px] border-line border-t-blurple"
@@ -48,12 +48,12 @@
                         <span class="font-medium text-snow">{{ startupTimeStr }}</span>
                     </li>
                 </ul>
-                <p v-else class="text-sm text-danger">{{ botStore.summaryError || 'Failed to load.' }}</p>
+                <p v-else class="text-sm text-danger">{{ botStore.summaryError || $t('common.failedToLoad') }}</p>
             </div>
 
             <!-- Guild Overview -->
             <div class="rounded-2xl bg-panel p-8 shadow">
-                <h2 class="mb-4 text-[13px] font-semibold tracking-wide text-muted">Guild Overview</h2>
+                <h2 class="mb-4 text-[13px] font-semibold tracking-wide text-muted">{{ $t('index.guildOverview') }}</h2>
                 <div v-if="botStore.summaryLoading" class="flex min-h-30 items-center justify-center">
                     <span
                         class="inline-block size-7 animate-spin rounded-full border-[3px] border-line border-t-blurple"
@@ -62,11 +62,11 @@
                 <template v-else-if="botStore.summary">
                     <div class="mb-4 grid grid-cols-2 gap-4">
                         <div>
-                            <p class="text-[11px] font-semibold tracking-wide text-muted">Total Guilds</p>
+                            <p class="text-[11px] font-semibold tracking-wide text-muted">{{ $t('index.totalGuilds') }}</p>
                             <p class="text-2xl font-bold text-snow">{{ botStore.summary.guilds.total }}</p>
                         </div>
                         <div>
-                            <p class="text-[11px] font-semibold tracking-wide text-muted">Shards</p>
+                            <p class="text-[11px] font-semibold tracking-wide text-muted">{{ $t('index.shards') }}</p>
                             <p class="text-2xl font-bold text-snow">
                                 {{ botStore.summary.guilds.perShard.length || 1 }}
                             </p>
@@ -78,7 +78,7 @@
                             :key="index"
                             class="flex items-center gap-1.5 rounded-full bg-surface px-3 py-1 text-xs"
                         >
-                            <span class="text-muted">Shard {{ index }}</span>
+                            <span class="text-muted">{{ $t('index.shard') }} {{ index }}</span>
                             <span class="font-semibold text-snow">{{ count }}</span>
                         </div>
                     </div>
@@ -88,52 +88,52 @@
 
         <!-- Runtime -->
         <div class="rounded-2xl bg-panel p-8 shadow">
-            <h2 class="mb-4 text-[13px] font-semibold tracking-wide text-muted">Runtime</h2>
+            <h2 class="mb-4 text-[13px] font-semibold tracking-wide text-muted">{{ $t('index.runtime') }}</h2>
             <div v-if="botStore.runtimeLoading && !botStore.runtime" class="flex min-h-25 items-center justify-center">
                 <span class="inline-block size-7 animate-spin rounded-full border-[3px] border-line border-t-blurple" />
             </div>
             <template v-else-if="botStore.runtime">
                 <div class="mb-4 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
                     <div>
-                        <p class="text-[11px] font-semibold tracking-wide text-muted">Uptime</p>
+                        <p class="text-[11px] font-semibold tracking-wide text-muted">{{ $t('common.uptime') }}</p>
                         <p class="mt-1 text-lg font-bold text-snow">{{ botStore.runtime.uptime }}</p>
                     </div>
                     <div>
-                        <p class="text-[11px] font-semibold tracking-wide text-muted">CPU Load</p>
+                        <p class="text-[11px] font-semibold tracking-wide text-muted">{{ $t('index.cpuLoad') }}</p>
                         <ProgressBar :value="botStore.runtime.load.percent" :label="botStore.runtime.load.detail" />
                     </div>
                     <div>
-                        <p class="text-[11px] font-semibold tracking-wide text-muted">RAM</p>
+                        <p class="text-[11px] font-semibold tracking-wide text-muted">{{ $t('common.ram') }}</p>
                         <ProgressBar :value="botStore.runtime.memory.percent" :label="botStore.runtime.memory.detail" />
                     </div>
                     <div>
-                        <p class="text-[11px] font-semibold tracking-wide text-muted">Heap</p>
+                        <p class="text-[11px] font-semibold tracking-wide text-muted">{{ $t('index.heap') }}</p>
                         <ProgressBar :value="botStore.runtime.heap.percent" :label="botStore.runtime.heap.detail" />
                     </div>
                 </div>
 
                 <div class="grid grid-cols-2 gap-4 border-t border-line pt-4">
                     <div>
-                        <p class="text-[11px] font-semibold tracking-wide text-muted">Gateway Ping</p>
+                        <p class="text-[11px] font-semibold tracking-wide text-muted">{{ $t('index.gatewayPing') }}</p>
                         <p class="mt-0.5 text-sm font-medium text-snow">{{ pingStr }}</p>
                     </div>
                     <div>
-                        <p class="text-[11px] font-semibold tracking-wide text-muted">Active Players</p>
+                        <p class="text-[11px] font-semibold tracking-wide text-muted">{{ $t('index.activePlayers') }}</p>
                         <p class="mt-0.5 text-sm font-medium text-snow">
                             {{ botStore.runtime.players.total }} ({{ botStore.runtime.players.perShard.join(', ') }})
                         </p>
                     </div>
                 </div>
             </template>
-            <p v-else class="text-sm text-danger">{{ botStore.runtimeError || 'Failed to load.' }}</p>
+            <p v-else class="text-sm text-danger">{{ botStore.runtimeError || $t('common.failedToLoad') }}</p>
         </div>
 
         <!-- Gateway Intents -->
         <div class="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
             <!-- Standard (non-privileged) Intents -->
             <div class="rounded-2xl bg-panel p-8 shadow">
-                <h2 class="mb-1 text-[13px] font-semibold tracking-wide text-muted">Gateway Intents</h2>
-                <p class="mb-4 text-xs text-fog">Non-privileged intents required for the Bot</p>
+                <h2 class="mb-1 text-[13px] font-semibold tracking-wide text-muted">{{ $t('index.gatewayIntents') }}</h2>
+                <p class="mb-4 text-xs text-fog">{{ $t('index.nonPrivilegedDesc') }}</p>
 
                 <div v-if="botStore.intentsLoading" class="flex min-h-20 items-center justify-center">
                     <span
@@ -152,7 +152,7 @@
                                 v-if="intent.required"
                                 class="rounded-full bg-surface px-2 py-0.5 text-[11px] font-semibold text-sub"
                             >
-                                Required
+                                {{ $t('common.required') }}
                             </span>
                             <span
                                 class="rounded-full px-2 py-0.5 text-[11px] font-semibold"
@@ -163,13 +163,13 @@
                         </div>
                     </li>
                 </ul>
-                <p v-else class="text-sm text-danger">{{ botStore.intentsError || 'Failed to load.' }}</p>
+                <p v-else class="text-sm text-danger">{{ botStore.intentsError || $t('common.failedToLoad') }}</p>
             </div>
 
             <!-- Privileged Intents -->
             <div class="rounded-2xl bg-panel p-8 shadow">
-                <h2 class="mb-1 text-[13px] font-semibold tracking-wide text-muted">Privileged Intents</h2>
-                <p class="mb-4 text-xs text-fog">High-access intents requiring explicit Discord portal approval</p>
+                <h2 class="mb-1 text-[13px] font-semibold tracking-wide text-muted">{{ $t('index.privilegedIntents') }}</h2>
+                <p class="mb-4 text-xs text-fog">{{ $t('index.privilegedDesc') }}</p>
 
                 <!-- Warning banner -->
                 <div
@@ -178,8 +178,7 @@
                 >
                     <Icon name="lucide:triangle-alert" class="mt-px size-4 shrink-0 text-warning" />
                     <p class="text-xs text-warning">
-                        One or more privileged intents are enabled but not required by the bot. Remove unnecessary
-                        privileged intents from your Discord application to reduce security exposure.
+                        {{ $t('index.warningBanner') }}
                     </p>
                 </div>
 
@@ -200,7 +199,7 @@
                                 v-if="intent.required"
                                 class="rounded-full bg-surface px-2 py-0.5 text-[11px] font-semibold text-sub"
                             >
-                                Required
+                                {{ $t('common.required') }}
                             </span>
                             <span
                                 class="rounded-full px-2 py-0.5 text-[11px] font-semibold"
@@ -211,16 +210,18 @@
                         </div>
                     </li>
                 </ul>
-                <p v-else class="text-sm text-danger">{{ botStore.intentsError || 'Failed to load.' }}</p>
+                <p v-else class="text-sm text-danger">{{ botStore.intentsError || $t('common.failedToLoad') }}</p>
             </div>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n';
 import type { IntentStatus } from '~/composables/useApi';
 
 const botStore = useBotStore();
+const { t } = useI18n();
 const { countdown } = useAutoRefresh(3_000, botStore.fetchRuntime, { immediate: false });
 
 const startupTimeStr = computed(() => formatISODateTime(botStore.summary?.startupTime));
@@ -242,11 +243,11 @@ function intentStatusClass(intent: IntentStatus, isPrivileged = false): string {
 }
 
 function intentStatusLabel(intent: IntentStatus, isPrivileged = false): string {
-    if (!intent.enabled && intent.required) return 'Missing';
-    if (intent.enabled && !intent.required && isPrivileged) return 'Extra';
-    if (intent.enabled) return 'Enabled';
-    if (isPrivileged) return 'Not Required';
-    return 'Inactive';
+    if (!intent.enabled && intent.required) return t('common.missing');
+    if (intent.enabled && !intent.required && isPrivileged) return t('common.extra');
+    if (intent.enabled) return t('common.enabled');
+    if (isPrivileged) return t('common.notRequired');
+    return t('common.inactive');
 }
 
 onMounted(async () => {

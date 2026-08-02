@@ -19,7 +19,7 @@
                         exact
                     >
                         <Icon name="lucide:layout-dashboard" class="size-[18px] shrink-0" />
-                        Dashboard
+                        {{ $t('common.dashboard') }}
                     </NuxtLink>
                 </li>
                 <li>
@@ -29,7 +29,7 @@
                         active-class="!bg-blurple/20 !text-blurple-light"
                     >
                         <Icon name="lucide:server" class="size-[18px] shrink-0" />
-                        Servers
+                        {{ $t('common.servers') }}
                     </NuxtLink>
                 </li>
                 <li>
@@ -39,7 +39,7 @@
                         active-class="!bg-blurple/20 !text-blurple-light"
                     >
                         <Icon name="lucide:activity" class="size-[18px] shrink-0" />
-                        Nodes
+                        {{ $t('common.nodes') }}
                     </NuxtLink>
                 </li>
                 <li>
@@ -49,7 +49,7 @@
                         active-class="!bg-blurple/20 !text-blurple-light"
                     >
                         <Icon name="lucide:cpu" class="size-[18px] shrink-0" />
-                        Local Node
+                        {{ $t('common.localNode') }}
                     </NuxtLink>
                 </li>
                 <li>
@@ -59,7 +59,7 @@
                         active-class="!bg-blurple/20 !text-blurple-light"
                     >
                         <Icon name="lucide:file-text" class="size-[18px] shrink-0" />
-                        Logs
+                        {{ $t('common.logs') }}
                     </NuxtLink>
                 </li>
                 <li>
@@ -69,20 +69,40 @@
                         active-class="!bg-blurple/20 !text-blurple-light"
                     >
                         <Icon name="lucide:wrench" class="size-[18px] shrink-0" />
-                        Maintenance
+                        {{ $t('common.maintenance') }}
                     </NuxtLink>
                 </li>
             </ul>
 
+            <!-- Language Selector -->
+            <div class="px-4 py-2 border-t border-line">
+                <div class="flex items-center gap-2 rounded-xl bg-hover px-3 py-2">
+                    <Icon name="lucide:languages" class="size-4 text-sub" />
+                    <select
+                        v-model="currentLocale"
+                        class="w-full bg-transparent text-sm font-medium text-snow focus:outline-none cursor-pointer"
+                    >
+                        <option
+                            v-for="loc in locales"
+                            :key="loc.code"
+                            :value="loc.code"
+                            class="bg-surface text-snow"
+                        >
+                            {{ loc.name }}
+                        </option>
+                    </select>
+                </div>
+            </div>
+
             <!-- Logout -->
-            <div class="mt-auto px-4 py-4">
+            <div class="px-4 py-4">
                 <button
                     class="flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-hover px-4 py-2 text-sm font-medium text-sub transition hover:bg-danger/15 hover:text-danger active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
                     :disabled="loggingOut"
                     @click="handleLogout"
                 >
                     <Icon name="lucide:log-out" class="size-4" />
-                    Logout
+                    {{ $t('common.logout') }}
                 </button>
             </div>
         </nav>
@@ -98,10 +118,32 @@
 </template>
 
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n';
+
 const api = useApi();
 const router = useRouter();
 const authStore = useAuthStore();
+const botStore = useBotStore();
+const { locale, locales, setLocale } = useI18n();
+
 const loggingOut = ref(false);
+
+const currentLocale = computed({
+    get: () => locale.value,
+    set: (val) => {
+        setLocale(val);
+    }
+});
+
+// defaultLocale 동기화
+watch(() => botStore.summary?.i18n?.defaultLocale, (newDefault) => {
+    if (newDefault) {
+        const i18nCookie = useCookie('i18n_redirected');
+        if (!i18nCookie.value) {
+            setLocale(newDefault);
+        }
+    }
+}, { immediate: true });
 
 async function handleLogout() {
     loggingOut.value = true;

@@ -4,7 +4,7 @@
         <div class="mb-6 flex items-center justify-between">
             <NuxtLink to="/servers" class="flex items-center gap-1.5 text-sm text-sub transition hover:text-snow">
                 <Icon name="lucide:arrow-left" class="size-4" />
-                Back to Servers
+                {{ $t('servers.details.backToServers') }}
             </NuxtLink>
             <div class="flex items-center gap-2">
                 <span
@@ -15,7 +15,7 @@
                     v-if="!isNotFound"
                     class="rounded-full bg-blurple/15 px-3 py-1 text-xs font-medium text-blurple-light"
                 >
-                    Refresh in {{ countdown }}s
+                    {{ $t('index.refreshIn', { countdown }) }}
                 </span>
             </div>
         </div>
@@ -32,12 +32,12 @@
         >
             <Icon :name="isNotFound ? 'lucide:server-off' : 'lucide:circle-alert'" class="mb-4 size-12 text-muted" />
             <h2 class="mb-2 text-lg font-semibold text-snow">
-                {{ isNotFound ? 'Server Not Found' : 'Failed to Load' }}
+                {{ isNotFound ? $t('servers.details.notFoundTitle') : $t('servers.details.loadFailedTitle') }}
             </h2>
             <p class="text-sm text-muted">
                 {{
                     isNotFound
-                        ? `Guild "${guildId}" could not be found or the bot has already left this server.`
+                        ? $t('servers.details.notFoundDesc', { id: guildId })
                         : loadError
                 }}
             </p>
@@ -46,7 +46,7 @@
                 to="/servers"
                 class="mt-6 rounded-xl bg-blurple px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-blurple-dark"
             >
-                Back to Server List
+                {{ $t('servers.details.backToServers') }}
             </NuxtLink>
         </div>
 
@@ -74,12 +74,11 @@
                         </span>
                     </div>
                     <p class="mt-1 text-sm text-sub">
-                        Guild ID {{ server.guild.id }} · {{ (server.guild.memberCount ?? 0).toLocaleString() }} members
-                        · Shard
-                        {{ server.guild.shardId }}
+                        {{ $t('servers.details.guildId', { id: server.guild.id }) }} · {{ $t('servers.memberCount', { count: server.guild.memberCount ?? 0 }) }}
+                        · {{ $t('servers.shardId', { id: server.guild.shardId }) }}
                     </p>
                     <p class="text-xs text-muted">
-                        Owner {{ server.guild.ownerId }} · Locale {{ server.guild.preferredLocale }}
+                        {{ $t('servers.details.owner') }} {{ server.guild.ownerId }} · {{ $t('servers.details.preferredLocale') }} {{ server.guild.preferredLocale }}
                     </p>
                 </div>
 
@@ -87,7 +86,7 @@
                     class="shrink-0 rounded-xl bg-danger px-5 py-2.5 text-sm font-semibold text-white transition hover:opacity-85"
                     @click="handleLeave"
                 >
-                    Leave Server
+                    {{ $t('servers.details.leaveServer') }}
                 </button>
             </div>
 
@@ -95,22 +94,22 @@
             <div class="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
                 <!-- Guild snapshot -->
                 <div class="rounded-2xl bg-panel p-8 shadow">
-                    <h2 class="mb-4 text-[13px] font-semibold tracking-wide text-muted">Guild Snapshot</h2>
+                    <h2 class="mb-4 text-[13px] font-semibold tracking-wide text-muted">{{ $t('servers.details.snapshot') }}</h2>
                     <ul class="flex flex-col gap-2.5">
                         <li class="flex justify-between text-sm">
-                            <span class="text-muted">Created</span>
+                            <span class="text-muted">{{ $t('servers.details.createdAt') }}</span>
                             <span class="font-medium text-snow">{{ createdAtLabel }}</span>
                         </li>
                         <li class="flex justify-between text-sm">
-                            <span class="text-muted">Bot Joined</span>
+                            <span class="text-muted">{{ $t('servers.details.joinedAt') }}</span>
                             <span class="font-medium text-snow">{{ joinedAtLabel }}</span>
                         </li>
                         <li class="flex justify-between text-sm">
-                            <span class="text-muted">Bot Nickname</span>
+                            <span class="text-muted">{{ $t('servers.details.botNickname') }}</span>
                             <span class="font-medium text-snow">{{ server.botMember.nickname ?? '-' }}</span>
                         </li>
                         <li class="flex justify-between text-sm">
-                            <span class="text-muted">Features</span>
+                            <span class="text-muted">{{ $t('servers.details.features') }}</span>
                             <span class="font-medium text-snow">{{ server.guild.features.length }}</span>
                         </li>
                     </ul>
@@ -127,42 +126,42 @@
 
                 <!-- Counts & channels -->
                 <div class="rounded-2xl bg-panel p-8 shadow">
-                    <h2 class="mb-4 text-[13px] font-semibold tracking-wide text-muted">Counts &amp; Channels</h2>
+                    <h2 class="mb-4 text-[13px] font-semibold tracking-wide text-muted">{{ $t('servers.details.countsAndChannels') }}</h2>
                     <div class="mb-4 grid grid-cols-2 gap-4">
                         <div>
-                            <p class="text-[11px] font-semibold tracking-wide text-muted">Channels</p>
+                            <p class="text-[11px] font-semibold tracking-wide text-muted">{{ $t('servers.details.channels') }}</p>
                             <p class="text-2xl font-bold text-snow">{{ server.guild.counts.channels }}</p>
                         </div>
                         <div>
-                            <p class="text-[11px] font-semibold tracking-wide text-muted">Text</p>
+                            <p class="text-[11px] font-semibold tracking-wide text-muted">{{ $t('servers.details.text') }}</p>
                             <p class="text-2xl font-bold text-snow">{{ server.guild.counts.textChannels }}</p>
                         </div>
                         <div>
-                            <p class="text-[11px] font-semibold tracking-wide text-muted">Voice</p>
+                            <p class="text-[11px] font-semibold tracking-wide text-muted">{{ $t('servers.details.voice') }}</p>
                             <p class="text-2xl font-bold text-snow">{{ server.guild.counts.voiceChannels }}</p>
                         </div>
                         <div>
-                            <p class="text-[11px] font-semibold tracking-wide text-muted">Roles</p>
+                            <p class="text-[11px] font-semibold tracking-wide text-muted">{{ $t('servers.details.roles') }}</p>
                             <p class="text-2xl font-bold text-snow">{{ server.guild.counts.roles }}</p>
                         </div>
                     </div>
                     <ul class="flex flex-col gap-2">
                         <li class="flex justify-between text-sm">
-                            <span class="text-muted">System Channel</span>
+                            <span class="text-muted">{{ $t('servers.details.systemChannel') }}</span>
                             <span class="font-medium text-snow">{{ channelLabel(server.guild.channels.system) }}</span>
                         </li>
                         <li class="flex justify-between text-sm">
-                            <span class="text-muted">Rules Channel</span>
+                            <span class="text-muted">{{ $t('servers.details.rulesChannel') }}</span>
                             <span class="font-medium text-snow">{{ channelLabel(server.guild.channels.rules) }}</span>
                         </li>
                         <li class="flex justify-between text-sm">
-                            <span class="text-muted">Updates Channel</span>
+                            <span class="text-muted">{{ $t('servers.details.updatesChannel') }}</span>
                             <span class="font-medium text-snow">{{
                                 channelLabel(server.guild.channels.publicUpdates)
                             }}</span>
                         </li>
                         <li class="flex justify-between text-sm">
-                            <span class="text-muted">AFK Channel</span>
+                            <span class="text-muted">{{ $t('servers.details.afkChannel') }}</span>
                             <span class="font-medium text-snow">{{ channelLabel(server.guild.channels.afk) }}</span>
                         </li>
                     </ul>
@@ -174,7 +173,7 @@
                 <!-- Playback -->
                 <div class="rounded-2xl bg-panel p-8 shadow">
                     <div class="mb-4 flex items-center justify-between">
-                        <h2 class="text-[13px] font-semibold tracking-wide text-muted">Playback</h2>
+                        <h2 class="text-[13px] font-semibold tracking-wide text-muted">{{ $t('servers.details.playback') }}</h2>
                         <span class="rounded-full px-2.5 py-0.5 text-xs font-semibold" :class="playbackBadgeClass">
                             {{ playbackLabel }}
                         </span>
@@ -216,13 +215,13 @@
                     </template>
 
                     <div v-else class="flex min-h-20 items-center justify-center text-sm text-muted">
-                        No track is currently playing in this guild.
+                        {{ $t('servers.details.emptyPlayback') }}
                     </div>
                 </div>
 
                 <!-- Voice snapshot -->
                 <div class="rounded-2xl bg-panel p-8 shadow">
-                    <h2 class="mb-4 text-[13px] font-semibold tracking-wide text-muted">Voice Snapshot</h2>
+                    <h2 class="mb-4 text-[13px] font-semibold tracking-wide text-muted">{{ $t('servers.details.voiceSnapshot') }}</h2>
 
                     <template v-if="server.voiceChannel">
                         <p class="mb-4 text-sm font-medium text-snow">
@@ -284,14 +283,14 @@
                     </template>
 
                     <div v-else class="flex min-h-20 items-center justify-center text-sm text-muted">
-                        The bot is not connected to a voice channel in this guild.
+                        {{ $t('servers.details.emptyVoice') }}
                     </div>
                 </div>
             </div>
 
             <!-- Capabilities -->
             <div class="rounded-2xl bg-panel p-8 shadow">
-                <h2 class="mb-4 text-[13px] font-semibold tracking-wide text-muted">Capabilities</h2>
+                <h2 class="mb-4 text-[13px] font-semibold tracking-wide text-muted">{{ $t('servers.details.capabilities') }}</h2>
                 <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div
                         v-for="cap in capabilities"
@@ -303,14 +302,14 @@
                             class="rounded-full px-2.5 py-0.5 text-xs font-semibold"
                             :class="cap.value ? 'bg-online/15 text-online' : 'bg-danger/15 text-danger'"
                         >
-                            {{ cap.value ? 'Available' : 'Unavailable' }}
+                            {{ cap.value ? $t('servers.details.available') : $t('servers.details.unavailable') }}
                         </span>
                     </div>
                 </div>
                 <ul class="mt-4 flex flex-col gap-1.5">
                     <li class="flex items-start gap-2 text-xs text-sub">
                         <Icon name="lucide:info" class="mt-px size-3 shrink-0 text-info" />
-                        Voice channel members are available from cached voice states while users are connected.
+                        {{ $t('servers.details.capabilitiesDesc') }}
                     </li>
                 </ul>
             </div>
@@ -319,6 +318,7 @@
 </template>
 
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n';
 import { ApiError } from '~/composables/useApi';
 import { useConfirm } from '~/composables/useConfirm';
 import type { ChannelReference, ServerDetail, ServerTrack } from '~/composables/useApi';
@@ -327,6 +327,7 @@ const route = useRoute();
 const router = useRouter();
 const api = useApi();
 const { alert, confirm } = useConfirm();
+const { t } = useI18n();
 
 const server = ref<ServerDetail | null>(null);
 const thumbnailUrl = ref('');
@@ -346,7 +347,9 @@ const joinedAtLabel = computed(() => formatISODateTime(server.value?.botMember.j
 
 const playbackLabel = computed(() => {
     const s = server.value?.playback.status ?? 'idle';
-    return s.charAt(0).toUpperCase() + s.slice(1);
+    if (s === 'playing') return t('servers.playing');
+    if (s === 'paused') return t('servers.paused');
+    return t('servers.idle');
 });
 
 const playbackBadgeClass = computed(() => {
@@ -359,8 +362,8 @@ const playbackBadgeClass = computed(() => {
 const capabilities = computed(() => {
     if (!server.value) return [];
     return [
-        { label: 'Voice Member Snapshot', value: server.value.capabilities.voiceMemberSnapshot },
-        { label: 'Message Content', value: server.value.capabilities.messageContent },
+        { label: t('servers.details.voiceStateSnapshot'), value: server.value.capabilities.voiceMemberSnapshot },
+        { label: t('servers.details.messageContent'), value: server.value.capabilities.messageContent },
     ];
 });
 
@@ -395,7 +398,7 @@ async function fetchServer(showLoader: boolean): Promise<void> {
         if (!server.value || showLoader) {
             server.value = null;
             thumbnailUrl.value = '';
-            loadError.value = 'Unable to load server details right now.';
+            loadError.value = t('servers.details.loadFailedDesc');
         }
     } finally {
         loading.value = false;
@@ -415,10 +418,10 @@ async function resolveThumbnail(track: ServerTrack | null): Promise<string> {
 
 async function handleLeave(): Promise<void> {
     const confirmed = await confirm({
-        title: 'Leave Server',
-        message: `Leave server "${server.value?.guild.name}"? The bot will disconnect immediately.`,
-        confirmLabel: 'Leave',
-        cancelLabel: 'Cancel',
+        title: t('servers.details.leaveServer'),
+        message: t('servers.details.leaveConfirm', { name: server.value?.guild.name }),
+        confirmLabel: t('servers.details.leaveServer'),
+        cancelLabel: t('common.cancel'),
     });
 
     if (!confirmed) return;
@@ -427,12 +430,12 @@ async function handleLeave(): Promise<void> {
         await api.deleteServer(guildId.value);
         await router.push('/servers');
     } catch {
-        await alert({ title: 'Leave Failed', message: 'The bot could not leave the selected server.' });
+        await alert({ title: t('servers.details.leaveFailedTitle'), message: t('servers.details.leaveFailedDesc') });
     }
 }
 
 function channelLabel(channel: ChannelReference | null): string {
-    return channel ? channel.name : 'Not configured';
+    return channel ? channel.name : t('servers.details.notConfigured');
 }
 
 function formatDuration(durationMs: number): string {

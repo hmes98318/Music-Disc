@@ -2,13 +2,13 @@
     <div class="flex h-full flex-col gap-4">
         <!-- Header -->
         <div class="flex shrink-0 flex-wrap items-center justify-between gap-3">
-            <h1 class="font-display text-xl font-extrabold tracking-wide text-snow">Logs</h1>
+            <h1 class="font-display text-xl font-extrabold tracking-wide text-snow">{{ $t('logs.title') }}</h1>
             <div class="flex items-center gap-2">
                 <span class="rounded-full bg-surface px-3 py-1 text-xs text-fog">
-                    Total {{ logStream.totalItems.value }}
+                    {{ $t('localnode.total', { count: logStream.totalItems.value }) }}
                 </span>
                 <span class="rounded-full bg-blurple/15 px-3 py-1 text-xs font-medium text-blurple-light">
-                    Refresh in {{ countdown }}s
+                    {{ $t('index.refreshIn', { countdown }) }}
                 </span>
             </div>
         </div>
@@ -21,7 +21,7 @@
                 :initial-loading="logStream.loading.value"
                 :loading-older="logStream.loadingOlder.value"
                 :stretch="true"
-                empty-text="No logs available."
+                :empty-text="$t('localnode.emptyLogs')"
                 @reach-top="loadOlderLogs"
             />
         </div>
