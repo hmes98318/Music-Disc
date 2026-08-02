@@ -18,7 +18,12 @@ export class ShardingController {
         const fileExtension = path.extname(__filename);
         this.shardFilePath = path.join(__dirname, `./App${fileExtension}`);
 
-        this.manager = new ShardingManager(this.shardFilePath, { token: process.env.BOT_TOKEN });
+        const execArgv = fileExtension === '.ts' ? ['--import', 'tsx'] : [];
+
+        this.manager = new ShardingManager(this.shardFilePath, {
+            execArgv,
+            token: process.env.BOT_TOKEN
+        });
     }
 
 
