@@ -5,7 +5,7 @@ WORKDIR /tmp
 COPY . .
 
 RUN npm ci && \
-    cd dashboard && npm ci && cd .. && \
+    npm --prefix ./dashboard ci && \
     npm run build
 
 
@@ -15,18 +15,18 @@ FROM node:22.22.3-slim
 
 WORKDIR /bot
 
-RUN apt update -y && \
-    apt install openjdk-17-jre-headless -y && \
-    apt clean && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && \
+    apt-get install --no-install-recommends -y openjdk-17-jre-headless && \
+    rm -rf /var/lib/apt/lists/*
 
 
-COPY --from=node_build /tmp/dist /bot
-COPY --from=node_build /tmp/node_modules /bot/node_modules
-COPY --from=node_build /tmp/server /bot/server
-COPY --from=node_build /tmp/dashboard/.output/public /bot/dashboard/.output/public
+COPY --from=node_build /tmp/dist ./dist
+COPY --from=node_build /tmp/node_modules ./node_modules
+COPY --from=node_build /tmp/server ./server
+COPY --from=node_build /tmp/dashboard/.output/public ./dashboard/.output/public
 
-COPY --from=node_build /tmp/package*.json /bot
-COPY --from=node_build /tmp/config.js /bot
+COPY --from=node_build /tmp/package*.json ./
+COPY --from=node_build /tmp/config.js ./
 
 
 ENTRYPOINT ["npm", "run", "start:server"]
