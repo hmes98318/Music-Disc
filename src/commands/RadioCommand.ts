@@ -23,7 +23,7 @@ export class RadioCommand extends BaseCommand {
             options: [
                 {
                     name: 'playlist',
-                    description: '검색할 플레이리스트 이름',
+                    description: i18next.t('commands:CONFIG_RADIO_OPTION_PLAYLIST'),
                     type: ApplicationCommandOptionType.String,
                     required: true
                 },
@@ -50,7 +50,7 @@ export class RadioCommand extends BaseCommand {
         if (context.isMessage()) {
             const args = context.args;
             if (args.length < 2) {
-                await context.replyEphemeralError(bot, `올바른 사용법: \`${bot.config.bot.prefix}radio [플레이리스트 이름] [채널명]\` (예: \`${bot.config.bot.prefix}radio Test Dance\`)`);
+                await context.replyEphemeralError(bot, context.t('commands:ERROR_RADIO_USAGE_EXAMPLE', { prefix: bot.config.bot.prefix }));
                 return;
             }
             playlistName = args[0];
@@ -61,7 +61,7 @@ export class RadioCommand extends BaseCommand {
         }
 
         if (!playlistName || !channelQuery) {
-            await context.replyEphemeralError(bot, '플레이리스트 이름과 검색할 채널명을 모두 입력해주세요.');
+            await context.replyEphemeralError(bot, context.t('commands:ERROR_RADIO_REQUIRED_ARGS'));
             return;
         }
 
@@ -78,7 +78,7 @@ export class RadioCommand extends BaseCommand {
             const samples = playlist.tracks.slice(0, 10).map(t => `\`${t.title}\``).join(', ');
             await context.replyEphemeralError(
                 bot,
-                `플레이리스트 \`${playlistName}\`에서 \`${channelQuery}\`와(과) 일치하는 라디오 채널을 찾을 수 없습니다.\n사용 가능한 예시: ${samples} 등`
+                context.t('commands:ERROR_RADIO_NO_MATCH_PLAYLIST', { playlistName, channelQuery, samples })
             );
             return;
         }
