@@ -5,6 +5,8 @@ import { getSysInfo } from '../../utils/functions/getSysInfo.js';
 import { setIdleVoiceStatus } from '../../utils/functions/setVoiceStatus.js';
 import { cst } from '../../utils/constants.js';
 
+import { buildSlashCommandsWithLocalizations } from '../../utils/buildSlashCommandLocalizations.js';
+
 import type { Client } from 'discord.js';
 import type { Bot } from '../../@types/index.js';
 
@@ -50,17 +52,10 @@ export class ClientReadyEvent extends BaseDiscordEvent<Events.ClientReady> {
      */
     async #registerSlashCommands(bot: Bot, client: Client): Promise<void> {
         if (bot.config.bot.slashCommand) {
-            bot.logger.log( bot.shardId, 'Enable slash command.');
+            bot.logger.log( bot.shardId, 'Enable slash command with i18n localizations.');
 
             const commands = client.commands.getAll();
-            const slashCommands = commands.map(cmd => {
-                const metadata = cmd.getMetadata(bot);
-                return {
-                    name: metadata.name,
-                    description: metadata.description,
-                    options: metadata.options
-                };
-            });
+            const slashCommands = buildSlashCommandsWithLocalizations(commands, bot);
 
             await client.application?.commands.set(slashCommands);
         }
