@@ -246,5 +246,15 @@
     "ERROR_RADIO_LOAD_FAILED": "❌ 라디오 채널 로딩 중 오류가 발생했습니다: {{error}}",
     "ERROR_RADIO_STREAM_FAILED": "❌ 라디오 스트림(`{{title}}`)을 찾거나 로드할 수 없습니다.",
     "MESSAGE_RADIO_SEARCHING": "🔄 라디오 채널 `{{title}}` 검색 중...",
-    "MESSAGE_RADIO_PLAYING": "📻 라디오 채널 **{{title}}** 재생을 시작합니다!"
+    "MESSAGE_RADIO_PLAYING": "📻 라디오 채널 **{{title}}** 재생을 시작합니다!",
+    "ERROR_ONLY_COMMAND_USER_PAGINATE": "명령어를 실행한 사용자만 페이지를 이동할 수 있습니다.",
+    "ERROR_ONLY_COMMAND_USER_CONFIRM": "명령어를 실행한 사용자만 이 작업을 승인할 수 있습니다.",
+    "MESSAGE_PLAYLIST_EXISTS_TITLE": "⚠️ 플레이리스트가 이미 존재합니다",
+    "MESSAGE_PLAYLIST_EXISTS_DESCRIPTION": "**`{{name}}`** 이름의 플레이리스트(총 {{count}}곡)가 이미 존재합니다.\n가져온 플레이리스트로 덮어쓰시겠습니까?",
+    "LABEL_OVERWRITE": "덮어쓰기",
+    "LABEL_CANCEL": "취소",
+    "MESSAGE_PLAYLIST_OVERWRITING": "플레이리스트 덮어쓰는 중...",
+    "MESSAGE_PLAYLIST_IMPORT_CANCELLED": "❌ 플레이리스트 가져오기가 취소되었습니다.",
+    "MESSAGE_PLAYLIST_IMPORT_TIMEOUT": "⏱️ 가져오기 확인 시간이 초과되었습니다.",
+    "MESSAGE_SKIP_EMPTY_DISCONNECT": "⏭️ 현재 곡을 건너뛰었습니다. 대기열이 비어있습니다."
 }

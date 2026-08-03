@@ -1,5 +1,5 @@
 import i18next from 'i18next';
-import { ApplicationCommandOptionType } from 'discord.js';
+import { ApplicationCommandOptionType, ButtonBuilder } from 'discord.js';
 
 import { BaseCommand } from './base/BaseCommand.js';
 import { CommandCategory, DJModeEnum } from '../@types/index.js';
@@ -386,22 +386,87 @@ export class PlaylistCommand extends BaseCommand {
             return;
         }
 
-        const { EmbedBuilder } = await import('discord.js');
-        const listText = playlist.tracks
-            .slice(0, 20)
-            .map((t, i) => `**${i + 1}.** [${t.title}](${t.url})`)
-            .join('\n');
+        const tracks = playlist.tracks;
+        const { EmbedBuilder, ActionRowBuilder, ButtonStyle, ComponentType } = await import('discord.js');
+        const pageSize = 10;
+        const totalPages = Math.ceil(tracks.length / pageSize);
+        let currentPage = 1;
 
-        const remaining = playlist.tracks.length - 20;
-        const description = listText + (remaining > 0 ? context.t('commands:MESSAGE_PLAYLIST_INFO_REMAINING', { remaining }) : '');
+        const buildEmbed = (page: number) => {
+            const start = (page - 1) * pageSize;
+            const end = start + pageSize;
+            const pageTracks = tracks.slice(start, end);
 
-        const embed = new EmbedBuilder()
-            .setColor(bot.config.bot.embedsColors.message as any)
-            .setTitle(context.t('commands:MESSAGE_PLAYLIST_INFO_TITLE', { name, count: playlist.tracks.length }))
-            .setDescription(description)
-            .setTimestamp();
+            const listText = pageTracks
+                .map((t, i) => `**${start + i + 1}.** [${t.title}](${t.url})`)
+                .join('\n');
 
-        await context.reply({ embeds: [embed] });
+            return new EmbedBuilder()
+                .setColor(bot.config.bot.embedsColors.message as any)
+                .setTitle(context.t('commands:MESSAGE_PLAYLIST_INFO_TITLE', { name, count: tracks.length }))
+                .setDescription(listText)
+                .setFooter({ text: `Page ${page} / ${totalPages}` })
+                .setTimestamp();
+        };
+
+        const buildButtons = (page: number) => {
+            return new ActionRowBuilder<ButtonBuilder>().addComponents(
+                new ButtonBuilder()
+                    .setCustomId('pl_prev')
+                    .setEmoji('◀️')
+                    .setStyle(ButtonStyle.Secondary)
+                    .setDisabled(page <= 1),
+                new ButtonBuilder()
+                    .setCustomId('pl_next')
+                    .setEmoji('▶️')
+                    .setStyle(ButtonStyle.Secondary)
+                    .setDisabled(page >= totalPages)
+            );
+        };
+
+        const initialEmbed = buildEmbed(currentPage);
+        const components = totalPages > 1 ? [buildButtons(currentPage)] : [];
+
+        const msg = await context.reply({
+            embeds: [initialEmbed],
+            components,
+            allowedMentions: { repliedUser: false }
+        });
+
+        if (totalPages <= 1 || !msg) return;
+
+        const collector = msg.createMessageComponentCollector({
+            componentType: ComponentType.Button,
+            time: 120000
+        });
+
+        collector.on('collect', async (i) => {
+            if (i.user.id !== context.user.id) {
+                await i.reply({ content: context.t('commands:ERROR_ONLY_COMMAND_USER_PAGINATE'), flags: 64 });
+                return;
+            }
+
+            if (i.customId === 'pl_prev' && currentPage > 1) {
+                currentPage--;
+            } else if (i.customId === 'pl_next' && currentPage < totalPages) {
+                currentPage++;
+            }
+
+            await i.update({
+                embeds: [buildEmbed(currentPage)],
+                components: [buildButtons(currentPage)]
+            });
+        });
+
+        collector.on('end', async () => {
+            try {
+                const disabledButtons = new ActionRowBuilder<ButtonBuilder>().addComponents(
+                    new ButtonBuilder().setCustomId('pl_prev').setEmoji('◀️').setStyle(ButtonStyle.Secondary).setDisabled(true),
+                    new ButtonBuilder().setCustomId('pl_next').setEmoji('▶️').setStyle(ButtonStyle.Secondary).setDisabled(true)
+                );
+                await msg.edit({ components: [disabledButtons] });
+            } catch (_) {}
+        });
     }
 
     async #handleDelete(bot: Bot, _client: Client, context: CommandContext): Promise<void> {
@@ -438,26 +503,90 @@ export class PlaylistCommand extends BaseCommand {
             return;
         }
 
-        try {
-            const response = await fetch(url);
-            if (!response.ok) {
-                await context.replyEphemeralError(bot, context.t('commands:ERROR_PLAYLIST_M3U_DOWNLOAD_FAILED', { status: response.status }));
-                return;
-            }
+        const existingPlaylist = bot.playlistManager!.getPlaylist(guildId, name);
 
-            const m3uContent = await response.text();
-            const success = await bot.playlistManager!.importFromM3u(guildId, name, m3uContent);
+        const executeImport = async () => {
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    await context.replyEphemeralError(bot, context.t('commands:ERROR_PLAYLIST_M3U_DOWNLOAD_FAILED', { status: response.status }));
+                    return;
+                }
 
-            if (success) {
-                const playlist = bot.playlistManager!.getPlaylist(guildId, name);
-                await context.replySuccess(bot, context.t('commands:MESSAGE_PLAYLIST_IMPORT_SUCCESS', { name, count: playlist?.tracks?.length || 0 }));
-            } else {
-                await context.replyEphemeralError(bot, context.t('commands:ERROR_PLAYLIST_IMPORT_FAILED'));
+                const m3uContent = await response.text();
+                const success = await bot.playlistManager!.importFromM3u(guildId, name, m3uContent);
+
+                if (success) {
+                    const playlist = bot.playlistManager!.getPlaylist(guildId, name);
+                    await context.replySuccess(bot, context.t('commands:MESSAGE_PLAYLIST_IMPORT_SUCCESS', { name, count: playlist?.tracks?.length || 0 }));
+                } else {
+                    await context.replyEphemeralError(bot, context.t('commands:ERROR_PLAYLIST_IMPORT_FAILED'));
+                }
+            } catch (error) {
+                bot.logger.error(bot.shardId, `Error importing playlist from URL ${url}: ${error}`);
+                await context.replyEphemeralError(bot, context.t('commands:ERROR_PLAY_MUSIC', { reason: error instanceof Error ? error.message : String(error) }));
             }
-        } catch (error) {
-            bot.logger.error(bot.shardId, `Error importing playlist from URL ${url}: ${error}`);
-            await context.replyEphemeralError(bot, context.t('commands:ERROR_PLAY_MUSIC', { reason: error instanceof Error ? error.message : String(error) }));
+        };
+
+        if (existingPlaylist) {
+            const tracksCount = existingPlaylist.tracks?.length || 0;
+            const { EmbedBuilder, ActionRowBuilder, ButtonStyle, ComponentType } = await import('discord.js');
+            const embed = new EmbedBuilder()
+                .setColor(bot.config.bot.embedsColors.warning as any || 0xFFA500)
+                .setTitle(context.t('commands:MESSAGE_PLAYLIST_EXISTS_TITLE'))
+                .setDescription(context.t('commands:MESSAGE_PLAYLIST_EXISTS_DESCRIPTION', { name, count: tracksCount }))
+                .setTimestamp();
+
+            const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
+                new ButtonBuilder()
+                    .setCustomId('pl_import_confirm')
+                    .setLabel(context.t('commands:LABEL_OVERWRITE'))
+                    .setStyle(ButtonStyle.Danger),
+                new ButtonBuilder()
+                    .setCustomId('pl_import_cancel')
+                    .setLabel(context.t('commands:LABEL_CANCEL'))
+                    .setStyle(ButtonStyle.Secondary)
+            );
+
+            const warningMsg = await context.reply({
+                embeds: [embed],
+                components: [row],
+                allowedMentions: { repliedUser: false }
+            });
+
+            if (!warningMsg) return;
+
+            const collector = warningMsg.createMessageComponentCollector({
+                componentType: ComponentType.Button,
+                time: 30000
+            });
+
+            collector.on('collect', async (i) => {
+                if (i.user.id !== context.user.id) {
+                    await i.reply({ content: context.t('commands:ERROR_ONLY_COMMAND_USER_CONFIRM'), flags: 64 });
+                    return;
+                }
+
+                if (i.customId === 'pl_import_confirm') {
+                    await i.update({ content: context.t('commands:MESSAGE_PLAYLIST_OVERWRITING'), embeds: [], components: [] });
+                    await executeImport();
+                } else {
+                    await i.update({ content: context.t('commands:MESSAGE_PLAYLIST_IMPORT_CANCELLED'), embeds: [], components: [] });
+                }
+                collector.stop();
+            });
+
+            collector.on('end', async (_, reason) => {
+                if (reason === 'time') {
+                    try {
+                        await warningMsg.edit({ content: context.t('commands:MESSAGE_PLAYLIST_IMPORT_TIMEOUT'), embeds: [], components: [] });
+                    } catch (_) {}
+                }
+            });
+            return;
         }
+
+        await executeImport();
     }
 
     async #handleRemoveTrack(bot: Bot, _client: Client, context: CommandContext): Promise<void> {

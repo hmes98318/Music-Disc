@@ -60,14 +60,23 @@ export class SkipCommand extends BaseCommand {
             }
         }
 
+        const hasMoreTracks = player.queue.tracks.length > 0 || player.repeatMode !== 0;
         const success = await player.skip();
 
         if (context.isMessage()) {
             await context.react(success ? '👍' : '❌');
+            if (!hasMoreTracks && context.channel && 'send' in context.channel) {
+                await (context.channel as any).send({
+                    content: context.t('commands:MESSAGE_SKIP_EMPTY_DISCONNECT')
+                });
+            }
         }
         else {
             if (success) {
-                await context.replySuccess(bot, context.t('commands:MESSAGE_SKIP_SUCCESS'));
+                const message = hasMoreTracks
+                    ? context.t('commands:MESSAGE_SKIP_SUCCESS')
+                    : context.t('commands:MESSAGE_SKIP_EMPTY_DISCONNECT');
+                await context.replySuccess(bot, message);
             }
             else {
                 await context.replyError(bot, context.t('commands:MESSAGE_SKIP_FAIL'));

@@ -53,14 +53,24 @@ export class SkipButtonHandler extends DashboardButtonHandler {
             }
         }
 
-        const repeatMode = player.repeatMode;
+        const hasMoreTracks = player.queue.tracks.length > 0 || player.repeatMode !== 0;
 
-        if (repeatMode === RepeatMode.TRACK) {
+        if (player.repeatMode === RepeatMode.TRACK) {
             player.setRepeatMode(RepeatMode.OFF);
             await player.skip();
             player.setRepeatMode(RepeatMode.TRACK);
         } else {
             await player.skip();
+        }
+
+        if (!hasMoreTracks) {
+            try {
+                await interaction.reply({
+                    content: bot.i18n.t('commands:MESSAGE_SKIP_EMPTY_DISCONNECT', { lng }),
+                    flags: MessageFlags.Ephemeral
+                });
+                return;
+            } catch (_) {}
         }
 
         const row = ButtonsBuilder.createDashboardButtons(player, lng);

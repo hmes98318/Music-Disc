@@ -246,5 +246,15 @@
   "ERROR_RADIO_LOAD_FAILED": "❌ Ошибка загрузки радиоканала: {{error}}",
   "ERROR_RADIO_STREAM_FAILED": "❌ Не удалось загрузить радиопоток (`{{title}}`).",
   "MESSAGE_RADIO_SEARCHING": "🔄 Поиск радиоканала `{{title}}`...",
-  "MESSAGE_RADIO_PLAYING": "📻 Начало воспроизведения радиоканала **{{title}}**!"
+  "MESSAGE_RADIO_PLAYING": "📻 Начало воспроизведения радиоканала **{{title}}**!",
+  "ERROR_ONLY_COMMAND_USER_PAGINATE": "Только пользователь, вызвавший команду, может переключать страницы.",
+  "ERROR_ONLY_COMMAND_USER_CONFIRM": "Только пользователь, вызвавший команду, может подтвердить это действие.",
+  "MESSAGE_PLAYLIST_EXISTS_TITLE": "⚠️ Плейлист уже существует",
+  "MESSAGE_PLAYLIST_EXISTS_DESCRIPTION": "Плейлист с именем **`{{name}}`** (всего {{count}} треков) уже существует.\nХотите перезаписать его импортированным плейлистом?",
+  "LABEL_OVERWRITE": "Перезаписать",
+  "LABEL_CANCEL": "Отмена",
+  "MESSAGE_PLAYLIST_OVERWRITING": "Перезапись плейлиста...",
+  "MESSAGE_PLAYLIST_IMPORT_CANCELLED": "❌ Импорт плейлиста отменен.",
+  "MESSAGE_PLAYLIST_IMPORT_TIMEOUT": "⏱️ Время подтверждения импорта истекло.",
+  "MESSAGE_SKIP_EMPTY_DISCONNECT": "⏭️ Пропущен текущий трек. Очередь пуста."
 }

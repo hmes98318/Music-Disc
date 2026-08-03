@@ -71,8 +71,9 @@ export class RadioCommand extends BaseCommand {
             return;
         }
 
-        const queryLower = channelQuery.toLowerCase();
-        const matchedTracks = playlist.tracks.filter(t => t.title.toLowerCase().includes(queryLower));
+        const normalize = (str: string) => str.toLowerCase().replace(/['’\`\s\-_]/g, '');
+        const queryNormalized = normalize(channelQuery);
+        const matchedTracks = playlist.tracks.filter(t => normalize(t.title).includes(queryNormalized));
 
         if (matchedTracks.length === 0) {
             const samples = playlist.tracks.slice(0, 10).map(t => `\`${t.title}\``).join(', ');
@@ -162,9 +163,18 @@ export class RadioCommand extends BaseCommand {
 
             if (searchResult && searchResult.tracks && searchResult.tracks.length > 0) {
                 const track = searchResult.tracks[0];
-                player.addTracks(track, requester as any);
+                (track as any).requester = requester;
 
-                if (!player.playing) {
+                const isAlreadyPlaying = player.playing;
+
+                // Radio request replaces existing queue/radio & plays as playfirst
+                player.queue.tracks = player.queue.tracks.filter((t: any) => !t.isRadio && t.title !== targetTrack.title);
+                player.queue.tracks.unshift(track);
+                (track as any).isRadio = true;
+
+                if (isAlreadyPlaying) {
+                    await player.skip();
+                } else {
                     player.filters.setVolume(curVolume);
                     await player.play().catch(async (error) => {
                         bot.logger.error(bot.shardId, 'Error playing track: ' + error);

@@ -246,5 +246,15 @@
     "ERROR_RADIO_LOAD_FAILED": "❌ Greška pri učitavanju radio kanala: {{error}}",
     "ERROR_RADIO_STREAM_FAILED": "❌ Nije moguće učitati ili pronaći radio strim (`{{title}}`).",
     "MESSAGE_RADIO_SEARCHING": "🔄 Pretraga radio kanala `{{title}}`...",
-    "MESSAGE_RADIO_PLAYING": "📻 Počelo puštanje radio kanala **{{title}}**!"
+    "MESSAGE_RADIO_PLAYING": "📻 Počelo puštanje radio kanala **{{title}}**!",
+    "ERROR_ONLY_COMMAND_USER_PAGINATE": "Samo korisnik koji je pokrenuo komandu može menjati stranice.",
+    "ERROR_ONLY_COMMAND_USER_CONFIRM": "Samo korisnik koji je pokrenuo komandu može potvrditi ovu akciju.",
+    "MESSAGE_PLAYLIST_EXISTS_TITLE": "⚠️ Plejlista već postoji",
+    "MESSAGE_PLAYLIST_EXISTS_DESCRIPTION": "Plejlista sa imenom **`{{name}}`** (ukupno {{count}} pesama) već postoji.\nDa li želite da je zamenite uvezenom plejlistom?",
+    "LABEL_OVERWRITE": "Zameni",
+    "LABEL_CANCEL": "Otkaži",
+    "MESSAGE_PLAYLIST_OVERWRITING": "Zamenjivanje plejliste...",
+    "MESSAGE_PLAYLIST_IMPORT_CANCELLED": "❌ Uvoz plejliste je otkazan.",
+    "MESSAGE_PLAYLIST_IMPORT_TIMEOUT": "⏱️ Vreme za potvrdu uvoza je isteklo.",
+    "MESSAGE_SKIP_EMPTY_DISCONNECT": "⏭️ Preskočena trenutna pesma. Red je sada prazan."
 }
