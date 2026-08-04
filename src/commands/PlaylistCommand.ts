@@ -405,7 +405,7 @@ export class PlaylistCommand extends BaseCommand {
                 .setColor(bot.config.bot.embedsColors.message as any)
                 .setTitle(context.t('commands:MESSAGE_PLAYLIST_INFO_TITLE', { name, count: tracks.length }))
                 .setDescription(listText)
-                .setFooter({ text: `Page ${page} / ${totalPages}` })
+                .setFooter({ text: context.t('commands:MESSAGE_FOOTER_PAGE', { page, totalPages }) })
                 .setTimestamp();
         };
 

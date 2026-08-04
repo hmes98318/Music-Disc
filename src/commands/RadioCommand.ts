@@ -71,12 +71,18 @@ export class RadioCommand extends BaseCommand {
             return;
         }
 
+const DEFAULT_MAX_SAMPLES_COUNT = 10;
+
         const normalize = (str: string) => str.toLowerCase().replace(/['’\`\s\-_]/g, '');
         const queryNormalized = normalize(channelQuery);
-        const matchedTracks = playlist.tracks.filter(t => normalize(t.title).includes(queryNormalized));
+
+        const exactMatch = playlist.tracks.find(t => normalize(t.title) === queryNormalized);
+        const matchedTracks = exactMatch
+            ? [exactMatch]
+            : playlist.tracks.filter(t => normalize(t.title).includes(queryNormalized));
 
         if (matchedTracks.length === 0) {
-            const samples = playlist.tracks.slice(0, 10).map(t => `\`${t.title}\``).join(', ');
+            const samples = playlist.tracks.slice(0, DEFAULT_MAX_SAMPLES_COUNT).map(t => `\`${t.title}\``).join(', ');
             await context.replyEphemeralError(
                 bot,
                 context.t('commands:ERROR_RADIO_NO_MATCH_PLAYLIST', { playlistName, channelQuery, samples })
@@ -145,7 +151,7 @@ export class RadioCommand extends BaseCommand {
         const requester = context.isMessage() ? context.getMessage().author : context.getInteraction().user;
         const curVolume = player.setting.volume ?? bot.guildVolumeManager?.get(player.guildId) ?? bot.config.bot.volume.default;
 
-        await context.replySuccess(bot, context.t('commands:MESSAGE_RADIO_SEARCHING', { title: `${playlistName} ➔ ${targetTrack.title}` }));
+        await context.replySuccess(bot, context.t('commands:MESSAGE_RADIO_SEARCHING', { playlist: playlistName, title: targetTrack.title }));
 
         try {
             let searchResult = null;
@@ -188,7 +194,7 @@ export class RadioCommand extends BaseCommand {
 
                 if (context.channel && 'send' in context.channel) {
                     await (context.channel as any).send({
-                        content: context.t('commands:MESSAGE_RADIO_PLAYING', { title: `${playlistName} ➔ ${targetTrack.title}` })
+                        content: context.t('commands:MESSAGE_RADIO_PLAYING', { playlist: playlistName, title: targetTrack.title })
                     });
                 }
             } else {
