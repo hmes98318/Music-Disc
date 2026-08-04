@@ -10,12 +10,62 @@ plugins:
     allowDirectPlaylistIds: true  # Whether just playlist IDs can match. If false, only complete URLs will be loaded.
     # The clients to use for track loading. See below for a list of valid clients.
     # Clients are queried in the order they are given (so the first client is queried first and so on...)
+    clientOptions:
+      ANDROID_MUSIC:
+        playback: true
+        playlistLoading: false
+        searching: true
+        videoLoading: true
+      ANDROID_VR:
+        playback: true
+        playlistLoading: true
+        searching: true
+        videoLoading: true
+      IOS:
+        playback: true
+        playlistLoading: true
+        searching: true
+        videoLoading: true
+      MUSIC:
+        playback: false
+        playlistLoading: false
+        searching: true
+        videoLoading: false
+      MWEB:
+        playback: true
+        playlistLoading: true
+        searching: false
+        videoLoading: true
+      TV:
+        playback: true
+        playlistLoading: false
+        searching: false
+        videoLoading: false
+      TVHTML5EMBEDDED:
+        playback: true
+        playlistLoading: false
+        searching: true
+        videoLoading: true
+      WEB:
+        playback: true
+        playlistLoading: true
+        searching: true
+        videoLoading: true
+      WEBEMBEDDED:
+        playback: true
+        playlistLoading: false
+        searching: false
+        videoLoading: true
     clients:
       - MUSIC
-      - TVHTML5EMBEDDED
+      - WEBEMBEDDED
+      - ANDROID_VR
       - ANDROID_MUSIC
-      - ANDROID_TESTSUITE
+      - TVHTML5EMBEDDED
+      - TV
+      - IOS
       - WEB
+      - MWEB
     oauth:
       # setting "enabled: true" is the bare minimum to get OAuth working.
       enabled: true
@@ -23,17 +73,20 @@ plugins:
       # if you have a refresh token, you may set it below (make sure to uncomment the line to apply it).
       # setting a valid refresh token will skip the OAuth flow entirely. See above note on how to retrieve
       # your refreshToken.
-      # refreshToken: "paste your refresh token here if applicable"
+      # refreshToken: "your_refreshToken"
 
       # Set this if you don't want the OAuth flow to be triggered, if you intend to supply a refresh token later.
       # Initialization is skipped automatically if a valid refresh token is supplied. Leave this commented if you're
       # completing the OAuth flow for the first time/do not have a refresh token.
       # skipInitialization: true
+    remoteCipher:
+      url: "http://yt-cipher:8001"  # The base URL of your remote cipher server.
+      password: "yt-cipher-token"   # The password to authenticate with your remote cipher server.
 
 lavalink:
   plugins:
     # https://github.com/lavalink-devs/youtube-source
-    - dependency: "dev.lavalink.youtube:youtube-plugin:1.13.5"
+    - dependency: "dev.lavalink.youtube:youtube-plugin:1.18.2"
       repository: "https://maven.lavalink.dev/releases"
   server:
     password: "youshallnotpass"
@@ -109,7 +162,6 @@ logging:
     includeQueryString: true
     includePayload: true
     maxPayloadLength: 10000
-
 
   logback:
     rollingpolicy:
