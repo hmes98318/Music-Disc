@@ -320,6 +320,7 @@ export class PlaylistCommand extends BaseCommand {
 
                 if (searchResult && searchResult.tracks && searchResult.tracks.length > 0) {
                     const track = searchResult.tracks[0];
+                    (track as any).requester = requester;
                     player.addTracks(track, requester as any);
                     addedCount++;
                 } else {
@@ -331,12 +332,16 @@ export class PlaylistCommand extends BaseCommand {
             }
         }
 
-        if (addedCount > 0 && !player.playing) {
-            player.filters.setVolume(curVolume);
-            await player.play().catch(async (error) => {
-                bot.logger.error(bot.shardId, 'Error playing track: ' + error);
-                return player!.destroy();
-            });
+        if (addedCount > 0) {
+            if (!player.playing) {
+                player.filters.setVolume(curVolume);
+                await player.play().catch(async (error) => {
+                    bot.logger.error(bot.shardId, 'Error playing track: ' + error);
+                    return player!.destroy();
+                });
+            } else if (player.current) {
+                await client.dashboard.update(player, player.current);
+            }
         }
 
         if (bot.config.queuePersistence.enabled && client.queuePersistence) {
