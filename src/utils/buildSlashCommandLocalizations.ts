@@ -1,4 +1,5 @@
 import i18next from 'i18next';
+import type { ApplicationCommandDataResolvable } from 'discord.js';
 
 import type { BaseCommand } from '../commands/base/BaseCommand.js';
 import type { Bot } from '../@types/index.js';
@@ -25,9 +26,9 @@ function toDiscordLocale(i18nLocale: string): string {
 }
 
 /**
- * Builds localized Discord slash command payload using i18next resources automatically
+ * Builds clean localized Discord slash command payload using i18next resources automatically
  */
-export function buildSlashCommandsWithLocalizations(commands: BaseCommand[], bot: Bot) {
+export function buildSlashCommandsWithLocalizations(commands: BaseCommand[], bot: Bot): ApplicationCommandDataResolvable[] {
     const resourceStore = (i18next.services as any)?.resourceStore?.data || (i18next as any).store?.data || {};
     const loadedLocales = Object.keys(resourceStore);
     const i18nLocales = loadedLocales.length > 0 ? loadedLocales : (i18next.languages || ['en-US', 'ko-KR']);
@@ -68,19 +69,42 @@ export function buildSlashCommandsWithLocalizations(commands: BaseCommand[], bot
 
         const options = metadata.options?.map((opt: any) => {
             const optDescLocalizations = opt.description ? getLocalizations(opt.description) : undefined;
-            return {
-                ...opt,
-                descriptionLocalizations: optDescLocalizations,
-                description_localizations: optDescLocalizations
+            const cleanedOpt: Record<string, any> = {
+                name: opt.name,
+                description: opt.description,
+                type: opt.type,
             };
+
+            if (opt.required !== undefined) cleanedOpt.required = opt.required;
+            if (opt.choices) cleanedOpt.choices = opt.choices;
+            if (opt.autocomplete !== undefined) cleanedOpt.autocomplete = opt.autocomplete;
+            if (opt.options) cleanedOpt.options = opt.options;
+            if (opt.channelTypes || opt.channel_types) cleanedOpt.channelTypes = opt.channelTypes || opt.channel_types;
+            if (opt.minValue !== undefined || opt.min_value !== undefined) cleanedOpt.minValue = opt.minValue ?? opt.min_value;
+            if (opt.maxValue !== undefined || opt.max_value !== undefined) cleanedOpt.maxValue = opt.maxValue ?? opt.max_value;
+            if (opt.minLength !== undefined || opt.min_length !== undefined) cleanedOpt.minLength = opt.minLength ?? opt.min_length;
+            if (opt.maxLength !== undefined || opt.max_length !== undefined) cleanedOpt.maxLength = opt.maxLength ?? opt.max_length;
+
+            if (optDescLocalizations) {
+                cleanedOpt.descriptionLocalizations = optDescLocalizations;
+            }
+
+            return cleanedOpt;
         });
 
-        return {
+        const cleanedCommand: Record<string, any> = {
             name: metadata.name,
             description: metadata.description,
-            descriptionLocalizations,
-            description_localizations: descriptionLocalizations,
-            options
         };
+
+        if (descriptionLocalizations) {
+            cleanedCommand.descriptionLocalizations = descriptionLocalizations;
+        }
+
+        if (options && options.length > 0) {
+            cleanedCommand.options = options;
+        }
+
+        return cleanedCommand as ApplicationCommandDataResolvable;
     });
 }
