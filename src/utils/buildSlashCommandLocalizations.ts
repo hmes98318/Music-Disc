@@ -4,8 +4,14 @@ import type { ApplicationCommandDataResolvable } from 'discord.js';
 import type { BaseCommand } from '../commands/base/BaseCommand.js';
 import type { Bot } from '../@types/index.js';
 
+const VALID_DISCORD_LOCALES = new Set([
+    'ar', 'bg', 'cs', 'da', 'de', 'el', 'en-GB', 'en-US', 'es-ES', 'es-419',
+    'fi', 'fr', 'he', 'hi', 'hr', 'hu', 'id', 'it', 'ja', 'ko', 'lt', 'nl',
+    'no', 'pl', 'pt-BR', 'ro', 'ru', 'sv-SE', 'th', 'tr', 'uk', 'vi', 'zh-CN', 'zh-TW'
+]);
+
 const SPECIAL_DISCORD_LOCALES: Record<string, string> = {
-    'sr-RS': 'sr-CS',
+    'sr-RS': 'sr',
 };
 
 const FULL_TAG_DISCORD_LOCALES = new Set([
@@ -15,14 +21,17 @@ const FULL_TAG_DISCORD_LOCALES = new Set([
 /**
  * Converts i18n locale code (e.g. ko-KR, ru-RU, ja-JP) to Discord compatible locale string
  */
-function toDiscordLocale(i18nLocale: string): string {
+function toDiscordLocale(i18nLocale: string): string | null {
+    let targetLocale: string;
     if (SPECIAL_DISCORD_LOCALES[i18nLocale]) {
-        return SPECIAL_DISCORD_LOCALES[i18nLocale];
+        targetLocale = SPECIAL_DISCORD_LOCALES[i18nLocale];
+    } else if (FULL_TAG_DISCORD_LOCALES.has(i18nLocale)) {
+        targetLocale = i18nLocale;
+    } else {
+        targetLocale = i18nLocale.split('-')[0];
     }
-    if (FULL_TAG_DISCORD_LOCALES.has(i18nLocale)) {
-        return i18nLocale;
-    }
-    return i18nLocale.split('-')[0];
+
+    return VALID_DISCORD_LOCALES.has(targetLocale) ? targetLocale : null;
 }
 
 /**
@@ -35,7 +44,10 @@ export function buildSlashCommandsWithLocalizations(commands: BaseCommand[], bot
 
     const localeMap: Record<string, string> = {};
     for (const locale of i18nLocales) {
-        localeMap[locale] = toDiscordLocale(locale);
+        const discordLocale = toDiscordLocale(locale);
+        if (discordLocale) {
+            localeMap[locale] = discordLocale;
+        }
     }
 
     const textToKeyMap = new Map<string, string>();
