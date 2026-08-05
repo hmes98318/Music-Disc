@@ -5,6 +5,7 @@ import { BaseCommand } from './base/BaseCommand.js';
 import { CommandCategory, DJModeEnum } from '../@types/index.js';
 import { DJManager } from '../lib/DjManager.js';
 import { QueueLimitManager } from '../lib/QueueLimitManager.js';
+import { cst } from '../utils/constants.js';
 
 import type { Client, GuildMember } from 'discord.js';
 import type { CommandContext } from './base/CommandContext.js';
@@ -418,12 +419,12 @@ export class PlaylistCommand extends BaseCommand {
             return new ActionRowBuilder<ButtonBuilder>().addComponents(
                 new ButtonBuilder()
                     .setCustomId('pl_prev')
-                    .setEmoji('◀️')
+                    .setEmoji(cst.button.emoji.prev)
                     .setStyle(ButtonStyle.Secondary)
                     .setDisabled(page <= 1),
                 new ButtonBuilder()
                     .setCustomId('pl_next')
-                    .setEmoji('▶️')
+                    .setEmoji(cst.button.emoji.next)
                     .setStyle(ButtonStyle.Secondary)
                     .setDisabled(page >= totalPages)
             );
@@ -466,8 +467,8 @@ export class PlaylistCommand extends BaseCommand {
         collector.on('end', async () => {
             try {
                 const disabledButtons = new ActionRowBuilder<ButtonBuilder>().addComponents(
-                    new ButtonBuilder().setCustomId('pl_prev').setEmoji('◀️').setStyle(ButtonStyle.Secondary).setDisabled(true),
-                    new ButtonBuilder().setCustomId('pl_next').setEmoji('▶️').setStyle(ButtonStyle.Secondary).setDisabled(true)
+                    new ButtonBuilder().setCustomId('pl_prev').setEmoji(cst.button.emoji.prev).setStyle(ButtonStyle.Secondary).setDisabled(true),
+                    new ButtonBuilder().setCustomId('pl_next').setEmoji(cst.button.emoji.next).setStyle(ButtonStyle.Secondary).setDisabled(true)
                 );
                 await msg.edit({ components: [disabledButtons] });
             } catch (_) {}
