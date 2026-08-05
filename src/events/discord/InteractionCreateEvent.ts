@@ -53,6 +53,12 @@ export class InteractionCreateEvent extends BaseDiscordEvent<Events.InteractionC
     async #handleButtonInteraction(bot: Bot, client: Client, interaction: Interaction): Promise<void> {
         if (!interaction.isButton()) return;
 
+        const isMusicPlayerButton = (Object.values(DashboardButtonId) as string[]).includes(interaction.customId)
+            || (Object.values(QueueButtonId) as string[]).includes(interaction.customId)
+            || (Object.values(MusicButtonId) as string[]).includes(interaction.customId);
+
+        if (!isMusicPlayerButton) return;
+
         const lng = bot.guildLanguageManager?.get(interaction.guildId!);
         const guildMember = interaction.guild!.members.cache.get(interaction.user.id);
         const voiceChannel = guildMember?.voice.channel;
