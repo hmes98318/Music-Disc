@@ -1,7 +1,6 @@
 import { RepeatMode } from 'lavashark';
 import { MessageFlags } from 'discord.js';
 import { DashboardButtonHandler } from './DashboardButtonHandler.js';
-import { ButtonsBuilder } from '../builders/ButtonsBuilder.js';
 import { PermissionManager } from '../PermissionManager.js';
 import { embeds } from '../../embeds/index.js';
 
@@ -73,7 +72,8 @@ export class SkipButtonHandler extends DashboardButtonHandler {
             } catch (_) {}
         }
 
-        const row = ButtonsBuilder.createDashboardButtons(player, lng);
-        await interaction.update({ components: [row] });
+        if (!interaction.replied && !interaction.deferred) {
+            await interaction.deferUpdate();
+        }
     }
 }

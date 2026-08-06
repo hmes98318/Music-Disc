@@ -57,15 +57,23 @@ export class DashboardManager {
         }
 
         const lng = this.#bot.guildLanguageManager?.get(player.guildId);
-        const subtitle = await this.#buildSubtitle(player, track, lng);
+        let subtitle = await this.#buildSubtitle(player, track, lng);
         const buttons = ButtonsBuilder.createDashboardButtons(player, lng);
+
+        const safeTitle = track.title.length > 256
+            ? track.title.substring(0, 253) + '...'
+            : track.title;
+
+        if (subtitle.length > 1024) {
+            subtitle = subtitle.substring(0, 1021) + '...';
+        }
 
         try {
             await player.dashboardMsg.edit({
                 embeds: [embeds.dashboard(
                     this.#bot,
                     this.#bot.i18n.t('embeds:DASHBOARD_TITLE', { lng }),
-                    track.title,
+                    safeTitle,
                     subtitle,
                     track.uri,
                     track.thumbnail!
