@@ -288,6 +288,7 @@ export class PlaylistCommand extends BaseCommand {
 
         let addedCount = 0;
         let skipCount = 0;
+        let limitSkippedCount = 0;
 
         await context.replySuccess(bot, context.t('commands:MESSAGE_PLAYLIST_LOAD_START', { name, count: tracksToPlay.length }));
 
@@ -297,6 +298,7 @@ export class PlaylistCommand extends BaseCommand {
                 const currentCount = QueueLimitManager.countUserSongsInQueue(player, requester.id);
                 if (bot.config.bot.maxQueuedSongs.enabled && currentCount >= userLimit) {
                     skipCount++;
+                    limitSkippedCount++;
                     continue;
                 }
 
@@ -350,8 +352,12 @@ export class PlaylistCommand extends BaseCommand {
         }
 
         if (context.channel && 'send' in context.channel) {
+            let completeContent = context.t('commands:MESSAGE_PLAYLIST_LOAD_COMPLETE', { name, added: addedCount, skipped: skipCount });
+            if (limitSkippedCount > 0) {
+                completeContent += `\n⚠️ (${limitSkippedCount} tracks skipped due to max queue limit per user)`;
+            }
             await (context.channel as any).send({
-                content: context.t('commands:MESSAGE_PLAYLIST_LOAD_COMPLETE', { name, added: addedCount, skipped: skipCount })
+                content: completeContent
             });
         }
     }
