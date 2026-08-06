@@ -252,10 +252,13 @@
     "ERROR_ONLY_COMMAND_USER_CONFIRM": "Only the command user can confirm this action.",
     "MESSAGE_PLAYLIST_EXISTS_TITLE": "⚠️ Playlist Exists",
     "MESSAGE_PLAYLIST_EXISTS_DESCRIPTION": "A playlist named **`{{name}}`** ({{count}} tracks) already exists.\nDo you want to overwrite it with the imported playlist?",
+    "MESSAGE_PLAYLIST_SAVE_EXISTS_DESCRIPTION": "A playlist named **`{{name}}`** ({{count}} tracks) already exists.\nDo you want to overwrite it with the current queue?",
     "LABEL_OVERWRITE": "Overwrite",
     "LABEL_CANCEL": "Cancel",
     "MESSAGE_PLAYLIST_OVERWRITING": "Overwriting playlist...",
     "MESSAGE_PLAYLIST_IMPORT_CANCELLED": "❌ Playlist import cancelled.",
     "MESSAGE_PLAYLIST_IMPORT_TIMEOUT": "⏱️ Import confirmation timed out.",
+    "MESSAGE_PLAYLIST_SAVE_CANCELLED": "❌ Playlist save cancelled.",
+    "MESSAGE_PLAYLIST_SAVE_TIMEOUT": "⏱️ Save confirmation timed out.",
     "MESSAGE_SKIP_EMPTY_DISCONNECT": "⏭️ Skipped current track. Queue is now empty."
 }

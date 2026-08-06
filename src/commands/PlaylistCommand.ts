@@ -199,13 +199,77 @@ export class PlaylistCommand extends BaseCommand {
             tracks.push(serializeTrack(track));
         }
 
-        const success = bot.playlistManager!.saveCurrentQueue(guildId, name, tracks);
+        const existingPlaylist = bot.playlistManager!.getPlaylist(guildId, name);
 
-        if (success) {
-            await context.replySuccess(bot, context.t('commands:MESSAGE_PLAYLIST_SAVE_SUCCESS', { count: tracks.length, name }));
-        } else {
-            await context.replyEphemeralError(bot, context.t('commands:ERROR_PLAYLIST_SAVE_FAILED'));
+        const executeSave = async () => {
+            const success = bot.playlistManager!.saveCurrentQueue(guildId, name, tracks);
+
+            if (success) {
+                await context.replySuccess(bot, context.t('commands:MESSAGE_PLAYLIST_SAVE_SUCCESS', { count: tracks.length, name }));
+            } else {
+                await context.replyEphemeralError(bot, context.t('commands:ERROR_PLAYLIST_SAVE_FAILED'));
+            }
+        };
+
+        if (existingPlaylist) {
+            const tracksCount = existingPlaylist.tracks?.length || 0;
+            const { EmbedBuilder, ActionRowBuilder, ButtonStyle, ComponentType } = await import('discord.js');
+            const embed = new EmbedBuilder()
+                .setColor(bot.config.bot.embedsColors.warning as any || 0xFFA500)
+                .setTitle(context.t('commands:MESSAGE_PLAYLIST_EXISTS_TITLE'))
+                .setDescription(context.t('commands:MESSAGE_PLAYLIST_SAVE_EXISTS_DESCRIPTION', { name, count: tracksCount }))
+                .setTimestamp();
+
+            const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
+                new ButtonBuilder()
+                    .setCustomId('pl_save_confirm')
+                    .setLabel(context.t('commands:LABEL_OVERWRITE'))
+                    .setStyle(ButtonStyle.Danger),
+                new ButtonBuilder()
+                    .setCustomId('pl_save_cancel')
+                    .setLabel(context.t('commands:LABEL_CANCEL'))
+                    .setStyle(ButtonStyle.Secondary)
+            );
+
+            const warningMsg = await context.reply({
+                embeds: [embed],
+                components: [row],
+                allowedMentions: { repliedUser: false }
+            });
+
+            if (!warningMsg) return;
+
+            const collector = warningMsg.createMessageComponentCollector({
+                componentType: ComponentType.Button,
+                time: 30000
+            });
+
+            collector.on('collect', async (i) => {
+                if (i.user.id !== context.user.id) {
+                    await i.reply({ content: context.t('commands:ERROR_ONLY_COMMAND_USER_CONFIRM'), flags: 64 });
+                    return;
+                }
+
+                if (i.customId === 'pl_save_confirm') {
+                    await i.update({ content: context.t('commands:MESSAGE_PLAYLIST_OVERWRITING'), embeds: [], components: [] });
+                    await executeSave();
+                } else {
+                    await i.update({ content: context.t('commands:MESSAGE_PLAYLIST_SAVE_CANCELLED'), embeds: [], components: [] });
+                }
+                collector.stop();
+            });
+
+            collector.on('end', async (_, reason) => {
+                if (reason === 'time') {
+                    try {
+                        await warningMsg.edit({ content: context.t('commands:MESSAGE_PLAYLIST_SAVE_TIMEOUT'), embeds: [], components: [] });
+                    } catch (_) {}
+                }
+            });
+            return;
         }
+
+        await executeSave();
     }
 
     async #handlePlay(bot: Bot, client: Client, context: CommandContext): Promise<void> {
