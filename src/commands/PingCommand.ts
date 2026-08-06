@@ -28,7 +28,7 @@ export class PingCommand extends BaseCommand {
     }
 
     protected async run(bot: Bot, client: Client, context: CommandContext): Promise<void> {
-        const botPing = `${Date.now() - context.createdTimestamp}ms`;
+        const botPing = `${Math.abs(Date.now() - context.createdTimestamp)}ms`;
         const apiPing = client.ws.ping.toString();
 
         await context.react('👍');

@@ -28,7 +28,7 @@ export class StatusCommand extends BaseCommand {
     }
 
     protected async run(bot: Bot, client: Client, context: CommandContext): Promise<void> {
-        const botPing = `${Date.now() - context.createdTimestamp}ms`;
+        const botPing = `${Math.abs(Date.now() - context.createdTimestamp)}ms`;
         const sysload = await sysusage.cpu();
         const pingList = await client.lavashark.nodesPing();
 
