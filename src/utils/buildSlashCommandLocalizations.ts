@@ -75,34 +75,47 @@ export function buildSlashCommandsWithLocalizations(commands: BaseCommand[], bot
         return Object.keys(localizations).length > 0 ? localizations : undefined;
     };
 
+    const processOption = (opt: any): Record<string, any> => {
+        const optDescLocalizations = opt.description ? getLocalizations(opt.description) : undefined;
+        const cleanedOpt: Record<string, any> = {
+            name: opt.name,
+            description: opt.description,
+            type: opt.type,
+        };
+
+        if (opt.required !== undefined) cleanedOpt.required = opt.required;
+        if (opt.autocomplete !== undefined) cleanedOpt.autocomplete = opt.autocomplete;
+        if (opt.channelTypes || opt.channel_types) cleanedOpt.channelTypes = opt.channelTypes || opt.channel_types;
+        if (opt.minValue !== undefined || opt.min_value !== undefined) cleanedOpt.minValue = opt.minValue ?? opt.min_value;
+        if (opt.maxValue !== undefined || opt.max_value !== undefined) cleanedOpt.maxValue = opt.maxValue ?? opt.max_value;
+        if (opt.minLength !== undefined || opt.min_length !== undefined) cleanedOpt.minLength = opt.minLength ?? opt.min_length;
+        if (opt.maxLength !== undefined || opt.max_length !== undefined) cleanedOpt.maxLength = opt.maxLength ?? opt.max_length;
+
+        if (opt.choices && Array.isArray(opt.choices)) {
+            cleanedOpt.choices = opt.choices.map((choice: any) => {
+                const choiceNameLocalizations = choice.name ? getLocalizations(choice.name) : undefined;
+                return choiceNameLocalizations
+                    ? { ...choice, nameLocalizations: choiceNameLocalizations }
+                    : choice;
+            });
+        }
+
+        if (opt.options && Array.isArray(opt.options)) {
+            cleanedOpt.options = opt.options.map((subOpt: any) => processOption(subOpt));
+        }
+
+        if (optDescLocalizations) {
+            cleanedOpt.descriptionLocalizations = optDescLocalizations;
+        }
+
+        return cleanedOpt;
+    };
+
     return commands.map(cmd => {
         const metadata = cmd.getMetadata(bot);
         const descriptionLocalizations = getLocalizations(metadata.description);
 
-        const options = metadata.options?.map((opt: any) => {
-            const optDescLocalizations = opt.description ? getLocalizations(opt.description) : undefined;
-            const cleanedOpt: Record<string, any> = {
-                name: opt.name,
-                description: opt.description,
-                type: opt.type,
-            };
-
-            if (opt.required !== undefined) cleanedOpt.required = opt.required;
-            if (opt.choices) cleanedOpt.choices = opt.choices;
-            if (opt.autocomplete !== undefined) cleanedOpt.autocomplete = opt.autocomplete;
-            if (opt.options) cleanedOpt.options = opt.options;
-            if (opt.channelTypes || opt.channel_types) cleanedOpt.channelTypes = opt.channelTypes || opt.channel_types;
-            if (opt.minValue !== undefined || opt.min_value !== undefined) cleanedOpt.minValue = opt.minValue ?? opt.min_value;
-            if (opt.maxValue !== undefined || opt.max_value !== undefined) cleanedOpt.maxValue = opt.maxValue ?? opt.max_value;
-            if (opt.minLength !== undefined || opt.min_length !== undefined) cleanedOpt.minLength = opt.minLength ?? opt.min_length;
-            if (opt.maxLength !== undefined || opt.max_length !== undefined) cleanedOpt.maxLength = opt.maxLength ?? opt.max_length;
-
-            if (optDescLocalizations) {
-                cleanedOpt.descriptionLocalizations = optDescLocalizations;
-            }
-
-            return cleanedOpt;
-        });
+        const options = metadata.options?.map((opt: any) => processOption(opt));
 
         const cleanedCommand: Record<string, any> = {
             name: metadata.name,
