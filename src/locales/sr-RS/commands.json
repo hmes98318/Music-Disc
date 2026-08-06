@@ -100,6 +100,7 @@
     "ERROR_PLAY_SEARCH": "❌ Nema rezultata. ({{reason}})",
     "ERROR_TIME_EXPIRED": "❌ Vreme je isteklo.",
     "MESSAGE_CLEAR_SUCCESS": "✅ Red je obrisan.",
+    "MESSAGE_CLEAR_RADIO_SUCCESS": "🧹 Red je obrisan i radio je zaustavljen.",
     "MESSAGE_DASHBOARD_SUCCESS": "✅ Kontrolna tabla je ažurirana.",
     "MESSAGE_DJ_NO_PERMISSION": "Trebaš DJ ili Admin dozvole da bi dodao DJ-eve.",
     "MESSAGE_DJ_ADMIN_ONLY": "Samo administratori mogu dodati ili ukloniti DJ-eve.",

@@ -100,6 +100,7 @@
     "ERROR_PLAY_SEARCH": "❌ No results found. ({{reason}})",
     "ERROR_TIME_EXPIRED": "❌ Time expired.",
     "MESSAGE_CLEAR_SUCCESS": "✅ Queue cleared.",
+    "MESSAGE_CLEAR_RADIO_SUCCESS": "🧹 Cleared queue and stopped radio playback.",
     "MESSAGE_DASHBOARD_SUCCESS": "✅ Dashboard updated.",
     "MESSAGE_DJ_NO_PERMISSION": "You need DJ or Admin permissions to add DJs.",
     "MESSAGE_DJ_ADMIN_ONLY": "Only administrators can add or remove DJs.",

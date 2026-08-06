@@ -48,7 +48,7 @@ export class ClearCommand extends BaseCommand {
         }
         else {
             await context.replySuccess(bot, isRadioPlaying
-                ? context.t('commands:MESSAGE_CLEAR_RADIO_SUCCESS', { defaultValue: '🧹 Cleared queue and stopped radio playback.' })
+                ? context.t('commands:MESSAGE_CLEAR_RADIO_SUCCESS')
                 : context.t('commands:MESSAGE_CLEAR_SUCCESS'));
         }
     }

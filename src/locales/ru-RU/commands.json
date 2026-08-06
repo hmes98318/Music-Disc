@@ -100,6 +100,7 @@
   "ERROR_PLAY_SEARCH": "❌ Ничего не найдено. ({{reason}})",
   "ERROR_TIME_EXPIRED": "❌ Время ожидания истекло.",
   "MESSAGE_CLEAR_SUCCESS": "✅ Очередь очищена.",
+  "MESSAGE_CLEAR_RADIO_SUCCESS": "🧹 Очередь очищена, радио остановлено.",
   "MESSAGE_DASHBOARD_SUCCESS": "✅ Панель управления обновлена.",
   "MESSAGE_DJ_NO_PERMISSION": "Вам нужны права диджея или администратора для добавления диджеев.",
   "MESSAGE_DJ_ADMIN_ONLY": "Только администраторы могут добавлять или удалять диджеев.",

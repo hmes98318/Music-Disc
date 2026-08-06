@@ -100,6 +100,7 @@
     "ERROR_PLAY_SEARCH": "❌ 검색결과가 없습니다. 이유: ({{reason}})",
     "ERROR_TIME_EXPIRED": "❌ 시간이 초과되었습니다.",
     "MESSAGE_CLEAR_SUCCESS": "✅ 재생목록이 초기화되었습니다.",
+    "MESSAGE_CLEAR_RADIO_SUCCESS": "🧹 재생목록을 초기화하고 라디오 재생을 중지했습니다.",
     "MESSAGE_DASHBOARD_SUCCESS": "✅ 대시보드가 업데이트되었습니다.",
     "MESSAGE_DJ_NO_PERMISSION": "DJ를 추가하려면 DJ 또는 관리자 권한이 필요합니다.",
     "MESSAGE_DJ_ADMIN_ONLY": "관리자만 DJ를 추가하거나 제거할 수 있습니다.",

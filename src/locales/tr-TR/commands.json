@@ -100,6 +100,7 @@
     "ERROR_PLAY_SEARCH": "❌ Herhangi bir sonuç bulunamadı. ({{reason}})",
     "ERROR_TIME_EXPIRED": "❌ Süre doldu.",
     "MESSAGE_CLEAR_SUCCESS": "✅ Kuyruk temizlendi.",
+    "MESSAGE_CLEAR_RADIO_SUCCESS": "🧹 Kuyruk temizlendi ve radyo yayını durduruldu.",
     "MESSAGE_DASHBOARD_SUCCESS": "✅ Arayüz güncellendi.",
     "MESSAGE_DJ_NO_PERMISSION": "DJ eklemek için DJ veya Yönetici izinlerine ihtiyacınız var.",
     "MESSAGE_DJ_ADMIN_ONLY": "Sadece yöneticiler DJ ekleyebilir veya kaldırabilir.",

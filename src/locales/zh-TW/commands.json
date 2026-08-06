@@ -100,6 +100,7 @@
     "ERROR_PLAY_SEARCH": "❌ 找不到結果。（{{reason}}）",
     "ERROR_TIME_EXPIRED": "❌ 時間已過期。",
     "MESSAGE_CLEAR_SUCCESS": "✅ 播放清單已清空。",
+    "MESSAGE_CLEAR_RADIO_SUCCESS": "🧹 已清空播放清單並停止電台播放。",
     "MESSAGE_DASHBOARD_SUCCESS": "✅ 控制面板已更新。",
     "MESSAGE_DJ_NO_PERMISSION": "您需要 DJ 或管理員權限才能添加 DJ。",
     "MESSAGE_DJ_ADMIN_ONLY": "只有管理員可以添加或移除 DJ。",
