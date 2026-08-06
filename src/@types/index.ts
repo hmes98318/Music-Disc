@@ -54,6 +54,13 @@ export enum DJModeEnum {
 
 export type DJMode = keyof typeof DJModeEnum;
 
+export enum AdminModeEnum {
+    STATIC = 'STATIC',
+    DYNAMIC = 'DYNAMIC',
+}
+
+export type AdminMode = keyof typeof AdminModeEnum;
+
 export type DJLeaveMode = 'PLAY' | 'COOLDOWN';
 
 export interface DJLeaveConfig {
@@ -118,12 +125,14 @@ export type Config = {
 export type BotConfig = {
     textCommand: boolean;
     slashCommand: boolean;
+    adminMode: AdminMode;
     admin: string[];
     djMode: DJMode;
     dj: string[];
     djRoleId: string | null;
     djLeave: DJLeaveConfig;
     clientSecret: string;
+
     name: string;
     prefix: string;
     status: ClientPresenceStatus;

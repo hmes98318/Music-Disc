@@ -63,7 +63,8 @@ export class CommandValidator {
         const metadata = command.getMetadata(bot);
 
         if (bot.config.command.adminCommand.includes(metadata.name)) {
-            if (!bot.config.bot.admin.includes(userId)) {
+            const member = source.member as GuildMember | null;
+            if (!PermissionManager.isAdmin(bot, userId, member)) {
                 const username = source instanceof Message ? source.author.username : source.user.username;
                 const content = source instanceof Message ? source.content : `/${source.commandName}`;
                 const lng = bot.guildLanguageManager?.get(source.guildId!);
@@ -81,6 +82,7 @@ export class CommandValidator {
 
         return { valid: true };
     }
+
 
     /**
      * Validate if user has DJ permission for DJ commands

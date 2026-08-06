@@ -1,7 +1,8 @@
 import { MessageFlags } from 'discord.js';
 import { embeds } from '../../embeds/index.js';
+import { PermissionManager } from '../PermissionManager.js';
 
-import type { Client, StringSelectMenuInteraction } from 'discord.js';
+import type { Client, StringSelectMenuInteraction, GuildMember } from 'discord.js';
 import type { Bot } from '../../@types/index.js';
 
 export class LanguageSelectHandler {
@@ -15,7 +16,8 @@ export class LanguageSelectHandler {
         const lng = bot.guildLanguageManager?.get(interaction.guildId!);
 
         if (bot.config.command.adminCommand.includes('language')) {
-            if (!bot.config.bot.admin.includes(interaction.user.id)) {
+            const member = interaction.member as GuildMember | null;
+            if (!PermissionManager.isAdmin(bot, interaction.user.id, member)) {
                 await interaction.reply({
                     embeds: [embeds.textErrorMsg(bot, bot.i18n.t('events:ERROR_REQUIRE_ADMIN', { lng }))],
                     flags: MessageFlags.Ephemeral
@@ -23,6 +25,7 @@ export class LanguageSelectHandler {
                 return;
             }
         }
+
 
         const selectedLocale = interaction.values[0];
 

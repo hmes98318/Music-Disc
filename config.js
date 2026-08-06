@@ -21,8 +21,14 @@ const config = {
         textCommand             : true,                 // Whether to enable text command
         slashCommand            : true,                 // Whether to enable slash command
 
+        /**
+         * DYNAMIC mode: Server Administrator or Manage Guild permissions are checked dynamically
+         * STATIC mode: Admin is determined by the config file (admin array)
+         */
+        adminMode               : 'DYNAMIC',            // Admin mode: 'STATIC' (config.js based) or 'DYNAMIC' (Discord Administrator/Manage Guild permission based)
         // OAUTH2 mode requires setting 'admin', 'clientSecret' value
         admin                   : [],                   // Admin users, It must be the user ID (string[])
+
 
         /**
          * DYNAMIC mode: The first user to execute a command becomes the DJ
