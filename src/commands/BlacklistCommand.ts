@@ -24,7 +24,7 @@ export class BlacklistCommand extends BaseCommand {
             options: [
                 {
                     name: 'add',
-                    description: i18next.t('commands:CONFIG_BLACKLIST_OPTION_SUBCOMMAND'),
+                    description: i18next.t('commands:CONFIG_BLACKLIST_OPTION_ADD'),
                     type: 1, // SUB_COMMAND
                     options: [
                         {
@@ -37,7 +37,7 @@ export class BlacklistCommand extends BaseCommand {
                 },
                 {
                     name: 'remove',
-                    description: i18next.t('commands:CONFIG_BLACKLIST_OPTION_SUBCOMMAND'),
+                    description: i18next.t('commands:CONFIG_BLACKLIST_OPTION_REMOVE'),
                     type: 1, // SUB_COMMAND
                     options: [
                         {
@@ -50,7 +50,7 @@ export class BlacklistCommand extends BaseCommand {
                 },
                 {
                     name: 'list',
-                    description: i18next.t('commands:CONFIG_BLACKLIST_OPTION_SUBCOMMAND'),
+                    description: i18next.t('commands:CONFIG_BLACKLIST_OPTION_LIST'),
                     type: 1 // SUB_COMMAND
                 }
             ]
