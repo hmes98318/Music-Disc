@@ -207,7 +207,7 @@
                                         Vol {{ server.playback.volume.current ?? '-' }}/{{ server.playback.volume.max }}
                                     </span>
                                     <span class="rounded-full bg-surface px-2.5 py-0.5 text-xs text-sub">
-                                        Loop {{ server.playback.repeatMode }}
+                                        {{ $t('servers.details.repeat') }}: {{ server.playback.repeatMode }}
                                     </span>
                                 </div>
                             </div>
