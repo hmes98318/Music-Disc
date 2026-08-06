@@ -255,10 +255,13 @@
     "ERROR_ONLY_COMMAND_USER_CONFIRM": "Sadece komutu çalıştıran kullanıcı bu işlemi onaylayabilir.",
     "MESSAGE_PLAYLIST_EXISTS_TITLE": "⚠️ Çalma Listesi Zaten Var",
     "MESSAGE_PLAYLIST_EXISTS_DESCRIPTION": "**`{{name}}`** adında bir çalma listesi (toplam {{count}} parça) zaten mevcut.\nİçe aktarılan çalma listesiyle değiştirmek istiyor musunuz?",
+    "MESSAGE_PLAYLIST_SAVE_EXISTS_DESCRIPTION": "**`{{name}}`** isimli oynatma listesi (toplam {{count}} şarkı) zaten mevcut.\nMevcut sıradaki şarkılarla değiştirmek istiyor musunuz?",
     "LABEL_OVERWRITE": "Üzerine Yaz",
     "LABEL_CANCEL": "İptal",
     "MESSAGE_PLAYLIST_OVERWRITING": "Çalma listesinin üzerine yazılıyor...",
     "MESSAGE_PLAYLIST_IMPORT_CANCELLED": "❌ Çalma listesi içe aktarma iptal edildi.",
     "MESSAGE_PLAYLIST_IMPORT_TIMEOUT": "⏱️ İçe aktarma onay süresi doldu.",
+    "MESSAGE_PLAYLIST_SAVE_CANCELLED": "❌ Oynatma listesini kaydetme iptal edildi.",
+    "MESSAGE_PLAYLIST_SAVE_TIMEOUT": "⏱️ Kayıt onay süresi doldu.",
     "MESSAGE_SKIP_EMPTY_DISCONNECT": "⏭️ Mevcut parça atlandı. Sıra şimdi boş."
 }

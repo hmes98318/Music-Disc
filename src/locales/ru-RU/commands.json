@@ -255,10 +255,13 @@
   "ERROR_ONLY_COMMAND_USER_CONFIRM": "Только пользователь, вызвавший команду, может подтвердить это действие.",
   "MESSAGE_PLAYLIST_EXISTS_TITLE": "⚠️ Плейлист уже существует",
   "MESSAGE_PLAYLIST_EXISTS_DESCRIPTION": "Плейлист с именем **`{{name}}`** (всего {{count}} треков) уже существует.\nХотите перезаписать его импортированным плейлистом?",
+  "MESSAGE_PLAYLIST_SAVE_EXISTS_DESCRIPTION": "Плейлист с именем **`{{name}}`** (всего {{count}} треков) уже существует.\nХотите перезаписать его текущей очередью?",
   "LABEL_OVERWRITE": "Перезаписать",
   "LABEL_CANCEL": "Отмена",
   "MESSAGE_PLAYLIST_OVERWRITING": "Перезапись плейлиста...",
   "MESSAGE_PLAYLIST_IMPORT_CANCELLED": "❌ Импорт плейлиста отменен.",
   "MESSAGE_PLAYLIST_IMPORT_TIMEOUT": "⏱️ Время подтверждения импорта истекло.",
+  "MESSAGE_PLAYLIST_SAVE_CANCELLED": "❌ Сохранение плейлиста отменено.",
+  "MESSAGE_PLAYLIST_SAVE_TIMEOUT": "⏱️ Время ожидания подтверждения сохранения истекло.",
   "MESSAGE_SKIP_EMPTY_DISCONNECT": "⏭️ Пропущен текущий трек. Очередь пуста."
 }

@@ -255,10 +255,13 @@
     "ERROR_ONLY_COMMAND_USER_CONFIRM": "Samo korisnik koji je pokrenuo komandu može potvrditi ovu akciju.",
     "MESSAGE_PLAYLIST_EXISTS_TITLE": "⚠️ Plejlista već postoji",
     "MESSAGE_PLAYLIST_EXISTS_DESCRIPTION": "Plejlista sa imenom **`{{name}}`** (ukupno {{count}} pesama) već postoji.\nDa li želite da je zamenite uvezenom plejlistom?",
+    "MESSAGE_PLAYLIST_SAVE_EXISTS_DESCRIPTION": "Plejlista pod nazivom **`{{name}}`** ({{count}} pesama) već postoji.\nDa li želite da je zamenite trenutnim redom pesama?",
     "LABEL_OVERWRITE": "Zameni",
     "LABEL_CANCEL": "Otkaži",
     "MESSAGE_PLAYLIST_OVERWRITING": "Zamenjivanje plejliste...",
     "MESSAGE_PLAYLIST_IMPORT_CANCELLED": "❌ Uvoz plejliste je otkazan.",
     "MESSAGE_PLAYLIST_IMPORT_TIMEOUT": "⏱️ Vreme za potvrdu uvoza je isteklo.",
+    "MESSAGE_PLAYLIST_SAVE_CANCELLED": "❌ Čuvanje plejliste je otkazano.",
+    "MESSAGE_PLAYLIST_SAVE_TIMEOUT": "⏱️ Potvrda čuvanja je istekla.",
     "MESSAGE_SKIP_EMPTY_DISCONNECT": "⏭️ Preskočena trenutna pesma. Red je sada prazan."
 }

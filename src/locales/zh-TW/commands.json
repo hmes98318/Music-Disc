@@ -255,10 +255,13 @@
     "ERROR_ONLY_COMMAND_USER_CONFIRM": "只有執行該指令的使用者才能確認此操作。",
     "MESSAGE_PLAYLIST_EXISTS_TITLE": "⚠️ 播放清單已存在",
     "MESSAGE_PLAYLIST_EXISTS_DESCRIPTION": "名稱為 **`{{name}}`** 的播放清單 (共 {{count}} 首) 已存在。\n是否要使用匯入的播放清單覆蓋它？",
+    "MESSAGE_PLAYLIST_SAVE_EXISTS_DESCRIPTION": "名為 **`{{name}}`** 的播放清單（共 {{count}} 首歌曲）已經存在。\n您是否要使用當前佇列覆蓋它？",
     "LABEL_OVERWRITE": "覆蓋",
     "LABEL_CANCEL": "取消",
     "MESSAGE_PLAYLIST_OVERWRITING": "正在覆蓋播放清單...",
     "MESSAGE_PLAYLIST_IMPORT_CANCELLED": "❌ 已取消匯入播放清單。",
     "MESSAGE_PLAYLIST_IMPORT_TIMEOUT": "⏱️ 匯入確認逾時。",
+    "MESSAGE_PLAYLIST_SAVE_CANCELLED": "❌ 已取消儲存播放清單。",
+    "MESSAGE_PLAYLIST_SAVE_TIMEOUT": "⏱️ 儲存確認逾時。",
     "MESSAGE_SKIP_EMPTY_DISCONNECT": "⏭️ 已略過目前歌曲。佇列現已清空。"
 }
