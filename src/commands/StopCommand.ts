@@ -1,4 +1,5 @@
 import i18next from 'i18next';
+import { RepeatMode } from 'lavashark';
 
 import { BaseCommand } from './base/BaseCommand.js';
 import { CommandCategory } from '../@types/index.js';
@@ -37,9 +38,15 @@ export class StopCommand extends BaseCommand {
             client.queuePersistence.deleteQueue(player.guildId);
         }
 
+        // Turn off repeat mode before clearing queue to prevent track re-playback on skip
+        if (player.repeatMode !== RepeatMode.OFF) {
+            player.setRepeatMode(RepeatMode.OFF);
+        }
+
         player.queue.clear();
         await player.skip();
         await client.dashboard.destroy(player);
+
 
         if (context.isMessage()) {
             await context.react('👍');
@@ -49,3 +56,4 @@ export class StopCommand extends BaseCommand {
         }
     }
 }
+

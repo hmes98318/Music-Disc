@@ -1,3 +1,4 @@
+import { RepeatMode } from 'lavashark';
 import { DashboardButtonHandler } from './DashboardButtonHandler.js';
 
 import type { Client, ButtonInteraction } from 'discord.js';
@@ -25,6 +26,11 @@ export class StopButtonHandler extends DashboardButtonHandler {
             client.queuePersistence.deleteQueue(player.guildId);
         }
 
+        // Turn off repeat mode before clearing queue to prevent track re-playback on skip
+        if (player.repeatMode !== RepeatMode.OFF) {
+            player.setRepeatMode(RepeatMode.OFF);
+        }
+
         player.queue.clear();
         await player.skip();
         await client.dashboard.destroy(player);
@@ -32,3 +38,5 @@ export class StopButtonHandler extends DashboardButtonHandler {
         await interaction.deferUpdate();
     }
 }
+
+
