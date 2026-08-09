@@ -2,6 +2,9 @@ FROM node:22.22.3-slim AS node_build
 
 WORKDIR /tmp
 
+RUN apt-get update && \
+    apt-get install --no-install-recommends -y g++ make python3
+
 COPY . .
 
 RUN npm ci && \
