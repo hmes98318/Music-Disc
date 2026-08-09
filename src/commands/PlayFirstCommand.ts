@@ -238,25 +238,39 @@ export class PlayFirstCommand extends BaseCommand {
         const curVolume = player.setting.volume ?? bot.guildVolumeManager?.get(player.guildId) ?? bot.config.bot.volume.default;
 
         if (res.loadType === LoadType.PLAYLIST) {
-            // Add only the allowed number of tracks from playlist
             const tracks = tracksToAdd !== undefined ? res.tracks.slice(0, tracksToAdd) : res.tracks;
-            player.addTracks(tracks, requester as any);
+
+            for (const t of tracks) {
+                (t as any).requester = requester;
+            }
 
             if (!player.playing) {
+                const firstTrack = tracks[0];
+                const restTracks = tracks.slice(1);
+
+                if (restTracks.length > 0) {
+                    player.queue.tracks.unshift(...restTracks);
+                }
+
                 player.filters.setVolume(curVolume);
-                await player.play()
+                await player.prioritizePlay(firstTrack, requester as any)
                     .catch(async (error) => {
-                        bot.logger.error( bot.shardId, 'Error playing track: ' + error);
+                        bot.logger.error(bot.shardId, 'Error playing track: ' + error);
                         await context.replyError(bot, context.t('commands:ERROR_PLAY_MUSIC', { reason: JSON.stringify(error) }));
                         return player.destroy();
                     });
+            } else {
+                player.queue.tracks.unshift(...tracks);
+                if (player.current && client.dashboard) {
+                    await client.dashboard.update(player, player.current);
+                }
             }
         }
         else {
             const track = res.tracks[0];
             await player.prioritizePlay(track, requester as any)
                 .catch(async (error) => {
-                    bot.logger.error( bot.shardId, 'Error playing track: ' + error);
+                    bot.logger.error(bot.shardId, 'Error playing track: ' + error);
                     await context.replyError(bot, context.t('commands:ERROR_PLAY_MUSIC', { reason: JSON.stringify(error) }));
                     return player.destroy();
                 });

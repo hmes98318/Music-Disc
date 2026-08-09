@@ -96,7 +96,8 @@ export class QueueButtonHandler {
 
         // Check admin permission
         if (bot.config.command.adminCommand.includes('clear')) {
-            if (!bot.config.bot.admin.includes(interaction.user.id)) {
+            const member = interaction.member as GuildMember | null;
+            if (!PermissionManager.isAdmin(bot, interaction.user.id, member)) {
                 await interaction.reply({
                     embeds: [embeds.textErrorMsg(bot, bot.i18n.t('events:ERROR_REQUIRE_ADMIN', { lng }))],
                     flags: MessageFlags.Ephemeral
@@ -104,6 +105,7 @@ export class QueueButtonHandler {
                 return;
             }
         }
+
 
         // Check DJ permission
         if (bot.config.command.djCommand.includes('clear')) {

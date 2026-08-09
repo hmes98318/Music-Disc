@@ -1,15 +1,22 @@
+import { ActionRowBuilder, StringSelectMenuBuilder } from 'discord.js';
 import i18next from 'i18next';
 
 import { BaseCommand } from './base/BaseCommand.js';
 import { CommandCategory } from '../@types/index.js';
+import { embeds } from '../embeds/index.js';
+import { getLanguageDisplayName } from '../utils/languageUtils.js';
 
 import type { Client } from 'discord.js';
 import type { CommandContext } from './base/CommandContext.js';
 import type { Bot, CommandMetadata } from '../@types/index.js';
 
-
 export class LanguageCommand extends BaseCommand {
-    public getMetadata(_bot: Bot): CommandMetadata {
+    public getMetadata(bot: Bot): CommandMetadata {
+        const choices = bot.lang.languages.slice(0, 25).map(lang => ({
+            name: getLanguageDisplayName(lang),
+            value: lang
+        }));
+
         return {
             name: 'language',
             aliases: ['lang', 'locale'],
@@ -24,7 +31,8 @@ export class LanguageCommand extends BaseCommand {
                     name: 'locale',
                     description: i18next.t('commands:CONFIG_LANG_OPTION_DESCRIPTION'),
                     type: 3,
-                    required: false
+                    required: false,
+                    choices
                 }
             ]
         };
@@ -35,15 +43,33 @@ export class LanguageCommand extends BaseCommand {
             ? context.getStringOption('locale')
             : context.args.join(' ');
 
-        // Show available languages
         if (!locale) {
-            await context.replyText(bot, context.t('commands:MESSAGE_LANG_AVAILABLE_LIST', {
-                langList: bot.lang.languages.map(lang => `\`${lang}\``).join(', ')
+            const currentLocale = context.guildId
+                ? (bot.guildLanguageManager?.get(context.guildId) || bot.config.bot.i18n.defaultLocale)
+                : bot.config.bot.i18n.defaultLocale;
+
+            const selectOptions = bot.lang.languages.map(lang => ({
+                label: getLanguageDisplayName(lang),
+                value: lang,
+                default: lang === currentLocale
             }));
+
+            const selectMenu = new StringSelectMenuBuilder()
+                .setCustomId('select_language')
+                .setPlaceholder(bot.i18n.t('commands:CONFIG_LANG_OPTION_DESCRIPTION', { lng: currentLocale }))
+                .addOptions(selectOptions);
+
+            const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(selectMenu);
+
+            await context.reply({
+                embeds: [embeds.textMsg(bot, context.t('commands:MESSAGE_LANG_AVAILABLE_LIST', {
+                    langList: bot.lang.languages.map(lang => `\`${lang}\``).join(', ')
+                }))],
+                components: [row]
+            });
             return;
         }
 
-        // Validate language
         if (!bot.lang.languages.includes(locale)) {
             await context.replyEphemeralError(bot, context.t('commands:MESSAGE_LANG_ARGS_ERROR', {
                 langList: bot.lang.languages.map(lang => `\`${lang}\``).join(', ')
@@ -51,7 +77,6 @@ export class LanguageCommand extends BaseCommand {
             return;
         }
 
-        // Change language for the current guild
         if (context.guildId) {
             bot.guildLanguageManager?.set(context.guildId, locale);
         }

@@ -1,5 +1,5 @@
 import { ActivityType, ClientPresenceStatus } from 'discord.js';
-import { LoginType, DJModeEnum } from '../@types/index.js';
+import { LoginType, DJModeEnum, AdminModeEnum } from '../@types/index.js';
 
 
 /**
@@ -12,8 +12,14 @@ export const cst = {
             textCommand             : true,                 // Whether to enable text command
             slashCommand            : true,                 // Whether to enable slash command
     
+            /**
+             * DYNAMIC mode: Server Administrator or Manage Guild permissions are checked dynamically
+             * STATIC mode: Admin is determined by the config file (admin array)
+             */
+            adminMode               : AdminModeEnum.DYNAMIC,// Admin mode: 'STATIC' (config.js based) or 'DYNAMIC' (Discord Administrator/Manage Guild permission based)
             // OAUTH2 mode requires setting 'admin', 'clientSecret' value
             admin                   : [],                   // Admin users, It must be the user ID (string[])
+
 
             /**
              * DYNAMIC mode: The first user to execute a command becomes the DJ
@@ -150,8 +156,10 @@ export const cst = {
         // Command permission settings
         command: {
             disableCommand      : [],                                   // Disabled commands, all enabled by default
-            adminCommand        : ['language','server', 'status'],      // Admin commands, only Admin role user can use
+            adminCommand        : ['language', 'server', 'status', 'volume-default'], // Admin commands, only Admin role user can use
             djCommand           : ['dj'],                               // DJ commands, only DJ role user can use
+
+
             requesterOnly       : ['skip'],                              // Commands restricted to the song requester
             requesterDjBypass   : ['skip']                              // Commands DJs can bypass requesterOnly on
         },

@@ -14,19 +14,19 @@
     "author": "hmes98318",
     "license": "MIT",
     "dependencies": {
-        "@nuxt/icon": "^2.2.3",
-        "@nuxtjs/i18n": "^10.4.0",
-        "@pinia/nuxt": "^0.11.3",
-        "@tailwindcss/vite": "^4.3.1",
-        "nuxt": "^4.4.8",
-        "pinia": "^3.0.4",
-        "tailwindcss": "^4.3.1",
-        "vue": "^3.5.38",
-        "vue-router": "^5.1.0"
+        "@nuxt/icon": "^2.4.1",
+        "@nuxtjs/i18n": "^10.6.0",
+        "@pinia/nuxt": "^1.0.1",
+        "@tailwindcss/vite": "^4.3.3",
+        "nuxt": "^4.5.1",
+        "pinia": "^4.0.2",
+        "tailwindcss": "^4.3.3",
+        "vue": "^3.5.40",
+        "vue-router": "^5.2.0"
     },
     "devDependencies": {
-        "@iconify-json/lucide": "^1.2.114",
-        "prettier": "^3.8.4"
+        "@iconify-json/lucide": "^1.2.121",
+        "prettier": "^3.9.6"
     },
     "engines": {
         "node": ">=22"

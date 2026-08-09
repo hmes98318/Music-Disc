@@ -1,4 +1,4 @@
-import cookie from 'cookie';
+import { parseCookie } from 'cookie';
 import { Router } from 'express';
 
 import type { Request } from 'express';
@@ -57,7 +57,7 @@ export abstract class BaseRouter {
      * Centralises cookie parsing so subclasses do not repeat the same logic.
      */
     protected getSessionId(req: Request): string {
-        return cookie.parse(req.headers.cookie ?? '')['sessionId'] ?? '';
+        return parseCookie(req.headers.cookie ?? '')['sessionId'] ?? '';
     }
 
     /**

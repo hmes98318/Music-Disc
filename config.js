@@ -21,8 +21,14 @@ const config = {
         textCommand             : true,                 // Whether to enable text command
         slashCommand            : true,                 // Whether to enable slash command
 
+        /**
+         * DYNAMIC mode: Server Administrator or Manage Guild permissions are checked dynamically
+         * STATIC mode: Admin is determined by the config file (admin array)
+         */
+        adminMode               : 'DYNAMIC',            // Admin mode: 'STATIC' (config.js based) or 'DYNAMIC' (Discord Administrator/Manage Guild permission based)
         // OAUTH2 mode requires setting 'admin', 'clientSecret' value
         admin                   : [],                   // Admin users, It must be the user ID (string[])
+
 
         /**
          * DYNAMIC mode: The first user to execute a command becomes the DJ
@@ -153,7 +159,7 @@ const config = {
     // Command permission settings
     command: {
         disableCommand: [],                                 // Disabled commands, all enabled by default
-        adminCommand: ['blacklist','server', 'status'],     // Admin commands, only Admin role user can use
+        adminCommand: ['blacklist', 'language', 'server', 'status', 'volume-default'], // Admin commands, only Admin role user can use
         djCommand: ['dj', 'filter'],                        // DJ commands, only DJ role user can use
         // Supported commands: 'skip', 'seek', 'pause'
         // When a command name is listed here, only the requester of the currently playing song may use it.

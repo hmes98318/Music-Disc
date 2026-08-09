@@ -28,6 +28,8 @@ import { PlayFirstCommand } from './PlayFirstCommand.js';
 import { BlacklistCommand } from './BlacklistCommand.js';
 import { PlayCommand } from './PlayCommand.js';
 import { PlayLastCommand } from './PlayLastCommand.js';
+import { PlaylistCommand } from './PlaylistCommand.js';
+import { RadioCommand } from './RadioCommand.js';
 
 import type { CommandRegistry } from './base/CommandRegistry.js';
 import type { Bot } from '../@types/index.js';
@@ -75,4 +77,6 @@ export function registerAllCommands(registry: CommandRegistry, bot: Bot): void {
     registry.register(new PlayFirstCommand(), bot);
     registry.register(new PlayLastCommand(), bot);
     registry.register(new PlayCommand(), bot);
+    registry.register(new PlaylistCommand(), bot);
+    registry.register(new RadioCommand(), bot);
 }

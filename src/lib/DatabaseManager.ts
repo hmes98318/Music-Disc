@@ -107,6 +107,26 @@ export class DatabaseManager {
             CREATE TABLE IF NOT EXISTS blacklisted_users (
                 user_id TEXT PRIMARY KEY
             );
+
+            CREATE TABLE IF NOT EXISTS playlists (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                guild_id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                created_at INTEGER NOT NULL,
+                UNIQUE(guild_id, name)
+            );
+
+            CREATE TABLE IF NOT EXISTS playlist_tracks (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                playlist_id INTEGER NOT NULL,
+                title TEXT NOT NULL,
+                url TEXT NOT NULL,
+                encoded TEXT,
+                author TEXT,
+                duration INTEGER,
+                position INTEGER NOT NULL,
+                FOREIGN KEY (playlist_id) REFERENCES playlists(id) ON DELETE CASCADE
+            );
         `);
     }
 }

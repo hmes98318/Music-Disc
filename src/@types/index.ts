@@ -18,6 +18,7 @@ import type { DatabaseManager } from '../lib/DatabaseManager.js';
 import type { QueuePersistence } from '../lib/QueuePersistence.js';
 import type { CommandRegistry } from '../commands/base/CommandRegistry.js';
 import type { IPBlockerConfig, SessionManagerConfig } from './SessionManager.types.js';
+import type { PlaylistManager } from '../lib/PlaylistManager.js';
 
 export * from './ButtonIds.types.js';
 export * from './BaseCommand.types.js';
@@ -52,6 +53,13 @@ export enum DJModeEnum {
 }
 
 export type DJMode = keyof typeof DJModeEnum;
+
+export enum AdminModeEnum {
+    STATIC = 'STATIC',
+    DYNAMIC = 'DYNAMIC',
+}
+
+export type AdminMode = keyof typeof AdminModeEnum;
 
 export type DJLeaveMode = 'PLAY' | 'COOLDOWN';
 
@@ -96,6 +104,7 @@ export type Bot = {
     blacklistManager?: BlacklistManager;
     guildLanguageManager?: GuildLanguageManager;
     guildVolumeManager?: GuildVolumeManager;
+    playlistManager?: PlaylistManager;
 }
 
 /**
@@ -116,12 +125,14 @@ export type Config = {
 export type BotConfig = {
     textCommand: boolean;
     slashCommand: boolean;
+    adminMode: AdminMode;
     admin: string[];
     djMode: DJMode;
     dj: string[];
     djRoleId: string | null;
     djLeave: DJLeaveConfig;
     clientSecret: string;
+
     name: string;
     prefix: string;
     status: ClientPresenceStatus;

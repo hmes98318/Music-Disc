@@ -30,9 +30,15 @@ export class ClearCommand extends BaseCommand {
             return;
         }
 
+        const isRadioPlaying = Boolean(player.current && (player.current as any).isRadio);
+
         player.queue.clear();
 
-        // Update persisted queue to reflect cleared queue (current track still playing)
+        if (isRadioPlaying) {
+            await player.skip();
+        }
+
+        // Update persisted queue to reflect cleared queue
         if (bot.config.queuePersistence.enabled && client.queuePersistence) {
             await client.queuePersistence.saveQueue(player);
         }
@@ -41,7 +47,9 @@ export class ClearCommand extends BaseCommand {
             await context.react('👍');
         }
         else {
-            await context.replySuccess(bot, context.t('commands:MESSAGE_CLEAR_SUCCESS'));
+            await context.replySuccess(bot, isRadioPlaying
+                ? context.t('commands:MESSAGE_CLEAR_RADIO_SUCCESS', { defaultValue: '🧹 Cleared queue and stopped radio playback.' })
+                : context.t('commands:MESSAGE_CLEAR_SUCCESS'));
         }
     }
 }

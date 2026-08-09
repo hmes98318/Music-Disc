@@ -135,7 +135,7 @@ const currentLocale = computed({
     }
 });
 
-// defaultLocale 동기화
+// Synchronize defaultLocale
 watch(() => botStore.summary?.i18n?.defaultLocale, (newDefault) => {
     if (newDefault) {
         const i18nCookie = useCookie('i18n_redirected');

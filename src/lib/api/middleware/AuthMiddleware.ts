@@ -1,4 +1,4 @@
-import cookie from 'cookie';
+import { parseCookie } from 'cookie';
 
 import { problem } from '../http.js';
 
@@ -29,7 +29,7 @@ export class AuthMiddleware {
      */
     public handle() {
         return (req: Request, res: Response, next: NextFunction): void => {
-            const sessionId = cookie.parse(req.headers.cookie ?? '')['sessionId'] ?? '';
+            const sessionId = parseCookie(req.headers.cookie ?? '')['sessionId'] ?? '';
 
             if (this.#sessionManager.verifyAndRefreshSession(sessionId)) {
                 next();

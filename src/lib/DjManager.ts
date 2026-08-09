@@ -1,3 +1,4 @@
+import { PermissionManager } from './PermissionManager.js';
 import { DJModeEnum } from '../@types/index.js';
 
 import type { VoiceBasedChannel, GuildMember, Client } from 'discord.js';
@@ -21,10 +22,10 @@ export class DJManager {
      * Check if a user has DJ permissions
      */
     public static isDJ(bot: Bot, userId: string, member: GuildMember | null, player?: Player): boolean {
-        // Admin always has DJ permissions
-        if (bot.config.bot.admin.includes(userId)) {
+        if (PermissionManager.isAdmin(bot, userId, member)) {
             return true;
         }
+
 
         // Static mode: Check config DJ list and role
         if (bot.config.bot.djMode === DJModeEnum.STATIC) {

@@ -28,6 +28,7 @@ export class LoopButtonHandler extends DashboardButtonHandler {
         }
 
         const lng = bot.guildLanguageManager?.get(interaction.guildId!);
+        const currentRepeatMode = player.repeatMode;
 
         const modeLabels = [
             bot.i18n.t('events:LOOP_MODE_OFF', { lng }),
@@ -43,6 +44,7 @@ export class LoopButtonHandler extends DashboardButtonHandler {
                     .setLabel(modeLabels[index])
                     .setDescription(bot.i18n.t('commands:LOOP_SELECT_DESCRIPTION', { mode: modeLabels[index], lng }))
                     .setValue(value)
+                    .setDefault(index === currentRepeatMode)
             ));
 
         const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(select);
@@ -59,40 +61,52 @@ export class LoopButtonHandler extends DashboardButtonHandler {
         });
 
         collector.on('collect', async (i: StringSelectMenuInteraction) => {
+            const currentLng = bot.guildLanguageManager?.get(i.guildId!) || lng;
+            const updatedModeLabels = [
+                bot.i18n.t('events:LOOP_MODE_OFF', { lng: currentLng }),
+                bot.i18n.t('events:LOOP_MODE_SINGLE', { lng: currentLng }),
+                bot.i18n.t('events:LOOP_MODE_ALL', { lng: currentLng })
+            ];
+
             const selectedValue = i.values[0];
             let mode = 0;
-            let modeLabel = modeLabels[0];
+            let modeLabel = updatedModeLabels[0];
 
             switch (selectedValue) {
                 case 'off':
                     mode = RepeatMode.OFF;
-                    modeLabel = modeLabels[0];
+                    modeLabel = updatedModeLabels[0];
                     break;
                 case 'single':
                     mode = RepeatMode.TRACK;
-                    modeLabel = modeLabels[1];
+                    modeLabel = updatedModeLabels[1];
                     break;
                 case 'all':
                     mode = RepeatMode.QUEUE;
-                    modeLabel = modeLabels[2];
+                    modeLabel = updatedModeLabels[2];
                     break;
             }
 
             player.setRepeatMode(mode);
 
-            const buttonRow = ButtonsBuilder.createDashboardButtons(player, lng);
-            await player.dashboardMsg?.edit({ components: [buttonRow] });
+            if (player.current && client.dashboard) {
+                await client.dashboard.update(player, player.current);
+            } else {
+                const buttonRow = ButtonsBuilder.createDashboardButtons(player, currentLng);
+                await player.dashboardMsg?.edit({ components: [buttonRow] });
+            }
 
             await i.update({
-                embeds: [embeds.textSuccessMsg(bot, bot.i18n.t('events:MESSAGE_SET_LOOP_MODE', { mode: modeLabel, lng }))],
+                embeds: [embeds.textSuccessMsg(bot, bot.i18n.t('events:MESSAGE_SET_LOOP_MODE', { mode: modeLabel, lng: currentLng }))],
                 components: []
             });
         });
 
         collector.on('end', async (collected: Collection<string, StringSelectMenuInteraction>, reason: string) => {
             if (reason === 'time' && collected.size === 0) {
+                const currentLng = bot.guildLanguageManager?.get(interaction.guildId!) || lng;
                 await msg.edit({
-                    embeds: [embeds.textErrorMsg(bot, bot.i18n.t('commands:ERROR_TIME_EXPIRED', { lng }))],
+                    embeds: [embeds.textErrorMsg(bot, bot.i18n.t('commands:ERROR_TIME_EXPIRED', { lng: currentLng }))],
                     components: []
                 }).catch(() => {});
             }
