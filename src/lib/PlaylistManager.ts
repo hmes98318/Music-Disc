@@ -1,6 +1,9 @@
 import type { Database } from 'better-sqlite3';
 import type { Bot } from '../@types/index.js';
 
+
+export const PLAYLIST_TRACK_LIMIT = 500;
+
 export interface PlaylistTrack {
     id?: number;
     playlistId?: number;
@@ -19,6 +22,10 @@ export interface Playlist {
     createdAt: number;
     tracks?: PlaylistTrack[];
 }
+
+export type PlaylistImportResult =
+    | {success: true; trackCount: number}
+    | {success: false; reason: 'EMPTY' | 'SAVE_FAILED' | 'TRACK_LIMIT'};
 
 export class PlaylistManager {
     private readonly bot: Bot;
@@ -129,32 +136,38 @@ export class PlaylistManager {
 
     public saveCurrentQueue(guildId: string, name: string, tracks: Omit<PlaylistTrack, 'position'>[]): boolean {
         const db = this.db;
-        if (!db) return false;
+        if (!db || tracks.length === 0 || tracks.length > PLAYLIST_TRACK_LIMIT) return false;
 
         try {
-            this.deletePlaylist(guildId, name);
-            const playlistId = this.createPlaylist(guildId, name);
-            if (!playlistId) return false;
-
             const insertTrack = db.prepare(`
                 INSERT INTO playlist_tracks (playlist_id, title, url, encoded, author, duration, position)
                 VALUES (?, ?, ?, ?, ?, ?, ?)
             `);
 
-            db.transaction(() => {
+            const replacePlaylist = db.transaction(() => {
+                db.prepare('DELETE FROM playlists WHERE guild_id = ? AND name = ?').run(guildId, name);
+
+                const playlistInfo = db.prepare(`
+                    INSERT INTO playlists (guild_id, name, created_at)
+                    VALUES (?, ?, ?)
+                `).run(guildId, name, Date.now());
+                const playlistId = Number(playlistInfo.lastInsertRowid);
+
                 for (let i = 0; i < tracks.length; i++) {
                     const track = tracks[i];
                     insertTrack.run(
                         playlistId,
                         track.title,
                         track.url,
-                        track.encoded || null,
-                        track.author || null,
-                        track.duration || null,
+                        track.encoded ?? null,
+                        track.author ?? null,
+                        track.duration ?? null,
                         i
                     );
                 }
-            })();
+            });
+
+            replacePlaylist();
 
             return true;
         } catch (error) {
@@ -169,6 +182,8 @@ export class PlaylistManager {
 
         try {
             const countRow = db.prepare('SELECT COUNT(*) as count FROM playlist_tracks WHERE playlist_id = ?').get(playlistId) as { count: number };
+            if (countRow.count >= PLAYLIST_TRACK_LIMIT) return false;
+
             const position = countRow.count;
 
             db.prepare(`
@@ -178,9 +193,9 @@ export class PlaylistManager {
                 playlistId,
                 track.title,
                 track.url,
-                track.encoded || null,
-                track.author || null,
-                track.duration || null,
+                track.encoded ?? null,
+                track.author ?? null,
+                track.duration ?? null,
                 position
             );
 
@@ -227,9 +242,10 @@ export class PlaylistManager {
         }
     }
 
-    public async importFromM3u(guildId: string, name: string, m3uContent: string): Promise<boolean> {
+    public importFromM3u(guildId: string, name: string, m3uContent: string): PlaylistImportResult {
         const tracks = this.parseM3U(m3uContent);
-        if (tracks.length === 0) return false;
+        if (tracks.length === 0) return {success: false, reason: 'EMPTY'};
+        if (tracks.length > PLAYLIST_TRACK_LIMIT) return {success: false, reason: 'TRACK_LIMIT'};
 
         const playlistTracks: Omit<PlaylistTrack, 'position'>[] = tracks.map(t => ({
             title: t.title,
@@ -239,7 +255,10 @@ export class PlaylistManager {
             author: null
         }));
 
-        return this.saveCurrentQueue(guildId, name, playlistTracks);
+        const success = this.saveCurrentQueue(guildId, name, playlistTracks);
+        return success
+            ? {success: true, trackCount: playlistTracks.length}
+            : {success: false, reason: 'SAVE_FAILED'};
     }
 
     private parseM3U(content: string): Array<{ title: string; url: string; duration: number }> {
@@ -272,6 +291,10 @@ export class PlaylistManager {
                         url: line,
                         duration: currentDuration
                     });
+
+                    if (tracks.length > PLAYLIST_TRACK_LIMIT) {
+                        return tracks;
+                    }
                 }
                 currentTitle = '';
                 currentDuration = 0;
