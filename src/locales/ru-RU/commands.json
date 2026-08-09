@@ -226,6 +226,8 @@
   "ERROR_PLAYLIST_NOT_FOUND": "❌ Плейлист `{{name}}` не найден или пуст.",
   "ERROR_PLAYLIST_TRACK_NOT_FOUND": "❌ Трек `{{searchQuery}}` не найден в плейлисте `{{name}}`.",
   "ERROR_PLAYLIST_M3U_DOWNLOAD_FAILED": "❌ Не удалось загрузить файл M3U. (Код ошибки: {{status}})",
+  "ERROR_PLAYLIST_M3U_DOWNLOAD_BLOCKED": "❌ Загрузка M3U заблокирована политикой безопасности. Используйте общедоступный HTTPS URL размером до {{maxSizeMiB}} МиБ, отвечающий в течение {{timeoutSeconds}} секунд.",
+  "ERROR_PLAYLIST_TRACK_LIMIT": "❌ Плейлист может содержать не более {{limit}} треков.",
   "ERROR_PLAYLIST_IMPORT_FAILED": "❌ Ошибка разбора или сохранения M3U плейлиста. Убедитесь, что формат правильный.",
   "ERROR_PLAYLIST_REMOVE_FAILED": "❌ Не удалось удалить трек. Убедитесь, что это правильный номер.",
   "MESSAGE_PLAYLIST_SAVE_SUCCESS": "✅ Сохранено {{count}} треков из текущей очереди в плейлист `{{name}}`.",

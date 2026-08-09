@@ -17,7 +17,7 @@ export class RadioCommand extends BaseCommand {
             description: i18next.t('commands:CONFIG_RADIO_DESCRIPTION'),
             usage: i18next.t('commands:CONFIG_RADIO_USAGE'),
             category: CommandCategory.MUSIC,
-            voiceChannel: false,
+            voiceChannel: true,
             showHelp: true,
             sendTyping: true,
             options: [

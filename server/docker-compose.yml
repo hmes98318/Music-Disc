@@ -1,21 +1,35 @@
 services:
-    lavalink:
-        image: fredboat/lavalink:4.1.1 # pin the image version to Lavalink v4
-        container_name: lavalink_v4
-        restart: unless-stopped
-        environment:
-            - _JAVA_OPTIONS=-Xmx6G # set Java options here
-            - SERVER_PORT=2333 # set lavalink server port
-            - LAVALINK_SERVER_PASSWORD=youshallnotpass # set password for lavalink
-        volumes:
-            - ./application.yml:/opt/Lavalink/application.yml # mount application.yml from the same directory or use environment variables
-            - ./plugins/:/opt/Lavalink/plugins/ # persist plugins between restarts, make sure to set the correct permissions (user: 322, group: 322)
-        networks:
-            - lavalink
-        expose:
-            - 2333 # lavalink exposes port 2333 to connect to for other containers (this is for documentation purposes only)
-        ports:
-            - 2333:2333 # you only need this if you want to make your lavalink accessible from outside of containers
+  yt-cipher:
+    image: ghcr.io/kikkia/yt-cipher:master
+    container_name: yt-cipher
+    restart: always
+    environment:
+      - API_TOKEN=yt-cipher-token
+    networks:
+      - lavalink
+    ports:
+      - "8001:8001"
+
+  lavalink:
+    image: fredboat/lavalink:4.2.2
+    container_name: lavalink_1
+    restart: always
+    environment:
+      - _JAVA_OPTIONS=-Xmx6G    # set Java options here
+      - SERVER_PORT=2333        # set lavalink server port
+      - LAVALINK_SERVER_PASSWORD=youshallnotpass    # set password for lavalink
+    volumes:
+      - ./application.yml:/opt/Lavalink/application.yml   # mount application.yml for lavalink
+      - ./plugins/:/opt/Lavalink/plugins/                 # plugins for lavalink
+    networks:
+      - lavalink
+    expose:
+      - 2333
+    ports:
+      - 2333:2333
+    depends_on:
+      - yt-cipher
+
 networks:
-    lavalink: # create a lavalink network you can add other containers to, to give them access to Lavalink
-        name: lavalink
+  lavalink:
+    name: lavalink

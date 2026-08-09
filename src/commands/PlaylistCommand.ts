@@ -4,8 +4,15 @@ import { ApplicationCommandOptionType, ButtonBuilder } from 'discord.js';
 import { BaseCommand } from './base/BaseCommand.js';
 import { CommandCategory, DJModeEnum } from '../@types/index.js';
 import { DJManager } from '../lib/DjManager.js';
+import { PLAYLIST_TRACK_LIMIT } from '../lib/PlaylistManager.js';
 import { QueueLimitManager } from '../lib/QueueLimitManager.js';
 import { cst } from '../utils/constants.js';
+import {
+    DEFAULT_REMOTE_TEXT_MAX_BYTES,
+    DEFAULT_REMOTE_TEXT_TIMEOUT_MS,
+    fetchSafeRemoteText,
+    SafeRemoteTextError
+} from '../utils/safeRemoteText.js';
 
 import type { Client, GuildMember } from 'discord.js';
 import type { CommandContext } from './base/CommandContext.js';
@@ -197,6 +204,13 @@ export class PlaylistCommand extends BaseCommand {
 
         for (const track of player.queue.tracks) {
             tracks.push(serializeTrack(track));
+        }
+
+        if (tracks.length > PLAYLIST_TRACK_LIMIT) {
+            await context.replyEphemeralError(bot, context.t('commands:ERROR_PLAYLIST_TRACK_LIMIT', {
+                limit: PLAYLIST_TRACK_LIMIT
+            }));
+            return;
         }
 
         const existingPlaylist = bot.playlistManager!.getPlaylist(guildId, name);
@@ -583,24 +597,41 @@ export class PlaylistCommand extends BaseCommand {
 
         const executeImport = async () => {
             try {
-                const response = await fetch(url);
-                if (!response.ok) {
-                    await context.replyEphemeralError(bot, context.t('commands:ERROR_PLAYLIST_M3U_DOWNLOAD_FAILED', { status: response.status }));
-                    return;
-                }
+                const m3uContent = await fetchSafeRemoteText(url);
+                const result = bot.playlistManager!.importFromM3u(guildId, name, m3uContent);
 
-                const m3uContent = await response.text();
-                const success = await bot.playlistManager!.importFromM3u(guildId, name, m3uContent);
-
-                if (success) {
-                    const playlist = bot.playlistManager!.getPlaylist(guildId, name);
-                    await context.replySuccess(bot, context.t('commands:MESSAGE_PLAYLIST_IMPORT_SUCCESS', { name, count: playlist?.tracks?.length || 0 }));
+                if (result.success) {
+                    await context.replySuccess(bot, context.t('commands:MESSAGE_PLAYLIST_IMPORT_SUCCESS', {
+                        name,
+                        count: result.trackCount
+                    }));
+                } else if (result.reason === 'TRACK_LIMIT') {
+                    await context.replyEphemeralError(bot, context.t('commands:ERROR_PLAYLIST_TRACK_LIMIT', {
+                        limit: PLAYLIST_TRACK_LIMIT
+                    }));
                 } else {
                     await context.replyEphemeralError(bot, context.t('commands:ERROR_PLAYLIST_IMPORT_FAILED'));
                 }
             } catch (error) {
-                bot.logger.error(bot.shardId, `Error importing playlist from URL ${url}: ${error}`);
-                await context.replyEphemeralError(bot, context.t('commands:ERROR_PLAY_MUSIC', { reason: error instanceof Error ? error.message : String(error) }));
+                bot.logger.error(bot.shardId, `Error importing playlist from remote URL: ${error}`);
+
+                if (error instanceof SafeRemoteTextError &&
+                    error.code === 'HTTP_STATUS' && error.status !== undefined) {
+                    await context.replyEphemeralError(bot, context.t('commands:ERROR_PLAYLIST_M3U_DOWNLOAD_FAILED', {
+                        status: error.status
+                    }));
+                    return;
+                }
+
+                if (error instanceof SafeRemoteTextError) {
+                    await context.replyEphemeralError(bot, context.t('commands:ERROR_PLAYLIST_M3U_DOWNLOAD_BLOCKED', {
+                        maxSizeMiB: DEFAULT_REMOTE_TEXT_MAX_BYTES / (1024 * 1024),
+                        timeoutSeconds: DEFAULT_REMOTE_TEXT_TIMEOUT_MS / 1000
+                    }));
+                    return;
+                }
+
+                await context.replyEphemeralError(bot, context.t('commands:ERROR_PLAYLIST_IMPORT_FAILED'));
             }
         };
 
