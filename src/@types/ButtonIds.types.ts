@@ -50,3 +50,15 @@ export enum SelectButtonId {
     HelpMusic = 'select-help-music',
     HelpUtility = 'select-help-utility',
 }
+
+/**
+ * Playlist interaction button IDs
+ */
+export enum PlaylistButtonId {
+    ImportCancel = 'playlist-import-cancel',
+    ImportConfirm = 'playlist-import-confirm',
+    InfoNext = 'playlist-info-next',
+    InfoPrevious = 'playlist-info-previous',
+    SaveCancel = 'playlist-save-cancel',
+    SaveConfirm = 'playlist-save-confirm',
+}
