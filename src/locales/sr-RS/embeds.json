@@ -1,6 +1,6 @@
 {
   "DASHBOARD_TITLE": "Kontrolna tabla",
-  "DASHBOARD_FINISH_PLAYING": "Reprodukcija reda je završena",
+  "DASHBOARD_FINISH_PLAYING": "Muzika je završila sa sviranjem",
   "DASHBOARD_SUBTITLE": "Autor: **{{author}}**\nTrajanje: **{{duration}}**\n────────────────────\nJačina zvuka: `{{volume}}%`\nPonavljanje: `{{repeatMode}}`",
   "DASHBOARD_REQUESTER_INFO": "\n────────────────────\n**Zatražio:** <@{{requesterId}}>",
   "DASHBOARD_DJ_INFO": "\n**DJ:** {{djDisplay}}",
