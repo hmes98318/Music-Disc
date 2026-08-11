@@ -1,6 +1,6 @@
 {
   "DASHBOARD_TITLE": "Панель управления",
-  "DASHBOARD_FINISH_PLAYING": "Воспроизведение очереди завершено",
+  "DASHBOARD_FINISH_PLAYING": "Вcя очередь воспроизведена",
   "DASHBOARD_SUBTITLE": "Автор: **{{author}}**\nДлительность: **{{duration}}**\n────────────────────\nГромкость: `{{volume}}%`\nПовтор: `{{repeatMode}}`",
   "DASHBOARD_REQUESTER_INFO": "\n────────────────────\n**Заказал:** <@{{requesterId}}>",
   "DASHBOARD_DJ_INFO": "\n**Ситуативный DJ:** {{djDisplay}}",
