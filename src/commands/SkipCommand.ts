@@ -1,4 +1,5 @@
 import i18next from 'i18next';
+import { RepeatMode } from 'lavashark';
 
 import { BaseCommand } from './base/BaseCommand.js';
 import { CommandCategory } from '../@types/index.js';
@@ -61,7 +62,16 @@ export class SkipCommand extends BaseCommand {
         }
 
         const hasMoreTracks = player.queue.tracks.length > 0 || player.repeatMode !== 0;
+
+        if (player.repeatMode === RepeatMode.TRACK) {
+            player.setRepeatMode(RepeatMode.OFF);
+        }
+
         const success = await player.skip();
+
+        if (success && player.current && client.dashboard) {
+            await client.dashboard.update(player, player.current);
+        }
 
         if (context.isMessage()) {
             await context.react(success ? '👍' : '❌');

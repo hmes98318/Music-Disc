@@ -56,11 +56,9 @@ export class SkipButtonHandler extends DashboardButtonHandler {
 
         if (player.repeatMode === RepeatMode.TRACK) {
             player.setRepeatMode(RepeatMode.OFF);
-            await player.skip();
-            player.setRepeatMode(RepeatMode.TRACK);
-        } else {
-            await player.skip();
         }
+
+        await player.skip();
 
         if (!hasMoreTracks) {
             try {
@@ -70,6 +68,8 @@ export class SkipButtonHandler extends DashboardButtonHandler {
                 });
                 return;
             } catch (_) {}
+        } else if (player.current && client.dashboard) {
+            await client.dashboard.update(player, player.current);
         }
 
         if (!interaction.replied && !interaction.deferred) {

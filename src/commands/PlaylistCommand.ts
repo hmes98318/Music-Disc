@@ -66,6 +66,7 @@ export class PlaylistCommand extends BaseCommand {
                 this.createNamedSubcommand(
                     'info',
                     'commands:CONFIG_PLAYLIST_OPTION_SUBCOMMAND_INFO',
+                    false,
                 ),
                 this.createNamedSubcommand(
                     'delete',
@@ -133,17 +134,12 @@ export class PlaylistCommand extends BaseCommand {
             return;
         }
 
-        // Normalize the subcommand name from either command source
-        const name = command.isMessage()
-            ? command.args[0]?.toLowerCase()
-            : command.getInteraction().options.getSubcommand(false);
-        if (!name) {
-            await command.replyEphemeralError(
-                bot,
-                command.t('commands:ERROR_PLAYLIST_SUBCOMMAND_INVALID'),
-            );
-            return;
-        }
+        // Normalize the subcommand name from either command source (default to 'list')
+        const name = (
+            command.isMessage()
+                ? command.args[0]?.toLowerCase()
+                : command.getInteraction().options.getSubcommand(false)
+        ) || 'list';
 
         // Find the matching OOP subcommand implementation
         const subcommand = this.#subcommands.find(
@@ -166,11 +162,12 @@ export class PlaylistCommand extends BaseCommand {
     private createNamedSubcommand(
         name: PlaylistSubcommandName,
         descriptionKey: string,
+        nameRequired: boolean = true,
     ): ApplicationCommandSubCommandData {
         return {
             description: i18next.t(descriptionKey),
             name,
-            options: [this.createNameOption()],
+            options: [this.createNameOption(nameRequired)],
             type: ApplicationCommandOptionType.Subcommand,
         };
     }
@@ -178,11 +175,11 @@ export class PlaylistCommand extends BaseCommand {
     /**
      * Create the shared playlist name option
      */
-    private createNameOption(): ApplicationCommandStringOptionData {
+    private createNameOption(required: boolean = true): ApplicationCommandStringOptionData {
         return {
             description: i18next.t('commands:CONFIG_PLAYLIST_OPTION_NAME'),
             name: 'name',
-            required: true,
+            required,
             type: ApplicationCommandOptionType.String,
         };
     }

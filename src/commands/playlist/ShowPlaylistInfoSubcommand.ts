@@ -4,6 +4,7 @@ import { PlaylistButtonId } from '../../@types/index.js';
 import { embeds } from '../../embeds/index.js';
 import { PLAYLIST_INFO_PAGE_SIZE } from '../../embeds/playlist.embed.js';
 import { BasePlaylistSubcommand } from './BasePlaylistSubcommand.js';
+import { ListPlaylistsSubcommand } from './ListPlaylistsSubcommand.js';
 
 import type {
     PlaylistSubcommandContext,
@@ -25,10 +26,7 @@ export class ShowPlaylistInfoSubcommand extends BasePlaylistSubcommand {
     public async execute(context: PlaylistSubcommandContext): Promise<void> {
         const name = this.getPlaylistName(context.command);
         if (!name) {
-            await context.command.replyEphemeralError(
-                context.bot,
-                context.command.t('commands:ERROR_PLAYLIST_NAME_REQUIRED'),
-            );
+            await new ListPlaylistsSubcommand().execute(context);
             return;
         }
 

@@ -244,26 +244,23 @@ export class PlayFirstCommand extends BaseCommand {
                 (t as any).requester = requester;
             }
 
-            if (!player.playing) {
-                const firstTrack = tracks[0];
-                const restTracks = tracks.slice(1);
+            const firstTrack = tracks[0];
+            const restTracks = tracks.slice(1);
 
-                if (restTracks.length > 0) {
-                    player.queue.tracks.unshift(...restTracks);
-                }
+            if (restTracks.length > 0) {
+                player.queue.tracks.unshift(...restTracks);
+            }
 
-                player.filters.setVolume(curVolume);
-                await player.prioritizePlay(firstTrack, requester as any)
-                    .catch(async (error) => {
-                        bot.logger.error(bot.shardId, 'Error playing track: ' + error);
-                        await context.replyError(bot, context.t('commands:ERROR_PLAY_MUSIC', { reason: JSON.stringify(error) }));
-                        return player.destroy();
-                    });
-            } else {
-                player.queue.tracks.unshift(...tracks);
-                if (player.current && client.dashboard) {
-                    await client.dashboard.update(player, player.current);
-                }
+            player.filters.setVolume(curVolume);
+            await player.prioritizePlay(firstTrack, requester as any)
+                .catch(async (error) => {
+                    bot.logger.error(bot.shardId, 'Error playing track: ' + error);
+                    await context.replyError(bot, context.t('commands:ERROR_PLAY_MUSIC', { reason: JSON.stringify(error) }));
+                    return player.destroy();
+                });
+
+            if (player.current && client.dashboard) {
+                await client.dashboard.update(player, player.current);
             }
         }
         else {
