@@ -22,7 +22,7 @@ export default defineNuxtConfig({
             { code: 'en-US', file: 'en-US.json', name: 'English' },
             { code: 'ko-KR', file: 'ko-KR.json', name: '한국어' },
             { code: 'ru-RU', file: 'ru-RU.json', name: 'Русский' },
-            { code: 'sr-RS', file: 'sr-RS.json', name: 'Српски' },
+            { code: 'sr-RS', file: 'sr-RS.json', name: 'Srpski' },
             { code: 'tr-TR', file: 'tr-TR.json', name: 'Türkçe' },
             { code: 'zh-TW', file: 'zh-TW.json', name: '繁體中文' },
         ],

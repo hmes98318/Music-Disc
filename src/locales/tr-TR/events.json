@@ -1,5 +1,5 @@
 {
-  "ERROR_GET_GUILD_DATA_CACHE": "❌ ⚠ Sunucu verileri önbelleğe alınamadı!",
+  "ERROR_GET_GUILD_DATA_CACHE": "❌ Sunucu verileri önbellekten alınamadı.",
   "ERROR_NOT_IN_SAME_VOICE_CHANNEL": "❌ Bot ile aynı ses kanalında bulunmuyorsunuz.",
   "ERRPR_NOT_IN_SPECIFIC_VOICE_CHANNEL": "Lütfen belirtilen ses kanalına <#{{channelId}}> katılın ve beni çağırın.",
   "ERROR_NOT_IN_VOICE_CHANNEL": "❌ Herhangi bir ses kanalına bağlı değilsiniz.",
@@ -16,10 +16,10 @@
   "MESSAGE_NOW_PLAYING_TITLE": "Şuan Çalıyor: {{title}}\n\n",
   "MESSAGE_QUEUE_PAGE": "\n\n----- Sayfa {{curPage}}/{{maxPage}} -----",
   "MESSAGE_SELECT_LOOP_MODE": "Döngü modunu seçiniz.",
-  "LOOP_MODE_OFF": "Off",
-  "LOOP_MODE_SINGLE": "Single",
-  "LOOP_MODE_ALL": "All",
+  "LOOP_MODE_OFF": "Kapalı",
+  "LOOP_MODE_SINGLE": "Tek",
+  "LOOP_MODE_ALL": "Tümü",
   "MESSAGE_SEND_PRIVATE_MESSAGE": "✅ Parçanın adını size özel mesaj olarak gönderdim.",
-  "MESSAGE_SET_LOOP_MODE": "✅ Döngü modu `{{mode}}`",
+  "MESSAGE_SET_LOOP_MODE": "✅ Döngü modu `{{mode}}` olarak ayarlandı",
   "MESSAGE_SPECIFIC_CHANNEL_WARN": "❌ Bu kanalda komut kullanamazsınız! Lütfen <#{{channelId}}> metin kanalını kullanın."
 }
