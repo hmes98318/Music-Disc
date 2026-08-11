@@ -21,6 +21,26 @@ export interface ValidationResult {
  */
 export class CommandValidator {
     /**
+     * Get the command names accepted by permission configuration.
+     */
+    private static getPermissionCommandNames(
+        bot: Bot,
+        source: Message | ChatInputCommandInteraction,
+        commandName: string,
+    ): string[] {
+        const subcommand = source instanceof ChatInputCommandInteraction
+            ? source.options.getSubcommand(false)
+            : source.content
+                .slice(bot.config.bot.prefix.length)
+                .trim()
+                .split(/ +/g)[1]?.toLowerCase() ?? null;
+
+        return subcommand
+            ? [commandName, `${commandName}.${subcommand}`]
+            : [commandName];
+    }
+
+    /**
      * Validate if command should be executed in specified message channel
      */
     public static async validateMessageChannel(
@@ -61,8 +81,14 @@ export class CommandValidator {
         userId: string
     ): Promise<ValidationResult> {
         const metadata = command.getMetadata(bot);
+        const permissionNames = this.getPermissionCommandNames(
+            bot,
+            source,
+            metadata.name,
+        );
 
-        if (bot.config.command.adminCommand.includes(metadata.name)) {
+        if (permissionNames.some((name) =>
+            bot.config.command.adminCommand.includes(name))) {
             const member = source.member as GuildMember | null;
             if (!PermissionManager.isAdmin(bot, userId, member)) {
                 const username = source instanceof Message ? source.author.username : source.user.username;
@@ -97,8 +123,14 @@ export class CommandValidator {
         guildId: string
     ): Promise<ValidationResult> {
         const metadata = command.getMetadata(bot);
+        const permissionNames = this.getPermissionCommandNames(
+            bot,
+            source,
+            metadata.name,
+        );
 
-        if (bot.config.command.djCommand.includes(metadata.name)) {
+        if (permissionNames.some((name) =>
+            bot.config.command.djCommand.includes(name))) {
             const player = client.lavashark.getPlayer(guildId);
 
             if (!PermissionManager.hasDJCommandPermission(bot, userId, member, player || undefined)) {
