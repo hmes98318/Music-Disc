@@ -43,24 +43,29 @@ export class PlaylistCommand extends BaseCommand {
     /**
      * Build playlist command metadata and slash command options
      */
-    public getMetadata(_bot: Bot): CommandMetadata {
+    public getMetadata(_bot: Bot, lng?: string): CommandMetadata {
         return {
             aliases: ['pl'],
             category: CommandCategory.MUSIC,
-            description: i18next.t('commands:CONFIG_PLAYLIST_DESCRIPTION'),
+            description: i18next.t('commands:CONFIG_PLAYLIST_DESCRIPTION', { lng }),
             name: 'playlist',
             options: [
                 this.createNamedSubcommand(
                     'save',
                     'commands:CONFIG_PLAYLIST_OPTION_SUBCOMMAND_SAVE',
+                    true,
+                    lng
                 ),
                 this.createNamedSubcommand(
                     'play',
                     'commands:CONFIG_PLAYLIST_OPTION_SUBCOMMAND_PLAY',
+                    true,
+                    lng
                 ),
                 {
                     description: i18next.t(
                         'commands:CONFIG_PLAYLIST_OPTION_SUBCOMMAND_LIST',
+                        { lng }
                     ),
                     name: 'list',
                     type: ApplicationCommandOptionType.Subcommand,
@@ -69,21 +74,26 @@ export class PlaylistCommand extends BaseCommand {
                     'info',
                     'commands:CONFIG_PLAYLIST_OPTION_SUBCOMMAND_INFO',
                     false,
+                    lng
                 ),
                 this.createNamedSubcommand(
                     'delete',
                     'commands:CONFIG_PLAYLIST_OPTION_SUBCOMMAND_DELETE',
+                    true,
+                    lng
                 ),
                 {
                     description: i18next.t(
                         'commands:CONFIG_PLAYLIST_OPTION_SUBCOMMAND_IMPORT',
+                        { lng }
                     ),
                     name: 'import',
                     options: [
-                        this.createNameOption(),
+                        this.createNameOption(true, lng),
                         {
                             description: i18next.t(
                                 'commands:CONFIG_PLAYLIST_OPTION_URL',
+                                { lng }
                             ),
                             name: 'url',
                             required: true,
@@ -95,13 +105,15 @@ export class PlaylistCommand extends BaseCommand {
                 {
                     description: i18next.t(
                         'commands:CONFIG_PLAYLIST_OPTION_SUBCOMMAND_REMOVE_TRACK',
+                        { lng }
                     ),
                     name: 'remove-track',
                     options: [
-                        this.createNameOption(),
+                        this.createNameOption(true, lng),
                         {
                             description: i18next.t(
                                 'commands:CONFIG_PLAYLIST_OPTION_INDEX',
+                                { lng }
                             ),
                             name: 'index',
                             required: true,
@@ -113,6 +125,7 @@ export class PlaylistCommand extends BaseCommand {
                 {
                     description: i18next.t(
                         'commands:CONFIG_PLAYLIST_OPTION_SUBCOMMAND_TOGGLE_M3U',
+                        { lng }
                     ),
                     name: 'toggle-m3u',
                     type: ApplicationCommandOptionType.Subcommand,
@@ -120,7 +133,7 @@ export class PlaylistCommand extends BaseCommand {
             ],
             sendTyping: true,
             showHelp: true,
-            usage: i18next.t('commands:CONFIG_PLAYLIST_USAGE'),
+            usage: i18next.t('commands:CONFIG_PLAYLIST_USAGE', { lng }),
             voiceChannel: false,
         };
     }
@@ -180,11 +193,12 @@ export class PlaylistCommand extends BaseCommand {
         name: PlaylistSubcommandName,
         descriptionKey: string,
         nameRequired: boolean = true,
+        lng?: string
     ): ApplicationCommandSubCommandData {
         return {
-            description: i18next.t(descriptionKey),
+            description: i18next.t(descriptionKey, { lng }),
             name,
-            options: [this.createNameOption(nameRequired)],
+            options: [this.createNameOption(nameRequired, lng)],
             type: ApplicationCommandOptionType.Subcommand,
         };
     }
@@ -192,9 +206,9 @@ export class PlaylistCommand extends BaseCommand {
     /**
      * Create the shared playlist name option
      */
-    private createNameOption(required: boolean = true): ApplicationCommandStringOptionData {
+    private createNameOption(required: boolean = true, lng?: string): ApplicationCommandStringOptionData {
         return {
-            description: i18next.t('commands:CONFIG_PLAYLIST_OPTION_NAME'),
+            description: i18next.t('commands:CONFIG_PLAYLIST_OPTION_NAME', { lng }),
             name: 'name',
             required,
             type: ApplicationCommandOptionType.String,

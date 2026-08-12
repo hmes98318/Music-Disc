@@ -9,12 +9,12 @@ import type { Bot, CommandMetadata } from '../@types/index.js';
 
 
 export class ResumeCommand extends BaseCommand {
-    public getMetadata(_bot: Bot): CommandMetadata {
+    public getMetadata(_bot: Bot, lng?: string): CommandMetadata {
         return {
             name: 'resume',
             aliases: [],
-            description: i18next.t('commands:CONFIG_RESUME_DESCRIPTION'),
-            usage: i18next.t('commands:CONFIG_RESUME_USAGE'),
+            description: i18next.t('commands:CONFIG_RESUME_DESCRIPTION', { lng }),
+            usage: i18next.t('commands:CONFIG_RESUME_USAGE', { lng }),
             category: CommandCategory.MUSIC,
             voiceChannel: true,
             showHelp: true,

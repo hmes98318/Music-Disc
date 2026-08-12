@@ -12,7 +12,7 @@ export abstract class BaseCommand {
     /**
      * Get command metadata
      */
-    public abstract getMetadata(bot: Bot): CommandMetadata;
+    public abstract getMetadata(bot: Bot, lng?: string): CommandMetadata;
 
     /**
      * Execute command logic (implemented by subclasses)

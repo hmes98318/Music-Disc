@@ -21,12 +21,12 @@ import type { Bot, CommandMetadata } from '../@types/index.js';
 
 
 export class SearchCommand extends BaseCommand {
-    public getMetadata(_bot: Bot): CommandMetadata {
+    public getMetadata(_bot: Bot, lng?: string): CommandMetadata {
         return {
             name: 'search',
             aliases: ['find'],
-            description: i18next.t('commands:CONFIG_SEARCH_DESCRIPTION'),
-            usage: i18next.t('commands:CONFIG_SEARCH_USAGE'),
+            description: i18next.t('commands:CONFIG_SEARCH_DESCRIPTION', { lng }),
+            usage: i18next.t('commands:CONFIG_SEARCH_USAGE', { lng }),
             category: CommandCategory.MUSIC,
             voiceChannel: true,
             showHelp: true,
@@ -34,7 +34,7 @@ export class SearchCommand extends BaseCommand {
             options: [
                 {
                     name: 'search',
-                    description: i18next.t('commands:CONFIG_SEARCH_OPTION_DESCRIPTION'),
+                    description: i18next.t('commands:CONFIG_SEARCH_OPTION_DESCRIPTION', { lng }),
                     type: 3,
                     required: true
                 }

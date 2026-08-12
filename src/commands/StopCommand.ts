@@ -10,12 +10,12 @@ import type { Bot, CommandMetadata } from '../@types/index.js';
 
 
 export class StopCommand extends BaseCommand {
-    public getMetadata(_bot: Bot): CommandMetadata {
+    public getMetadata(_bot: Bot, lng?: string): CommandMetadata {
         return {
             name: 'stop',
             aliases: [],
-            description: i18next.t('commands:CONFIG_STOP_DESCRIPTION'),
-            usage: i18next.t('commands:CONFIG_STOP_USAGE'),
+            description: i18next.t('commands:CONFIG_STOP_DESCRIPTION', { lng }),
+            usage: i18next.t('commands:CONFIG_STOP_USAGE', { lng }),
             category: CommandCategory.MUSIC,
             voiceChannel: true,
             showHelp: true,

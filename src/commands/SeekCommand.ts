@@ -11,12 +11,12 @@ import type { Bot, CommandMetadata } from '../@types/index.js';
 
 
 export class SeekCommand extends BaseCommand {
-    public getMetadata(_bot: Bot): CommandMetadata {
+    public getMetadata(_bot: Bot, lng?: string): CommandMetadata {
         return {
             name: 'seek',
             aliases: [],
-            description: i18next.t('commands:CONFIG_SEEK_DESCRIPTION'),
-            usage: i18next.t('commands:CONFIG_SEEK_USAGE'),
+            description: i18next.t('commands:CONFIG_SEEK_DESCRIPTION', { lng }),
+            usage: i18next.t('commands:CONFIG_SEEK_USAGE', { lng }),
             category: CommandCategory.MUSIC,
             voiceChannel: true,
             showHelp: true,
@@ -24,7 +24,7 @@ export class SeekCommand extends BaseCommand {
             options: [
                 {
                     name: 'seek',
-                    description: i18next.t('commands:CONFIG_SEEK_OPTION_DESCRIPTION'),
+                    description: i18next.t('commands:CONFIG_SEEK_OPTION_DESCRIPTION', { lng }),
                     type: 3,
                     required: true
                 }

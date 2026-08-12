@@ -8,12 +8,12 @@ import type { Bot, CommandMetadata } from '../@types/index.js';
 
 
 export class ClearCommand extends BaseCommand {
-    public getMetadata(_bot: Bot): CommandMetadata {
+    public getMetadata(_bot: Bot, lng?: string): CommandMetadata {
         return {
             name: 'clear',
             aliases: ['cls'],
-            description: i18next.t('commands:CONFIG_CLEAR_DESCRIPTION'),
-            usage: i18next.t('commands:CONFIG_CLEAR_USAGE'),
+            description: i18next.t('commands:CONFIG_CLEAR_DESCRIPTION', { lng }),
+            usage: i18next.t('commands:CONFIG_CLEAR_USAGE', { lng }),
             category: CommandCategory.MUSIC,
             voiceChannel: true,
             showHelp: true,

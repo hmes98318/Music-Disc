@@ -14,12 +14,12 @@ import type { Bot, CommandMetadata } from '../@types/index.js';
 
 
 export class PlayCommand extends BaseCommand {
-    public getMetadata(_bot: Bot): CommandMetadata {
+    public getMetadata(_bot: Bot, lng?: string): CommandMetadata {
         return {
             name: 'play',
             aliases: ['p'],
-            description: i18next.t('commands:CONFIG_PLAY_DESCRIPTION'),
-            usage: i18next.t('commands:CONFIG_PLAY_USAGE'),
+            description: i18next.t('commands:CONFIG_PLAY_DESCRIPTION', { lng }),
+            usage: i18next.t('commands:CONFIG_PLAY_USAGE', { lng }),
             category: CommandCategory.MUSIC,
             voiceChannel: true,
             showHelp: true,
@@ -27,7 +27,7 @@ export class PlayCommand extends BaseCommand {
             options: [
                 {
                     name: 'play',
-                    description: i18next.t('commands:CONFIG_PLAY_OPTION_DESCRIPTION'),
+                    description: i18next.t('commands:CONFIG_PLAY_OPTION_DESCRIPTION', { lng }),
                     type: 3,
                     required: true
                 }

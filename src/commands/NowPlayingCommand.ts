@@ -15,12 +15,12 @@ import type { Bot, CommandMetadata } from '../@types/index.js';
 
 
 export class NowPlayingCommand extends BaseCommand {
-    public getMetadata(_bot: Bot): CommandMetadata {
+    public getMetadata(_bot: Bot, lng?: string): CommandMetadata {
         return {
             name: 'nowplaying',
             aliases: ['np', 'save'],
-            description: i18next.t('commands:CONFIG_NOW_PLAYING_DESCRIPTION'),
-            usage: i18next.t('commands:CONFIG_NOW_PLAYING_USAGE'),
+            description: i18next.t('commands:CONFIG_NOW_PLAYING_DESCRIPTION', { lng }),
+            usage: i18next.t('commands:CONFIG_NOW_PLAYING_USAGE', { lng }),
             category: CommandCategory.MUSIC,
             voiceChannel: false,
             showHelp: true,

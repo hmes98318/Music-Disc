@@ -11,7 +11,7 @@ import type { CommandContext } from './base/CommandContext.js';
 import type { Bot, CommandMetadata } from '../@types/index.js';
 
 export class LanguageCommand extends BaseCommand {
-    public getMetadata(bot: Bot): CommandMetadata {
+    public getMetadata(bot: Bot, lng?: string): CommandMetadata {
         const choices = bot.lang.languages.slice(0, 25).map(lang => ({
             name: getLanguageDisplayName(lang),
             value: lang
@@ -20,16 +20,16 @@ export class LanguageCommand extends BaseCommand {
         return {
             name: 'language',
             aliases: ['lang', 'locale'],
-            description: i18next.t('commands:CONFIG_LANG_DESCRIPTION'),
-            usage: i18next.t('commands:CONFIG_LANG_USAGE'),
+            description: i18next.t('commands:CONFIG_LANG_DESCRIPTION', { lng }),
+            usage: i18next.t('commands:CONFIG_LANG_USAGE', { lng }),
             category: CommandCategory.UTILITY,
             voiceChannel: false,
             showHelp: true,
             sendTyping: false,
             options: [
                 {
-                    name: 'locale',
-                    description: i18next.t('commands:CONFIG_LANG_OPTION_DESCRIPTION'),
+                    name: 'language',
+                    description: i18next.t('commands:CONFIG_LANG_OPTION_DESCRIPTION', { lng }),
                     type: 3,
                     required: false,
                     choices

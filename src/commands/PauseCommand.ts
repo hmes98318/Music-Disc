@@ -13,12 +13,12 @@ import type { Bot, CommandMetadata } from '../@types/index.js';
  * Pause command - Pauses music playback
  */
 export class PauseCommand extends BaseCommand {
-    getMetadata(_bot: Bot): CommandMetadata {
+    getMetadata(_bot: Bot, lng?: string): CommandMetadata {
         return {
             name: 'pause',
             aliases: [],
-            description: i18next.t('commands:CONFIG_PAUSE_DESCRIPTION'),
-            usage: i18next.t('commands:CONFIG_PAUSE_USAGE'),
+            description: i18next.t('commands:CONFIG_PAUSE_DESCRIPTION', { lng }),
+            usage: i18next.t('commands:CONFIG_PAUSE_USAGE', { lng }),
             category: CommandCategory.MUSIC,
             voiceChannel: true,
             showHelp: true,

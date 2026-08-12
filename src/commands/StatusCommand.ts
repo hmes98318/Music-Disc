@@ -13,12 +13,12 @@ import type { Bot, CommandMetadata, SystemStatus } from '../@types/index.js';
 
 
 export class StatusCommand extends BaseCommand {
-    public getMetadata(_bot: Bot): CommandMetadata {
+    public getMetadata(_bot: Bot, lng?: string): CommandMetadata {
         return {
             name: 'status',
             aliases: ['info'],
-            description: i18next.t('commands:CONFIG_STATUS_DESCRIPTION'),
-            usage: i18next.t('commands:CONFIG_STATUS_USAGE'),
+            description: i18next.t('commands:CONFIG_STATUS_DESCRIPTION', { lng }),
+            usage: i18next.t('commands:CONFIG_STATUS_USAGE', { lng }),
             category: CommandCategory.UTILITY,
             voiceChannel: false,
             showHelp: true,
