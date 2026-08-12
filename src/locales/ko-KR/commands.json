@@ -265,6 +265,7 @@
   "MESSAGE_PLAYLIST_IMPORT_TIMEOUT": "⏱️ 가져오기 확인 시간이 초과되었습니다.",
   "MESSAGE_PLAYLIST_SAVE_CANCELLED": "❌ 플레이리스트 저장이 취소되었습니다.",
   "MESSAGE_PLAYLIST_SAVE_TIMEOUT": "⏱️ 저장 확인 시간이 초과되었습니다.",
+  "MESSAGE_SKIP_EMPTY_DISCONNECT": "⏭️ 현재 곡을 건너뛰었습니다. 대기열이 비어있습니다.",
   "ERROR_PLAYLIST_DISABLED": "❌ 플레이리스트 기능이 비활성화되어 있습니다.",
   "ERROR_PLAYLIST_M3U_CANNOT_PLAY_ALL": "❌ M3U 플레이리스트 전체는 재생할 수 없습니다. `/radio` 명령어를 사용하여 원하는 라디오 채널을 선택해 주세요.",
   "ERROR_PLAYLIST_IMPORT_ADMIN_DJ_ONLY": "❌ M3U 플레이리스트 가져오기는 관리자 또는 DJ 권한이 있는 사용자만 수행할 수 있습니다."
