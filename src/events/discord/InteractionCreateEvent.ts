@@ -245,10 +245,20 @@ export class InteractionCreateEvent extends BaseDiscordEvent<Events.InteractionC
             await interaction.deferReply();
         } catch (error) {
             bot.logger.error( bot.shardId, '[interactionCreate] Error deferReply: ' + error);
+            return;
         }
 
-        // Execute command
-        const context = new CommandContext(bot, interaction);
-        await cmd.execute(bot, client, context);
+        // Execute command safely
+        try {
+            const context = new CommandContext(bot, interaction);
+            await cmd.execute(bot, client, context);
+        } catch (error) {
+            bot.logger.error( bot.shardId, `[interactionCreate] Error executing command /${interaction.commandName}: ${error}`);
+            if (interaction.deferred) {
+                await interaction.editReply({
+                    embeds: [embeds.textErrorMsg(bot, bot.i18n.t('events:ERROR_PLAY_MUSIC', { lng, reason: 'Command Execution Error' }))],
+                }).catch(() => {});
+            }
+        }
     }
 }

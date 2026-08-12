@@ -290,48 +290,59 @@ export class QueuePersistence {
                 }
             }
 
-            // Restore tracks - try encoded track string first, fall back to URI search
-            for (const serializedTrack of queueData.tracks) {
-                try {
-                    let result = null;
-
-                    // Try loading by encoded track string first
+            // Restore tracks in batch chunks to prevent performance bottlenecks
+            const BATCH_SIZE = 5;
+            for (let i = 0; i < queueData.tracks.length; i += BATCH_SIZE) {
+                const chunk = queueData.tracks.slice(i, i + BATCH_SIZE);
+                const restoredTracks = await Promise.all(chunk.map(async (serializedTrack) => {
                     try {
-                        result = await client.lavashark.search(serializedTrack.track);
-                    } catch (_) {
-                        // Encoded string failed, will try fallback
-                    }
+                        let result = null;
 
-                    // Fallback: search by URI
-                    if (!result || !result.tracks || result.tracks.length === 0) {
+                        // Try loading by encoded track string first
                         try {
-                            result = await client.lavashark.search(serializedTrack.info.uri);
+                            result = await client.lavashark.search(serializedTrack.track);
                         } catch (_) {
-                            // URI search failed, will try title search
+                            // Encoded string failed, will try fallback
                         }
-                    }
 
-                    // Final fallback: search by title + author
-                    if (!result || !result.tracks || result.tracks.length === 0) {
-                        try {
-                            result = await client.lavashark.search(`ytsearch:${serializedTrack.info.title} ${serializedTrack.info.author}`);
-                        } catch (_) {
-                            // All methods failed
+                        // Fallback: search by URI
+                        if (!result || !result.tracks || result.tracks.length === 0) {
+                            try {
+                                result = await client.lavashark.search(serializedTrack.info.uri);
+                            } catch (_) {
+                                // URI search failed, will try title search
+                            }
                         }
-                    }
 
-                    if (result && result.tracks && result.tracks.length > 0) {
-                        const track = result.tracks[0];
-                        track.requester = {
-                            id: serializedTrack.requesterId,
-                            tag: serializedTrack.requesterTag
-                        } as any;
+                        // Final fallback: search by title + author
+                        if (!result || !result.tracks || result.tracks.length === 0) {
+                            try {
+                                result = await client.lavashark.search(`ytsearch:${serializedTrack.info.title} ${serializedTrack.info.author}`);
+                            } catch (_) {
+                                // All methods failed
+                            }
+                        }
+
+                        if (result && result.tracks && result.tracks.length > 0) {
+                            const track = result.tracks[0];
+                            track.requester = {
+                                id: serializedTrack.requesterId,
+                                tag: serializedTrack.requesterTag
+                            } as any;
+                            return track;
+                        } else {
+                            this.bot.logger.log(this.bot.shardId, `[QueuePersistence] Could not restore track "${serializedTrack.info.title}", skipping`);
+                        }
+                    } catch (error) {
+                        this.bot.logger.error(this.bot.shardId, `[QueuePersistence] Failed to restore track ${serializedTrack.info.title}: ${error}`);
+                    }
+                    return null;
+                }));
+
+                for (const track of restoredTracks) {
+                    if (track) {
                         player.queue.add(track);
-                    } else {
-                        this.bot.logger.log(this.bot.shardId, `[QueuePersistence] Could not restore track "${serializedTrack.info.title}", skipping`);
                     }
-                } catch (error) {
-                    this.bot.logger.error(this.bot.shardId, `[QueuePersistence] Failed to restore track ${serializedTrack.info.title}: ${error}`);
                 }
             }
 

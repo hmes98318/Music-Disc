@@ -198,6 +198,7 @@ export class PlayPlaylistSubcommand extends BasePlaylistSubcommand {
                 bot,
                 command.t('commands:ERROR_PLAY_JOIN_CHANNEL'),
             );
+            await player.destroy();
             return null;
         }
 
