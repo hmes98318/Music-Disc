@@ -185,7 +185,9 @@ export class PlayPlaylistSubcommand extends BasePlaylistSubcommand {
             ? command.getMessage()
             : command.getInteraction();
         try {
-            await player.connect();
+            if (!player.voiceChannelId || player.voiceChannelId !== voiceChannel.id) {
+                await player.connect();
+            }
             player.metadata = metadata;
         } catch (error) {
             bot.logger.error(
@@ -227,19 +229,41 @@ export class PlayPlaylistSubcommand extends BasePlaylistSubcommand {
         context: PlaylistSubcommandContext,
         playlistTrack: PlaylistTrack,
     ) {
-        const queries = [
-            playlistTrack.encoded,
-            playlistTrack.url,
-            `ytsearch:${playlistTrack.title}`,
-        ].filter((query): query is string => Boolean(query));
-
-        for (const query of new Set(queries)) {
+        if (playlistTrack.encoded) {
             try {
-                const result = await context.client.lavashark.search(query);
+                const result = await context.client.lavashark.search(playlistTrack.encoded);
                 if (result.tracks.length > 0) return result.tracks[0];
             } catch {
-                // Try the next fallback query.
+                // Try next query
             }
+        }
+
+        if (playlistTrack.url && (playlistTrack.url.startsWith('http://') || playlistTrack.url.startsWith('https://'))) {
+            try {
+                const result = await context.client.lavashark.search(playlistTrack.url);
+                if (result.tracks.length > 0) return result.tracks[0];
+            } catch {
+                // Try next query
+            }
+        }
+
+        const cleanTitle = playlistTrack.title
+            ?.replace(/\.(mp3|flac|wav|aac|ogg|m4a|webm)$/i, '')
+            .trim();
+
+        if (!cleanTitle || cleanTitle.length < 3) {
+            return null;
+        }
+
+        const searchQuery = playlistTrack.author
+            ? `ytsearch:${playlistTrack.author} - ${cleanTitle}`
+            : `ytsearch:${cleanTitle}`;
+
+        try {
+            const result = await context.client.lavashark.search(searchQuery);
+            if (result.tracks.length > 0) return result.tracks[0];
+        } catch {
+            // Track search failed
         }
 
         return null;
@@ -256,38 +280,39 @@ export class PlayPlaylistSubcommand extends BasePlaylistSubcommand {
     ): Promise<PlaylistLoadResult> {
         let added = 0;
         let skipped = 0;
+        const tracks = playlist.tracks ?? [];
+        const BATCH_SIZE = 5;
 
-        for (const playlistTrack of playlist.tracks ?? []) {
-            // Check both per-user and global limits before each search
-            const limit = QueueLimitManager.canAddSongs(
-                context.bot,
-                player,
-                context.command.user.id,
-                member,
-                1,
-            );
-            if (!limit.canAdd) {
-                skipped++;
-                continue;
-            }
-
-            try {
-                const track = await this.findTrack(context, playlistTrack);
-                if (!track) {
-                    skipped++;
-                    continue;
+        for (let i = 0; i < tracks.length; i += BATCH_SIZE) {
+            const chunk = tracks.slice(i, i + BATCH_SIZE);
+            const promises = chunk.map(async (playlistTrack) => {
+                const limit = QueueLimitManager.canAddSongs(
+                    context.bot,
+                    player,
+                    context.command.user.id,
+                    member,
+                    1,
+                );
+                if (!limit.canAdd) {
+                    return null;
                 }
 
-                // LavaShark resolves discord.js through a separate type entry point.
-                const requester = context.command.user as unknown as PlayerRequester;
-                player.addTracks(track, requester);
-                added++;
-            } catch (error) {
-                context.bot.logger.error(
-                    context.bot.shardId,
-                    `[PlaylistCommand] Error loading track ${playlistTrack.title}: ${error}`,
-                );
-                skipped++;
+                try {
+                    return await this.findTrack(context, playlistTrack);
+                } catch {
+                    return null;
+                }
+            });
+
+            const results = await Promise.all(promises);
+            for (const track of results) {
+                if (track) {
+                    const requester = context.command.user as unknown as PlayerRequester;
+                    player.addTracks(track, requester);
+                    added++;
+                } else {
+                    skipped++;
+                }
             }
         }
 
