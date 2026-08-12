@@ -19,7 +19,7 @@
   "NODE_STATUS_INFO_TITLE": "🏷️ INFO",
   "NODE_STATUS_INFO_VALUE": "Version: **{{version}}**\nJVM: **{{jvm}}**\nLavaplayer: **{{lavaplayer}}**\nGit: **{{git}}**\nBuild time: **{{buildTime}}**",
   "NODE_STATUS_MEMORY_TITLE": "📑 MEMORY",
-  "NODE_STATUS_MEMORY_VALUE": "Used: **{{used}}**\nFree: **{{free}}**\nAllocated: **{{allocated}}**\nReserved: **{{reservable}}**\n",
+  "NODE_STATUS_MEMORY_VALUE": "Used: **{{used}}**\nFree: **{{free}}**\nAllocated: **{{allocated}}**\nReservable: **{{reservable}}**\n",
   "NODE_STATUS_PING": "Latency",
   "NODE_STATUS_STATS_TITLE": "📊 STATS",
   "NODE_STATUS_STATS_VALUE": "Uptime: **{{uptime}}**\n**{{pingKey}}**: **{{nodePing}} ms**\nPlayer: **{{playerCount}}**\nPlaying players: **{{playingCount}}**",

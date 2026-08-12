@@ -19,7 +19,7 @@
   "NODE_STATUS_INFO_TITLE": "🏷️ ИНФОРМАЦИЯ",
   "NODE_STATUS_INFO_VALUE": "Версия: **{{version}}**\nJVM: **{{jvm}}**\nLavaplayer: **{{lavaplayer}}**\nGit: **{{git}}**\nВремя сборки: **{{buildTime}}**",
   "NODE_STATUS_MEMORY_TITLE": "📑 ПАМЯТЬ",
-  "NODE_STATUS_MEMORY_VALUE": "Использовано: **{{used}}**\nСвободно: **{{free}}**\nВыделено: **{{allocated}}**\nЗарезервировано: **{{reservable}}**\n",
+  "NODE_STATUS_MEMORY_VALUE": "Использовано: **{{used}}**\nСвободно: **{{free}}**\nВыделено: **{{allocated}}**\nДоступно: **{{reservable}}**\n",
   "NODE_STATUS_PING": "Задержка",
   "NODE_STATUS_STATS_TITLE": "📊 СТАТИСТИКА",
   "NODE_STATUS_STATS_VALUE": "Время работы: **{{uptime}}**\n**{{pingKey}}**: **{{nodePing}} мс**\nПлееров: **{{playerCount}}**\nВоспроизводящих: **{{playingCount}}**",

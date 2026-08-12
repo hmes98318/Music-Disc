@@ -19,7 +19,7 @@
   "NODE_STATUS_INFO_TITLE": "🏷️ 정보",
   "NODE_STATUS_INFO_VALUE": "**버전:** {{version}}\n**자바:** {{jvm}}\n**Lavaplayer:** {{lavaplayer}}\n**Git:** {{git}}\n**빌드 시간:** {{buildTime}}",
   "NODE_STATUS_MEMORY_TITLE": "📑 메모리",
-  "NODE_STATUS_MEMORY_VALUE": "**사용중:** {{used}}\n**사용 가능:** {{free}}\n**할당됨:** {{allocated}}\n**예약됨:** {{reservable}}\n",
+  "NODE_STATUS_MEMORY_VALUE": "**사용중:** {{used}}\n**사용 가능:** {{free}}\n**할당됨:** {{allocated}}\n**예약 가능:** {{reservable}}\n",
   "NODE_STATUS_PING": "지연시간",
   "NODE_STATUS_STATS_TITLE": "📊 상태",
   "NODE_STATUS_STATS_VALUE": "**가동 시간:** {{uptime}}\n**{{pingKey}}:** {{nodePing}}ms\n**플레이어:** {{playerCount}}개\n**재생 중:** {{playingCount}}개",

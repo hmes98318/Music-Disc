@@ -19,7 +19,7 @@
   "NODE_STATUS_INFO_TITLE": "🏷️ INFO",
   "NODE_STATUS_INFO_VALUE": "Verzija: **{{version}}**\nJVM: **{{jvm}}**\nLavaplayer: **{{lavaplayer}}**\nGit: **{{git}}**\nVreme izgradnje: **{{buildTime}}**",
   "NODE_STATUS_MEMORY_TITLE": "📑 MEMORIJA",
-  "NODE_STATUS_MEMORY_VALUE": "Iskorišćeno: **{{used}}**\nSlobodno: **{{free}}**\nDodeljeno: **{{allocated}}**\nRezervisano: **{{reservable}}**\n",
+  "NODE_STATUS_MEMORY_VALUE": "Iskorišćeno: **{{used}}**\nSlobodno: **{{free}}**\nDodeljeno: **{{allocated}}**\nDostupno: **{{reservable}}**\n",
   "NODE_STATUS_PING": "Kašnjenje",
   "NODE_STATUS_STATS_TITLE": "📊 STATISTIKA",
   "NODE_STATUS_STATS_VALUE": "Vreme rada: **{{uptime}}**\n**{{pingKey}}**: **{{nodePing}} ms**\nPlejer: **{{playerCount}}**\nAktivni plejeri: **{{playingCount}}**",
