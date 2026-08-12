@@ -59,7 +59,6 @@ export class HelpCommand extends BaseCommand {
      * @private
      */
     async #showCommandList(bot: Bot, client: Client, context: CommandContext): Promise<void> {
-        const title = client.user?.username;
         const commands = client.commands.getHelpCommands(bot, context.language);
 
         const musicCommands = commands.filter(cmd => {
@@ -125,7 +124,7 @@ export class HelpCommand extends BaseCommand {
 
             await i.deferUpdate();
             await msg.edit({
-                embeds: [embeds.help(bot, title!, usage, context.language)],
+                embeds: [embeds.help(bot, metadata.name, usage, context.language)],
                 components: [],
                 allowedMentions: { repliedUser: false }
             }).catch(() => bot.logger.discord( bot.shardId, 'Failed to edit deleted message.'));
