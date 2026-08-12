@@ -265,9 +265,5 @@
   "MESSAGE_PLAYLIST_IMPORT_TIMEOUT": "⏱️ 가져오기 확인 시간이 초과되었습니다.",
   "MESSAGE_PLAYLIST_SAVE_CANCELLED": "❌ 플레이리스트 저장이 취소되었습니다.",
   "MESSAGE_PLAYLIST_SAVE_TIMEOUT": "⏱️ 저장 확인 시간이 초과되었습니다.",
-  "MESSAGE_SKIP_EMPTY_DISCONNECT": "⏭️ 현재 곡을 건너뛰었습니다. 대기열이 비어있습니다.",
-  "ERROR_PLAYLIST_M3U_DISABLED": "❌ M3U 플레이리스트 가져오기 기능이 비활성화되어 있습니다.",
-  "ERROR_PLAYLIST_DISABLED": "❌ 플레이리스트 기능이 비활성화되어 있습니다.",
-  "CONFIG_PLAYLIST_OPTION_SUBCOMMAND_TOGGLE_M3U": "M3U 플레이리스트 가져오기 기능 허용 여부를 설정합니다.",
-  "MESSAGE_PLAYLIST_TOGGLE_M3U_SUCCESS": "✅ M3U 플레이리스트 가져오기 기능이 `{{state}}`(으)로 설정되었습니다."
+  "MESSAGE_SKIP_EMPTY_DISCONNECT": "⏭️ 현재 곡을 건너뛰었습니다. 대기열이 비어있습니다."
 }

@@ -265,9 +265,5 @@
   "MESSAGE_PLAYLIST_IMPORT_TIMEOUT": "⏱️ Import confirmation timed out.",
   "MESSAGE_PLAYLIST_SAVE_CANCELLED": "❌ Playlist save cancelled.",
   "MESSAGE_PLAYLIST_SAVE_TIMEOUT": "⏱️ Save confirmation timed out.",
-  "MESSAGE_SKIP_EMPTY_DISCONNECT": "⏭️ Skipped current track. Queue is now empty.",
-  "ERROR_PLAYLIST_M3U_DISABLED": "❌ Importing M3U playlists is currently disabled.",
-  "ERROR_PLAYLIST_DISABLED": "❌ Playlist features are currently disabled.",
-  "CONFIG_PLAYLIST_OPTION_SUBCOMMAND_TOGGLE_M3U": "Toggle allowing M3U playlist imports.",
-  "MESSAGE_PLAYLIST_TOGGLE_M3U_SUCCESS": "✅ M3U playlist import permission has been set to `{{state}}`."
+  "MESSAGE_SKIP_EMPTY_DISCONNECT": "⏭️ Skipped current track. Queue is now empty."
 }

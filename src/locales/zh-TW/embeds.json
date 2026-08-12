@@ -19,7 +19,7 @@
   "NODE_STATUS_INFO_TITLE": "🏷️ 資訊",
   "NODE_STATUS_INFO_VALUE": "版本: **{{version}}**\nJVM: **{{jvm}}**\nLavaplayer: **{{lavaplayer}}**\nGit: **{{git}}**\n構建時間: **{{buildTime}}**",
   "NODE_STATUS_MEMORY_TITLE": "📑 記憶體",
-  "NODE_STATUS_MEMORY_VALUE": "已使用: **{{used}}**\n可用: **{{free}}**\n分配: **{{allocated}}**\n已保留: **{{reservable}}**\n",
+  "NODE_STATUS_MEMORY_VALUE": "已使用: **{{used}}**\n可用: **{{free}}**\n分配: **{{allocated}}**\n可保留: **{{reservable}}**\n",
   "NODE_STATUS_PING": "延遲",
   "NODE_STATUS_STATS_TITLE": "📊 統計",
   "NODE_STATUS_STATS_VALUE": "運行時間: **{{uptime}}**\n**{{pingKey}}**: **{{nodePing}} 毫秒**\n播放器: **{{playerCount}}**\n播放中: **{{playingCount}}**",
