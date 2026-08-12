@@ -227,6 +227,10 @@ const main = async () => {
 main();
 
 
-process.on('unhandledRejection', (error) => {
-    console.error('Unhandled promise rejection:', error);
+process.on('unhandledRejection', (reason, promise) => {
+    console.error('Unhandled Promise Rejection at:', promise, 'reason:', reason);
+});
+
+process.on('uncaughtException', (error) => {
+    console.error('Uncaught Exception thrown:', error);
 });

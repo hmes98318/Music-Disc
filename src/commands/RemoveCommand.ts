@@ -209,6 +209,8 @@ export class RemoveCommand extends BaseCommand {
         });
 
         collector.on('collect', async (query: Message<boolean>) => {
+            collector.stop();
+
             const index = parseInt(query.content);
 
             if (!index || index <= 0 || index > tracks.length) {
@@ -224,7 +226,6 @@ export class RemoveCommand extends BaseCommand {
                         allowedMentions: { repliedUser: false }
                     });
                 }
-                collector.stop();
                 return;
             }
 
@@ -243,8 +244,6 @@ export class RemoveCommand extends BaseCommand {
             msg.delete().catch(() =>
                 bot.logger.discord( bot.shardId, 'Failed to delete message.')
             );
-
-            collector.stop();
         });
 
         collector.on('end', async (collected: ReadonlyCollection<string, Message<boolean>>, reason: string) => {
