@@ -11,7 +11,7 @@
   "ERROR_TIME_EXPIRED": "❌ Vreme je isteklo.",
   "MESSAGE_BOT_LEAVE_CHANNEL": "✅ Bot je napustio kanal.",
   "MESSAGE_BOT_STOP": "✅ Bot je zaustavljen.",
-  "MESSAGE_MUSIC_SHUFFLE": "✅ Muzika izmešana.",
+  "MESSAGE_MUSIC_SHUFFLE": "✅ Red je izmešan.",
   "MESSAGE_NOW_PLAYING_SUBTITLE": "Autor: **{{author}}**\nTrajanje: **{{label}}**\n",
   "MESSAGE_NOW_PLAYING_TITLE": "Trenutno svira: {{title}}\n\n",
   "MESSAGE_QUEUE_PAGE": "\n\n----- Strana {{curPage}}/{{maxPage}} -----",
@@ -20,6 +20,6 @@
   "LOOP_MODE_SINGLE": "Jedna",
   "LOOP_MODE_ALL": "Sve",
   "MESSAGE_SEND_PRIVATE_MESSAGE": "✅ Poslao sam ti naziv muzike u privatnoj poruci.",
-  "MESSAGE_SET_LOOP_MODE": "✅ Ponavljanje postavljeno na `{{mode}}`",
+  "MESSAGE_SET_LOOP_MODE": "✅ Izabran režim ponavljanja: `{{mode}}`",
   "MESSAGE_SPECIFIC_CHANNEL_WARN": "❌ Ne možeš izvršavati komande u ovom kanalu. Molim te koristi <#{{channelId}}> tekstualni kanal."
 }

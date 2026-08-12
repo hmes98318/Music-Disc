@@ -1,7 +1,7 @@
 {
   "ERROR_GET_GUILD_DATA_CACHE": "❌ Не удалось получить данные сервера из кэша.",
   "ERROR_NOT_IN_SAME_VOICE_CHANNEL": "❌ Вы не находитесь в одном голосовом канале со мной.",
-  "ERRPR_NOT_IN_SPECIFIC_VOICE_CHANNEL": "Пожалуйста, зайдите в указанный голосовой канал <#{{channelId}}> и вызовите меня.",
+  "ERRPR_NOT_IN_SPECIFIC_VOICE_CHANNEL": "Пожалуйста, зайдите в голосовой канал <#{{channelId}}> и позовите меня.",
   "ERROR_NOT_IN_VOICE_CHANNEL": "❌ Вы не подключены к голосовому каналу.",
   "ERROR_NOT_PLAYING": "❌ Сейчас ничего не воспроизводится.",
   "ERROR_REQUIRE_ADMIN": "❌ Для этой команды требуются права администратора.",
@@ -20,6 +20,6 @@
   "LOOP_MODE_SINGLE": "Один трек",
   "LOOP_MODE_ALL": "Все",
   "MESSAGE_SEND_PRIVATE_MESSAGE": "✅ Я отправил вам название трека в личные сообщения.",
-  "MESSAGE_SET_LOOP_MODE": "✅ Установлен режим повтора: `{{mode}}`",
-  "MESSAGE_SPECIFIC_CHANNEL_WARN": "❌ Вы не можете использовать команды в этом канале. Используйте текстовый канал <#{{channelId}}>"
+  "MESSAGE_SET_LOOP_MODE": "✅ Выбран режим повтора: `{{mode}}`",
+  "MESSAGE_SPECIFIC_CHANNEL_WARN": "❌ В этом канале нельзя использовать команды. Пожалуйста, перейдите в текстовый канал <#{{channelId}}>."
 }
