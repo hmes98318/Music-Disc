@@ -179,8 +179,7 @@ const config = {
 
     // Playlist settings
     playlist: {
-        enabled             : true,             // Enable/disable playlist feature
-        allowM3uImport      : false             // Enable/disable M3U playlist import (disabled by default)
+        enabled             : true              // Enable/disable playlist feature
     },
 
     // SQLite database settings

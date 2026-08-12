@@ -10,7 +10,6 @@ import { PlayPlaylistSubcommand } from './playlist/PlayPlaylistSubcommand.js';
 import { RemovePlaylistTrackSubcommand } from './playlist/RemovePlaylistTrackSubcommand.js';
 import { SavePlaylistSubcommand } from './playlist/SavePlaylistSubcommand.js';
 import { ShowPlaylistInfoSubcommand } from './playlist/ShowPlaylistInfoSubcommand.js';
-import { ToggleM3uSubcommand } from './playlist/ToggleM3uSubcommand.js';
 
 import type {
     ApplicationCommandStringOptionData,
@@ -37,7 +36,6 @@ export class PlaylistCommand extends BaseCommand {
         new RemovePlaylistTrackSubcommand(),
         new SavePlaylistSubcommand(),
         new ShowPlaylistInfoSubcommand(),
-        new ToggleM3uSubcommand(),
     ];
 
     /**
@@ -120,14 +118,6 @@ export class PlaylistCommand extends BaseCommand {
                             type: ApplicationCommandOptionType.Integer,
                         },
                     ],
-                    type: ApplicationCommandOptionType.Subcommand,
-                },
-                {
-                    description: i18next.t(
-                        'commands:CONFIG_PLAYLIST_OPTION_SUBCOMMAND_TOGGLE_M3U',
-                        { lng }
-                    ),
-                    name: 'toggle-m3u',
                     type: ApplicationCommandOptionType.Subcommand,
                 },
             ],

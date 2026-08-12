@@ -266,8 +266,7 @@
   "MESSAGE_PLAYLIST_SAVE_CANCELLED": "❌ Oynatma listesini kaydetme iptal edildi.",
   "MESSAGE_PLAYLIST_SAVE_TIMEOUT": "⏱️ Kayıt onay süresi doldu.",
   "MESSAGE_SKIP_EMPTY_DISCONNECT": "⏭️ Mevcut parça atlandı. Sıra şimdi boş.",
-  "ERROR_PLAYLIST_M3U_DISABLED": "❌ M3U çalma listelerini içe aktarma şu anda devre dışı.",
   "ERROR_PLAYLIST_DISABLED": "❌ Çalma listesi özellikleri şu anda devre dışı.",
-  "CONFIG_PLAYLIST_OPTION_SUBCOMMAND_TOGGLE_M3U": "M3U çalma listesi içe aktarma iznini değiştirin.",
-  "MESSAGE_PLAYLIST_TOGGLE_M3U_SUCCESS": "✅ M3U çalma listesi içe aktarma izni `{{state}}` olarak ayarlandı."
+  "ERROR_PLAYLIST_M3U_CANNOT_PLAY_ALL": "❌ M3U çalma listeleri tamamen sıraya eklenemez. Lütfen belirli bir istasyon seçmek için `/radio` komutunu kullanın.",
+  "ERROR_PLAYLIST_IMPORT_ADMIN_DJ_ONLY": "❌ M3U çalma listesi içe aktarma yalnızca Yöneticiler ve DJ'ler ile sınırlıdır."
 }

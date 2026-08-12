@@ -46,6 +46,13 @@ export class PlayCommand extends BaseCommand {
             return;
         }
 
+        const isM3uUrl = /\.m3u8?(\?.*)?$/i.test(str.trim());
+        const existingPlaylist = bot.playlistManager?.getPlaylist(context.guild!.id, str.trim());
+        if (isM3uUrl || existingPlaylist?.isM3u) {
+            await context.replyEphemeralError(bot, context.t('commands:ERROR_PLAYLIST_M3U_CANNOT_PLAY_ALL'));
+            return;
+        }
+
         // Search for tracks
         let res;
         try {

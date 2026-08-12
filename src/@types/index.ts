@@ -125,7 +125,6 @@ export type Config = {
 
 export type PlaylistConfig = {
     enabled: boolean;
-    allowM3uImport: boolean;
 };
 
 export type BotConfig = {

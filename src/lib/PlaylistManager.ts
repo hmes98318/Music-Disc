@@ -15,11 +15,14 @@ export interface PlaylistTrack {
     position: number;
 }
 
+
+
 export interface Playlist {
     id: number;
     guildId: string;
     name: string;
     createdAt: number;
+    isM3u?: boolean;
     tracks?: PlaylistTrack[];
 }
 
@@ -61,21 +64,29 @@ export class PlaylistManager {
 
         try {
             const playlistRow = db.prepare(`
-                SELECT id, guild_id as guildId, name, created_at as createdAt
+                SELECT id, guild_id as guildId, name, created_at as createdAt, is_m3u as isM3u
                 FROM playlists
                 WHERE guild_id = ? AND name = ? COLLATE NOCASE
-            `).get(guildId, name) as Playlist | undefined;
+            `).get(guildId, name) as any;
 
             if (!playlistRow) return null;
+
+            const playlist: Playlist = {
+                id: Number(playlistRow.id),
+                guildId: String(playlistRow.guildId),
+                name: String(playlistRow.name),
+                createdAt: Number(playlistRow.createdAt),
+                isM3u: Boolean(playlistRow.isM3u),
+            };
 
             const tracks = db.prepare(`
                 SELECT id, playlist_id as playlistId, title, url, encoded, author, duration, position
                 FROM playlist_tracks
                 WHERE playlist_id = ?
                 ORDER BY position ASC
-            `).all(playlistRow.id) as any[];
+            `).all(playlist.id) as any[];
 
-            playlistRow.tracks = tracks.map(t => ({
+            playlist.tracks = tracks.map(t => ({
                 id: t.id,
                 playlistId: t.playlistId,
                 title: t.title,
@@ -86,7 +97,7 @@ export class PlaylistManager {
                 position: t.position
             }));
 
-            return playlistRow;
+            return playlist;
         } catch (error) {
             this.bot.logger.error(this.bot.shardId, `[PlaylistManager] Error getting playlist ${name}: ${error}`);
             return null;
@@ -134,7 +145,7 @@ export class PlaylistManager {
         }
     }
 
-    public saveCurrentQueue(guildId: string, name: string, tracks: Omit<PlaylistTrack, 'position'>[]): boolean {
+    public saveCurrentQueue(guildId: string, name: string, tracks: Omit<PlaylistTrack, 'position'>[], isM3u: boolean = false): boolean {
         const db = this.db;
         if (!db || tracks.length === 0 || tracks.length > PLAYLIST_TRACK_LIMIT) return false;
 
@@ -148,9 +159,9 @@ export class PlaylistManager {
                 db.prepare('DELETE FROM playlists WHERE guild_id = ? AND name = ? COLLATE NOCASE').run(guildId, name);
 
                 const playlistInfo = db.prepare(`
-                    INSERT INTO playlists (guild_id, name, created_at)
-                    VALUES (?, ?, ?)
-                `).run(guildId, name, Date.now());
+                    INSERT INTO playlists (guild_id, name, created_at, is_m3u)
+                    VALUES (?, ?, ?, ?)
+                `).run(guildId, name, Date.now(), isM3u ? 1 : 0);
                 const playlistId = Number(playlistInfo.lastInsertRowid);
 
                 for (let i = 0; i < tracks.length; i++) {
@@ -255,7 +266,7 @@ export class PlaylistManager {
             author: null
         }));
 
-        const success = this.saveCurrentQueue(guildId, name, playlistTracks);
+        const success = this.saveCurrentQueue(guildId, name, playlistTracks, true);
         return success
             ? {success: true, trackCount: playlistTracks.length}
             : {success: false, reason: 'SAVE_FAILED'};

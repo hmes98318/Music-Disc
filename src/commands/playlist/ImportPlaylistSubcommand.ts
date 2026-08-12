@@ -1,4 +1,5 @@
 import { BasePlaylistSubcommand } from './BasePlaylistSubcommand.js';
+import { DJManager } from '../../lib/DjManager.js';
 import { PLAYLIST_TRACK_LIMIT } from '../../lib/PlaylistManager.js';
 import {
     DEFAULT_REMOTE_TEXT_MAX_BYTES,
@@ -23,10 +24,14 @@ export class ImportPlaylistSubcommand extends BasePlaylistSubcommand {
      * Validate import arguments and confirm replacement when required
      */
     public async execute(context: PlaylistSubcommandContext): Promise<void> {
-        if (!context.bot.config.playlist?.allowM3uImport) {
+        const userId = context.command.user.id;
+        const member = context.command.member;
+        const player = context.client.lavashark.getPlayer(context.command.guild!.id);
+
+        if (!DJManager.isDJ(context.bot, userId, member, player ?? undefined)) {
             await context.command.replyEphemeralError(
                 context.bot,
-                context.command.t('commands:ERROR_PLAYLIST_M3U_DISABLED'),
+                context.command.t('commands:ERROR_PLAYLIST_IMPORT_ADMIN_DJ_ONLY'),
             );
             return;
         }

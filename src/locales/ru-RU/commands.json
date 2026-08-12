@@ -266,8 +266,7 @@
   "MESSAGE_PLAYLIST_SAVE_CANCELLED": "❌ Сохранение плейлиста отменено.",
   "MESSAGE_PLAYLIST_SAVE_TIMEOUT": "⏱️ Время ожидания подтверждения сохранения истекло.",
   "MESSAGE_SKIP_EMPTY_DISCONNECT": "⏭️ Текущий трек пропущен. Очередь пуста.",
-  "ERROR_PLAYLIST_M3U_DISABLED": "❌ Импорт M3U-плейлистов отключён.",
   "ERROR_PLAYLIST_DISABLED": "❌ Функции плейлистов отключены.",
-  "CONFIG_PLAYLIST_OPTION_SUBCOMMAND_TOGGLE_M3U": "Переключить разрешение на импорт M3U-плейлистов.",
-  "MESSAGE_PLAYLIST_TOGGLE_M3U_SUCCESS": "✅ Разрешение на импорт M3U-плейлистов установлено в `{{state}}`."
+  "ERROR_PLAYLIST_M3U_CANNOT_PLAY_ALL": "❌ M3U-плейлисты нельзя добавлять в очередь целиком. Используйте команду `/radio` для выбора радиостанции.",
+  "ERROR_PLAYLIST_IMPORT_ADMIN_DJ_ONLY": "❌ Импорт M3U-плейлистов доступен только администраторам и DJ."
 }
