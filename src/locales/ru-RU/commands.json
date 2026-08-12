@@ -199,7 +199,7 @@
   "UNIT_TB": "ТБ",
   "ERROR_BLACKLIST_NOT_INITIALIZED": "Чёрный список ещё не загружен, попробуйте позже",
   "HELP_SELECT_MUSIC_PLACEHOLDER": "Выберите музыкальную команду",
-  "HELP_SELECT_UTILITY_PLACEHOLDER": "Выберите утилиту",
+  "HELP_SELECT_UTILITY_PLACEHOLDER": "Выберите служебную команду",
   "HELP_COMMAND_ALIASES": "Алиасы: {{aliases}}",
   "HELP_COMMAND_NONE": "Нет",
   "LABEL_FILTER_CLEAR": "Очистить фильтры",

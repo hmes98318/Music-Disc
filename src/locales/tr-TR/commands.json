@@ -199,7 +199,7 @@
   "UNIT_TB": "TB",
   "ERROR_BLACKLIST_NOT_INITIALIZED": "Kara liste henüz yüklenmedi, sonra tekrar deneyin",
   "HELP_SELECT_MUSIC_PLACEHOLDER": "Bir Müzik komutu seçin",
-  "HELP_SELECT_UTILITY_PLACEHOLDER": "Bir Yardımcı komut seçin",
+  "HELP_SELECT_UTILITY_PLACEHOLDER": "Bir Hizmet komutu seçin",
   "HELP_COMMAND_ALIASES": "Takma Adlar: {{aliases}}",
   "HELP_COMMAND_NONE": "Yok",
   "LABEL_FILTER_CLEAR": "Filtreleri temizle",

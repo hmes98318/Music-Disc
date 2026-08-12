@@ -199,7 +199,7 @@
   "UNIT_TB": "TB",
   "ERROR_BLACKLIST_NOT_INITIALIZED": "블랙리스트 관리자가 초기화되지 않았습니다",
   "HELP_SELECT_MUSIC_PLACEHOLDER": "음악 명령어 선택",
-  "HELP_SELECT_UTILITY_PLACEHOLDER": "유틸리티 명령어 선택",
+  "HELP_SELECT_UTILITY_PLACEHOLDER": "서비스 명령어를 선택하세요",
   "HELP_COMMAND_ALIASES": "별칭: {{aliases}}",
   "HELP_COMMAND_NONE": "없음",
   "LABEL_FILTER_CLEAR": "효과 초기화",

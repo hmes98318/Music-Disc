@@ -199,7 +199,7 @@
   "UNIT_TB": "TB",
   "ERROR_BLACKLIST_NOT_INITIALIZED": "The blacklist isn't loaded yet. Please try again later",
   "HELP_SELECT_MUSIC_PLACEHOLDER": "Select a Music command",
-  "HELP_SELECT_UTILITY_PLACEHOLDER": "Select a Utility command",
+  "HELP_SELECT_UTILITY_PLACEHOLDER": "Select a Service command",
   "HELP_COMMAND_ALIASES": "Aliases: {{aliases}}",
   "HELP_COMMAND_NONE": "None",
   "LABEL_FILTER_CLEAR": "Clear filters",

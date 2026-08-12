@@ -199,7 +199,7 @@
   "UNIT_TB": "TB",
   "ERROR_BLACKLIST_NOT_INITIALIZED": "Crna lista još nije učitana. Pokušaj ponovo kasnije",
   "HELP_SELECT_MUSIC_PLACEHOLDER": "Izaberi muzičku komandu",
-  "HELP_SELECT_UTILITY_PLACEHOLDER": "Izaberi utility komandu",
+  "HELP_SELECT_UTILITY_PLACEHOLDER": "Izaberite servisnu komandu",
   "HELP_COMMAND_ALIASES": "Aliasi: {{aliases}}",
   "HELP_COMMAND_NONE": "Nijedan",
   "LABEL_FILTER_CLEAR": "Obriši filtere",
