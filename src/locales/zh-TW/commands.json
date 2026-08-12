@@ -265,5 +265,9 @@
   "MESSAGE_PLAYLIST_IMPORT_TIMEOUT": "⏱️ 匯入確認逾時。",
   "MESSAGE_PLAYLIST_SAVE_CANCELLED": "❌ 已取消儲存播放清單。",
   "MESSAGE_PLAYLIST_SAVE_TIMEOUT": "⏱️ 儲存確認逾時。",
-  "MESSAGE_SKIP_EMPTY_DISCONNECT": "⏭️ 已略過目前歌曲。佇列現已清空。"
+  "MESSAGE_SKIP_EMPTY_DISCONNECT": "⏭️ 已略過目前歌曲。佇列現已清空。",
+  "ERROR_PLAYLIST_M3U_DISABLED": "❌ 目前已停用匯入 M3U 播放清單功能。",
+  "ERROR_PLAYLIST_DISABLED": "❌ 目前已停用播放清單功能。",
+  "CONFIG_PLAYLIST_OPTION_SUBCOMMAND_TOGGLE_M3U": "切換是否允許匯入 M3U 播放清單。",
+  "MESSAGE_PLAYLIST_TOGGLE_M3U_SUCCESS": "✅ 匯入 M3U 播放清單權限已設定為 `{{state}}`。"
 }
