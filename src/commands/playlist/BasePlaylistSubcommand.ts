@@ -20,7 +20,8 @@ export type PlaylistSubcommandName =
     | 'list'
     | 'play'
     | 'remove-track'
-    | 'save';
+    | 'save'
+    | 'toggle-m3u';
 
 /**
  * Dependencies shared by playlist subcommand executions

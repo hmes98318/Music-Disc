@@ -177,6 +177,12 @@ const config = {
         enabled             : false             // Enable/disable persistent queue storage
     },
 
+    // Playlist settings
+    playlist: {
+        enabled             : true,             // Enable/disable playlist feature
+        allowM3uImport      : false             // Enable/disable M3U playlist import (disabled by default)
+    },
+
     // SQLite database settings
     database: {
         path                : './data/database.db' // Path to SQLite database file

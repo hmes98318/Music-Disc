@@ -23,6 +23,14 @@ export class ImportPlaylistSubcommand extends BasePlaylistSubcommand {
      * Validate import arguments and confirm replacement when required
      */
     public async execute(context: PlaylistSubcommandContext): Promise<void> {
+        if (!context.bot.config.playlist?.allowM3uImport) {
+            await context.command.replyEphemeralError(
+                context.bot,
+                context.command.t('commands:ERROR_PLAYLIST_M3U_DISABLED'),
+            );
+            return;
+        }
+
         const args = this.getImportArguments(context.command);
         if (!args) {
             await context.command.replyEphemeralError(
