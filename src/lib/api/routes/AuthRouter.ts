@@ -5,7 +5,7 @@ import { parseCookie } from 'cookie';
 import undici from 'undici';
 
 import { LoginTypeEnum } from '../../../@types/index.js';
-import { hashGenerator } from '../../hashGenerator.js';
+import { generateRandomKey } from '../../../utils/functions/generateRandomKey.js';
 import { loginSchema } from '../validators/schemas.js';
 import { noContent, ok, problem } from '../http.js';
 import { validateBody } from '../validators/validate.js';
@@ -126,7 +126,7 @@ export class AuthRouter extends BaseRouter {
         if (username === siteConfig.user.username && passwordMatch) {
             this.sessionManager.unblockIP(userIP);
 
-            const sessionId = hashGenerator.generateRandomKey();
+            const sessionId = generateRandomKey();
             this.sessionManager.createSession(sessionId);
 
             res.cookie('sessionId', sessionId, SESSION_COOKIE_OPTIONS);
@@ -245,7 +245,7 @@ export class AuthRouter extends BaseRouter {
             });
         }
 
-        const state = hashGenerator.generateRandomKey();
+        const state = generateRandomKey();
         this.#oauthStates.set(state, {
             expiresAt: Date.now() + OAUTH2_STATE_TTL_MS,
             requesterIp,
@@ -344,7 +344,7 @@ export class AuthRouter extends BaseRouter {
                 if (this.bot.config.bot.admin.includes(user.id)) {
                     this.sessionManager.unblockIP(userIP);
 
-                    const sessionId = hashGenerator.generateRandomKey();
+                    const sessionId = generateRandomKey();
                     this.sessionManager.createSession(sessionId);
 
                     res.cookie('sessionId', sessionId, SESSION_COOKIE_OPTIONS);
