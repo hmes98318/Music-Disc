@@ -66,7 +66,7 @@ export class PlaylistManager {
             const playlistRow = db.prepare(`
                 SELECT id, guild_id as guildId, name, created_at as createdAt, is_m3u as isM3u
                 FROM playlists
-                WHERE guild_id = ? AND name = ?
+                WHERE guild_id = ? AND name = ? COLLATE NOCASE
             `).get(guildId, name) as any;
 
             if (!playlistRow) return null;
@@ -156,7 +156,7 @@ export class PlaylistManager {
             `);
 
             const replacePlaylist = db.transaction(() => {
-                db.prepare('DELETE FROM playlists WHERE guild_id = ? AND name = ?').run(guildId, name);
+                db.prepare('DELETE FROM playlists WHERE guild_id = ? AND name = ? COLLATE NOCASE').run(guildId, name);
 
                 const playlistInfo = db.prepare(`
                     INSERT INTO playlists (guild_id, name, created_at, is_m3u)
