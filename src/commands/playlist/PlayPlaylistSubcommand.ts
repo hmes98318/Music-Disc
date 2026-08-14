@@ -292,6 +292,8 @@ export class PlayPlaylistSubcommand extends BasePlaylistSubcommand {
         const tracks = playlist.tracks ?? [];
         const BATCH_SIZE = 5;
 
+        const resolvedTracks: any[] = [];
+
         for (let i = 0; i < tracks.length; i += BATCH_SIZE) {
             const chunk = tracks.slice(i, i + BATCH_SIZE);
             const promises = chunk.map(async (playlistTrack) => {
@@ -316,13 +318,17 @@ export class PlayPlaylistSubcommand extends BasePlaylistSubcommand {
             const results = await Promise.all(promises);
             for (const track of results) {
                 if (track) {
-                    const requester = context.command.user as unknown as PlayerRequester;
-                    player.addTracks(track, requester);
+                    resolvedTracks.push(track);
                     added++;
                 } else {
                     skipped++;
                 }
             }
+        }
+
+        if (resolvedTracks.length > 0) {
+            const requester = context.command.user as unknown as PlayerRequester;
+            player.addTracks(resolvedTracks, requester);
         }
 
         return { added, skipped };

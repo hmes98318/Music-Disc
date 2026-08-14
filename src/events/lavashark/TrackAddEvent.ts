@@ -33,14 +33,12 @@ export class TrackAddEvent extends BaseLavaSharkEvent<'trackAdd'> {
         }
 
         // Refresh dashboard
-        try {
-            if (player.dashboardMsg) await player.dashboardMsg.delete();
-        } catch (error) {
-            bot.logger.error( bot.shardId, 'Dashboard delete error:' + error);
+        if (player.current) {
+            if (!player.dashboardMsg) {
+                await client.dashboard.initialize((player.metadata as Message), player);
+            }
+            await client.dashboard.update(player, player.current);
         }
-
-        await client.dashboard.initialize((player.metadata as Message), player);
-        await client.dashboard.update(player, player.current!);
     }
 
     /**
