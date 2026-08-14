@@ -300,14 +300,16 @@ export class QueuePersistence {
                         let result = null;
 
                         // Try loading by encoded track string first
-                        try {
-                            result = await client.lavashark.search(serializedTrack.track);
-                        } catch (_) {
-                            // Encoded string failed, will try fallback
+                        if (serializedTrack.track && serializedTrack.track.trim() !== '') {
+                            try {
+                                result = await client.lavashark.search(serializedTrack.track);
+                            } catch (_) {
+                                // Encoded string failed, will try fallback
+                            }
                         }
 
                         // Fallback: search by URI
-                        if (!result || !result.tracks || result.tracks.length === 0) {
+                        if ((!result || !result.tracks || result.tracks.length === 0) && serializedTrack.info?.uri && serializedTrack.info.uri.trim() !== '') {
                             try {
                                 result = await client.lavashark.search(serializedTrack.info.uri);
                             } catch (_) {
@@ -316,9 +318,12 @@ export class QueuePersistence {
                         }
 
                         // Final fallback: search by title + author
-                        if (!result || !result.tracks || result.tracks.length === 0) {
+                        if ((!result || !result.tracks || result.tracks.length === 0) && serializedTrack.info?.title && serializedTrack.info.title.trim() !== '') {
                             try {
-                                result = await client.lavashark.search(`ytsearch:${serializedTrack.info.title} ${serializedTrack.info.author}`);
+                                const query = serializedTrack.info.author
+                                    ? `${serializedTrack.info.title} ${serializedTrack.info.author}`.trim()
+                                    : serializedTrack.info.title.trim();
+                                result = await client.lavashark.search(`ytsearch:${query}`);
                             } catch (_) {
                                 // All methods failed
                             }
