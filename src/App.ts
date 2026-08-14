@@ -134,7 +134,12 @@ class App {
      * @private
      */
     #setShutdownSignalHandlers(): void {
+        let isShuttingDown = false;
+
         const shutdown = async (signal: string) => {
+            if (isShuttingDown) return;
+            isShuttingDown = true;
+
             this.bot.logger.log( this.bot.shardId, `Received ${signal}. Closing server gracefully...`);
 
             const timeout = setTimeout(() => {
@@ -143,29 +148,33 @@ class App {
             }, 30 * 1000);
 
             try {
-                // Stop periodic saves and save all active queues before shutdown
+                // Stop periodic saves and save all active queues in parallel before shutdown
                 if (this.bot.config.queuePersistence.enabled && this.#client.queuePersistence) {
                     this.bot.logger.log( this.bot.shardId, 'Saving active queues before shutdown...');
                     this.#client.queuePersistence.stopAllPeriodicSaves();
-                    for (const player of this.#client.lavashark.players.values()) {
-                        await this.#client.queuePersistence.saveQueue(player);
-                    }
+                    const players = Array.from(this.#client.lavashark?.players?.values() ?? []);
+                    await Promise.allSettled(
+                        players.map(player => this.#client.queuePersistence!.saveQueue(player))
+                    );
                 }
 
                 // Close the lavashark players connections
                 this.bot.logger.log( this.bot.shardId, 'Closing voice channel connection...');
+                const activePlayers = Array.from(this.#client.lavashark?.players?.values() ?? []);
                 await Promise.allSettled(
-                    Array.from(this.#client.lavashark.players.values()).map(player => player.destroy())
+                    activePlayers.map(player => player.destroy())
                 );
-                await new Promise(resolve => setTimeout(resolve, 2000));
                 this.bot.logger.log( this.bot.shardId, 'Voice channel connection closed.');
 
                 // Close the lavashark nodes connections
                 this.bot.logger.log( this.bot.shardId, 'Closing lavashark nodes...');
-                for (const node of this.#client.lavashark.nodes) {
-                    node.disconnect();
+                if (this.#client.lavashark?.nodes) {
+                    for (const node of this.#client.lavashark.nodes) {
+                        try {
+                            node.disconnect();
+                        } catch (_) {}
+                    }
                 }
-                await new Promise(resolve => setTimeout(resolve, 2000));
                 this.bot.logger.log( this.bot.shardId, 'Lavashark nodes closed.');
 
                 // Close discord.js connection
