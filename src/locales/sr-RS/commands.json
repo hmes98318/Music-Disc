@@ -265,5 +265,8 @@
   "MESSAGE_PLAYLIST_IMPORT_TIMEOUT": "⏱️ Vreme za potvrdu uvoza je isteklo.",
   "MESSAGE_PLAYLIST_SAVE_CANCELLED": "❌ Čuvanje plejliste je otkazano.",
   "MESSAGE_PLAYLIST_SAVE_TIMEOUT": "⏱️ Potvrda čuvanja je istekla.",
-  "MESSAGE_SKIP_EMPTY_DISCONNECT": "⏭️ Preskočena trenutna pesma. Red je sada prazan."
+  "MESSAGE_SKIP_EMPTY_DISCONNECT": "⏭️ Preskočena trenutna pesma. Red je sada prazan.",
+  "ERROR_PLAYLIST_DISABLED": "❌ Funkcije plejliste su trenutno onemogućene.",
+  "ERROR_PLAYLIST_M3U_CANNOT_PLAY_ALL": "❌ M3U plejliste se ne mogu staviti u red u celosti. Koristite komandu `/radio` za izbor stanice.",
+  "ERROR_PLAYLIST_IMPORT_ADMIN_DJ_ONLY": "❌ Uvoz M3U plejlisti je ograničen samo na admine i DJ-eve."
 }

@@ -114,12 +114,17 @@ export type Config = {
     bot: BotConfig;
     nodeList: NodeOptions[];
     spotify: SpotifyConfig;
-    blacklist: string[],
+    blacklist: string[];
     webDashboard: WebDashboardConfig;
     localNode: LocalNodeConfig;
     command: CommandConfig;
     database: DatabaseConfig;
     queuePersistence: QueuePersistenceConfig;
+    playlist: PlaylistConfig;
+};
+
+export type PlaylistConfig = {
+    enabled: boolean;
 };
 
 export type BotConfig = {

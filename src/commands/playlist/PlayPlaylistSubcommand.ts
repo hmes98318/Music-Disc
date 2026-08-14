@@ -52,6 +52,14 @@ export class PlayPlaylistSubcommand extends BasePlaylistSubcommand {
             return;
         }
 
+        if (playlist.isM3u) {
+            await context.command.replyEphemeralError(
+                context.bot,
+                context.command.t('commands:ERROR_PLAYLIST_M3U_CANNOT_PLAY_ALL'),
+            );
+            return;
+        }
+
         await this.play(context, playlist);
     }
 

@@ -265,5 +265,8 @@
   "MESSAGE_PLAYLIST_IMPORT_TIMEOUT": "⏱️ 匯入確認逾時。",
   "MESSAGE_PLAYLIST_SAVE_CANCELLED": "❌ 已取消儲存播放清單。",
   "MESSAGE_PLAYLIST_SAVE_TIMEOUT": "⏱️ 儲存確認逾時。",
-  "MESSAGE_SKIP_EMPTY_DISCONNECT": "⏭️ 已略過目前歌曲。佇列現已清空。"
+  "MESSAGE_SKIP_EMPTY_DISCONNECT": "⏭️ 已略過目前歌曲。佇列現已清空。",
+  "ERROR_PLAYLIST_DISABLED": "❌ 目前已停用播放清單功能。",
+  "ERROR_PLAYLIST_M3U_CANNOT_PLAY_ALL": "❌ 無法將 M3U 播放清單整本加入佇列。請使用 `/radio` 指令選擇特定電台頻道。",
+  "ERROR_PLAYLIST_IMPORT_ADMIN_DJ_ONLY": "❌ 匯入 M3U 播放清單僅限管理員及 DJ 權限使用者使用。"
 }

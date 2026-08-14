@@ -113,6 +113,7 @@ export class DatabaseManager {
                 guild_id TEXT NOT NULL,
                 name TEXT NOT NULL,
                 created_at INTEGER NOT NULL,
+                is_m3u INTEGER DEFAULT 0,
                 UNIQUE(guild_id, name)
             );
 
@@ -128,5 +129,12 @@ export class DatabaseManager {
                 FOREIGN KEY (playlist_id) REFERENCES playlists(id) ON DELETE CASCADE
             );
         `);
+
+        const columns = this.db.prepare('PRAGMA table_info(playlists)').all() as Array<{ name: string }>;
+        const hasIsM3u = columns.some((col) => col.name === 'is_m3u');
+
+        if (!hasIsM3u) {
+            this.db.exec('ALTER TABLE playlists ADD COLUMN is_m3u INTEGER DEFAULT 0;');
+        }
     }
 }

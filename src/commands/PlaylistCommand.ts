@@ -123,6 +123,14 @@ export class PlaylistCommand extends BaseCommand {
         client: Client,
         command: CommandContext,
     ): Promise<void> {
+        if (bot.config.playlist?.enabled === false) {
+            await command.replyEphemeralError(
+                bot,
+                command.t('commands:ERROR_PLAYLIST_DISABLED'),
+            );
+            return;
+        }
+
         // Ensure playlist storage is available before dispatching
         const playlistManager = bot.playlistManager;
         if (!playlistManager) {
