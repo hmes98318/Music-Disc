@@ -3,6 +3,12 @@ import { ChannelType } from 'discord.js';
 import type { Client } from 'discord.js';
 import type { Player, Track } from 'lavashark';
 import type { Bot, QueueTableRow } from '../@types/index.js';
+import {
+    decodeTracksWithRetry,
+    decodeTrackWithRetry,
+    searchWithRetry,
+    sleep,
+} from '../utils/functions/lavasharkRequest.js';
 
 
 /**
@@ -39,6 +45,27 @@ interface SerializedTrack {
     requesterId: string;
     requesterTag: string;
 }
+
+/**
+ * Format milliseconds as a duration label (mirrors lavashark's formatTime)
+ */
+const formatDurationLabel = (milliseconds: number): string => {
+    const seconds = Math.floor(milliseconds / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+
+    let timeString = '';
+    if (days > 0) {
+        timeString += `${days}d `;
+    }
+    if (hours % 24 > 0) {
+        timeString += `${(hours % 24).toString().padStart(2, '0')}:`;
+    }
+    timeString += `${(minutes % 60).toString().padStart(2, '0')}:${(seconds % 60).toString().padStart(2, '0')}`;
+
+    return timeString;
+};
 
 /**
  * Manager for persisting queue state to SQLite database
@@ -87,18 +114,19 @@ export class QueuePersistence {
             }
 
             const serializeTrack = (track: Track): SerializedTrack | null => {
-                if (!('encoded' in track)) return null;
+                if (!track) return null;
+                const encodedTrack = ('encoded' in track && typeof track.encoded === 'string') ? track.encoded : ((track as any).track ?? '');
                 return {
-                    track: track.encoded,
+                    track: encodedTrack,
                     info: {
-                        identifier: track.identifier,
-                        title: track.title,
-                        author: track.author,
-                        length: typeof track.duration === 'number' ? track.duration : 0,
-                        uri: track.uri,
+                        identifier: track.identifier || '',
+                        title: track.title || '',
+                        author: track.author || '',
+                        length: typeof track.duration === 'number' ? track.duration : (track.duration?.value ?? 0),
+                        uri: track.uri || '',
                         sourceName: (track as any).sourceName || 'youtube',
-                        isSeekable: track.isSeekable,
-                        isStream: track.isStream
+                        isSeekable: track.isSeekable ?? true,
+                        isStream: track.isStream ?? false
                     },
                     requesterId: track.requester?.id || '',
                     requesterTag: track.requester?.tag || ''
@@ -115,11 +143,11 @@ export class QueuePersistence {
 
             // Append queue tracks
             for (const track of player.queue.tracks) {
-                if ('encoded' in track) {
-                    const s = serializeTrack(track as Track);
-                    if (s) serializedTracks.push(s);
-                }
+                const s = serializeTrack(track as Track);
+                if (s) serializedTracks.push(s);
             }
+
+            const currentVolume = player.volume ?? (player.setting as any)?.volume ?? this.bot.guildVolumeManager?.get(player.guildId) ?? this.bot.config.bot.volume.default;
 
             const queueData: PersistedQueue = {
                 guildId: player.guildId,
@@ -127,7 +155,7 @@ export class QueuePersistence {
                 textChannelId: player.textChannelId || '',
                 tracks: serializedTracks,
                 currentTrackIndex: 0,
-                volume: (player as any).volume || 100,
+                volume: currentVolume,
                 repeatMode: player.repeatMode,
                 paused: player.paused,
                 position: player.position,
@@ -290,49 +318,51 @@ export class QueuePersistence {
                 }
             }
 
-            // Restore tracks - try encoded track string first, fall back to URI search
-            for (const serializedTrack of queueData.tracks) {
-                try {
-                    let result = null;
+            // Bulk-decode saved encoded tracks in a single request — Lavalink
+            // nodes rate-limit REST calls (HTTP 429), so per-track requests
+            // would exhaust the node budget. Fall back to paced per-track
+            // restore for anything the bulk decode did not cover.
+            const serializedEntries = queueData.tracks.map((track, index) => ({ track, index }));
+            const restoredByIndex: Map<number, any> = new Map();
+            const TRACK_REQUEST_DELAY_MS = 400;
 
-                    // Try loading by encoded track string first
-                    try {
-                        result = await client.lavashark.search(serializedTrack.track);
-                    } catch (_) {
-                        // Encoded string failed, will try fallback
-                    }
-
-                    // Fallback: search by URI
-                    if (!result || !result.tracks || result.tracks.length === 0) {
-                        try {
-                            result = await client.lavashark.search(serializedTrack.info.uri);
-                        } catch (_) {
-                            // URI search failed, will try title search
+            const encodedEntries = serializedEntries.filter(({ track }) =>
+                track.track && track.track.trim() !== '',
+            );
+            if (encodedEntries.length > 0) {
+                const decoded = await decodeTracksWithRetry(
+                    client.lavashark,
+                    encodedEntries.map(({ track }) => track.track.trim()),
+                );
+                if (decoded && decoded.length === encodedEntries.length) {
+                    encodedEntries.forEach(({ track, index }, i) => {
+                        if (decoded[i]) {
+                            restoredByIndex.set(
+                                index,
+                                this.applySerializedMetadata(decoded[i], track),
+                            );
                         }
-                    }
-
-                    // Final fallback: search by title + author
-                    if (!result || !result.tracks || result.tracks.length === 0) {
-                        try {
-                            result = await client.lavashark.search(`ytsearch:${serializedTrack.info.title} ${serializedTrack.info.author}`);
-                        } catch (_) {
-                            // All methods failed
-                        }
-                    }
-
-                    if (result && result.tracks && result.tracks.length > 0) {
-                        const track = result.tracks[0];
-                        track.requester = {
-                            id: serializedTrack.requesterId,
-                            tag: serializedTrack.requesterTag
-                        } as any;
-                        player.queue.add(track);
-                    } else {
-                        this.bot.logger.log(this.bot.shardId, `[QueuePersistence] Could not restore track "${serializedTrack.info.title}", skipping`);
-                    }
-                } catch (error) {
-                    this.bot.logger.error(this.bot.shardId, `[QueuePersistence] Failed to restore track ${serializedTrack.info.title}: ${error}`);
+                    });
                 }
+            }
+
+            const allRestoredTracks: any[] = [];
+            for (const { track, index } of serializedEntries) {
+                const restored = restoredByIndex.get(index);
+                if (restored) {
+                    allRestoredTracks.push(restored);
+                    continue;
+                }
+
+                const fallback = await this.restoreTrack(client, track);
+                if (fallback) {
+                    allRestoredTracks.push(fallback);
+                }
+                await sleep(TRACK_REQUEST_DELAY_MS);
+            }
+
+            for (const track of allRestoredTracks) {
+                player.queue.add(track);
             }
 
             // Restore settings
@@ -340,11 +370,20 @@ export class QueuePersistence {
 
             // Connect and play
             await player.connect();
-            if (!player.playing && !player.paused) {
+            if (!player.playing && !player.paused && player.queue.tracks.length > 0) {
                 await player.play();
             }
 
-            // Set volume after playback starts (Player.volume is a read-only getter)
+            if (queueData.paused && player.playing) {
+                await player.pause();
+            }
+
+            // Set volume after playback starts
+            if (!player.setting) {
+                player.setting = { queuePage: null, volume: queueData.volume, fairQueueRotation: [] };
+            } else {
+                player.setting.volume = queueData.volume;
+            }
             player.filters.setVolume(queueData.volume);
 
             // Seek to saved position after playback starts
@@ -366,6 +405,80 @@ export class QueuePersistence {
         } catch (error) {
             this.bot.logger.error(this.bot.shardId, `[QueuePersistence] Failed to restore queue for guild ${queueData.guildId}: ${error}`);
         }
+    }
+
+    /**
+     * Resolve a single serialized track back into a playable track.
+     * Decodes the saved encoded string first (exact restore), then falls back
+     * to searching by URI, then by title + author. Requests are retried once
+     * each because Lavalink nodes rate-limit REST calls (HTTP 429).
+     */
+    private async restoreTrack(
+        client: Client,
+        serializedTrack: SerializedTrack,
+    ): Promise<any | null> {
+        try {
+            let resolvedTrack: any = null;
+
+            // 1) Decode the saved encoded track exactly (preserves the original track data)
+            if (serializedTrack.track && serializedTrack.track.trim() !== '') {
+                resolvedTrack = await decodeTrackWithRetry(
+                    client.lavashark,
+                    serializedTrack.track,
+                );
+            }
+
+            // 2) Fallback: search by URI
+            if (!resolvedTrack && serializedTrack.info?.uri && serializedTrack.info.uri.trim() !== '') {
+                const result = await searchWithRetry(client.lavashark, serializedTrack.info.uri);
+                if (result && Array.isArray(result.tracks) && result.tracks.length > 0) {
+                    resolvedTrack = result.tracks[0];
+                }
+            }
+
+            // 3) Final fallback: search by title + author
+            if (!resolvedTrack && serializedTrack.info?.title && serializedTrack.info.title.trim() !== '') {
+                const query = serializedTrack.info.author
+                    ? `${serializedTrack.info.title} ${serializedTrack.info.author}`.trim()
+                    : serializedTrack.info.title.trim();
+                const result = await searchWithRetry(client.lavashark, `ytsearch:${query}`);
+                if (result && Array.isArray(result.tracks) && result.tracks.length > 0) {
+                    resolvedTrack = result.tracks[0];
+                }
+            }
+
+            if (resolvedTrack) {
+                return this.applySerializedMetadata(resolvedTrack, serializedTrack);
+            }
+
+            this.bot.logger.log(this.bot.shardId, `[QueuePersistence] Could not restore track "${serializedTrack.info.title}", skipping`);
+        } catch (error) {
+            this.bot.logger.error(this.bot.shardId, `[QueuePersistence] Failed to restore track ${serializedTrack.info.title}: ${error}`);
+        }
+        return null;
+    }
+
+    /**
+     * Restore the originally saved metadata so names are never replaced by
+     * whatever the fallback search returned
+     */
+    private applySerializedMetadata(track: any, serializedTrack: SerializedTrack): any {
+        const info = serializedTrack.info ?? {};
+        if (info.title) track.title = info.title;
+        if (info.author) track.author = info.author;
+        if (info.uri) track.uri = info.uri;
+        if (info.identifier) track.identifier = info.identifier;
+        if (typeof info.length === 'number' && info.length > 0) {
+            track.duration = {
+                label: formatDurationLabel(info.length),
+                value: info.length,
+            };
+        }
+        track.requester = {
+            id: serializedTrack.requesterId,
+            tag: serializedTrack.requesterTag
+        } as any;
+        return track;
     }
 
     /**
