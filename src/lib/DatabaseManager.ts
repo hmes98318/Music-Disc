@@ -59,6 +59,10 @@ export class DatabaseManager {
             return;
         }
 
+        try {
+            this.db.pragma('wal_checkpoint(TRUNCATE)');
+        } catch (_) {}
+
         this.db.close();
         this.db = null;
         this.bot.logger.log(this.bot.shardId, '[DatabaseManager] Database connection closed.');
@@ -71,6 +75,7 @@ export class DatabaseManager {
 
         this.db.pragma('journal_mode = WAL');   // Default is DELETE
         this.db.pragma('synchronous = NORMAL'); // Default is FULL
+        this.db.pragma('temp_store = MEMORY');
         this.db.pragma('foreign_keys = ON');    // Default is OFF
         this.db.pragma('busy_timeout = 5000');  // Default is 0 (no timeout)
     }

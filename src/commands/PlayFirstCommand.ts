@@ -149,6 +149,7 @@ export class PlayFirstCommand extends BaseCommand {
         } catch (error) {
             bot.logger.error( bot.shardId, 'Error joining channel: ' + error);
             await context.replyEphemeralError(bot, context.t('commands:ERROR_PLAY_JOIN_CHANNEL'));
+            await player.destroy();
             return null;
         }
 
