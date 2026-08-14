@@ -54,14 +54,9 @@ export class DashboardManager {
     }
 
     /**
-     * Update dashboard with current track and player state
+     * Update dashboard with current track and player state (re-sends to the bottom of the channel)
      */
     public async update(player: Player, track: Track): Promise<void> {
-        if (!player.dashboardMsg) {
-            this.#bot.logger.error( this.#bot.shardId, 'Dashboard update called but dashboard is null');
-            return;
-        }
-
         const lng = this.#bot.guildLanguageManager?.get(player.guildId);
         let subtitle = await this.#buildSubtitle(player, track, lng);
         const buttons = ButtonsBuilder.createDashboardButtons(player, lng);
@@ -74,8 +69,24 @@ export class DashboardManager {
             subtitle = subtitle.substring(0, 1021) + '...';
         }
 
+        const channel = player.dashboardMsg?.channel
+            ?? (player.textChannelId ? this.#client.channels.cache.get(player.textChannelId) : null);
+
+        if (!channel || typeof (channel as any).send !== 'function') {
+            this.#bot.logger.error(this.#bot.shardId, 'Dashboard update called but channel is missing or invalid');
+            return;
+        }
+
+        const oldMsg = player.dashboardMsg;
+
+        if (oldMsg) {
+            try {
+                await oldMsg.delete();
+            } catch (_) {}
+        }
+
         try {
-            await player.dashboardMsg.edit({
+            player.dashboardMsg = await (channel as any).send({
                 embeds: [embeds.dashboard(
                     this.#bot,
                     this.#bot.i18n.t('embeds:DASHBOARD_TITLE', { lng }),
@@ -87,7 +98,7 @@ export class DashboardManager {
                 components: [buttons]
             });
         } catch (error) {
-            this.#bot.logger.error( this.#bot.shardId, 'Dashboard update error: ' + error);
+            this.#bot.logger.error(this.#bot.shardId, 'Dashboard update error: ' + error);
         }
     }
 
