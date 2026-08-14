@@ -68,8 +68,6 @@ export class SkipButtonHandler extends DashboardButtonHandler {
                 });
                 return;
             } catch (_) {}
-        } else if (player.current && client.dashboard) {
-            await client.dashboard.update(player, player.current);
         }
 
         if (!interaction.replied && !interaction.deferred) {

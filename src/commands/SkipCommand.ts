@@ -69,10 +69,6 @@ export class SkipCommand extends BaseCommand {
 
         const success = await player.skip();
 
-        if (success && player.current && client.dashboard) {
-            await client.dashboard.update(player, player.current);
-        }
-
         if (context.isMessage()) {
             await context.react(success ? '👍' : '❌');
             if (!hasMoreTracks && context.channel && 'send' in context.channel) {

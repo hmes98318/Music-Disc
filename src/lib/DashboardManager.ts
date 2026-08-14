@@ -17,6 +17,7 @@ import type { Client } from 'discord.js';
 export class DashboardManager {
     #bot: Bot;
     #client: Client;
+    #updatePromise: Promise<void> = Promise.resolve();
 
     constructor(bot: Bot, client: Client) {
         this.#bot = bot;
@@ -57,6 +58,11 @@ export class DashboardManager {
      * Update dashboard with current track and player state (smart edit or re-send to bottom)
      */
     public async update(player: Player, track: Track): Promise<void> {
+        this.#updatePromise = this.#updatePromise.then(() => this.#performUpdate(player, track)).catch(() => {});
+        return this.#updatePromise;
+    }
+
+    async #performUpdate(player: Player, track: Track): Promise<void> {
         const lng = this.#bot.guildLanguageManager?.get(player.guildId);
         let subtitle = await this.#buildSubtitle(player, track, lng);
         const buttons = ButtonsBuilder.createDashboardButtons(player, lng);
