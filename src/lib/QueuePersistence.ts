@@ -292,9 +292,11 @@ export class QueuePersistence {
 
             // Restore tracks in batch chunks to prevent performance bottlenecks
             const BATCH_SIZE = 5;
+            const allRestoredTracks: any[] = [];
+
             for (let i = 0; i < queueData.tracks.length; i += BATCH_SIZE) {
                 const chunk = queueData.tracks.slice(i, i + BATCH_SIZE);
-                const restoredTracks = await Promise.all(chunk.map(async (serializedTrack) => {
+                const restoredChunk = await Promise.all(chunk.map(async (serializedTrack) => {
                     try {
                         let result = null;
 
@@ -339,11 +341,15 @@ export class QueuePersistence {
                     return null;
                 }));
 
-                for (const track of restoredTracks) {
+                for (const track of restoredChunk) {
                     if (track) {
-                        player.queue.add(track);
+                        allRestoredTracks.push(track);
                     }
                 }
+            }
+
+            for (const track of allRestoredTracks) {
+                player.queue.add(track);
             }
 
             // Restore settings
@@ -351,7 +357,7 @@ export class QueuePersistence {
 
             // Connect and play
             await player.connect();
-            if (!player.playing && !player.paused) {
+            if (!player.playing && !player.paused && player.queue.tracks.length > 0) {
                 await player.play();
             }
 
