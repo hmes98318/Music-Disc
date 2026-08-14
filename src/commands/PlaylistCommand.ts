@@ -71,7 +71,7 @@ export class PlaylistCommand extends BaseCommand {
                 this.createNamedSubcommand(
                     'info',
                     'commands:CONFIG_PLAYLIST_OPTION_SUBCOMMAND_INFO',
-                    false,
+                    true,
                     lng
                 ),
                 this.createNamedSubcommand(

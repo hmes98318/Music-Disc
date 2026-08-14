@@ -13,7 +13,7 @@ export class RadioCommand extends BaseCommand {
     public getMetadata(_bot: Bot, lng?: string): CommandMetadata {
         return {
             name: 'radio',
-            aliases: ['record'],
+            aliases: [],
             description: i18next.t('commands:CONFIG_RADIO_DESCRIPTION', { lng }),
             usage: i18next.t('commands:CONFIG_RADIO_USAGE', { lng }),
             category: CommandCategory.MUSIC,

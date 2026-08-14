@@ -1,4 +1,5 @@
 import i18next from 'i18next';
+import { RepeatMode } from 'lavashark';
 
 import { BaseCommand } from './base/BaseCommand.js';
 import { CommandCategory, DJModeEnum, LoadType } from '../@types/index.js';
@@ -244,6 +245,10 @@ export class PlayFirstCommand extends BaseCommand {
     async #handleTracks(bot: Bot, client: Client, context: CommandContext, player: Player, res: any, tracksToAdd?: number): Promise<void> {
         const requester = context.isMessage() ? context.getMessage().author : context.getInteraction().user;
         const curVolume = player.setting.volume ?? bot.guildVolumeManager?.get(player.guildId) ?? bot.config.bot.volume.default;
+
+        if (player.repeatMode === RepeatMode.TRACK) {
+            player.setRepeatMode(RepeatMode.OFF);
+        }
 
         if (res.loadType === LoadType.PLAYLIST) {
             const tracks = tracksToAdd !== undefined ? res.tracks.slice(0, tracksToAdd) : res.tracks;
