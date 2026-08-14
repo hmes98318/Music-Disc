@@ -46,6 +46,13 @@ export class DashboardManager {
             throw new TypeError('Invalid Interaction, Message, or Channel type');
         }
 
+        if (player.dashboardMsg) {
+            try {
+                await player.dashboardMsg.delete();
+            } catch (_) {}
+            player.dashboardMsg = null;
+        }
+
         const lng = this.#bot.guildLanguageManager?.get(player.guildId);
 
         player.dashboardMsg = await (channel as any).send({
