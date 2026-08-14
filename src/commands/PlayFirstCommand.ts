@@ -15,12 +15,12 @@ import type { Bot, CommandMetadata } from '../@types/index.js';
 
 
 export class PlayFirstCommand extends BaseCommand {
-    public getMetadata(_bot: Bot): CommandMetadata {
+    public getMetadata(_bot: Bot, lng?: string): CommandMetadata {
         return {
             name: 'playfirst',
             aliases: ['pf', 'pp', 'prioritizePlay'],
-            description: i18next.t('commands:CONFIG_PLAYFIRST_DESCRIPTION'),
-            usage: i18next.t('commands:CONFIG_PLAYFIRST_USAGE'),
+            description: i18next.t('commands:CONFIG_PLAYFIRST_DESCRIPTION', { lng }),
+            usage: i18next.t('commands:CONFIG_PLAYFIRST_USAGE', { lng }),
             category: CommandCategory.MUSIC,
             voiceChannel: true,
             showHelp: true,
@@ -28,7 +28,7 @@ export class PlayFirstCommand extends BaseCommand {
             options: [
                 {
                     name: 'playfirst',
-                    description: i18next.t('commands:CONFIG_PLAYFIRST_OPTION_DESCRIPTION'),
+                    description: i18next.t('commands:CONFIG_PLAYFIRST_OPTION_DESCRIPTION', { lng }),
                     type: 3,
                     required: true
                 }

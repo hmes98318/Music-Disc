@@ -21,12 +21,12 @@ import type { Bot, CommandMetadata } from '../@types/index.js';
 
 
 export class SearchCommand extends BaseCommand {
-    public getMetadata(_bot: Bot): CommandMetadata {
+    public getMetadata(_bot: Bot, lng?: string): CommandMetadata {
         return {
             name: 'search',
             aliases: ['find'],
-            description: i18next.t('commands:CONFIG_SEARCH_DESCRIPTION'),
-            usage: i18next.t('commands:CONFIG_SEARCH_USAGE'),
+            description: i18next.t('commands:CONFIG_SEARCH_DESCRIPTION', { lng }),
+            usage: i18next.t('commands:CONFIG_SEARCH_USAGE', { lng }),
             category: CommandCategory.MUSIC,
             voiceChannel: true,
             showHelp: true,
@@ -34,7 +34,7 @@ export class SearchCommand extends BaseCommand {
             options: [
                 {
                     name: 'search',
-                    description: i18next.t('commands:CONFIG_SEARCH_OPTION_DESCRIPTION'),
+                    description: i18next.t('commands:CONFIG_SEARCH_OPTION_DESCRIPTION', { lng }),
                     type: 3,
                     required: true
                 }
@@ -297,7 +297,7 @@ export class SearchCommand extends BaseCommand {
         });
 
         collector.on('collect', async (i: StringSelectMenuInteraction) => {
-            if (i.customId != SelectButtonId.Music) return;
+            if (i.customId !== SelectButtonId.Music) return;
 
             // Check queue limits before adding selected track
             const checkResult = QueueLimitManager.canAddSongs(bot, player, userId, guildMember, 1);
@@ -317,7 +317,7 @@ export class SearchCommand extends BaseCommand {
             const requester = context.isMessage() ? context.getMessage().author : context.getInteraction().user;
             const curVolume = player.setting.volume ?? bot.guildVolumeManager?.get(player.guildId) ?? bot.config.bot.volume.default;
 
-            player.addTracks(res.tracks.find((x: any) => x.uri == i.values[0])!, requester as any);
+            player.addTracks(res.tracks.find((x: any) => x.uri === i.values[0])!, requester as any);
 
             if (!player.playing) {
                 player.filters.setVolume(curVolume);
@@ -344,7 +344,7 @@ export class SearchCommand extends BaseCommand {
         });
 
         collector.on('end', async (collected: Collection<string, ButtonInteraction>, reason: string) => {
-            if (reason == 'time' && collected.size == 0) {
+            if (reason === 'time' && collected.size === 0) {
                 if (!player.playing) {
                     player.destroy();
                 }

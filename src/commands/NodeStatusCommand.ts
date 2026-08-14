@@ -12,7 +12,7 @@ import type { Bot, CommandMetadata } from '../@types/index.js';
 
 
 export class NodeStatusCommand extends BaseCommand {
-    public getMetadata(bot: Bot): CommandMetadata {
+    public getMetadata(bot: Bot, lng?: string): CommandMetadata {
         const choices = (bot.config.nodeList || []).slice(0, 25).map(node => ({
             name: node.id,
             value: node.id
@@ -21,8 +21,8 @@ export class NodeStatusCommand extends BaseCommand {
         return {
             name: 'nodestatus',
             aliases: ['node', 'nodes', 'nodesstatus'],
-            description: i18next.t('commands:CONFIG_NODE_DESCRIPTION'),
-            usage: i18next.t('commands:CONFIG_NODE_USAGE'),
+            description: i18next.t('commands:CONFIG_NODE_DESCRIPTION', { lng }),
+            usage: i18next.t('commands:CONFIG_NODE_USAGE', { lng }),
             category: CommandCategory.UTILITY,
             voiceChannel: false,
             showHelp: true,
@@ -30,7 +30,7 @@ export class NodeStatusCommand extends BaseCommand {
             options: [
                 {
                     name: 'nodename',
-                    description: i18next.t('commands:CONFIG_NODE_OPTION_DESCRIPTION'),
+                    description: i18next.t('commands:CONFIG_NODE_OPTION_DESCRIPTION', { lng }),
                     type: 3,
                     required: false,
                     choices: choices.length > 0 ? choices : undefined

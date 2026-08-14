@@ -10,12 +10,12 @@ import type { Bot, CommandMetadata } from '../@types/index.js';
 
 
 export class LoopCommand extends BaseCommand {
-    public getMetadata(_bot: Bot): CommandMetadata {
+    public getMetadata(_bot: Bot, lng?: string): CommandMetadata {
         return {
             name: 'loop',
             aliases: ['lp'],
-            description: i18next.t('commands:CONFIG_LOOP_DESCRIPTION'),
-            usage: i18next.t('commands:CONFIG_LOOP_USAGE'),
+            description: i18next.t('commands:CONFIG_LOOP_DESCRIPTION', { lng }),
+            usage: i18next.t('commands:CONFIG_LOOP_USAGE', { lng }),
             category: CommandCategory.MUSIC,
             voiceChannel: true,
             showHelp: true,
@@ -23,7 +23,7 @@ export class LoopCommand extends BaseCommand {
             options: [
                 {
                     name: 'mode',
-                    description: i18next.t('commands:CONFIG_LOOP_OPTION_DESCRIPTION'),
+                    description: i18next.t('commands:CONFIG_LOOP_OPTION_DESCRIPTION', { lng }),
                     type: 3,
                     required: true,
                     choices: [

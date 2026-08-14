@@ -13,12 +13,12 @@ import type { Bot, CommandMetadata } from '../@types/index.js';
  * Ping command - Shows bot latency
  */
 export class PingCommand extends BaseCommand {
-    getMetadata(_bot: Bot): CommandMetadata {
+    getMetadata(_bot: Bot, lng?: string): CommandMetadata {
         return {
             name: 'ping',
             aliases: [],
-            description: i18next.t('commands:CONFIG_PING_DESCRIPTION'),
-            usage: i18next.t('commands:CONFIG_PING_USAGE'),
+            description: i18next.t('commands:CONFIG_PING_DESCRIPTION', { lng }),
+            usage: i18next.t('commands:CONFIG_PING_USAGE', { lng }),
             category: CommandCategory.UTILITY,
             voiceChannel: false,
             showHelp: true,
@@ -28,7 +28,7 @@ export class PingCommand extends BaseCommand {
     }
 
     protected async run(bot: Bot, client: Client, context: CommandContext): Promise<void> {
-        const botPing = `${Date.now() - context.createdTimestamp}ms`;
+        const botPing = `${Math.abs(Date.now() - context.createdTimestamp)}ms`;
         const apiPing = client.ws.ping.toString();
 
         await context.react('👍');

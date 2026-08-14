@@ -17,12 +17,12 @@ import type { Bot, CommandMetadata } from '../@types/index.js';
 
 
 export class HelpCommand extends BaseCommand {
-    public getMetadata(_bot: Bot): CommandMetadata {
+    public getMetadata(_bot: Bot, lng?: string): CommandMetadata {
         return {
             name: 'help',
             aliases: ['h'],
-            description: i18next.t('commands:CONFIG_HELP_DESCRIPTION'),
-            usage: i18next.t('commands:CONFIG_HELP_USAGE'),
+            description: i18next.t('commands:CONFIG_HELP_DESCRIPTION', { lng }),
+            usage: i18next.t('commands:CONFIG_HELP_USAGE', { lng }),
             category: CommandCategory.UTILITY,
             voiceChannel: false,
             showHelp: true,
@@ -30,7 +30,7 @@ export class HelpCommand extends BaseCommand {
             options: [
                 {
                     name: 'command',
-                    description: i18next.t('commands:CONFIG_HELP_OPTION_DESCRIPTION'),
+                    description: i18next.t('commands:CONFIG_HELP_OPTION_DESCRIPTION', { lng }),
                     type: 3,
                     required: false
                 }
@@ -59,15 +59,14 @@ export class HelpCommand extends BaseCommand {
      * @private
      */
     async #showCommandList(bot: Bot, client: Client, context: CommandContext): Promise<void> {
-        const title = client.user?.username;
-        const commands = client.commands.getHelpCommands(bot);
+        const commands = client.commands.getHelpCommands(bot, context.language);
 
         const musicCommands = commands.filter(cmd => {
-            const metadata = cmd.getMetadata(bot);
+            const metadata = cmd.getMetadata(bot, context.language);
             return metadata.category === CommandCategory.MUSIC;
         });
         const utilityCommands = commands.filter(cmd => {
-            const metadata = cmd.getMetadata(bot);
+            const metadata = cmd.getMetadata(bot, context.language);
             return metadata.category === CommandCategory.UTILITY;
         });
 
@@ -76,7 +75,7 @@ export class HelpCommand extends BaseCommand {
             .setCustomId(SelectButtonId.HelpMusic)
             .setPlaceholder(context.t('commands:HELP_SELECT_MUSIC_PLACEHOLDER'))
             .setOptions(musicCommands.map(cmd => {
-                const metadata = cmd.getMetadata(bot);
+                const metadata = cmd.getMetadata(bot, context.language);
                 const aliases = metadata.aliases && metadata.aliases.length > 0 ? metadata.aliases.join(', ') : context.t('commands:HELP_COMMAND_NONE');
                 return {
                     label: metadata.name,
@@ -89,7 +88,7 @@ export class HelpCommand extends BaseCommand {
             .setCustomId(SelectButtonId.HelpUtility)
             .setPlaceholder(context.t('commands:HELP_SELECT_UTILITY_PLACEHOLDER'))
             .setOptions(utilityCommands.map(cmd => {
-                const metadata = cmd.getMetadata(bot);
+                const metadata = cmd.getMetadata(bot, context.language);
                 const aliases = metadata.aliases && metadata.aliases.length > 0 ? metadata.aliases.join(', ') : context.t('commands:HELP_COMMAND_NONE');
                 return {
                     label: metadata.name,
@@ -120,12 +119,12 @@ export class HelpCommand extends BaseCommand {
             const selectedCommand = client.commands.get(i.values[0]);
             if (!selectedCommand) return;
 
-            const metadata = selectedCommand.getMetadata(bot);
+            const metadata = selectedCommand.getMetadata(bot, context.language);
             const usage = `${metadata.description}\n\`\`\`${bot.config.bot.prefix}${metadata.usage}\`\`\``;
 
             await i.deferUpdate();
             await msg.edit({
-                embeds: [embeds.help(bot, title!, usage, context.language)],
+                embeds: [embeds.help(bot, metadata.name, usage, context.language)],
                 components: [],
                 allowedMentions: { repliedUser: false }
             }).catch(() => bot.logger.discord( bot.shardId, 'Failed to edit deleted message.'));
@@ -150,11 +149,11 @@ export class HelpCommand extends BaseCommand {
      */
     async #showCommandHelp(bot: Bot, client: Client, context: CommandContext, commandName: string): Promise<void> {
         const prefix = bot.config.bot.prefix;
-        const commands = client.commands.getHelpCommands(bot);
+        const commands = client.commands.getHelpCommands(bot, context.language);
 
         let found = false;
         for (const cmd of commands) {
-            const metadata = cmd.getMetadata(bot);
+            const metadata = cmd.getMetadata(bot, context.language);
             if (commandName === metadata.name || (metadata.aliases && metadata.aliases.includes(commandName))) {
                 const description = `${metadata.description}\n\`\`\`${prefix}${metadata.usage}\`\`\``;
 

@@ -9,12 +9,12 @@ import type { Bot, CommandMetadata } from '../@types/index.js';
 
 
 export class MoveCommand extends BaseCommand {
-    public getMetadata(_bot: Bot): CommandMetadata {
+    public getMetadata(_bot: Bot, lng?: string): CommandMetadata {
         return {
             name: 'move',
             aliases: ['mv', 'swap', 'change'],
-            description: i18next.t('commands:CONFIG_MOVE_DESCRIPTION'),
-            usage: i18next.t('commands:CONFIG_MOVE_USAGE'),
+            description: i18next.t('commands:CONFIG_MOVE_DESCRIPTION', { lng }),
+            usage: i18next.t('commands:CONFIG_MOVE_USAGE', { lng }),
             category: CommandCategory.MUSIC,
             voiceChannel: true,
             showHelp: true,
@@ -22,14 +22,14 @@ export class MoveCommand extends BaseCommand {
             options: [
                 {
                     name: 'moveindex1',
-                    description: i18next.t('commands:CONFIG_MOVE_OPTION_DESCRIPTION'),
+                    description: i18next.t('commands:CONFIG_MOVE_OPTION_DESCRIPTION', { lng }),
                     type: 4,
                     required: true,
                     min_value: 1
                 },
                 {
                     name: 'moveindex2',
-                    description: i18next.t('commands:CONFIG_MOVE_OPTION_DESCRIPTION_2'),
+                    description: i18next.t('commands:CONFIG_MOVE_OPTION_DESCRIPTION_2', { lng }),
                     type: 4,
                     required: true,
                     min_value: 1

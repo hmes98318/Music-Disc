@@ -10,12 +10,12 @@ import type { CommandContext } from './base/CommandContext.js';
 import type { Bot, CommandMetadata } from '../@types/index.js';
 
 export class RadioCommand extends BaseCommand {
-    public getMetadata(_bot: Bot): CommandMetadata {
+    public getMetadata(_bot: Bot, lng?: string): CommandMetadata {
         return {
             name: 'radio',
             aliases: [],
-            description: i18next.t('commands:CONFIG_RADIO_DESCRIPTION'),
-            usage: i18next.t('commands:CONFIG_RADIO_USAGE'),
+            description: i18next.t('commands:CONFIG_RADIO_DESCRIPTION', { lng }),
+            usage: i18next.t('commands:CONFIG_RADIO_USAGE', { lng }),
             category: CommandCategory.MUSIC,
             voiceChannel: true,
             showHelp: true,
@@ -23,13 +23,13 @@ export class RadioCommand extends BaseCommand {
             options: [
                 {
                     name: 'playlist',
-                    description: i18next.t('commands:CONFIG_RADIO_OPTION_PLAYLIST'),
+                    description: i18next.t('commands:CONFIG_RADIO_OPTION_PLAYLIST', { lng }),
                     type: ApplicationCommandOptionType.String,
                     required: true
                 },
                 {
                     name: 'channel',
-                    description: i18next.t('commands:CONFIG_RADIO_OPTION_CHANNEL'),
+                    description: i18next.t('commands:CONFIG_RADIO_OPTION_CHANNEL', { lng }),
                     type: ApplicationCommandOptionType.String,
                     required: true
                 }

@@ -9,12 +9,12 @@ import type { Bot, CommandMetadata } from '../@types/index.js';
 
 
 export class ShuffleCommand extends BaseCommand {
-    public getMetadata(_bot: Bot): CommandMetadata {
+    public getMetadata(_bot: Bot, lng?: string): CommandMetadata {
         return {
             name: 'shuffle',
             aliases: ['random'],
-            description: i18next.t('commands:CONFIG_SHUFFLE_DESCRIPTION'),
-            usage: i18next.t('commands:CONFIG_SHUFFLE_USAGE'),
+            description: i18next.t('commands:CONFIG_SHUFFLE_DESCRIPTION', { lng }),
+            usage: i18next.t('commands:CONFIG_SHUFFLE_USAGE', { lng }),
             category: CommandCategory.MUSIC,
             voiceChannel: true,
             showHelp: true,

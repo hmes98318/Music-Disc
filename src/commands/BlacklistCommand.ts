@@ -24,30 +24,32 @@ export class BlacklistCommand extends BaseCommand {
     /**
      * Build blacklist command metadata and slash command options
      */
-    public getMetadata(_bot: Bot): CommandMetadata {
+    public getMetadata(_bot: Bot, lng?: string): CommandMetadata {
         return {
             aliases: [],
             category: CommandCategory.UTILITY,
-            description: i18next.t('commands:CONFIG_BLACKLIST_DESCRIPTION'),
+            description: i18next.t('commands:CONFIG_BLACKLIST_DESCRIPTION', { lng }),
             name: 'blacklist',
             options: [
                 this.createUserSubcommand(
                     'add',
                     'commands:CONFIG_BLACKLIST_OPTION_ADD',
+                    lng,
                 ),
                 this.createUserSubcommand(
                     'remove',
                     'commands:CONFIG_BLACKLIST_OPTION_REMOVE',
+                    lng,
                 ),
                 {
-                    description: i18next.t('commands:CONFIG_BLACKLIST_OPTION_LIST'),
+                    description: i18next.t('commands:CONFIG_BLACKLIST_OPTION_LIST', { lng }),
                     name: 'list',
                     type: ApplicationCommandOptionType.Subcommand,
                 },
             ],
             sendTyping: true,
             showHelp: true,
-            usage: i18next.t('commands:CONFIG_BLACKLIST_USAGE'),
+            usage: i18next.t('commands:CONFIG_BLACKLIST_USAGE', { lng }),
             voiceChannel: false,
         };
     }
@@ -99,13 +101,14 @@ export class BlacklistCommand extends BaseCommand {
     private createUserSubcommand(
         name: BlacklistMutationAction,
         descriptionKey: string,
+        lng?: string
     ): ApplicationCommandSubCommandData {
         return {
-            description: i18next.t(descriptionKey),
+            description: i18next.t(descriptionKey, { lng }),
             name,
             options: [
                 {
-                    description: i18next.t('commands:CONFIG_BLACKLIST_OPTION_USER'),
+                    description: i18next.t('commands:CONFIG_BLACKLIST_OPTION_USER', { lng }),
                     name: 'user',
                     required: true,
                     type: ApplicationCommandOptionType.User,
