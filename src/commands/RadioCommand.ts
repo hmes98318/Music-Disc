@@ -1,5 +1,6 @@
 import i18next from 'i18next';
 import { ApplicationCommandOptionType } from 'discord.js';
+import { RepeatMode } from 'lavashark';
 
 import { BaseCommand } from './base/BaseCommand.js';
 import { CommandCategory, DJModeEnum } from '../@types/index.js';
@@ -180,6 +181,10 @@ const DEFAULT_MAX_SAMPLES_COUNT = 10;
                 (track as any).isRadio = true;
 
                 if (isAlreadyPlaying) {
+                    if (player.repeatMode === RepeatMode.TRACK) {
+                        player.setRepeatMode(RepeatMode.OFF);
+                    }
+
                     await player.skip();
                 } else {
                     player.filters.setVolume(curVolume);
