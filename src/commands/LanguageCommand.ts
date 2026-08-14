@@ -40,7 +40,7 @@ export class LanguageCommand extends BaseCommand {
 
     protected async run(bot: Bot, client: Client, context: CommandContext): Promise<void> {
         const locale = context.isInteraction()
-            ? context.getStringOption('locale')
+            ? (context.getStringOption('language') || context.getStringOption('locale'))
             : context.args.join(' ');
 
         if (!locale) {
