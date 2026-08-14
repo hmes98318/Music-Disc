@@ -5,6 +5,7 @@ import { RepeatMode } from 'lavashark';
 import { BaseCommand } from './base/BaseCommand.js';
 import { CommandCategory, DJModeEnum } from '../@types/index.js';
 import { DJManager } from '../lib/DjManager.js';
+import { decodeTrackWithRetry } from '../utils/functions/lavasharkRequest.js';
 
 import type { Client, GuildMember } from 'discord.js';
 import type { CommandContext } from './base/CommandContext.js';
@@ -156,21 +157,24 @@ const DEFAULT_MAX_SAMPLES_COUNT = 10;
         await context.replySuccess(bot, context.t('commands:MESSAGE_RADIO_SEARCHING', { playlist: playlistName, title: targetTrack.title }));
 
         try {
-            let searchResult = null;
-            if (targetTrack.url) {
+            let radioTrack = null;
+            if (targetTrack.encoded) {
                 try {
-                    searchResult = await client.lavashark.search(targetTrack.url);
+                    radioTrack = await decodeTrackWithRetry(client.lavashark, targetTrack.encoded);
                 } catch (_) {}
             }
 
-            if (!searchResult || !searchResult.tracks || searchResult.tracks.length === 0) {
+            if (!radioTrack && targetTrack.url) {
                 try {
-                    searchResult = await client.lavashark.search(`ytsearch:${targetTrack.title}`);
+                    const result = await client.lavashark.search(targetTrack.url);
+                    if (result && Array.isArray(result.tracks) && result.tracks.length > 0) {
+                        radioTrack = result.tracks[0];
+                    }
                 } catch (_) {}
             }
 
-            if (searchResult && searchResult.tracks && searchResult.tracks.length > 0) {
-                const track = searchResult.tracks[0];
+            if (radioTrack) {
+                const track = radioTrack;
                 (track as any).requester = requester;
 
                 const isAlreadyPlaying = player.playing;
