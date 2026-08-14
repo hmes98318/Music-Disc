@@ -26,22 +26,28 @@ export class DashboardManager {
     /**
      * Initialize dashboard in a channel
      */
-    public async initialize(interactionOrMessage: ChatInputCommandInteraction | Message, player: Player): Promise<void> {
+    public async initialize(
+        target: ChatInputCommandInteraction | Message | any,
+        player: Player
+    ): Promise<void> {
         let channel;
 
-        if (interactionOrMessage instanceof Message) {
-            channel = (interactionOrMessage as Message).channel;
+        if (target instanceof Message) {
+            channel = target.channel;
         }
-        else if (interactionOrMessage instanceof ChatInputCommandInteraction) {
-            channel = (interactionOrMessage as ChatInputCommandInteraction).channel;
+        else if (target instanceof ChatInputCommandInteraction) {
+            channel = target.channel;
+        }
+        else if (target && typeof target.send === 'function') {
+            channel = target;
         }
         else {
-            throw new TypeError('Invalid Interaction or Message type');
+            throw new TypeError('Invalid Interaction, Message, or Channel type');
         }
 
         const lng = this.#bot.guildLanguageManager?.get(player.guildId);
 
-        player.dashboardMsg = await (channel as any /* discord.js type error ? (v14.16.2) */).send({
+        player.dashboardMsg = await (channel as any).send({
             embeds: [embeds.connected(this.#bot, lng)],
             components: []
         });
