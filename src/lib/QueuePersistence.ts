@@ -120,13 +120,15 @@ export class QueuePersistence {
                 if (s) serializedTracks.push(s);
             }
 
+            const currentVolume = player.volume ?? (player.setting as any)?.volume ?? this.bot.guildVolumeManager?.get(player.guildId) ?? this.bot.config.bot.volume.default;
+
             const queueData: PersistedQueue = {
                 guildId: player.guildId,
                 voiceChannelId: player.voiceChannelId || '',
                 textChannelId: player.textChannelId || '',
                 tracks: serializedTracks,
                 currentTrackIndex: 0,
-                volume: (player as any).volume || 100,
+                volume: currentVolume,
                 repeatMode: player.repeatMode,
                 paused: player.paused,
                 position: player.position,
@@ -365,7 +367,16 @@ export class QueuePersistence {
                 await player.play();
             }
 
-            // Set volume after playback starts (Player.volume is a read-only getter)
+            if (queueData.paused && player.playing) {
+                await player.pause();
+            }
+
+            // Set volume after playback starts
+            if (!player.setting) {
+                player.setting = { queuePage: null, volume: queueData.volume, fairQueueRotation: [] };
+            } else {
+                player.setting.volume = queueData.volume;
+            }
             player.filters.setVolume(queueData.volume);
 
             // Seek to saved position after playback starts

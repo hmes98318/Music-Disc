@@ -153,10 +153,12 @@ export class DashboardManager {
     async #buildSubtitle(player: Player, track: Track, lng?: string): Promise<string> {
         const repeatModeLabel = this.#getRepeatModeLabel(player.repeatMode, lng);
 
+        const currentVolume = player.volume ?? (player.setting as any)?.volume ?? this.#bot.guildVolumeManager?.get(player.guildId) ?? this.#bot.config.bot.volume.default;
+
         let subtitle = this.#bot.i18n.t('embeds:DASHBOARD_SUBTITLE', {
             author: track.author,
             duration: track.duration.label,
-            volume: player.volume,
+            volume: currentVolume,
             repeatMode: repeatModeLabel,
             lng
         });
