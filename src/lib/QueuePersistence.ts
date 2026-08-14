@@ -87,18 +87,19 @@ export class QueuePersistence {
             }
 
             const serializeTrack = (track: Track): SerializedTrack | null => {
-                if (!('encoded' in track)) return null;
+                if (!track) return null;
+                const encodedTrack = ('encoded' in track && typeof track.encoded === 'string') ? track.encoded : ((track as any).track ?? '');
                 return {
-                    track: track.encoded,
+                    track: encodedTrack,
                     info: {
-                        identifier: track.identifier,
-                        title: track.title,
-                        author: track.author,
+                        identifier: track.identifier || '',
+                        title: track.title || '',
+                        author: track.author || '',
                         length: typeof track.duration === 'number' ? track.duration : 0,
-                        uri: track.uri,
+                        uri: track.uri || '',
                         sourceName: (track as any).sourceName || 'youtube',
-                        isSeekable: track.isSeekable,
-                        isStream: track.isStream
+                        isSeekable: track.isSeekable ?? true,
+                        isStream: track.isStream ?? false
                     },
                     requesterId: track.requester?.id || '',
                     requesterTag: track.requester?.tag || ''
@@ -115,10 +116,8 @@ export class QueuePersistence {
 
             // Append queue tracks
             for (const track of player.queue.tracks) {
-                if ('encoded' in track) {
-                    const s = serializeTrack(track as Track);
-                    if (s) serializedTracks.push(s);
-                }
+                const s = serializeTrack(track as Track);
+                if (s) serializedTracks.push(s);
             }
 
             const queueData: PersistedQueue = {
