@@ -1,3 +1,4 @@
+import { ActionRowBuilder, StringSelectMenuBuilder } from 'discord.js';
 import i18next from 'i18next';
 import { NodeState } from 'lavashark';
 
@@ -11,7 +12,12 @@ import type { Bot, CommandMetadata } from '../@types/index.js';
 
 
 export class NodeStatusCommand extends BaseCommand {
-    public getMetadata(_bot: Bot): CommandMetadata {
+    public getMetadata(bot: Bot): CommandMetadata {
+        const choices = (bot.config.nodeList || []).slice(0, 25).map(node => ({
+            name: node.id,
+            value: node.id
+        }));
+
         return {
             name: 'nodestatus',
             aliases: ['node', 'nodes', 'nodesstatus'],
@@ -26,7 +32,8 @@ export class NodeStatusCommand extends BaseCommand {
                     name: 'nodename',
                     description: i18next.t('commands:CONFIG_NODE_OPTION_DESCRIPTION'),
                     type: 3,
-                    required: false
+                    required: false,
+                    choices: choices.length > 0 ? choices : undefined
                 }
             ]
         };
@@ -72,8 +79,32 @@ export class NodeStatusCommand extends BaseCommand {
 
         bot.logger.log( bot.shardId, 'nodesStatus: ' + JSON.stringify(nodesStatus));
 
+        const components = [];
+        if (nodes.length > 0) {
+            const selectOptions = nodes.slice(0, 25).map((node, i) => {
+                const ping = pingList[i];
+                const isConnected = ping !== -1;
+                return {
+                    label: node.identifier,
+                    value: node.identifier,
+                    description: isConnected
+                        ? `${context.t('embeds:NODE_STATUS_PING')}: ${ping}ms`
+                        : context.t('embeds:NODE_DISCONNECTED').replace(/\*/g, ''),
+                    emoji: isConnected ? '✅' : '❌'
+                };
+            });
+
+            const selectMenu = new StringSelectMenuBuilder()
+                .setCustomId('select_node')
+                .setPlaceholder(context.t('commands:CONFIG_NODE_OPTION_DESCRIPTION'))
+                .addOptions(selectOptions);
+
+            components.push(new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(selectMenu));
+        }
+
         await context.reply({
             embeds: [embeds.nodesStatus(bot, unhealthValue, nodesStatus, context.language)],
+            components,
             allowedMentions: { repliedUser: false }
         });
     }
@@ -108,8 +139,32 @@ export class NodeStatusCommand extends BaseCommand {
                 bot.logger.log( bot.shardId, 'nodeStats: ' + JSON.stringify(nodeStats));
                 bot.logger.log( bot.shardId, 'nodePing: ' + nodePing + 'ms');
 
+                const components = [];
+                if (nodes.length > 0) {
+                    const selectOptions = nodes.slice(0, 25).map(n => {
+                        const isConnected = n.state === NodeState.CONNECTED;
+                        return {
+                            label: n.identifier,
+                            value: n.identifier,
+                            default: n.identifier === nodeName,
+                            description: isConnected
+                                ? `${context.t('embeds:NODE_STATUS_PING')}: ${nodePing}ms`
+                                : context.t('embeds:NODE_DISCONNECTED').replace(/\*/g, ''),
+                            emoji: isConnected ? '✅' : '❌'
+                        };
+                    });
+
+                    const selectMenu = new StringSelectMenuBuilder()
+                        .setCustomId('select_node')
+                        .setPlaceholder(context.t('commands:CONFIG_NODE_OPTION_DESCRIPTION'))
+                        .addOptions(selectOptions);
+
+                    components.push(new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(selectMenu));
+                }
+
                 await context.reply({
                     embeds: [embeds.nodeStatus(bot, nodeName, nodeInfo, nodeStats, nodePing, context.language)],
+                    components,
                     allowedMentions: { repliedUser: false }
                 });
                 return;
@@ -128,3 +183,4 @@ export class NodeStatusCommand extends BaseCommand {
         });
     }
 }
+

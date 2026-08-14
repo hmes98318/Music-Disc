@@ -13,6 +13,7 @@ import { ShuffleButtonHandler } from '../../lib/handlers/ShuffleButtonHandler.js
 import { MusicSaveButtonHandler } from '../../lib/handlers/MusicSaveButtonHandler.js';
 import { QueueButtonHandler } from '../../lib/handlers/QueueButtonHandler.js';
 import { LanguageSelectHandler } from '../../lib/handlers/LanguageSelectHandler.js';
+import { NodeSelectHandler } from '../../lib/handlers/NodeSelectHandler.js';
 import { DashboardButtonId, QueueButtonId, MusicButtonId } from '../../@types/index.js';
 
 import type { Client } from 'discord.js';
@@ -40,6 +41,7 @@ export class InteractionCreateEvent extends BaseDiscordEvent<Events.InteractionC
         }
         else if (interaction.isStringSelectMenu()) {
             await LanguageSelectHandler.handle(bot, client, interaction);
+            await NodeSelectHandler.handle(bot, client, interaction);
         }
         else if (interaction.isCommand() && interaction.inGuild() && interaction.isChatInputCommand()) {
             await this.#handleCommandInteraction(bot, client, interaction);
