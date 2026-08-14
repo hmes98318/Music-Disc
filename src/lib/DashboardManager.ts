@@ -54,7 +54,7 @@ export class DashboardManager {
     }
 
     /**
-     * Update dashboard with current track and player state (re-sends to the bottom of the channel)
+     * Update dashboard with current track and player state (smart edit or re-send to bottom)
      */
     public async update(player: Player, track: Track): Promise<void> {
         const lng = this.#bot.guildLanguageManager?.get(player.guildId);
@@ -77,26 +77,35 @@ export class DashboardManager {
             return;
         }
 
-        const oldMsg = player.dashboardMsg;
+        const embedPayload = {
+            embeds: [embeds.dashboard(
+                this.#bot,
+                this.#bot.i18n.t('embeds:DASHBOARD_TITLE', { lng }),
+                safeTitle,
+                subtitle,
+                track.uri,
+                track.thumbnail!
+            )],
+            components: [buttons]
+        };
 
-        if (oldMsg) {
+        if (player.dashboardMsg) {
             try {
-                await oldMsg.delete();
+                const lastMsgId = (channel as any).lastMessageId;
+                if (!lastMsgId || lastMsgId === player.dashboardMsg.id) {
+                    await player.dashboardMsg.edit(embedPayload);
+                    return;
+                }
             } catch (_) {}
+
+            try {
+                await player.dashboardMsg.delete();
+            } catch (_) {}
+            player.dashboardMsg = null;
         }
 
         try {
-            player.dashboardMsg = await (channel as any).send({
-                embeds: [embeds.dashboard(
-                    this.#bot,
-                    this.#bot.i18n.t('embeds:DASHBOARD_TITLE', { lng }),
-                    safeTitle,
-                    subtitle,
-                    track.uri,
-                    track.thumbnail!
-                )],
-                components: [buttons]
-            });
+            player.dashboardMsg = await (channel as any).send(embedPayload);
         } catch (error) {
             this.#bot.logger.error(this.#bot.shardId, 'Dashboard update error: ' + error);
         }
