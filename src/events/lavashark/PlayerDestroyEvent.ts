@@ -38,9 +38,11 @@ export class PlayerDestroyEvent extends BaseLavaSharkEvent<'playerDestroy'> {
             await setVoiceChannelStatus(bot, client, player.voiceChannelId, null);
         }
 
-        // Clean up dashboard message
+        // Clean up dashboard message: the session is over and nothing will
+        // update it anymore, so delete it instead of leaving a stale message
         if (player.dashboardMsg) {
-            await client.dashboard.destroy(player);
+            await player.dashboardMsg.delete().catch(() => {});
+            player.dashboardMsg = null;
         }
     }
 }
