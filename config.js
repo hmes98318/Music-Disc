@@ -160,7 +160,7 @@ const config = {
     command: {
         disableCommand: [],                                 // Disabled commands, all enabled by default
         adminCommand: ['blacklist', 'language', 'server', 'status', 'volume-default'], // Admin commands, only Admin role user can use
-        djCommand: ['dj', 'filter'],                        // DJ commands, only DJ role user can use
+        djCommand: ['dj', 'filter', 'stop', 'pause', 'resume', 'skip', 'clear', 'leave', 'shuffle', 'loop', 'volume'], // DJ commands, only DJ role user can use
         // Supported commands: 'skip', 'seek', 'pause'
         // When a command name is listed here, only the requester of the currently playing song may use it.
         // Admins can always bypass this restriction regardless.
