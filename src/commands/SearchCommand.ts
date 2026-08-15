@@ -6,11 +6,13 @@ import {
     StringSelectMenuInteraction,
 } from 'discord.js';
 import i18next from 'i18next';
+import { ConnectionState } from 'lavashark';
 
 import { BaseCommand } from './base/BaseCommand.js';
 import { CommandCategory, DJModeEnum, LoadType, SelectButtonId } from '../@types/index.js';
 import { embeds } from '../embeds/index.js';
 import { isUserInBlacklist } from '../utils/functions/isUserInBlacklist.js';
+import { cleanSearchQuery } from '../utils/functions/cleanSearchQuery.js';
 import { DJManager } from '../lib/DjManager.js';
 import { QueueLimitManager } from '../lib/QueueLimitManager.js';
 
@@ -44,9 +46,11 @@ export class SearchCommand extends BaseCommand {
 
     protected async run(bot: Bot, client: Client, context: CommandContext): Promise<void> {
         // Get search query
-        const str = context.isMessage()
+        const rawStr = context.isMessage()
             ? context.args.join(' ')
             : context.getStringOption('search');
+
+        const str = cleanSearchQuery(rawStr || '');
 
         if (!str) {
             await context.replyEphemeralError(bot, context.t('commands:MESSAGE_PLAY_ARGS_ERROR'));
@@ -119,20 +123,28 @@ export class SearchCommand extends BaseCommand {
     }
 
     /**
-     * Create and initialize player
+     * Create and initialize player (or reuse existing player)
      * @private
      */
     async #createPlayer(bot: Bot, client: Client, context: CommandContext): Promise<Player | null> {
+        const guildId = String(context.guild?.id);
         const voiceChannelId = context.isMessage()
             ? String(context.getMessage().member?.voice.channelId)
             : String(context.getInteraction().guild!.members.cache.get(context.user.id)?.voice.channelId);
 
-        const player = client.lavashark.createPlayer({
-            guildId: String(context.guild?.id),
-            voiceChannelId: voiceChannelId,
-            textChannelId: context.channel!.id,
-            selfDeaf: true
-        });
+        let player = client.lavashark.getPlayer(guildId);
+
+        if (!player) {
+            player = client.lavashark.createPlayer({
+                guildId: guildId,
+                voiceChannelId: voiceChannelId,
+                textChannelId: context.channel!.id,
+                selfDeaf: true
+            });
+        } else {
+            player.voiceChannelId = voiceChannelId;
+            player.textChannelId = context.channel!.id;
+        }
 
         if (!player.setting) {
             player.setting = {
@@ -143,15 +155,17 @@ export class SearchCommand extends BaseCommand {
         }
 
         const metadata = context.isMessage() ? context.getMessage() : context.getInteraction();
+        player.metadata = metadata;
 
-        try {
-            await player.connect();
-            player.metadata = metadata;
-        } catch (error) {
-            bot.logger.error( bot.shardId, 'Error joining channel: ' + error);
-            await context.replyEphemeralError(bot, context.t('commands:ERROR_PLAY_JOIN_CHANNEL'));
-            await player.destroy();
-            return null;
+        if (player.state !== ConnectionState.CONNECTED) {
+            try {
+                await player.connect();
+            } catch (error) {
+                bot.logger.error( bot.shardId, 'Error joining channel: ' + error);
+                await context.replyEphemeralError(bot, context.t('commands:ERROR_PLAY_JOIN_CHANNEL'));
+                await player.destroy();
+                return null;
+            }
         }
 
         try {
@@ -358,3 +372,4 @@ export class SearchCommand extends BaseCommand {
         });
     }
 }
+
