@@ -1,8 +1,14 @@
-import { DJModeEnum } from '../../@types/index.js';
+import { DJModeEnum, LoadType } from '../../@types/index.js';
 import { embeds } from '../../embeds/index.js';
 import { DJManager } from '../../lib/DjManager.js';
 import { QueueLimitManager } from '../../lib/QueueLimitManager.js';
 import { isUserInBlacklist } from '../../utils/functions/isUserInBlacklist.js';
+import {
+    decodeTracksWithRetry,
+    decodeTrackWithRetry,
+    searchWithRetry,
+    sleep,
+} from '../../utils/functions/lavasharkRequest.js';
 import { BasePlaylistSubcommand } from './BasePlaylistSubcommand.js';
 
 import type { GuildMember, VoiceBasedChannel } from 'discord.js';
@@ -240,54 +246,53 @@ export class PlayPlaylistSubcommand extends BasePlaylistSubcommand {
     }
 
     /**
-     * Resolve a stored track using encoded data, URL, then title search
+     * Resolve a stored track using encoded data, URL, then title search.
+     * YouTube mix/playlist URLs (`watch?v=X&list=...`) resolve as a
+     * PLAYLIST result, so the whole playlist is expanded into the queue.
      */
     private async findTrack(
         context: PlaylistSubcommandContext,
         playlistTrack: PlaylistTrack,
-    ) {
+    ): Promise<any[] | null> {
         if (playlistTrack.encoded) {
-            try {
-                const result = await context.client.lavashark.search(playlistTrack.encoded);
-                if (result.tracks.length > 0) return result.tracks[0];
-            } catch {
-                // Try next query
+            const track = await decodeTrackWithRetry(
+                context.client.lavashark,
+                playlistTrack.encoded,
+            );
+            if (track) return [track];
+        }
+
+        const queries = [
+            playlistTrack.url,
+            `ytsearch:${playlistTrack.title}`,
+        ].filter((query): query is string => Boolean(query));
+
+        for (const query of new Set(queries)) {
+            const result = await searchWithRetry(context.client.lavashark, query);
+            if (result && Array.isArray(result.tracks) && result.tracks.length > 0) {
+                if (result.loadType === LoadType.PLAYLIST) {
+                    // Mix/playlist expansion keeps the real track names
+                    return result.tracks;
+                }
+                const track = result.tracks[0];
+                // Keep the name exactly as it was saved, even if the fallback
+                // search resolved to a different video
+                if (playlistTrack.title) track.title = playlistTrack.title;
+                if (playlistTrack.author) track.author = playlistTrack.author;
+                if (playlistTrack.url) track.uri = playlistTrack.url;
+                return [track];
             }
-        }
-
-        if (playlistTrack.url && (playlistTrack.url.startsWith('http://') || playlistTrack.url.startsWith('https://'))) {
-            try {
-                const result = await context.client.lavashark.search(playlistTrack.url);
-                if (result.tracks.length > 0) return result.tracks[0];
-            } catch {
-                // Try next query
-            }
-        }
-
-        const cleanTitle = playlistTrack.title
-            ?.replace(/\.(mp3|flac|wav|aac|ogg|m4a|webm)$/i, '')
-            .trim();
-
-        if (!cleanTitle || cleanTitle.length < 3) {
-            return null;
-        }
-
-        const searchQuery = playlistTrack.author
-            ? `ytsearch:${playlistTrack.author} - ${cleanTitle}`
-            : `ytsearch:${cleanTitle}`;
-
-        try {
-            const result = await context.client.lavashark.search(searchQuery);
-            if (result.tracks.length > 0) return result.tracks[0];
-        } catch {
-            // Track search failed
         }
 
         return null;
     }
 
     /**
-     * Resolve and enqueue tracks while respecting queue limits
+     * Resolve and enqueue tracks while respecting queue limits.
+     * Tracks carrying a saved encoded string are bulk-decoded in a single
+     * request (`/decodetracks`) — Lavalink nodes rate-limit REST calls
+     * (HTTP 429), and bursting per-track requests makes tracks get skipped.
+     * Entries without an encoded string fall back to paced per-track lookup.
      */
     private async loadTracks(
         context: PlaylistSubcommandContext,
@@ -298,42 +303,65 @@ export class PlayPlaylistSubcommand extends BasePlaylistSubcommand {
         let added = 0;
         let skipped = 0;
         const tracks = playlist.tracks ?? [];
-        const BATCH_SIZE = 5;
+        const TRACK_REQUEST_DELAY_MS = 400;
 
-        const resolvedTracks: any[] = [];
+        const canAdd = (): boolean => QueueLimitManager.canAddSongs(
+            context.bot,
+            player,
+            context.command.user.id,
+            member,
+            1,
+        ).canAdd;
 
-        for (let i = 0; i < tracks.length; i += BATCH_SIZE) {
-            const chunk = tracks.slice(i, i + BATCH_SIZE);
-            const promises = chunk.map(async (playlistTrack) => {
-                const limit = QueueLimitManager.canAddSongs(
-                    context.bot,
-                    player,
-                    context.command.user.id,
-                    member,
-                    1,
-                );
-                if (!limit.canAdd) {
-                    return null;
-                }
+        const entries = tracks.map((track, index) => ({ track, index }));
+        const resolvedByIndex: Map<number, any[]> = new Map();
 
-                try {
-                    return await this.findTrack(context, playlistTrack);
-                } catch {
-                    return null;
-                }
-            });
-
-            const results = await Promise.all(promises);
-            for (const track of results) {
-                if (track) {
-                    resolvedTracks.push(track);
-                    added++;
-                } else {
-                    skipped++;
-                }
+        // Bulk-decode entries that carry a saved encoded track string
+        const encodedEntries = entries.filter(({ track }) =>
+            track.encoded && track.encoded.trim() !== '',
+        );
+        if (encodedEntries.length > 0) {
+            const decoded = await decodeTracksWithRetry(
+                context.client.lavashark,
+                encodedEntries.map(({ track }) => track.encoded!.trim()),
+            );
+            if (decoded && decoded.length === encodedEntries.length) {
+                encodedEntries.forEach(({ track, index }, i) => {
+                    if (decoded[i] && canAdd()) {
+                        // Keep the names exactly as they were saved
+                        if (track.title) decoded[i].title = track.title;
+                        if (track.author) decoded[i].author = track.author;
+                        if (track.url) decoded[i].uri = track.url;
+                        resolvedByIndex.set(index, [decoded[i]]);
+                        added++;
+                    }
+                });
             }
         }
 
+        // Per-track fallback for entries not covered by the bulk decode
+        for (const { track, index } of entries) {
+            if (resolvedByIndex.has(index)) {
+                continue;
+            }
+
+            if (!canAdd()) {
+                skipped++;
+                await sleep(TRACK_REQUEST_DELAY_MS);
+                continue;
+            }
+
+            const result = await this.findTrack(context, track);
+            if (result && result.length > 0) {
+                resolvedByIndex.set(index, result);
+                added += result.length;
+            } else {
+                skipped++;
+            }
+            await sleep(TRACK_REQUEST_DELAY_MS);
+        }
+
+        const resolvedTracks = entries.flatMap(({ index }) => resolvedByIndex.get(index) ?? []);
         if (resolvedTracks.length > 0) {
             const requester = context.command.user as unknown as PlayerRequester;
             player.addTracks(resolvedTracks, requester);
@@ -356,14 +384,29 @@ export class PlayPlaylistSubcommand extends BasePlaylistSubcommand {
                 context.bot.config.bot.volume.default;
             player.filters.setVolume(volume);
 
-            try {
-                await player.play();
-            } catch (error) {
-                context.bot.logger.error(
-                    context.bot.shardId,
-                    `[PlaylistCommand] Error playing track: ${error}`,
-                );
-                await player.destroy();
+            // Retry playback a few times so a transient rate limit (HTTP 429)
+            // does not destroy the player right after loading a playlist
+            const PLAY_RETRY_ATTEMPTS = 3;
+            const PLAY_RETRY_DELAY_MS = 2000;
+            for (let attempt = 0; attempt < PLAY_RETRY_ATTEMPTS; attempt++) {
+                try {
+                    await player.play();
+                    return;
+                } catch (error) {
+                    if (attempt < PLAY_RETRY_ATTEMPTS - 1) {
+                        context.bot.logger.log(
+                            context.bot.shardId,
+                            `[PlaylistCommand] Error playing track (attempt ${attempt + 1}/${PLAY_RETRY_ATTEMPTS}): ${error}`,
+                        );
+                        await sleep(PLAY_RETRY_DELAY_MS);
+                        continue;
+                    }
+                    context.bot.logger.error(
+                        context.bot.shardId,
+                        `[PlaylistCommand] Error playing track: ${error}`,
+                    );
+                    await player.destroy();
+                }
             }
             return;
         }
