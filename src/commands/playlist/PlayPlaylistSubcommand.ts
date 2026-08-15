@@ -6,6 +6,7 @@ import { isUserInBlacklist } from '../../utils/functions/isUserInBlacklist.js';
 import { BasePlaylistSubcommand } from './BasePlaylistSubcommand.js';
 
 import type { GuildMember, VoiceBasedChannel } from 'discord.js';
+import { RepeatMode } from 'lavashark';
 import type { Player } from 'lavashark';
 import type { Playlist, PlaylistTrack } from '../../lib/PlaylistManager.js';
 import type {
@@ -77,6 +78,13 @@ export class PlayPlaylistSubcommand extends BasePlaylistSubcommand {
         const player = await this.initializePlayer(context, voiceChannel);
         if (!player) return;
 
+        // A radio session is replaced by the playlist: drop its queued tracks
+        // so the playlist content plays next instead of the radio station
+        const isRadioPlaying = Boolean(player.current && (player.current as any).isRadio);
+        if (isRadioPlaying) {
+            player.queue.tracks = [];
+        }
+
         const tracks = playlist.tracks ?? [];
         // Reuse one progress message for the final load result
         const progressMessage = await context.command.reply({
@@ -90,7 +98,7 @@ export class PlayPlaylistSubcommand extends BasePlaylistSubcommand {
         const result = await this.loadTracks(context, player, playlist, member);
 
         if (result.added > 0) {
-            await this.startPlayback(context, player);
+            await this.startPlayback(context, player, isRadioPlaying);
             if (context.bot.config.queuePersistence.enabled &&
                 context.client.queuePersistence) {
                 await context.client.queuePersistence.saveQueue(player);
@@ -340,6 +348,7 @@ export class PlayPlaylistSubcommand extends BasePlaylistSubcommand {
     private async startPlayback(
         context: PlaylistSubcommandContext,
         player: Player,
+        stopRadio = false,
     ): Promise<void> {
         if (!player.playing) {
             const volume = player.setting.volume ??
@@ -357,6 +366,15 @@ export class PlayPlaylistSubcommand extends BasePlaylistSubcommand {
                 await player.destroy();
             }
             return;
+        }
+
+        // Stop the active radio and let the playlist take over: any repeat
+        // would otherwise keep the radio track in the queue or replay it
+        if (stopRadio) {
+            if (player.repeatMode !== RepeatMode.OFF) {
+                player.setRepeatMode(RepeatMode.OFF);
+            }
+            await player.skip();
         }
 
         if (player.current) {

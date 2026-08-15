@@ -25,9 +25,21 @@ export class DashboardManager {
     }
 
     /**
-     * Initialize dashboard in a channel
+     * Initialize dashboard in a channel.
+     * Serialized with updates and destroys so no two dashboard messages
+     * can ever be created for the same player at the same time.
      */
     public async initialize(
+        target: ChatInputCommandInteraction | Message | any,
+        player: Player
+    ): Promise<void> {
+        this.#updatePromise = this.#updatePromise
+            .then(() => this.#performInitialize(target, player))
+            .catch(() => {});
+        return this.#updatePromise;
+    }
+
+    async #performInitialize(
         target: ChatInputCommandInteraction | Message | any,
         player: Player
     ): Promise<void> {
@@ -54,6 +66,19 @@ export class DashboardManager {
         }
 
         const lng = this.#bot.guildLanguageManager?.get(player.guildId);
+
+        // Remove stale dashboards from earlier sessions (e.g. after a bot
+        // restart the in-memory reference is gone) so only the new one stays
+        const dashboardTitle = this.#bot.i18n.t('embeds:DASHBOARD_TITLE', { lng });
+        try {
+            const messages = await (channel as any).messages.fetch({ limit: 30 });
+            for (const message of messages.values()) {
+                if (message.author?.id === this.#client.user?.id &&
+                    message.embeds.some((embed: any) => embed.title === dashboardTitle)) {
+                    await message.delete().catch(() => {});
+                }
+            }
+        } catch (_) {}
 
         player.dashboardMsg = await (channel as any).send({
             embeds: [embeds.connected(this.#bot, lng)],
@@ -111,10 +136,28 @@ export class DashboardManager {
                 }
             } catch (_) {}
 
+            // The dashboard is no longer the last message: move it to the
+            // bottom. A replacement is only sent after the old one was
+            // actually deleted, otherwise the message is refreshed in place
+            // and no duplicate can ever appear.
+            let deleted = false;
             try {
                 await player.dashboardMsg.delete();
+                deleted = true;
             } catch (_) {}
-            player.dashboardMsg = null;
+
+            if (!deleted) {
+                try {
+                    await player.dashboardMsg.edit(embedPayload);
+                    return;
+                } catch (_) {
+                    // Message is gone: drop the reference and send a new one
+                    player.dashboardMsg = null;
+                }
+            }
+            else {
+                player.dashboardMsg = null;
+            }
         }
 
         try {
@@ -125,9 +168,19 @@ export class DashboardManager {
     }
 
     /**
-     * Destroy dashboard and show disconnect message
+     * Destroy dashboard and show disconnect message.
+     * The message reference is kept so the next initialize() deletes it and
+     * the next update() reuses it instead of leaving a stale duplicate.
+     * Serialized with updates so a queued update can never race the destroy.
      */
     public async destroy(player: Player): Promise<void> {
+        this.#updatePromise = this.#updatePromise
+            .then(() => this.#performDestroy(player))
+            .catch(() => {});
+        return this.#updatePromise;
+    }
+
+    async #performDestroy(player: Player): Promise<void> {
         if (!player.dashboardMsg) {
             return;
         }
@@ -141,9 +194,6 @@ export class DashboardManager {
             });
         } catch (error) {
             this.#bot.logger.error( this.#bot.shardId, 'Dashboard destroy error: ' + error);
-        }
-        finally {
-            player.dashboardMsg = null;
         }
     }
 
