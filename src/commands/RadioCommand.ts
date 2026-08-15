@@ -1,5 +1,6 @@
 import i18next from 'i18next';
 import { ApplicationCommandOptionType } from 'discord.js';
+import { ConnectionState } from 'lavashark';
 
 import { BaseCommand } from './base/BaseCommand.js';
 import { CommandCategory, DJModeEnum } from '../@types/index.js';
@@ -122,14 +123,18 @@ const DEFAULT_MAX_SAMPLES_COUNT = 10;
 
         const metadata = context.isMessage() ? context.getMessage() : context.getInteraction();
 
-        try {
-            await player.connect();
+        if (player.state !== ConnectionState.CONNECTED) {
+            try {
+                await player.connect();
+                player.metadata = metadata;
+            } catch (error) {
+                bot.logger.error(bot.shardId, 'Error joining channel: ' + error);
+                await context.replyEphemeralError(bot, context.t('commands:ERROR_PLAY_JOIN_CHANNEL'));
+                await player.destroy();
+                return;
+            }
+        } else {
             player.metadata = metadata;
-        } catch (error) {
-            bot.logger.error(bot.shardId, 'Error joining channel: ' + error);
-            await context.replyEphemeralError(bot, context.t('commands:ERROR_PLAY_JOIN_CHANNEL'));
-            await player.destroy();
-            return;
         }
 
         try {
