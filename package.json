@@ -27,10 +27,6 @@
         "url": "https://github.com/hmes98318/Music-Disc/issues"
     },
     "homepage": "https://github.com/hmes98318/Music-Disc#readme",
-    "overrides": {
-        "body-parser": "^2.2.3",
-        "brace-expansion": "^5.0.8"
-    },
     "dependencies": {
         "bcryptjs": "^3.0.3",
         "better-sqlite3": "^13.0.3",
@@ -50,7 +46,7 @@
         "@types/express": "^5.0.6",
         "@types/node": "^26.2.0",
         "eslint": "^10.8.1",
-        "globals": "^17.9.0",
+        "globals": "^17.11.0",
         "tsx": "^4.23.12",
         "typescript": "~6.0.3",
         "typescript-eslint": "^8.67.0"
