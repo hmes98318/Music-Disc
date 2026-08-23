@@ -15,6 +15,11 @@ export class ErrorEvent extends BaseLavaSharkEvent<'error'> {
     }
 
     public execute(bot: Bot, _client: Client, node: Node, error: any): void {
-        bot.logger.error( bot.shardId, `[LavaShark] ${node.identifier} error: ${error.message}`);
+        // `node` can be null at runtime: lavashark may emit 'error' after the
+        // node was detached from a destroyed player
+        bot.logger.error(
+            bot.shardId,
+            `[LavaShark] ${node?.identifier ?? 'unknown'} error: ${error?.message ?? error}`,
+        );
     }
 }

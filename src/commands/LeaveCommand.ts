@@ -9,12 +9,12 @@ import type { Bot, CommandMetadata } from '../@types/index.js';
 
 
 export class LeaveCommand extends BaseCommand {
-    public getMetadata(_bot: Bot): CommandMetadata {
+    public getMetadata(_bot: Bot, lng?: string): CommandMetadata {
         return {
             name: 'leave',
             aliases: [],
-            description: i18next.t('commands:CONFIG_LEAVE_DESCRIPTION'),
-            usage: i18next.t('commands:CONFIG_LEAVE_USAGE'),
+            description: i18next.t('commands:CONFIG_LEAVE_DESCRIPTION', { lng }),
+            usage: i18next.t('commands:CONFIG_LEAVE_USAGE', { lng }),
             category: CommandCategory.MUSIC,
             voiceChannel: true,
             showHelp: true,

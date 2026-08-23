@@ -168,6 +168,10 @@ export const cst = {
             enabled             : false
         },
 
+        playlist: {
+            enabled             : true
+        },
+
         database: {
             path                : './data/database.db'
         }

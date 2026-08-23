@@ -1,6 +1,9 @@
 import i18next from 'i18next';
+import { RepeatMode } from 'lavashark';
+
 import { BaseCommand } from './base/BaseCommand.js';
 import { CommandCategory } from '../@types/index.js';
+import { isRadioTrack } from '../utils/functions/isRadioTrack.js';
 
 import type { Client } from 'discord.js';
 import type { CommandContext } from './base/CommandContext.js';
@@ -8,12 +11,12 @@ import type { Bot, CommandMetadata } from '../@types/index.js';
 
 
 export class ClearCommand extends BaseCommand {
-    public getMetadata(_bot: Bot): CommandMetadata {
+    public getMetadata(_bot: Bot, lng?: string): CommandMetadata {
         return {
             name: 'clear',
             aliases: ['cls'],
-            description: i18next.t('commands:CONFIG_CLEAR_DESCRIPTION'),
-            usage: i18next.t('commands:CONFIG_CLEAR_USAGE'),
+            description: i18next.t('commands:CONFIG_CLEAR_DESCRIPTION', { lng }),
+            usage: i18next.t('commands:CONFIG_CLEAR_USAGE', { lng }),
             category: CommandCategory.MUSIC,
             voiceChannel: true,
             showHelp: true,
@@ -30,11 +33,14 @@ export class ClearCommand extends BaseCommand {
             return;
         }
 
-        const isRadioPlaying = Boolean(player.current && (player.current as any).isRadio);
+        const isRadioPlaying = isRadioTrack(player.current);
 
         player.queue.clear();
 
         if (isRadioPlaying) {
+            if (player.repeatMode !== RepeatMode.OFF) {
+                player.setRepeatMode(RepeatMode.OFF);
+            }
             await player.skip();
         }
 
@@ -48,7 +54,7 @@ export class ClearCommand extends BaseCommand {
         }
         else {
             await context.replySuccess(bot, isRadioPlaying
-                ? context.t('commands:MESSAGE_CLEAR_RADIO_SUCCESS', { defaultValue: '🧹 Cleared queue and stopped radio playback.' })
+                ? context.t('commands:MESSAGE_CLEAR_RADIO_SUCCESS')
                 : context.t('commands:MESSAGE_CLEAR_SUCCESS'));
         }
     }

@@ -1,21 +1,35 @@
 import i18next from 'i18next';
 import { ApplicationCommandOptionType } from 'discord.js';
+import { RepeatMode } from 'lavashark';
 
 import { BaseCommand } from './base/BaseCommand.js';
 import { CommandCategory, DJModeEnum } from '../@types/index.js';
 import { DJManager } from '../lib/DjManager.js';
+import { isRadioTrack } from '../utils/functions/isRadioTrack.js';
+import {
+    decodeTrackWithRetry,
+    searchWithRetry,
+} from '../utils/functions/lavasharkRequest.js';
 
 import type { Client, GuildMember } from 'discord.js';
+import type { Track } from 'lavashark';
 import type { CommandContext } from './base/CommandContext.js';
 import type { Bot, CommandMetadata } from '../@types/index.js';
 
+
+const DEFAULT_MAX_SAMPLES_COUNT = 10;
+
+const normalizeSearchTerm = (value: string): string =>
+    value.toLowerCase().replace(/['’`\s_-]/g, '');
+
+
 export class RadioCommand extends BaseCommand {
-    public getMetadata(_bot: Bot): CommandMetadata {
+    public getMetadata(_bot: Bot, lng?: string): CommandMetadata {
         return {
             name: 'radio',
-            aliases: ['record'],
-            description: i18next.t('commands:CONFIG_RADIO_DESCRIPTION'),
-            usage: i18next.t('commands:CONFIG_RADIO_USAGE'),
+            aliases: [],
+            description: i18next.t('commands:CONFIG_RADIO_DESCRIPTION', { lng }),
+            usage: i18next.t('commands:CONFIG_RADIO_USAGE', { lng }),
             category: CommandCategory.MUSIC,
             voiceChannel: true,
             showHelp: true,
@@ -23,13 +37,13 @@ export class RadioCommand extends BaseCommand {
             options: [
                 {
                     name: 'playlist',
-                    description: i18next.t('commands:CONFIG_RADIO_OPTION_PLAYLIST'),
+                    description: i18next.t('commands:CONFIG_RADIO_OPTION_PLAYLIST', { lng }),
                     type: ApplicationCommandOptionType.String,
                     required: true
                 },
                 {
                     name: 'channel',
-                    description: i18next.t('commands:CONFIG_RADIO_OPTION_CHANNEL'),
+                    description: i18next.t('commands:CONFIG_RADIO_OPTION_CHANNEL', { lng }),
                     type: ApplicationCommandOptionType.String,
                     required: true
                 }
@@ -38,6 +52,14 @@ export class RadioCommand extends BaseCommand {
     }
 
     protected async run(bot: Bot, client: Client, context: CommandContext): Promise<void> {
+        if (!bot.config.playlist.enabled) {
+            await context.replyEphemeralError(
+                bot,
+                context.t('commands:ERROR_PLAYLIST_DISABLED'),
+            );
+            return;
+        }
+
         if (!bot.playlistManager) {
             await context.replyEphemeralError(bot, context.t('commands:ERROR_PLAYLIST_NOT_INITIALIZED'));
             return;
@@ -71,15 +93,23 @@ export class RadioCommand extends BaseCommand {
             return;
         }
 
-const DEFAULT_MAX_SAMPLES_COUNT = 10;
+        const queryNormalized = normalizeSearchTerm(channelQuery);
+        if (!queryNormalized) {
+            await context.replyEphemeralError(
+                bot,
+                context.t('commands:ERROR_RADIO_REQUIRED_ARGS'),
+            );
+            return;
+        }
 
-        const normalize = (str: string) => str.toLowerCase().replace(/['’\`\s\-_]/g, '');
-        const queryNormalized = normalize(channelQuery);
-
-        const exactMatch = playlist.tracks.find(t => normalize(t.title) === queryNormalized);
+        const exactMatch = playlist.tracks.find(
+            (track) => normalizeSearchTerm(track.title) === queryNormalized,
+        );
         const matchedTracks = exactMatch
             ? [exactMatch]
-            : playlist.tracks.filter(t => normalize(t.title).includes(queryNormalized));
+            : playlist.tracks.filter(
+                (track) => normalizeSearchTerm(track.title).includes(queryNormalized),
+            );
 
         if (matchedTracks.length === 0) {
             const samples = playlist.tracks.slice(0, DEFAULT_MAX_SAMPLES_COUNT).map(t => `\`${t.title}\``).join(', ');
@@ -128,6 +158,7 @@ const DEFAULT_MAX_SAMPLES_COUNT = 10;
         } catch (error) {
             bot.logger.error(bot.shardId, 'Error joining channel: ' + error);
             await context.replyEphemeralError(bot, context.t('commands:ERROR_PLAY_JOIN_CHANNEL'));
+            await player.destroy();
             return;
         }
 
@@ -154,31 +185,45 @@ const DEFAULT_MAX_SAMPLES_COUNT = 10;
         await context.replySuccess(bot, context.t('commands:MESSAGE_RADIO_SEARCHING', { playlist: playlistName, title: targetTrack.title }));
 
         try {
-            let searchResult = null;
-            if (targetTrack.url) {
-                try {
-                    searchResult = await client.lavashark.search(targetTrack.url);
-                } catch (_) {}
+            let radioTrack: Track | null = null;
+            if (targetTrack.encoded) {
+                radioTrack = await decodeTrackWithRetry(
+                    client.lavashark,
+                    targetTrack.encoded,
+                );
             }
 
-            if (!searchResult || !searchResult.tracks || searchResult.tracks.length === 0) {
-                try {
-                    searchResult = await client.lavashark.search(`ytsearch:${targetTrack.title}`);
-                } catch (_) {}
+            if (!radioTrack && targetTrack.url) {
+                const result = await searchWithRetry(
+                    client.lavashark,
+                    targetTrack.url,
+                );
+                const resolvedTrack = result?.tracks[0];
+                radioTrack = resolvedTrack && 'encoded' in resolvedTrack
+                    ? resolvedTrack
+                    : null;
             }
 
-            if (searchResult && searchResult.tracks && searchResult.tracks.length > 0) {
-                const track = searchResult.tracks[0];
-                (track as any).requester = requester;
+            if (radioTrack) {
+                const track = radioTrack;
+                track.setRequester(
+                    requester as unknown as Parameters<Track['setRequester']>[0],
+                );
 
                 const isAlreadyPlaying = player.playing;
 
                 // Radio request replaces existing queue/radio & plays as playfirst
-                player.queue.tracks = player.queue.tracks.filter((t: any) => !t.isRadio && t.title !== targetTrack.title);
+                player.queue.tracks = player.queue.tracks.filter(
+                    (queuedTrack) => !isRadioTrack(queuedTrack),
+                );
                 player.queue.tracks.unshift(track);
-                (track as any).isRadio = true;
+                track.isRadio = true;
 
                 if (isAlreadyPlaying) {
+                    if (player.repeatMode !== RepeatMode.OFF) {
+                        player.setRepeatMode(RepeatMode.OFF);
+                    }
+
                     await player.skip();
                 } else {
                     player.filters.setVolume(curVolume);

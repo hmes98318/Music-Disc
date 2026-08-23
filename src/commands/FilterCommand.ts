@@ -18,12 +18,12 @@ import type { Bot, CommandMetadata } from '../@types/index.js';
 
 
 export class FilterCommand extends BaseCommand {
-    public getMetadata(_bot: Bot): CommandMetadata {
+    public getMetadata(_bot: Bot, lng?: string): CommandMetadata {
         return {
             name: 'filter',
             aliases: ['eq', 'equalizer'],
-            description: i18next.t('commands:CONFIG_FILTER_DESCRIPTION'),
-            usage: i18next.t('commands:CONFIG_FILTER_USAGE'),
+            description: i18next.t('commands:CONFIG_FILTER_DESCRIPTION', { lng }),
+            usage: i18next.t('commands:CONFIG_FILTER_USAGE', { lng }),
             category: CommandCategory.MUSIC,
             voiceChannel: true,
             showHelp: true,
@@ -31,7 +31,7 @@ export class FilterCommand extends BaseCommand {
             options: [
                 {
                     name: 'filter',
-                    description: i18next.t('commands:CONFIG_FILTER_OPTION_DESCRIPTION'),
+                    description: i18next.t('commands:CONFIG_FILTER_OPTION_DESCRIPTION', { lng }),
                     type: 3,
                     required: true,
                     choices: [

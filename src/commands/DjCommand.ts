@@ -12,12 +12,12 @@ import type { Bot, CommandMetadata } from '../@types/index.js';
 
 
 export class DjCommand extends BaseCommand {
-    public getMetadata(_bot: Bot): CommandMetadata {
+    public getMetadata(_bot: Bot, lng?: string): CommandMetadata {
         return {
             name: 'dj',
             aliases: ['adddj'],
-            description: i18next.t('commands:CONFIG_DJ_DESCRIPTION'),
-            usage: i18next.t('commands:CONFIG_DJ_USAGE'),
+            description: i18next.t('commands:CONFIG_DJ_DESCRIPTION', { lng }),
+            usage: i18next.t('commands:CONFIG_DJ_USAGE', { lng }),
             category: CommandCategory.UTILITY,
             voiceChannel: false,
             showHelp: true,
@@ -25,7 +25,7 @@ export class DjCommand extends BaseCommand {
             options: [
                 {
                     name: 'user',
-                    description: i18next.t('commands:CONFIG_DJ_OPTION_DESCRIPTION'),
+                    description: i18next.t('commands:CONFIG_DJ_OPTION_DESCRIPTION', { lng }),
                     type: ApplicationCommandOptionType.User,
                     required: false
                 }

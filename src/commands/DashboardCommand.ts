@@ -8,12 +8,12 @@ import type { Bot, CommandMetadata } from '../@types/index.js';
 
 
 export class DashboardCommand extends BaseCommand {
-    public getMetadata(_bot: Bot): CommandMetadata {
+    public getMetadata(_bot: Bot, lng?: string): CommandMetadata {
         return {
             name: 'dashboard',
-            aliases: ['d', 'console'],
-            description: i18next.t('commands:CONFIG_DASHBOARD_DESCRIPTION'),
-            usage: i18next.t('commands:CONFIG_DASHBOARD_USAGE'),
+            aliases: ['db'],
+            description: i18next.t('commands:CONFIG_DASHBOARD_DESCRIPTION', { lng }),
+            usage: i18next.t('commands:CONFIG_DASHBOARD_USAGE', { lng }),
             category: CommandCategory.MUSIC,
             voiceChannel: true,
             showHelp: true,

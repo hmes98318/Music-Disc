@@ -14,12 +14,12 @@ import type { Bot, CommandMetadata } from '../@types/index.js';
 
 
 export class PlayCommand extends BaseCommand {
-    public getMetadata(_bot: Bot): CommandMetadata {
+    public getMetadata(_bot: Bot, lng?: string): CommandMetadata {
         return {
             name: 'play',
             aliases: ['p'],
-            description: i18next.t('commands:CONFIG_PLAY_DESCRIPTION'),
-            usage: i18next.t('commands:CONFIG_PLAY_USAGE'),
+            description: i18next.t('commands:CONFIG_PLAY_DESCRIPTION', { lng }),
+            usage: i18next.t('commands:CONFIG_PLAY_USAGE', { lng }),
             category: CommandCategory.MUSIC,
             voiceChannel: true,
             showHelp: true,
@@ -27,7 +27,7 @@ export class PlayCommand extends BaseCommand {
             options: [
                 {
                     name: 'play',
-                    description: i18next.t('commands:CONFIG_PLAY_OPTION_DESCRIPTION'),
+                    description: i18next.t('commands:CONFIG_PLAY_OPTION_DESCRIPTION', { lng }),
                     type: 3,
                     required: true
                 }
@@ -43,6 +43,12 @@ export class PlayCommand extends BaseCommand {
 
         if (!str) {
             await context.replyEphemeralError(bot, context.t('commands:MESSAGE_PLAY_ARGS_ERROR'));
+            return;
+        }
+
+        const isM3uUrl = /\.m3u8?(?:[?#].*)?$/i.test(str.trim());
+        if (isM3uUrl) {
+            await context.replyEphemeralError(bot, context.t('commands:ERROR_PLAYLIST_M3U_CANNOT_PLAY_ALL'));
             return;
         }
 
@@ -141,6 +147,7 @@ export class PlayCommand extends BaseCommand {
         } catch (error) {
             bot.logger.error( bot.shardId, 'Error joining channel: ' + error);
             await context.replyEphemeralError(bot, context.t('commands:ERROR_PLAY_JOIN_CHANNEL'));
+            await player.destroy();
             return null;
         }
 

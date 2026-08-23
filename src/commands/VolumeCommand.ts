@@ -19,12 +19,12 @@ import type { Bot, CommandMetadata } from '../@types/index.js';
 
 
 export class VolumeCommand extends BaseCommand {
-    public getMetadata(bot: Bot): CommandMetadata {
+    public getMetadata(bot: Bot, lng?: string): CommandMetadata {
         return {
             name: 'volume',
             aliases: ['v'],
-            description: i18next.t('commands:CONFIG_VOLUME_DESCRIPTION'),
-            usage: i18next.t('commands:CONFIG_VOLUME_USAGE'),
+            description: i18next.t('commands:CONFIG_VOLUME_DESCRIPTION', { lng }),
+            usage: i18next.t('commands:CONFIG_VOLUME_USAGE', { lng }),
             category: CommandCategory.MUSIC,
             voiceChannel: true,
             showHelp: true,
@@ -32,7 +32,7 @@ export class VolumeCommand extends BaseCommand {
             options: [
                 {
                     name: 'volume',
-                    description: bot.i18n.t('commands:CONFIG_VOLUME_OPTION_DESCRIPTION', { maxVolume: bot.config.bot.volume.max }),
+                    description: bot.i18n.t('commands:CONFIG_VOLUME_OPTION_DESCRIPTION', { maxVolume: bot.config.bot.volume.max, lng }),
                     type: 4,
                     required: false,
                     min_value: 1,

@@ -127,32 +127,29 @@ export class QueueLimitManager {
         const config = bot.config.bot.maxQueuedSongs;
         const limit = this.getUserLimit(bot, userId, member, player);
         const currentCount = this.countUserSongsInQueue(player, userId);
-        const availableSlots = limit === Infinity ? Infinity : Math.max(0, limit - currentCount);
+        let availableSlots = limit === Infinity ? Infinity : Math.max(0, limit - currentCount);
+        let globalLimitReached = false;
         
-        // Check global limit first
+        // Apply the global limit to the same effective slot count returned to
+        // playlist callers. Previously, the global capacity was only exposed
+        // after a request had already exceeded it, so partial playlist loads
+        // could bypass the global queue limit.
         if (config.enabled && config.global) {
             const totalQueueSize = this.getTotalQueueSize(player);
             const globalAvailableSlots = Math.max(0, config.global - totalQueueSize);
-            
-            if (globalAvailableSlots < songsToAdd) {
-                return {
-                    canAdd: false,
-                    currentCount,
-                    limit,
-                    availableSlots: Math.min(availableSlots === Infinity ? globalAvailableSlots : availableSlots, globalAvailableSlots),
-                    globalLimitReached: true
-                };
-            }
+
+            availableSlots = Math.min(availableSlots, globalAvailableSlots);
+            globalLimitReached = globalAvailableSlots < songsToAdd;
         }
 
-        const canAdd = limit === Infinity || (currentCount + songsToAdd) <= limit;
+        const canAdd = availableSlots >= songsToAdd;
 
         return {
             canAdd,
             currentCount,
             limit,
             availableSlots,
-            globalLimitReached: false
+            globalLimitReached
         };
     }
 
@@ -172,9 +169,9 @@ export class QueueLimitManager {
         member: GuildMember | null,
         playlistSize: number
     ): { canAddCount: number; willSkipCount: number; limitReached: boolean } {
-        const { limit, availableSlots } = this.canAddSongs(bot, player, userId, member, 0);
+        const { availableSlots } = this.canAddSongs(bot, player, userId, member, 0);
 
-        if (limit === Infinity) {
+        if (availableSlots === Infinity) {
             return {
                 canAddCount: playlistSize,
                 willSkipCount: 0,

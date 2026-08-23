@@ -10,12 +10,12 @@ import type { Bot, CommandMetadata } from '../@types/index.js';
 
 
 export class JoinCommand extends BaseCommand {
-    public getMetadata(_bot: Bot): CommandMetadata {
+    public getMetadata(_bot: Bot, lng?: string): CommandMetadata {
         return {
             name: 'join',
-            aliases: ['add', 'summon'],
-            description: i18next.t('commands:CONFIG_JOIN_DESCRIPTION'),
-            usage: i18next.t('commands:CONFIG_JOIN_USAGE'),
+            aliases: ['j', 'connect'],
+            description: i18next.t('commands:CONFIG_JOIN_DESCRIPTION', { lng }),
+            usage: i18next.t('commands:CONFIG_JOIN_USAGE', { lng }),
             category: CommandCategory.MUSIC,
             voiceChannel: true,
             showHelp: true,
@@ -62,6 +62,7 @@ export class JoinCommand extends BaseCommand {
         } catch (error) {
             bot.logger.error( bot.shardId, 'Error joining channel: ' + error);
             await context.replyEphemeralError(bot, context.t('commands:ERROR_PLAY_JOIN_CHANNEL'));
+            await player.destroy();
             return;
         }
 

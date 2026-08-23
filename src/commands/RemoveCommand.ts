@@ -10,12 +10,12 @@ import type { Bot, CommandMetadata } from '../@types/index.js';
 
 
 export class RemoveCommand extends BaseCommand {
-    public getMetadata(_bot: Bot): CommandMetadata {
+    public getMetadata(_bot: Bot, lng?: string): CommandMetadata {
         return {
             name: 'remove',
             aliases: ['rm'],
-            description: i18next.t('commands:CONFIG_REMOVE_DESCRIPTION'),
-            usage: i18next.t('commands:CONFIG_REMOVE_USAGE'),
+            description: i18next.t('commands:CONFIG_REMOVE_DESCRIPTION', { lng }),
+            usage: i18next.t('commands:CONFIG_REMOVE_USAGE', { lng }),
             category: CommandCategory.MUSIC,
             voiceChannel: true,
             showHelp: true,
@@ -23,13 +23,13 @@ export class RemoveCommand extends BaseCommand {
             options: [
                 {
                     name: 'index',
-                    description: i18next.t('commands:CONFIG_REMOVE_OPTION_DESCRIPTION'),
+                    description: i18next.t('commands:CONFIG_REMOVE_OPTION_DESCRIPTION', { lng }),
                     type: 10,
                     required: false
                 },
                 {
                     name: 'index2',
-                    description: i18next.t('commands:CONFIG_REMOVE_OPTION_DESCRIPTION_2'),
+                    description: i18next.t('commands:CONFIG_REMOVE_OPTION_DESCRIPTION_2', { lng }),
                     type: 10,
                     required: false
                 }
@@ -209,6 +209,8 @@ export class RemoveCommand extends BaseCommand {
         });
 
         collector.on('collect', async (query: Message<boolean>) => {
+            collector.stop();
+
             const index = parseInt(query.content);
 
             if (!index || index <= 0 || index > tracks.length) {
@@ -224,7 +226,6 @@ export class RemoveCommand extends BaseCommand {
                         allowedMentions: { repliedUser: false }
                     });
                 }
-                collector.stop();
                 return;
             }
 
@@ -243,8 +244,6 @@ export class RemoveCommand extends BaseCommand {
             msg.delete().catch(() =>
                 bot.logger.discord( bot.shardId, 'Failed to delete message.')
             );
-
-            collector.stop();
         });
 
         collector.on('end', async (collected: ReadonlyCollection<string, Message<boolean>>, reason: string) => {

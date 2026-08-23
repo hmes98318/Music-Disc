@@ -207,6 +207,10 @@ const setEnvironment = (defaultConfig: Config) => {
         enabled: config.queuePersistence?.enabled ?? defaultConfig.queuePersistence.enabled
     };
 
+    defaultConfig.playlist = {
+        enabled: config.playlist?.enabled ?? defaultConfig.playlist.enabled
+    };
+
 };
 
 export { setEnvironment };

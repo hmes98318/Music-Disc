@@ -2,7 +2,7 @@ const LANGUAGE_NAMES: Record<string, string> = {
     'en-US': 'English (en-US)',
     'ko-KR': '한국어 (ko-KR)',
     'ru-RU': 'Русский (ru-RU)',
-    'sr-RS': 'Српски (sr-RS)',
+    'sr-RS': 'Srpski (sr-RS)',
     'tr-TR': 'Türkçe (tr-TR)',
     'zh-TW': '繁體中文 (zh-TW)',
     'ar': 'العربية (ar)',

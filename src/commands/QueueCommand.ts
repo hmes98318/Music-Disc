@@ -11,12 +11,12 @@ import type { Bot, CommandMetadata } from '../@types/index.js';
 
 
 export class QueueCommand extends BaseCommand {
-    public getMetadata(_bot: Bot): CommandMetadata {
+    public getMetadata(_bot: Bot, lng?: string): CommandMetadata {
         return {
             name: 'queue',
             aliases: ['q', 'list'],
-            description: i18next.t('commands:CONFIG_QUEUE_DESCRIPTION'),
-            usage: i18next.t('commands:CONFIG_QUEUE_USAGE'),
+            description: i18next.t('commands:CONFIG_QUEUE_DESCRIPTION', { lng }),
+            usage: i18next.t('commands:CONFIG_QUEUE_USAGE', { lng }),
             category: CommandCategory.MUSIC,
             voiceChannel: true,
             showHelp: true,

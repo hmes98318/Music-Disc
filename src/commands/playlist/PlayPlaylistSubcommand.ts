@@ -1,12 +1,21 @@
-import { DJModeEnum } from '../../@types/index.js';
+import { RepeatMode } from 'lavashark';
+
+import { DJModeEnum, LoadType } from '../../@types/index.js';
 import { embeds } from '../../embeds/index.js';
 import { DJManager } from '../../lib/DjManager.js';
 import { QueueLimitManager } from '../../lib/QueueLimitManager.js';
 import { isUserInBlacklist } from '../../utils/functions/isUserInBlacklist.js';
+import { isRadioTrack } from '../../utils/functions/isRadioTrack.js';
+import {
+    decodeTracksWithRetry,
+    decodeTrackWithRetry,
+    searchWithRetry,
+    sleep,
+} from '../../utils/functions/lavasharkRequest.js';
 import { BasePlaylistSubcommand } from './BasePlaylistSubcommand.js';
 
 import type { GuildMember, VoiceBasedChannel } from 'discord.js';
-import type { Player } from 'lavashark';
+import type { LavaShark, Player } from 'lavashark';
 import type { Playlist, PlaylistTrack } from '../../lib/PlaylistManager.js';
 import type {
     PlaylistSubcommandContext,
@@ -20,6 +29,13 @@ interface PlaylistLoadResult {
 }
 
 type PlayerRequester = Parameters<Player['addTracks']>[1];
+type PlayableTrack = Awaited<ReturnType<LavaShark['search']>>['tracks'][number];
+
+interface MutableTrackMetadata {
+    author: string;
+    title: string;
+    uri: string;
+}
 
 /**
  * Load a stored playlist into the guild player and start playback
@@ -52,6 +68,14 @@ export class PlayPlaylistSubcommand extends BasePlaylistSubcommand {
             return;
         }
 
+        if (playlist.isM3u) {
+            await context.command.replyEphemeralError(
+                context.bot,
+                context.command.t('commands:ERROR_PLAYLIST_M3U_CANNOT_PLAY_ALL'),
+            );
+            return;
+        }
+
         await this.play(context, playlist);
     }
 
@@ -69,6 +93,13 @@ export class PlayPlaylistSubcommand extends BasePlaylistSubcommand {
         const player = await this.initializePlayer(context, voiceChannel);
         if (!player) return;
 
+        // A radio session is replaced by the playlist: drop its queued tracks
+        // so the playlist content plays next instead of the radio station
+        const isRadioPlaying = isRadioTrack(player.current);
+        if (isRadioPlaying) {
+            player.queue.tracks = [];
+        }
+
         const tracks = playlist.tracks ?? [];
         // Reuse one progress message for the final load result
         const progressMessage = await context.command.reply({
@@ -82,7 +113,7 @@ export class PlayPlaylistSubcommand extends BasePlaylistSubcommand {
         const result = await this.loadTracks(context, player, playlist, member);
 
         if (result.added > 0) {
-            await this.startPlayback(context, player);
+            await this.startPlayback(context, player, isRadioPlaying);
             if (context.bot.config.queuePersistence.enabled &&
                 context.client.queuePersistence) {
                 await context.client.queuePersistence.saveQueue(player);
@@ -185,6 +216,12 @@ export class PlayPlaylistSubcommand extends BasePlaylistSubcommand {
             ? command.getMessage()
             : command.getInteraction();
         try {
+            if (player.voiceChannelId !== voiceChannel.id) {
+                player.setVoiceChannel(voiceChannel.id);
+            }
+            // connect() is idempotent: it only sends a voice state update when
+            // the player is not already connected, so always call it — a fresh
+            // player would otherwise never join the voice channel
             await player.connect();
             player.metadata = metadata;
         } catch (error) {
@@ -196,6 +233,7 @@ export class PlayPlaylistSubcommand extends BasePlaylistSubcommand {
                 bot,
                 command.t('commands:ERROR_PLAY_JOIN_CHANNEL'),
             );
+            await player.destroy();
             return null;
         }
 
@@ -221,24 +259,39 @@ export class PlayPlaylistSubcommand extends BasePlaylistSubcommand {
     }
 
     /**
-     * Resolve a stored track using encoded data, URL, then title search
+     * Resolve a stored track using encoded data, URL, then title search.
+     * YouTube mix/playlist URLs (`watch?v=X&list=...`) resolve as a
+     * PLAYLIST result, so the whole playlist is expanded into the queue.
      */
     private async findTrack(
         context: PlaylistSubcommandContext,
         playlistTrack: PlaylistTrack,
-    ) {
+    ): Promise<PlayableTrack[] | null> {
+        if (playlistTrack.encoded) {
+            const track = await decodeTrackWithRetry(
+                context.client.lavashark,
+                playlistTrack.encoded,
+            );
+            if (track) return [track];
+        }
+
         const queries = [
-            playlistTrack.encoded,
             playlistTrack.url,
             `ytsearch:${playlistTrack.title}`,
         ].filter((query): query is string => Boolean(query));
 
         for (const query of new Set(queries)) {
-            try {
-                const result = await context.client.lavashark.search(query);
-                if (result.tracks.length > 0) return result.tracks[0];
-            } catch {
-                // Try the next fallback query.
+            const result = await searchWithRetry(context.client.lavashark, query);
+            if (result && Array.isArray(result.tracks) && result.tracks.length > 0) {
+                if (result.loadType === LoadType.PLAYLIST) {
+                    // Mix/playlist expansion keeps the real track names
+                    return result.tracks;
+                }
+                const track = result.tracks[0];
+                // Keep the name exactly as it was saved, even if the fallback
+                // search resolved to a different video
+                this.applySavedMetadata(track, playlistTrack);
+                return [track];
             }
         }
 
@@ -246,7 +299,26 @@ export class PlayPlaylistSubcommand extends BasePlaylistSubcommand {
     }
 
     /**
-     * Resolve and enqueue tracks while respecting queue limits
+     * Restore the display metadata stored with a playlist entry.
+     */
+    private applySavedMetadata(
+        track: PlayableTrack,
+        playlistTrack: PlaylistTrack,
+    ): void {
+        // LavaShark exposes metadata as readonly even though its runtime track
+        // model uses writable fields. The saved values are trusted local data.
+        const mutableTrack = track as unknown as MutableTrackMetadata;
+        if (playlistTrack.title) mutableTrack.title = playlistTrack.title;
+        if (playlistTrack.author) mutableTrack.author = playlistTrack.author;
+        if (playlistTrack.url) mutableTrack.uri = playlistTrack.url;
+    }
+
+    /**
+     * Resolve and enqueue tracks while respecting queue limits.
+     * Tracks carrying a saved encoded string are bulk-decoded in a single
+     * request (`/decodetracks`) — Lavalink nodes rate-limit REST calls
+     * (HTTP 429), and bursting per-track requests makes tracks get skipped.
+     * Entries without an encoded string fall back to paced per-track lookup.
      */
     private async loadTracks(
         context: PlaylistSubcommandContext,
@@ -256,39 +328,84 @@ export class PlayPlaylistSubcommand extends BasePlaylistSubcommand {
     ): Promise<PlaylistLoadResult> {
         let added = 0;
         let skipped = 0;
+        const tracks = playlist.tracks ?? [];
+        const TRACK_REQUEST_DELAY_MS = 400;
+        let remainingSlots = QueueLimitManager.canAddSongs(
+            context.bot,
+            player,
+            context.command.user.id,
+            member,
+            0,
+        ).availableSlots;
 
-        for (const playlistTrack of playlist.tracks ?? []) {
-            // Check both per-user and global limits before each search
-            const limit = QueueLimitManager.canAddSongs(
-                context.bot,
-                player,
-                context.command.user.id,
-                member,
-                1,
+        const entries = tracks.map((track, index) => ({ track, index }));
+        const decodedByIndex = new Map<number, PlayableTrack[]>();
+
+        // Bulk-decode entries that carry a saved encoded track string
+        const encodedEntries = entries.filter(({ track }) =>
+            track.encoded && track.encoded.trim() !== '',
+        );
+        if (encodedEntries.length > 0) {
+            const decoded = await decodeTracksWithRetry(
+                context.client.lavashark,
+                encodedEntries.map(({ track }) => track.encoded?.trim() ?? ''),
             );
-            if (!limit.canAdd) {
+            if (decoded && decoded.length === encodedEntries.length) {
+                encodedEntries.forEach(({ track, index }, i) => {
+                    if (decoded[i]) {
+                        // Keep the names exactly as they were saved
+                        this.applySavedMetadata(decoded[i], track);
+                        decodedByIndex.set(index, [decoded[i]]);
+                    }
+                });
+            }
+        }
+
+        const resolvedTracks: PlayableTrack[] = [];
+        for (const { track, index } of entries) {
+            if (remainingSlots <= 0) {
                 skipped++;
                 continue;
             }
 
-            try {
-                const track = await this.findTrack(context, playlistTrack);
-                if (!track) {
-                    skipped++;
-                    continue;
-                }
-
-                // LavaShark resolves discord.js through a separate type entry point.
-                const requester = context.command.user as unknown as PlayerRequester;
-                player.addTracks(track, requester);
-                added++;
-            } catch (error) {
-                context.bot.logger.error(
-                    context.bot.shardId,
-                    `[PlaylistCommand] Error loading track ${playlistTrack.title}: ${error}`,
-                );
-                skipped++;
+            let result = decodedByIndex.get(index) ?? null;
+            if (!result) {
+                result = await this.findTrack(context, track);
+                await sleep(TRACK_REQUEST_DELAY_MS);
             }
+
+            if (!result?.length) {
+                skipped++;
+                continue;
+            }
+
+            const acceptedTracks = remainingSlots === Infinity
+                ? result
+                : result.slice(0, remainingSlots);
+            resolvedTracks.push(...acceptedTracks);
+            added += acceptedTracks.length;
+            skipped += result.length - acceptedTracks.length;
+            remainingSlots -= acceptedTracks.length;
+        }
+
+        // Recheck immediately before the synchronous add in case another
+        // command changed the queue while remote tracks were being resolved.
+        const finalAvailableSlots = QueueLimitManager.canAddSongs(
+            context.bot,
+            player,
+            context.command.user.id,
+            member,
+            0,
+        ).availableSlots;
+        const finalTracks = finalAvailableSlots === Infinity
+            ? resolvedTracks
+            : resolvedTracks.slice(0, finalAvailableSlots);
+        skipped += resolvedTracks.length - finalTracks.length;
+        added = finalTracks.length;
+
+        if (finalTracks.length > 0) {
+            const requester = context.command.user as unknown as PlayerRequester;
+            player.addTracks(finalTracks, requester);
         }
 
         return { added, skipped };
@@ -300,6 +417,7 @@ export class PlayPlaylistSubcommand extends BasePlaylistSubcommand {
     private async startPlayback(
         context: PlaylistSubcommandContext,
         player: Player,
+        stopRadio = false,
     ): Promise<void> {
         if (!player.playing) {
             const volume = player.setting.volume ??
@@ -307,16 +425,40 @@ export class PlayPlaylistSubcommand extends BasePlaylistSubcommand {
                 context.bot.config.bot.volume.default;
             player.filters.setVolume(volume);
 
-            try {
-                await player.play();
-            } catch (error) {
-                context.bot.logger.error(
-                    context.bot.shardId,
-                    `[PlaylistCommand] Error playing track: ${error}`,
-                );
-                await player.destroy();
+            // Retry playback a few times so a transient rate limit (HTTP 429)
+            // does not destroy the player right after loading a playlist
+            const PLAY_RETRY_ATTEMPTS = 3;
+            const PLAY_RETRY_DELAY_MS = 2000;
+            for (let attempt = 0; attempt < PLAY_RETRY_ATTEMPTS; attempt++) {
+                try {
+                    await player.play();
+                    return;
+                } catch (error) {
+                    if (attempt < PLAY_RETRY_ATTEMPTS - 1) {
+                        context.bot.logger.log(
+                            context.bot.shardId,
+                            `[PlaylistCommand] Error playing track (attempt ${attempt + 1}/${PLAY_RETRY_ATTEMPTS}): ${error}`,
+                        );
+                        await sleep(PLAY_RETRY_DELAY_MS);
+                        continue;
+                    }
+                    context.bot.logger.error(
+                        context.bot.shardId,
+                        `[PlaylistCommand] Error playing track: ${error}`,
+                    );
+                    await player.destroy();
+                }
             }
             return;
+        }
+
+        // Stop the active radio and let the playlist take over: any repeat
+        // would otherwise keep the radio track in the queue or replay it
+        if (stopRadio) {
+            if (player.repeatMode !== RepeatMode.OFF) {
+                player.setRepeatMode(RepeatMode.OFF);
+            }
+            await player.skip();
         }
 
         if (player.current) {

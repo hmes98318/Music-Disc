@@ -211,7 +211,10 @@ export class VoiceStateUpdateEvent extends BaseDiscordEvent<Events.VoiceStateUpd
                 }
 
                 if (bot.config.bot.autoLeave.enabled) {
-                    player.destroy();
+                    const activePlayer = client.lavashark.getPlayer(guildId);
+                    if (activePlayer) {
+                        activePlayer.destroy();
+                    }
                 }
                 else {
                     player.queue.clear();

@@ -1,3 +1,4 @@
+import { ActionRowBuilder, StringSelectMenuBuilder } from 'discord.js';
 import i18next from 'i18next';
 import { NodeState } from 'lavashark';
 
@@ -11,12 +12,17 @@ import type { Bot, CommandMetadata } from '../@types/index.js';
 
 
 export class NodeStatusCommand extends BaseCommand {
-    public getMetadata(_bot: Bot): CommandMetadata {
+    public getMetadata(bot: Bot, lng?: string): CommandMetadata {
+        const choices = (bot.config.nodeList || []).slice(0, 25).map(node => ({
+            name: node.id,
+            value: node.id
+        }));
+
         return {
             name: 'nodestatus',
             aliases: ['node', 'nodes', 'nodesstatus'],
-            description: i18next.t('commands:CONFIG_NODE_DESCRIPTION'),
-            usage: i18next.t('commands:CONFIG_NODE_USAGE'),
+            description: i18next.t('commands:CONFIG_NODE_DESCRIPTION', { lng }),
+            usage: i18next.t('commands:CONFIG_NODE_USAGE', { lng }),
             category: CommandCategory.UTILITY,
             voiceChannel: false,
             showHelp: true,
@@ -24,9 +30,10 @@ export class NodeStatusCommand extends BaseCommand {
             options: [
                 {
                     name: 'nodename',
-                    description: i18next.t('commands:CONFIG_NODE_OPTION_DESCRIPTION'),
+                    description: i18next.t('commands:CONFIG_NODE_OPTION_DESCRIPTION', { lng }),
                     type: 3,
-                    required: false
+                    required: false,
+                    choices: choices.length > 0 ? choices : undefined
                 }
             ]
         };
@@ -72,8 +79,32 @@ export class NodeStatusCommand extends BaseCommand {
 
         bot.logger.log( bot.shardId, 'nodesStatus: ' + JSON.stringify(nodesStatus));
 
+        const components = [];
+        if (nodes.length > 0) {
+            const selectOptions = nodes.slice(0, 25).map((node, i) => {
+                const ping = pingList[i];
+                const isConnected = ping !== -1;
+                return {
+                    label: node.identifier,
+                    value: node.identifier,
+                    description: isConnected
+                        ? `${context.t('embeds:NODE_STATUS_PING')}: ${ping}ms`
+                        : context.t('embeds:NODE_DISCONNECTED').replace(/\*/g, ''),
+                    emoji: isConnected ? '✅' : '❌'
+                };
+            });
+
+            const selectMenu = new StringSelectMenuBuilder()
+                .setCustomId('select_node')
+                .setPlaceholder(context.t('commands:CONFIG_NODE_OPTION_DESCRIPTION'))
+                .addOptions(selectOptions);
+
+            components.push(new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(selectMenu));
+        }
+
         await context.reply({
             embeds: [embeds.nodesStatus(bot, unhealthValue, nodesStatus, context.language)],
+            components,
             allowedMentions: { repliedUser: false }
         });
     }
@@ -97,19 +128,45 @@ export class NodeStatusCommand extends BaseCommand {
 
                 const nodeInfoPromise = node.getInfo();
                 const nodeStatsPromise = node.getStats();
-                const nodePingPromise = client.lavashark.nodePing(node);
-                const [nodeInfo, nodeStats, nodePing] = await Promise.all([
+                const nodesPingPromise = client.lavashark.nodesPing();
+                const [nodeInfo, nodeStats, pingList] = await Promise.all([
                     nodeInfoPromise,
                     nodeStatsPromise,
-                    nodePingPromise
+                    nodesPingPromise
                 ]);
+                const nodePing = pingList[nodes.indexOf(node)] ?? -1;
 
                 bot.logger.log( bot.shardId, 'nodeInfo: ' + JSON.stringify(nodeInfo));
                 bot.logger.log( bot.shardId, 'nodeStats: ' + JSON.stringify(nodeStats));
                 bot.logger.log( bot.shardId, 'nodePing: ' + nodePing + 'ms');
 
+                const components = [];
+                if (nodes.length > 0) {
+                    const selectOptions = nodes.slice(0, 25).map((n, index) => {
+                        const isConnected = n.state === NodeState.CONNECTED;
+                        const ping = pingList[index] ?? -1;
+                        return {
+                            label: n.identifier,
+                            value: n.identifier,
+                            default: n.identifier === nodeName,
+                            description: isConnected
+                                ? `${context.t('embeds:NODE_STATUS_PING')}: ${ping}ms`
+                                : context.t('embeds:NODE_DISCONNECTED').replace(/\*/g, ''),
+                            emoji: isConnected ? '✅' : '❌'
+                        };
+                    });
+
+                    const selectMenu = new StringSelectMenuBuilder()
+                        .setCustomId('select_node')
+                        .setPlaceholder(context.t('commands:CONFIG_NODE_OPTION_DESCRIPTION'))
+                        .addOptions(selectOptions);
+
+                    components.push(new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(selectMenu));
+                }
+
                 await context.reply({
                     embeds: [embeds.nodeStatus(bot, nodeName, nodeInfo, nodeStats, nodePing, context.language)],
+                    components,
                     allowedMentions: { repliedUser: false }
                 });
                 return;

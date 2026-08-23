@@ -1,4 +1,5 @@
 import i18next from 'i18next';
+import { RepeatMode } from 'lavashark';
 
 import { BaseCommand } from './base/BaseCommand.js';
 import { CommandCategory } from '../@types/index.js';
@@ -13,12 +14,12 @@ import type { Bot, CommandMetadata } from '../@types/index.js';
  * Skip command - Skips current track
  */
 export class SkipCommand extends BaseCommand {
-    public getMetadata(_bot: Bot): CommandMetadata {
+    public getMetadata(_bot: Bot, lng?: string): CommandMetadata {
         return {
             name: 'skip',
             aliases: ['s'],
-            description: i18next.t('commands:CONFIG_SKIP_DESCRIPTION'),
-            usage: i18next.t('commands:CONFIG_SKIP_USAGE'),
+            description: i18next.t('commands:CONFIG_SKIP_DESCRIPTION', { lng }),
+            usage: i18next.t('commands:CONFIG_SKIP_USAGE', { lng }),
             category: CommandCategory.MUSIC,
             voiceChannel: true,
             showHelp: true,
@@ -61,6 +62,11 @@ export class SkipCommand extends BaseCommand {
         }
 
         const hasMoreTracks = player.queue.tracks.length > 0 || player.repeatMode !== 0;
+
+        if (player.repeatMode === RepeatMode.TRACK) {
+            player.setRepeatMode(RepeatMode.OFF);
+        }
+
         const success = await player.skip();
 
         if (context.isMessage()) {

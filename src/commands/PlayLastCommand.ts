@@ -15,12 +15,12 @@ import type { Bot, CommandMetadata } from '../@types/index.js';
  * PlayLast command - Replay the current or last played song
  */
 export class PlayLastCommand extends BaseCommand {
-    public getMetadata(_bot: Bot): CommandMetadata {
+    public getMetadata(_bot: Bot, lng?: string): CommandMetadata {
         return {
             name: 'playlast',
             aliases: [],
-            description: i18next.t('commands:CONFIG_PLAYLAST_DESCRIPTION'),
-            usage: i18next.t('commands:CONFIG_PLAYLAST_USAGE'),
+            description: i18next.t('commands:CONFIG_PLAYLAST_DESCRIPTION', { lng }),
+            usage: i18next.t('commands:CONFIG_PLAYLAST_USAGE', { lng }),
             category: CommandCategory.MUSIC,
             voiceChannel: false,
             showHelp: true,

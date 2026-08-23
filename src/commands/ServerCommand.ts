@@ -11,12 +11,12 @@ import type { Bot, CommandMetadata } from '../@types/index.js';
 
 
 export class ServerCommand extends BaseCommand {
-    public getMetadata(_bot: Bot): CommandMetadata {
+    public getMetadata(_bot: Bot, lng?: string): CommandMetadata {
         return {
             name: 'server',
             aliases: [],
-            description: i18next.t('commands:CONFIG_SERVER_DESCRIPTION'),
-            usage: i18next.t('commands:CONFIG_SERVER_USAGE'),
+            description: i18next.t('commands:CONFIG_SERVER_DESCRIPTION', { lng }),
+            usage: i18next.t('commands:CONFIG_SERVER_USAGE', { lng }),
             category: CommandCategory.UTILITY,
             voiceChannel: false,
             showHelp: true,

@@ -77,9 +77,9 @@ export class CommandRegistry {
     /**
      * Get all commands that should be shown in help
      */
-    public getHelpCommands(bot: Bot): BaseCommand[] {
+    public getHelpCommands(bot: Bot, lng?: string): BaseCommand[] {
         return this.getAll().filter(cmd =>
-            cmd.getMetadata(bot).showHelp
+            cmd.getMetadata(bot, lng).showHelp
         );
     }
 }

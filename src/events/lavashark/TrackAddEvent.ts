@@ -1,5 +1,8 @@
+import { RepeatMode } from 'lavashark';
+
 import { BaseLavaSharkEvent } from './base/BaseLavaSharkEvent.js';
 import { embeds } from '../../embeds/index.js';
+import { isRadioTrack } from '../../utils/functions/isRadioTrack.js';
 
 import type { Client, Message } from 'discord.js';
 import type { Player, Track } from 'lavashark';
@@ -27,20 +30,27 @@ export class TrackAddEvent extends BaseLavaSharkEvent<'trackAdd'> {
             await this.#handleTrackAdd(bot, client, player, tracks);
         }
 
+        // Radio requests do not occupy the queue. Any subsequent request
+        // takes over immediately while the newly added tracks stay queued.
+        if (isRadioTrack(player.current)) {
+            if (player.repeatMode !== RepeatMode.OFF) {
+                player.setRepeatMode(RepeatMode.OFF);
+            }
+            await player.skip();
+        }
+
         // Save queue state to persistence
         if (bot.config.queuePersistence.enabled && client.queuePersistence) {
             await client.queuePersistence.saveQueue(player);
         }
 
         // Refresh dashboard
-        try {
-            if (player.dashboardMsg) await player.dashboardMsg.delete();
-        } catch (error) {
-            bot.logger.error( bot.shardId, 'Dashboard delete error:' + error);
+        if (player.current) {
+            if (!player.dashboardMsg) {
+                await client.dashboard.initialize((player.metadata as Message), player);
+            }
+            await client.dashboard.update(player, player.current);
         }
-
-        await client.dashboard.initialize((player.metadata as Message), player);
-        await client.dashboard.update(player, player.current!);
     }
 
     /**

@@ -1,9 +1,11 @@
 import i18next from 'i18next';
+import { RepeatMode } from 'lavashark';
 
 import { BaseCommand } from './base/BaseCommand.js';
 import { CommandCategory, DJModeEnum, LoadType } from '../@types/index.js';
 import { embeds } from '../embeds/index.js';
 import { isUserInBlacklist } from '../utils/functions/isUserInBlacklist.js';
+import { isRadioTrack } from '../utils/functions/isRadioTrack.js';
 import { DJManager } from '../lib/DjManager.js';
 import { QueueLimitManager } from '../lib/QueueLimitManager.js';
 
@@ -14,12 +16,12 @@ import type { Bot, CommandMetadata } from '../@types/index.js';
 
 
 export class PlayFirstCommand extends BaseCommand {
-    public getMetadata(_bot: Bot): CommandMetadata {
+    public getMetadata(_bot: Bot, lng?: string): CommandMetadata {
         return {
             name: 'playfirst',
             aliases: ['pf', 'pp', 'prioritizePlay'],
-            description: i18next.t('commands:CONFIG_PLAYFIRST_DESCRIPTION'),
-            usage: i18next.t('commands:CONFIG_PLAYFIRST_USAGE'),
+            description: i18next.t('commands:CONFIG_PLAYFIRST_DESCRIPTION', { lng }),
+            usage: i18next.t('commands:CONFIG_PLAYFIRST_USAGE', { lng }),
             category: CommandCategory.MUSIC,
             voiceChannel: true,
             showHelp: true,
@@ -27,7 +29,7 @@ export class PlayFirstCommand extends BaseCommand {
             options: [
                 {
                     name: 'playfirst',
-                    description: i18next.t('commands:CONFIG_PLAYFIRST_OPTION_DESCRIPTION'),
+                    description: i18next.t('commands:CONFIG_PLAYFIRST_OPTION_DESCRIPTION', { lng }),
                     type: 3,
                     required: true
                 }
@@ -43,6 +45,12 @@ export class PlayFirstCommand extends BaseCommand {
 
         if (!str) {
             await context.replyEphemeralError(bot, context.t('commands:MESSAGE_PLAY_ARGS_ERROR'));
+            return;
+        }
+
+        const isM3uUrl = /\.m3u8?(?:[?#].*)?$/i.test(str.trim());
+        if (isM3uUrl) {
+            await context.replyEphemeralError(bot, context.t('commands:ERROR_PLAYLIST_M3U_CANNOT_PLAY_ALL'));
             return;
         }
 
@@ -141,6 +149,7 @@ export class PlayFirstCommand extends BaseCommand {
         } catch (error) {
             bot.logger.error( bot.shardId, 'Error joining channel: ' + error);
             await context.replyEphemeralError(bot, context.t('commands:ERROR_PLAY_JOIN_CHANNEL'));
+            await player.destroy();
             return null;
         }
 
@@ -236,6 +245,11 @@ export class PlayFirstCommand extends BaseCommand {
     async #handleTracks(bot: Bot, client: Client, context: CommandContext, player: Player, res: any, tracksToAdd?: number): Promise<void> {
         const requester = context.isMessage() ? context.getMessage().author : context.getInteraction().user;
         const curVolume = player.setting.volume ?? bot.guildVolumeManager?.get(player.guildId) ?? bot.config.bot.volume.default;
+        const isRadioPlaying = isRadioTrack(player.current);
+
+        if (player.repeatMode !== RepeatMode.OFF) {
+            player.setRepeatMode(RepeatMode.OFF);
+        }
 
         if (res.loadType === LoadType.PLAYLIST) {
             const tracks = tracksToAdd !== undefined ? res.tracks.slice(0, tracksToAdd) : res.tracks;
@@ -244,26 +258,23 @@ export class PlayFirstCommand extends BaseCommand {
                 (t as any).requester = requester;
             }
 
-            if (!player.playing) {
-                const firstTrack = tracks[0];
-                const restTracks = tracks.slice(1);
+            const firstTrack = tracks[0];
+            const restTracks = tracks.slice(1);
 
-                if (restTracks.length > 0) {
-                    player.queue.tracks.unshift(...restTracks);
-                }
+            if (restTracks.length > 0) {
+                player.queue.tracks.unshift(...restTracks);
+            }
 
-                player.filters.setVolume(curVolume);
-                await player.prioritizePlay(firstTrack, requester as any)
-                    .catch(async (error) => {
-                        bot.logger.error(bot.shardId, 'Error playing track: ' + error);
-                        await context.replyError(bot, context.t('commands:ERROR_PLAY_MUSIC', { reason: JSON.stringify(error) }));
-                        return player.destroy();
-                    });
-            } else {
-                player.queue.tracks.unshift(...tracks);
-                if (player.current && client.dashboard) {
-                    await client.dashboard.update(player, player.current);
-                }
+            player.filters.setVolume(curVolume);
+            await player.prioritizePlay(firstTrack, requester as any)
+                .catch(async (error) => {
+                    bot.logger.error(bot.shardId, 'Error playing track: ' + error);
+                    await context.replyError(bot, context.t('commands:ERROR_PLAY_MUSIC', { reason: JSON.stringify(error) }));
+                    return player.destroy();
+                });
+
+            if (player.current && client.dashboard) {
+                await client.dashboard.update(player, player.current);
             }
         }
         else {
@@ -274,6 +285,12 @@ export class PlayFirstCommand extends BaseCommand {
                     await context.replyError(bot, context.t('commands:ERROR_PLAY_MUSIC', { reason: JSON.stringify(error) }));
                     return player.destroy();
                 });
+        }
+
+        if (isRadioPlaying) {
+            player.queue.tracks = player.queue.tracks.filter(
+                (queuedTrack) => !isRadioTrack(queuedTrack),
+            );
         }
     }
 }
