@@ -1,6 +1,8 @@
+import { ChannelType } from 'discord.js';
+
 import { BaseLavaSharkEvent } from './base/BaseLavaSharkEvent.js';
 import { FairQueueManager } from '../../lib/FairQueueManager.js';
-import { ChannelType } from 'discord.js';
+import { isRadioTrack } from '../../utils/functions/isRadioTrack.js';
 
 import type { Client } from 'discord.js';
 import type { Player, Track } from 'lavashark';
@@ -16,10 +18,10 @@ export class TrackEndEvent extends BaseLavaSharkEvent<'trackEnd'> {
         return 'trackEnd';
     }
 
-    public async execute(bot: Bot, client: Client, player: Player, _track: Track, _reason: any): Promise<void> {
+    public async execute(bot: Bot, client: Client, player: Player, track: Track, _reason: any): Promise<void> {
         // Store last played track for /playlast command
-        if (_track) {
-            client.lastPlayedTracks.set(player.guildId, _track);
+        if (!isRadioTrack(track)) {
+            client.lastPlayedTracks.set(player.guildId, track);
         }
 
         try {

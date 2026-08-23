@@ -9,6 +9,7 @@ import {
     searchWithRetry,
     sleep,
 } from '../utils/functions/lavasharkRequest.js';
+import { isRadioTrack } from '../utils/functions/isRadioTrack.js';
 
 
 /**
@@ -107,8 +108,15 @@ export class QueuePersistence {
         }
 
         try {
-            // Save as long as player.current exists (even if queue.tracks is empty)
-            if (!player.current) {
+            const currentTrack = isRadioTrack(player.current)
+                ? null
+                : player.current;
+            const queuedTracks = player.queue.tracks.filter(
+                (track) => !isRadioTrack(track),
+            );
+
+            // Radio is an ephemeral request rather than persisted queue state.
+            if (!currentTrack && queuedTracks.length === 0) {
                 this.deleteQueue(player.guildId);
                 return;
             }
@@ -136,13 +144,15 @@ export class QueuePersistence {
             // Include current track at front of saved tracks list
             const serializedTracks: SerializedTrack[] = [];
 
-            const currentSerialized = serializeTrack(player.current);
+            const currentSerialized = currentTrack
+                ? serializeTrack(currentTrack)
+                : null;
             if (currentSerialized) {
                 serializedTracks.push(currentSerialized);
             }
 
             // Append queue tracks
-            for (const track of player.queue.tracks) {
+            for (const track of queuedTracks) {
                 const s = serializeTrack(track as Track);
                 if (s) serializedTracks.push(s);
             }
@@ -157,8 +167,8 @@ export class QueuePersistence {
                 currentTrackIndex: 0,
                 volume: currentVolume,
                 repeatMode: player.repeatMode,
-                paused: player.paused,
-                position: player.position,
+                paused: currentTrack ? player.paused : false,
+                position: currentTrack ? player.position : 0,
                 timestamp: Date.now()
             };
 
@@ -312,7 +322,7 @@ export class QueuePersistence {
             const textChannel = guild.channels.cache.get(queueData.textChannelId);
             if (textChannel && (textChannel.type === ChannelType.GuildText || textChannel.type === ChannelType.GuildAnnouncement)) {
                 try {
-                    await client.dashboard.initialize(textChannel as any, player);
+                    await client.dashboard.initialize(textChannel, player);
                 } catch (error) {
                     this.bot.logger.error(this.bot.shardId, `[QueuePersistence] Failed to initialize dashboard for guild ${queueData.guildId}: ${error}`);
                 }

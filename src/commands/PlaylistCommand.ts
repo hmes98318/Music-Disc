@@ -136,7 +136,7 @@ export class PlaylistCommand extends BaseCommand {
         client: Client,
         command: CommandContext,
     ): Promise<void> {
-        if (bot.config.playlist?.enabled === false) {
+        if (!bot.config.playlist.enabled) {
             await command.replyEphemeralError(
                 bot,
                 command.t('commands:ERROR_PLAYLIST_DISABLED'),

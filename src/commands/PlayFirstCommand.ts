@@ -5,6 +5,7 @@ import { BaseCommand } from './base/BaseCommand.js';
 import { CommandCategory, DJModeEnum, LoadType } from '../@types/index.js';
 import { embeds } from '../embeds/index.js';
 import { isUserInBlacklist } from '../utils/functions/isUserInBlacklist.js';
+import { isRadioTrack } from '../utils/functions/isRadioTrack.js';
 import { DJManager } from '../lib/DjManager.js';
 import { QueueLimitManager } from '../lib/QueueLimitManager.js';
 
@@ -47,9 +48,8 @@ export class PlayFirstCommand extends BaseCommand {
             return;
         }
 
-        const isM3uUrl = /\.m3u8?(\?.*)?$/i.test(str.trim());
-        const existingPlaylist = bot.playlistManager?.getPlaylist(context.guild!.id, str.trim());
-        if (isM3uUrl || existingPlaylist?.isM3u) {
+        const isM3uUrl = /\.m3u8?(?:[?#].*)?$/i.test(str.trim());
+        if (isM3uUrl) {
             await context.replyEphemeralError(bot, context.t('commands:ERROR_PLAYLIST_M3U_CANNOT_PLAY_ALL'));
             return;
         }
@@ -245,8 +245,9 @@ export class PlayFirstCommand extends BaseCommand {
     async #handleTracks(bot: Bot, client: Client, context: CommandContext, player: Player, res: any, tracksToAdd?: number): Promise<void> {
         const requester = context.isMessage() ? context.getMessage().author : context.getInteraction().user;
         const curVolume = player.setting.volume ?? bot.guildVolumeManager?.get(player.guildId) ?? bot.config.bot.volume.default;
+        const isRadioPlaying = isRadioTrack(player.current);
 
-        if (player.repeatMode === RepeatMode.TRACK) {
+        if (player.repeatMode !== RepeatMode.OFF) {
             player.setRepeatMode(RepeatMode.OFF);
         }
 
@@ -284,6 +285,12 @@ export class PlayFirstCommand extends BaseCommand {
                     await context.replyError(bot, context.t('commands:ERROR_PLAY_MUSIC', { reason: JSON.stringify(error) }));
                     return player.destroy();
                 });
+        }
+
+        if (isRadioPlaying) {
+            player.queue.tracks = player.queue.tracks.filter(
+                (queuedTrack) => !isRadioTrack(queuedTrack),
+            );
         }
     }
 }

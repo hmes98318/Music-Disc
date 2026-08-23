@@ -1,8 +1,11 @@
+import { RepeatMode } from 'lavashark';
+
 import { DJModeEnum, LoadType } from '../../@types/index.js';
 import { embeds } from '../../embeds/index.js';
 import { DJManager } from '../../lib/DjManager.js';
 import { QueueLimitManager } from '../../lib/QueueLimitManager.js';
 import { isUserInBlacklist } from '../../utils/functions/isUserInBlacklist.js';
+import { isRadioTrack } from '../../utils/functions/isRadioTrack.js';
 import {
     decodeTracksWithRetry,
     decodeTrackWithRetry,
@@ -12,8 +15,7 @@ import {
 import { BasePlaylistSubcommand } from './BasePlaylistSubcommand.js';
 
 import type { GuildMember, VoiceBasedChannel } from 'discord.js';
-import { RepeatMode } from 'lavashark';
-import type { Player } from 'lavashark';
+import type { LavaShark, Player } from 'lavashark';
 import type { Playlist, PlaylistTrack } from '../../lib/PlaylistManager.js';
 import type {
     PlaylistSubcommandContext,
@@ -27,6 +29,13 @@ interface PlaylistLoadResult {
 }
 
 type PlayerRequester = Parameters<Player['addTracks']>[1];
+type PlayableTrack = Awaited<ReturnType<LavaShark['search']>>['tracks'][number];
+
+interface MutableTrackMetadata {
+    author: string;
+    title: string;
+    uri: string;
+}
 
 /**
  * Load a stored playlist into the guild player and start playback
@@ -86,7 +95,7 @@ export class PlayPlaylistSubcommand extends BasePlaylistSubcommand {
 
         // A radio session is replaced by the playlist: drop its queued tracks
         // so the playlist content plays next instead of the radio station
-        const isRadioPlaying = Boolean(player.current && (player.current as any).isRadio);
+        const isRadioPlaying = isRadioTrack(player.current);
         if (isRadioPlaying) {
             player.queue.tracks = [];
         }
@@ -257,7 +266,7 @@ export class PlayPlaylistSubcommand extends BasePlaylistSubcommand {
     private async findTrack(
         context: PlaylistSubcommandContext,
         playlistTrack: PlaylistTrack,
-    ): Promise<any[] | null> {
+    ): Promise<PlayableTrack[] | null> {
         if (playlistTrack.encoded) {
             const track = await decodeTrackWithRetry(
                 context.client.lavashark,
@@ -281,14 +290,27 @@ export class PlayPlaylistSubcommand extends BasePlaylistSubcommand {
                 const track = result.tracks[0];
                 // Keep the name exactly as it was saved, even if the fallback
                 // search resolved to a different video
-                if (playlistTrack.title) track.title = playlistTrack.title;
-                if (playlistTrack.author) track.author = playlistTrack.author;
-                if (playlistTrack.url) track.uri = playlistTrack.url;
+                this.applySavedMetadata(track, playlistTrack);
                 return [track];
             }
         }
 
         return null;
+    }
+
+    /**
+     * Restore the display metadata stored with a playlist entry.
+     */
+    private applySavedMetadata(
+        track: PlayableTrack,
+        playlistTrack: PlaylistTrack,
+    ): void {
+        // LavaShark exposes metadata as readonly even though its runtime track
+        // model uses writable fields. The saved values are trusted local data.
+        const mutableTrack = track as unknown as MutableTrackMetadata;
+        if (playlistTrack.title) mutableTrack.title = playlistTrack.title;
+        if (playlistTrack.author) mutableTrack.author = playlistTrack.author;
+        if (playlistTrack.url) mutableTrack.uri = playlistTrack.url;
     }
 
     /**
@@ -308,17 +330,16 @@ export class PlayPlaylistSubcommand extends BasePlaylistSubcommand {
         let skipped = 0;
         const tracks = playlist.tracks ?? [];
         const TRACK_REQUEST_DELAY_MS = 400;
-
-        const canAdd = (): boolean => QueueLimitManager.canAddSongs(
+        let remainingSlots = QueueLimitManager.canAddSongs(
             context.bot,
             player,
             context.command.user.id,
             member,
-            1,
-        ).canAdd;
+            0,
+        ).availableSlots;
 
         const entries = tracks.map((track, index) => ({ track, index }));
-        const resolvedByIndex: Map<number, any[]> = new Map();
+        const decodedByIndex = new Map<number, PlayableTrack[]>();
 
         // Bulk-decode entries that carry a saved encoded track string
         const encodedEntries = entries.filter(({ track }) =>
@@ -327,48 +348,64 @@ export class PlayPlaylistSubcommand extends BasePlaylistSubcommand {
         if (encodedEntries.length > 0) {
             const decoded = await decodeTracksWithRetry(
                 context.client.lavashark,
-                encodedEntries.map(({ track }) => track.encoded!.trim()),
+                encodedEntries.map(({ track }) => track.encoded?.trim() ?? ''),
             );
             if (decoded && decoded.length === encodedEntries.length) {
                 encodedEntries.forEach(({ track, index }, i) => {
-                    if (decoded[i] && canAdd()) {
+                    if (decoded[i]) {
                         // Keep the names exactly as they were saved
-                        if (track.title) decoded[i].title = track.title;
-                        if (track.author) decoded[i].author = track.author;
-                        if (track.url) decoded[i].uri = track.url;
-                        resolvedByIndex.set(index, [decoded[i]]);
-                        added++;
+                        this.applySavedMetadata(decoded[i], track);
+                        decodedByIndex.set(index, [decoded[i]]);
                     }
                 });
             }
         }
 
-        // Per-track fallback for entries not covered by the bulk decode
+        const resolvedTracks: PlayableTrack[] = [];
         for (const { track, index } of entries) {
-            if (resolvedByIndex.has(index)) {
+            if (remainingSlots <= 0) {
+                skipped++;
                 continue;
             }
 
-            if (!canAdd()) {
-                skipped++;
+            let result = decodedByIndex.get(index) ?? null;
+            if (!result) {
+                result = await this.findTrack(context, track);
                 await sleep(TRACK_REQUEST_DELAY_MS);
+            }
+
+            if (!result?.length) {
+                skipped++;
                 continue;
             }
 
-            const result = await this.findTrack(context, track);
-            if (result && result.length > 0) {
-                resolvedByIndex.set(index, result);
-                added += result.length;
-            } else {
-                skipped++;
-            }
-            await sleep(TRACK_REQUEST_DELAY_MS);
+            const acceptedTracks = remainingSlots === Infinity
+                ? result
+                : result.slice(0, remainingSlots);
+            resolvedTracks.push(...acceptedTracks);
+            added += acceptedTracks.length;
+            skipped += result.length - acceptedTracks.length;
+            remainingSlots -= acceptedTracks.length;
         }
 
-        const resolvedTracks = entries.flatMap(({ index }) => resolvedByIndex.get(index) ?? []);
-        if (resolvedTracks.length > 0) {
+        // Recheck immediately before the synchronous add in case another
+        // command changed the queue while remote tracks were being resolved.
+        const finalAvailableSlots = QueueLimitManager.canAddSongs(
+            context.bot,
+            player,
+            context.command.user.id,
+            member,
+            0,
+        ).availableSlots;
+        const finalTracks = finalAvailableSlots === Infinity
+            ? resolvedTracks
+            : resolvedTracks.slice(0, finalAvailableSlots);
+        skipped += resolvedTracks.length - finalTracks.length;
+        added = finalTracks.length;
+
+        if (finalTracks.length > 0) {
             const requester = context.command.user as unknown as PlayerRequester;
-            player.addTracks(resolvedTracks, requester);
+            player.addTracks(finalTracks, requester);
         }
 
         return { added, skipped };

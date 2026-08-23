@@ -7,7 +7,10 @@ import { ButtonsBuilder } from './builders/ButtonsBuilder.js';
 
 import type { Player, Track } from 'lavashark';
 import type { Bot } from '../@types/index.js';
-import type { Client } from 'discord.js';
+import type { Client, SendableChannels } from 'discord.js';
+
+
+type DashboardTarget = ChatInputCommandInteraction | Message | SendableChannels;
 
 
 /**
@@ -15,9 +18,9 @@ import type { Client } from 'discord.js';
  * Handles initialization, updates, and cleanup of dashboard messages
  */
 export class DashboardManager {
-    #bot: Bot;
-    #client: Client;
-    #updatePromise: Promise<void> = Promise.resolve();
+    readonly #bot: Bot;
+    readonly #client: Client;
+    readonly #updatePromises = new Map<string, Promise<void>>();
 
     constructor(bot: Bot, client: Client) {
         this.#bot = bot;
@@ -30,32 +33,33 @@ export class DashboardManager {
      * can ever be created for the same player at the same time.
      */
     public async initialize(
-        target: ChatInputCommandInteraction | Message | any,
+        target: DashboardTarget,
         player: Player
     ): Promise<void> {
-        this.#updatePromise = this.#updatePromise
-            .then(() => this.#performInitialize(target, player))
-            .catch(() => {});
-        return this.#updatePromise;
+        return this.#enqueue(
+            player,
+            () => this.#performInitialize(target, player),
+        );
     }
 
     async #performInitialize(
-        target: ChatInputCommandInteraction | Message | any,
+        target: DashboardTarget,
         player: Player
     ): Promise<void> {
-        let channel;
+        let channel: SendableChannels | null;
 
         if (target instanceof Message) {
-            channel = target.channel;
+            channel = target.channel.isSendable() ? target.channel : null;
         }
         else if (target instanceof ChatInputCommandInteraction) {
-            channel = target.channel;
-        }
-        else if (target && typeof target.send === 'function') {
-            channel = target;
+            channel = target.channel?.isSendable() ? target.channel : null;
         }
         else {
-            throw new TypeError('Invalid Interaction, Message, or Channel type');
+            channel = target;
+        }
+
+        if (!channel) {
+            throw new TypeError('Dashboard target does not have a sendable channel');
         }
 
         if (player.dashboardMsg) {
@@ -71,16 +75,18 @@ export class DashboardManager {
         // restart the in-memory reference is gone) so only the new one stays
         const dashboardTitle = this.#bot.i18n.t('embeds:DASHBOARD_TITLE', { lng });
         try {
-            const messages = await (channel as any).messages.fetch({ limit: 30 });
-            for (const message of messages.values()) {
-                if (message.author?.id === this.#client.user?.id &&
-                    message.embeds.some((embed: any) => embed.title === dashboardTitle)) {
-                    await message.delete().catch(() => {});
+            if ('messages' in channel) {
+                const messages = await channel.messages.fetch({ limit: 30 });
+                for (const message of messages.values()) {
+                    if (message.author.id === this.#client.user?.id &&
+                        message.embeds.some((embed) => embed.title === dashboardTitle)) {
+                        await message.delete().catch(() => {});
+                    }
                 }
             }
         } catch (_) {}
 
-        player.dashboardMsg = await (channel as any).send({
+        player.dashboardMsg = await channel.send({
             embeds: [embeds.connected(this.#bot, lng)],
             components: []
         });
@@ -90,8 +96,7 @@ export class DashboardManager {
      * Update dashboard with current track and player state (smart edit or re-send to bottom)
      */
     public async update(player: Player, track: Track): Promise<void> {
-        this.#updatePromise = this.#updatePromise.then(() => this.#performUpdate(player, track)).catch(() => {});
-        return this.#updatePromise;
+        return this.#enqueue(player, () => this.#performUpdate(player, track));
     }
 
     async #performUpdate(player: Player, track: Track): Promise<void> {
@@ -107,10 +112,14 @@ export class DashboardManager {
             subtitle = subtitle.substring(0, 1021) + '...';
         }
 
-        const channel = player.dashboardMsg?.channel
-            ?? (player.textChannelId ? this.#client.channels.cache.get(player.textChannelId) : null);
+        const cachedChannel = player.textChannelId
+            ? this.#client.channels.cache.get(player.textChannelId)
+            : null;
+        const dashboardChannel = player.dashboardMsg?.channel;
+        const channel = (dashboardChannel?.isSendable() ? dashboardChannel : null) ??
+            (cachedChannel?.isSendable() ? cachedChannel : null);
 
-        if (!channel || typeof (channel as any).send !== 'function') {
+        if (!channel) {
             this.#bot.logger.error(this.#bot.shardId, 'Dashboard update called but channel is missing or invalid');
             return;
         }
@@ -129,7 +138,9 @@ export class DashboardManager {
 
         if (player.dashboardMsg) {
             try {
-                const lastMsgId = (channel as any).lastMessageId;
+                const lastMsgId = 'lastMessageId' in channel
+                    ? channel.lastMessageId
+                    : null;
                 if (!lastMsgId || lastMsgId === player.dashboardMsg.id) {
                     await player.dashboardMsg.edit(embedPayload);
                     return;
@@ -161,7 +172,7 @@ export class DashboardManager {
         }
 
         try {
-            player.dashboardMsg = await (channel as any).send(embedPayload);
+            player.dashboardMsg = await channel.send(embedPayload);
         } catch (error) {
             this.#bot.logger.error(this.#bot.shardId, 'Dashboard update error: ' + error);
         }
@@ -174,10 +185,7 @@ export class DashboardManager {
      * Serialized with updates so a queued update can never race the destroy.
      */
     public async destroy(player: Player): Promise<void> {
-        this.#updatePromise = this.#updatePromise
-            .then(() => this.#performDestroy(player))
-            .catch(() => {});
-        return this.#updatePromise;
+        return this.#enqueue(player, () => this.#performDestroy(player));
     }
 
     async #performDestroy(player: Player): Promise<void> {
@@ -198,12 +206,43 @@ export class DashboardManager {
     }
 
     /**
+     * Serialize dashboard operations for one guild. Failures are logged and
+     * do not poison later queued work or reject event-handler promises.
+     */
+    async #enqueue(
+        player: Player,
+        operation: () => Promise<void>,
+    ): Promise<void> {
+        const guildId = player.guildId;
+        const previous = this.#updatePromises.get(guildId) ?? Promise.resolve();
+        const current = previous.then(operation);
+        const queueTail = current.catch((error) => {
+            this.#bot.logger.error(
+                this.#bot.shardId,
+                `[DashboardManager] Operation failed for guild ${guildId}: ${error}`,
+            );
+        });
+        this.#updatePromises.set(guildId, queueTail);
+
+        try {
+            await queueTail;
+        } finally {
+            if (this.#updatePromises.get(guildId) === queueTail) {
+                this.#updatePromises.delete(guildId);
+            }
+        }
+    }
+
+    /**
      * Build subtitle with track info, volume, repeat mode, and DJ info
      */
     async #buildSubtitle(player: Player, track: Track, lng?: string): Promise<string> {
         const repeatModeLabel = this.#getRepeatModeLabel(player.repeatMode, lng);
 
-        const currentVolume = player.volume ?? (player.setting as any)?.volume ?? this.#bot.guildVolumeManager?.get(player.guildId) ?? this.#bot.config.bot.volume.default;
+        const currentVolume = player.volume ??
+            player.setting?.volume ??
+            this.#bot.guildVolumeManager?.get(player.guildId) ??
+            this.#bot.config.bot.volume.default;
 
         let subtitle = this.#bot.i18n.t('embeds:DASHBOARD_SUBTITLE', {
             author: track.author,

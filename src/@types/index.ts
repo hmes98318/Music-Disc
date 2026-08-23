@@ -45,6 +45,10 @@ declare module 'lavashark' {
         leaveTimeout?: NodeJS.Timeout;      // Timeout for DJ leave channel
         autoLeaveTimeout?: NodeJS.Timeout;  // Timeout for auto leave channel
     }
+
+    export interface Track {
+        isRadio?: boolean;
+    }
 }
 
 export enum DJModeEnum {

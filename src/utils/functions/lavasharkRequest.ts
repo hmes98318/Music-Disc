@@ -1,8 +1,10 @@
-import type { LavaShark } from 'lavashark';
+import type { LavaShark, Track } from 'lavashark';
 
 
 const DEFAULT_RETRY_ATTEMPTS = 3;
 const DEFAULT_RETRY_DELAY_MS = 2000;
+
+type SearchResult = Awaited<ReturnType<LavaShark['search']>>;
 
 /**
  * Wait for the given number of milliseconds
@@ -20,7 +22,7 @@ export async function searchWithRetry(
     query: string,
     attempts: number = DEFAULT_RETRY_ATTEMPTS,
     retryDelayMs: number = DEFAULT_RETRY_DELAY_MS,
-): Promise<any | null> {
+): Promise<SearchResult | null> {
     for (let attempt = 0; attempt < attempts; attempt++) {
         try {
             return await lavashark.search(query);
@@ -41,7 +43,7 @@ export async function decodeTrackWithRetry(
     encoded: string,
     attempts: number = DEFAULT_RETRY_ATTEMPTS,
     retryDelayMs: number = DEFAULT_RETRY_DELAY_MS,
-): Promise<any | null> {
+): Promise<Track | null> {
     for (let attempt = 0; attempt < attempts; attempt++) {
         try {
             return await lavashark.decodeTrack(encoded);
@@ -65,7 +67,7 @@ export async function decodeTracksWithRetry(
     encodedTracks: string[],
     attempts: number = DEFAULT_RETRY_ATTEMPTS,
     retryDelayMs: number = DEFAULT_RETRY_DELAY_MS,
-): Promise<any[] | null> {
+): Promise<Track[] | null> {
     for (let attempt = 0; attempt < attempts; attempt++) {
         try {
             return await lavashark.decodeTracks(encodedTracks);

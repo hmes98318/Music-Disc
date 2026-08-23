@@ -39,20 +39,22 @@ export class NodeSelectHandler {
         await interaction.deferUpdate();
 
         try {
-            const [nodeInfo, nodeStats, nodePing] = await Promise.all([
+            const [nodeInfo, nodeStats, pingList] = await Promise.all([
                 targetNode.getInfo(),
                 targetNode.getStats(),
-                client.lavashark.nodePing(targetNode)
+                client.lavashark.nodesPing()
             ]);
+            const nodePing = pingList[nodes.indexOf(targetNode)] ?? -1;
 
-            const selectOptions = nodes.slice(0, 25).map(node => {
+            const selectOptions = nodes.slice(0, 25).map((node, index) => {
                 const isConnected = node.state === NodeState.CONNECTED;
+                const ping = pingList[index] ?? -1;
                 return {
                     label: node.identifier,
                     value: node.identifier,
                     default: node.identifier === nodeName,
                     description: isConnected
-                        ? (bot.i18n.t('embeds:NODE_STATUS_PING', { lng }) + `: ${nodePing}ms`)
+                        ? (bot.i18n.t('embeds:NODE_STATUS_PING', { lng }) + `: ${ping}ms`)
                         : bot.i18n.t('embeds:NODE_DISCONNECTED', { lng }).replace(/\*/g, ''),
                     emoji: isConnected ? '✅' : '❌'
                 };

@@ -1,6 +1,9 @@
 import i18next from 'i18next';
+import { RepeatMode } from 'lavashark';
+
 import { BaseCommand } from './base/BaseCommand.js';
 import { CommandCategory } from '../@types/index.js';
+import { isRadioTrack } from '../utils/functions/isRadioTrack.js';
 
 import type { Client } from 'discord.js';
 import type { CommandContext } from './base/CommandContext.js';
@@ -30,11 +33,14 @@ export class ClearCommand extends BaseCommand {
             return;
         }
 
-        const isRadioPlaying = Boolean(player.current && (player.current as any).isRadio);
+        const isRadioPlaying = isRadioTrack(player.current);
 
         player.queue.clear();
 
         if (isRadioPlaying) {
+            if (player.repeatMode !== RepeatMode.OFF) {
+                player.setRepeatMode(RepeatMode.OFF);
+            }
             await player.skip();
         }
 
