@@ -4,6 +4,7 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { BaseCommand } from './base/BaseCommand.js';
 import { CommandCategory, DJModeEnum } from '../@types/index.js';
 import { DJManager } from '../lib/DjManager.js';
+import { PermissionManager } from '../lib/PermissionManager.js';
 
 import type { Client } from 'discord.js';
 import type { Player } from 'lavashark';
@@ -52,7 +53,7 @@ export class DjCommand extends BaseCommand {
         }
 
         // Check permission for adding DJ - only admins can add/remove DJs
-        if (!bot.config.bot.admin.includes(context.user.id)) {
+        if (!PermissionManager.isAdmin(bot, context.user.id, context.member)) {
             await context.replyEphemeralError(bot, context.t('commands:MESSAGE_DJ_ADMIN_ONLY'));
             return;
         }
