@@ -1,15 +1,15 @@
-import Database from 'better-sqlite3';
+import { DatabaseSync } from 'node:sqlite';
 import { existsSync, mkdirSync } from 'fs';
 import { dirname } from 'path';
 
 import type { Bot } from '../@types/index.js';
 
-type DatabaseTransaction<T extends unknown[]> = (db: Database.Database, ...args: T) => void;
+type DatabaseTransaction<T extends unknown[]> = (db: DatabaseSync, ...args: T) => void;
 
 export class DatabaseManager {
     private readonly bot: Bot;
     private readonly dbPath: string;
-    private db: Database.Database | null = null;
+    private db: DatabaseSync | null = null;
 
     constructor(bot: Bot) {
         this.bot = bot;
@@ -23,7 +23,7 @@ export class DatabaseManager {
                 mkdirSync(dir, { recursive: true });
             }
 
-            this.db = new Database(this.dbPath);
+            this.db = new DatabaseSync(this.dbPath);
             this.configureConnection();
             this.initializeSchema();
 
@@ -34,7 +34,7 @@ export class DatabaseManager {
         }
     }
 
-    public getDatabase(): Database.Database | null {
+    public getDatabase(): DatabaseSync | null {
         return this.db;
     }
 
@@ -44,10 +44,16 @@ export class DatabaseManager {
         }
 
         const db = this.db;
-        const transaction = db.transaction((...transactionArgs: T) => {
-            operation(db, ...transactionArgs);
-        });
-        transaction(...args);
+        db.exec('BEGIN');
+        try {
+            operation(db, ...args);
+            db.exec('COMMIT');
+        } catch (error) {
+            try {
+                db.exec('ROLLBACK');
+            } catch (_) {}
+            throw error;
+        }
     }
 
     public close(): void {
@@ -56,7 +62,7 @@ export class DatabaseManager {
         }
 
         try {
-            this.db.pragma('wal_checkpoint(TRUNCATE)');
+            this.db.exec('PRAGMA wal_checkpoint(TRUNCATE)');
         } catch (_) {}
 
         this.db.close();
@@ -69,11 +75,13 @@ export class DatabaseManager {
             return;
         }
 
-        this.db.pragma('journal_mode = WAL'); // Default is DELETE
-        this.db.pragma('synchronous = NORMAL'); // Default is FULL
-        this.db.pragma('temp_store = MEMORY');
-        this.db.pragma('foreign_keys = ON'); // Default is OFF
-        this.db.pragma('busy_timeout = 5000'); // Default is 0 (no timeout)
+        this.db.exec(`
+            PRAGMA journal_mode = WAL; -- Default is DELETE
+            PRAGMA synchronous = NORMAL; -- Default is FULL
+            PRAGMA temp_store = MEMORY;
+            PRAGMA foreign_keys = ON; -- Default is OFF
+            PRAGMA busy_timeout = 5000; -- Default is 0 (no timeout)
+        `);
     }
 
     private initializeSchema(): void {

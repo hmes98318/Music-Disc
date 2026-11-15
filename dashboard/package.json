@@ -9,27 +9,35 @@
         "generate": "nuxt generate",
         "preview": "nuxt preview",
         "postinstall": "nuxt prepare",
-        "format": "prettier --write ."
+        "format": "prettier --write app"
     },
     "author": "hoehoetvhs",
     "license": "MIT",
     "overrides": {
-        "brace-expansion": "^5.0.9"
+        "@intlify/core": "^11.4.20",
+        "@intlify/core-base": "^11.4.20",
+        "@intlify/devtools-types": "^11.4.20",
+        "@intlify/message-compiler": "^11.4.20",
+        "@intlify/shared": "^11.4.20",
+        "devalue": "^6.0.3",
+        "js-yaml": "^5.5.0",
+        "minimatch": "^11.0.8",
+        "vue-i18n": "^11.4.20"
     },
     "dependencies": {
-        "@nuxt/icon": "^2.5.0",
+        "@nuxt/icon": "^2.6.2",
         "@nuxtjs/i18n": "^10.6.0",
-        "@pinia/nuxt": "^1.0.1",
-        "@tailwindcss/vite": "^4.3.3",
-        "nuxt": "^4.5.2",
-        "pinia": "^4.0.2",
-        "tailwindcss": "^4.3.3",
-        "vue": "^3.5.41",
-        "vue-router": "^5.2.0"
+        "@pinia/nuxt": "^1.0.3",
+        "@tailwindcss/vite": "^4.3.5",
+        "nuxt": "^4.6.4",
+        "pinia": "^4.1.0",
+        "tailwindcss": "^4.3.5",
+        "vue": "^3.5.45",
+        "vue-router": "^5.5.1"
     },
     "devDependencies": {
-        "@iconify-json/lucide": "^1.2.123",
-        "prettier": "^3.9.6"
+        "@iconify-json/lucide": "^1.2.155",
+        "prettier": "^3.10.1"
     },
     "engines": {
         "node": ">=22"

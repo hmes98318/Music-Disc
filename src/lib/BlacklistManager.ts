@@ -16,7 +16,9 @@ export class BlacklistManager {
                 return;
             }
 
-            const rows = db.prepare('SELECT user_id FROM blacklisted_users').all() as BlacklistedUserTableRow[];
+            const rows = db
+                .prepare('SELECT user_id FROM blacklisted_users')
+                .all() as unknown as BlacklistedUserTableRow[];
             for (const row of rows) {
                 this.blacklistedUsers.add(row.user_id);
             }

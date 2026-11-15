@@ -15,9 +15,9 @@
         "install:dashboard": "npm --prefix ./dashboard ci",
         "dev": "npm run typecheck -- --incremental false && tsx ./src/index.ts",
         "lint": "oxlint",
-        "lint:fix": "oxlint --fix && prettier --write .",
-        "format": "prettier --write .",
-        "format:check": "prettier --check .",
+        "lint:fix": "oxlint --fix && npm format",
+        "format": "prettier --write src scripts",
+        "format:check": "prettier --check src scripts",
         "typecheck": "tsc --noEmit"
     },
     "author": "hoehoetvhs",
@@ -26,30 +26,36 @@
         "url": "https://discord.gg/HMFyw4xeeV"
     },
     "homepage": "https://discord.gg/HMFyw4xeeV",
-    "overrides": {},
+    "overrides": {
+        "body-parser": "^2.4.0",
+        "discord.js": {
+            "undici": "^6.29.1"
+        },
+        "@discordjs/rest": {
+            "undici": "^6.29.1"
+        }
+    },
     "dependencies": {
         "bcryptjs": "^3.0.3",
-        "better-sqlite3": "^13.0.3",
-        "cookie": "^2.0.1",
-        "discord.js": "~14.27.0",
-        "dotenv": "^17.4.2",
-        "express": "^5.2.1",
-        "i18next": "^26.4.2",
-        "i18next-fs-backend": "^2.6.7",
+        "cookie": "^2.0.2",
+        "discord.js": "~14.28.1",
+        "dotenv": "^18.0.10",
+        "express": "^5.3.0",
+        "i18next": "^27.1.2",
+        "i18next-fs-backend": "^2.6.12",
         "lavashark": "^2.3.3",
-        "undici": "^8.10.1",
-        "zod": "^4.5.4"
+        "undici": "^8.12.4",
+        "zod": "^4.6.7"
     },
     "devDependencies": {
-        "@types/better-sqlite3": "^9.6.0",
         "@types/express": "^5.0.6",
-        "@types/node": "^26.4.1",
-        "oxlint": "^1.81.0",
-        "prettier": "^3.9.6",
-        "tsx": "^4.23.13",
+        "@types/node": "^26.6.6",
+        "oxlint": "^1.93.0",
+        "prettier": "^3.10.1",
+        "tsx": "^4.23.15",
         "typescript": "^7.0.2"
     },
     "engines": {
-        "node": ">=22"
+        "node": ">=26"
     }
 }

@@ -1,7 +1,0 @@
-dist/
-node_modules/
-public/
-dashboard/
-.github/
-package-lock.json
-*.d.ts

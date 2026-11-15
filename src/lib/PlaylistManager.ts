@@ -1,4 +1,4 @@
-import type { Database } from 'better-sqlite3';
+import type { DatabaseSync } from 'node:sqlite';
 import type { Bot } from '../@types/index.js';
 
 export const PLAYLIST_TRACK_LIMIT = 500;
@@ -33,7 +33,7 @@ export class PlaylistManager {
         this.bot = bot;
     }
 
-    private get db(): Database | null {
+    private get db(): DatabaseSync | null {
         return this.bot.databaseManager?.getDatabase() || null;
     }
 
@@ -168,10 +168,10 @@ export class PlaylistManager {
                 VALUES (?, ?, ?, ?, ?, ?, ?)
             `);
 
-            const replacePlaylist = db.transaction(() => {
-                db.prepare('DELETE FROM playlists WHERE guild_id = ? AND name = ? COLLATE NOCASE').run(guildId, name);
+            this.bot.databaseManager!.executeTransaction((txDb) => {
+                txDb.prepare('DELETE FROM playlists WHERE guild_id = ? AND name = ? COLLATE NOCASE').run(guildId, name);
 
-                const playlistInfo = db
+                const playlistInfo = txDb
                     .prepare(
                         `
                     INSERT INTO playlists (guild_id, name, created_at, is_m3u)
@@ -194,8 +194,6 @@ export class PlaylistManager {
                     );
                 }
             });
-
-            replacePlaylist();
 
             return true;
         } catch (error) {
@@ -275,11 +273,11 @@ export class PlaylistManager {
                 .all(playlistId) as { id: number }[];
 
             const updateStmt = db.prepare('UPDATE playlist_tracks SET position = ? WHERE id = ?');
-            db.transaction(() => {
+            this.bot.databaseManager!.executeTransaction(() => {
                 for (let i = 0; i < tracks.length; i++) {
                     updateStmt.run(i, tracks[i].id);
                 }
-            })();
+            });
 
             return true;
         } catch (error) {

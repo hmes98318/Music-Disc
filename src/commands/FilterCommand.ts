@@ -13,6 +13,8 @@ import { embeds } from '../embeds/index.js';
 import { filtersConfig } from '../utils/constants.js';
 
 import type { Client } from 'discord.js';
+import type { Player } from 'lavashark';
+import type { FilterOptions } from 'lavashark/typings/src/@types/index.js';
 import type { CommandContext } from './base/CommandContext.js';
 import type { Bot, CommandMetadata } from '../@types/index.js';
 
@@ -69,7 +71,7 @@ export class FilterCommand extends BaseCommand {
      * Show interactive filter selection menu
      * @private
      */
-    async #showFilterSelection(bot: Bot, client: Client, context: CommandContext, player: any): Promise<void> {
+    async #showFilterSelection(bot: Bot, client: Client, context: CommandContext, player: Player): Promise<void> {
         const select = new StringSelectMenuBuilder()
             .setCustomId(SelectButtonId.Filter)
             .setPlaceholder(context.t('commands:MESSAGE_FILTER_SELECT_MODE'))
@@ -110,7 +112,7 @@ export class FilterCommand extends BaseCommand {
                     return;
                 }
 
-                player.filters.set(filtersConfig[effectName as keyof typeof filtersConfig]);
+                this.#setPlayerFilter(player, effectName as keyof typeof filtersConfig);
             }
 
             if (context.isMessage()) {
@@ -150,7 +152,7 @@ export class FilterCommand extends BaseCommand {
         bot: Bot,
         client: Client,
         context: CommandContext,
-        player: any,
+        player: Player,
         effectName: string,
     ): Promise<void> {
         if (effectName === 'clear') {
@@ -161,7 +163,7 @@ export class FilterCommand extends BaseCommand {
                 return;
             }
 
-            player.filters.set(filtersConfig[effectName as keyof typeof filtersConfig]);
+            this.#setPlayerFilter(player, effectName as keyof typeof filtersConfig);
         }
 
         if (context.isMessage()) {
@@ -175,5 +177,22 @@ export class FilterCommand extends BaseCommand {
                 allowedMentions: { repliedUser: false },
             })
             .catch(() => bot.logger.discord(bot.shardId, 'Failed to edit message.'));
+    }
+
+    #setPlayerFilter(player: Player, effectName: keyof typeof filtersConfig): void {
+        const filterConfig: FilterOptions = filtersConfig[effectName];
+        player.filters.set(filterConfig);
+
+        if ('pluginFilters' in filterConfig && filterConfig.pluginFilters !== undefined) {
+            const activeFilters = player.filters.active as FilterOptions;
+            if (!activeFilters.pluginFilters) {
+                const payload: FilterOptions = {
+                    ...activeFilters,
+                    pluginFilters: filterConfig.pluginFilters,
+                };
+                delete payload.volume;
+                void player.node?.rest.updatePlayer(player.guildId, { filters: payload });
+            }
+        }
     }
 }

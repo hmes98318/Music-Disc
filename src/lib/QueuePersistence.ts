@@ -250,7 +250,7 @@ export class QueuePersistence {
                     timestamp
                 FROM queues
             `);
-            const rows = stmt.all() as QueueTableRow[];
+            const rows = stmt.all() as unknown as QueueTableRow[];
 
             const queues: PersistedQueue[] = [];
 

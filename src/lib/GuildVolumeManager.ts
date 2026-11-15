@@ -18,7 +18,9 @@ export class GuildVolumeManager {
                 return;
             }
 
-            const rows = db.prepare('SELECT guild_id, volume FROM guild_volumes').all() as GuildVolumeTableRow[];
+            const rows = db
+                .prepare('SELECT guild_id, volume FROM guild_volumes')
+                .all() as unknown as GuildVolumeTableRow[];
             for (const row of rows) {
                 this.guildVolumes.set(row.guild_id, row.volume);
             }

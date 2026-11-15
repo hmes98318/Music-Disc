@@ -47,8 +47,8 @@ async function verifyRequiredFiles(imageReference: string): Promise<void> {
         "  console.error(`Missing image paths: ${missingPaths.join(', ')}`);",
         '  process.exit(1);',
         '}',
-        "const Database = require('better-sqlite3');",
-        "const database = new Database(':memory:');",
+        "const { DatabaseSync } = require('node:sqlite');",
+        "const database = new DatabaseSync(':memory:');",
         'database.close();',
         "console.log('Container runtime smoke test passed.');",
     ].join('\n');

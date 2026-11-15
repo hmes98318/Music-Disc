@@ -18,7 +18,9 @@ export class GuildLanguageManager {
                 return;
             }
 
-            const rows = db.prepare('SELECT guild_id, language FROM guild_languages').all() as GuildLanguageTableRow[];
+            const rows = db
+                .prepare('SELECT guild_id, language FROM guild_languages')
+                .all() as unknown as GuildLanguageTableRow[];
             for (const row of rows) {
                 this.guildLanguages.set(row.guild_id, row.language);
             }

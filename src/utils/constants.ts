@@ -306,4 +306,28 @@ export const filtersConfig = {
         timescale: { pitch: 0.9, rate: 0.95 }, // 輕微降低音高和速度
         tremolo: { depth: 0.1, frequency: 6 },
     },
+    normalization: {
+        pluginFilters: {
+            normalization: {
+                maxAmplitude: 0.75,
+                adaptive: true,
+            },
+        },
+    },
+    echo: {
+        pluginFilters: {
+            echo: {
+                echoLength: 0.3,
+                decay: 0.5,
+            },
+        },
+    },
+    highpass: {
+        pluginFilters: {
+            'high-pass': {
+                cutoffFrequency: 80,
+                boostFactor: 1.0,
+            },
+        },
+    },
 };
